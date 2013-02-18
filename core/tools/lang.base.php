@@ -267,7 +267,7 @@
       static $version= NULL;
 
       if (NULL === $version) {
-        $version= Module::forName('xp-framework/core')->getVersion();
+        $version= trim(XPClass::forName('lang.Object')->getClassLoader()->getResource('VERSION'));
       }
       return $version;
     }
