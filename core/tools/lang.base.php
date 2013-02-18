@@ -62,9 +62,14 @@
 
             // Use namespaced variant of class name
             $name= strtr($class, '.', '\\');
+          } else if (FALSE !== $p) {
+
+            // Create namespaced variant
+            class_alias($name, strtr($class, '.', '\\'));
           }
         } else {
           $name= strtr($class, '.', '·');
+          class_alias($name, strtr($class, '.', '\\'));
         }
         xp::$registry['class.'.$name]= $class;
         method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
@@ -717,8 +722,7 @@
     $cl= xp::$registry['loader']->findClass($name);
     if ($cl instanceof null) return FALSE;
 
-    $decl= $cl->loadClass0($name);
-    strstr($decl, '\\') || class_alias($decl, $class);
+    $cl->loadClass0($name);
     return TRUE;
   }
   // }}}

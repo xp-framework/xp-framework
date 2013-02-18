@@ -97,6 +97,10 @@
           unset(xp::$registry['classloader.'.$class]);
           raise('lang.ClassFormatException', 'Class "'.$name.'" not declared in loaded file');
         }
+      } else if (FALSE !== $p) {
+
+        // Create namespaced variant
+        class_alias($name, strtr($class, '.', '\\'));
       }
       xp::$registry['class.'.$name]= $class;
       method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
