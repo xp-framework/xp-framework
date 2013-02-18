@@ -8,8 +8,7 @@
     'lang.IClassLoader',
     'lang.FileSystemClassLoader',
     'lang.DynamicClassLoader',
-    'lang.archive.ArchiveClassLoader',
-    'lang.Module'
+    'lang.archive.ArchiveClassLoader'
   );
   
   /** 
@@ -111,104 +110,6 @@
     }
     
     /**
-     * Declare a module
-     *
-     * @param   lang.IClassLoader l
-     * @throws  lang.ClassFormatException
-     * @return  lang.Module
-     */
-    public static function declareModule($l) {
-      if (!preg_match('/module ([a-z][a-z0-9_\/\.-]*)(\(([^\)]+)\))?( extends ([^{ ]+))?( provides ([^{]+))?\s*{/', $moduleInfo= trim($l->getResource('module.xp')), $m)) {
-        raise('lang.ClassFormatException', 'Cannot parse module.xp in '.$l->toString());
-      }
-
-      // Parse provided packages
-      if (isset($m[7])) {
-        $provides= array();
-        foreach (explode(',', $m[7]) as $package) {
-          $provides[]= trim($package);
-        }
-      } else {
-        $provides= array(NULL);
-      }
-
-      // Check for a module to be extended. If so, the definition will extend the 
-      // parent definition, e.g. `class __Child_ParentModule extends __ParentModule`.
-      // Otherwise, the parent class will be lang.Object.
-      if (isset($m[5]) && '' !== $m[5]) {
-        $parent= Module::forName($m[5]);
-        $base= $parent->getDefinition()->literal();
-        $kind= substr($base, 1);
-      } else {
-        $parent= NULL;
-        $base= 'Object';
-        $kind= 'Module';
-      }
-
-      // Declare module
-      $module= '__'.ucfirst(strtr($m[1], '.-/', '·»¦')).$kind;
-      $version= isset($m[2]) && $m[2] !== '' ? $m[3] : NULL;
-
-      // Remove PHP tags if existant
-      if ('<?php' === substr($moduleInfo, 0, 5)) $moduleInfo= substr($moduleInfo, 5);
-      if ('?>' === substr($moduleInfo, -2, 2)) $moduleInfo= substr($moduleInfo, 0, -2);
-
-      // Load class and register
-      array_unshift(self::$delegates, $l);
-      $dyn= DynamicClassLoader::instanceFor('modules');
-      $dyn->setClassBytes($module, strtr($moduleInfo, array($m[0] => 'class '.$module.' extends '.$base.' {'.
-        'public static $name= "'.$m[1].'";'.
-        'public static $version= '.var_export($version, TRUE).';'
-      )));
-      try {
-        $class= $dyn->loadClass($module);
-        unset(self::$delegates[0]);
-      } catch (ClassLoadingException $e) {
-        unset(self::$delegates[0]);
-        throw $e;
-      }
-      if ($class->hasMethod('initialize')) {
-        $class->getMethod('initialize')->invoke(NULL, array($l));
-      }
-
-      // Return declared module, or NULL if this was an extension module
-      if (NULL !== $parent) {
-        $parent->addDelegate($m[1], $l, $provides);
-        $declared= NULL;
-      } else {
-        $declared= new Module($class, $m[1], $version);
-        $declared->addDelegate(NULL, $l, $provides);
-      }
-      return $declared;
-    }
-
-    /**
-     * Register module
-     * 
-     * @param  lang.Module m
-     * @throws lang.IllegalStateException 
-     * @return lang.Module m
-     */
-    public static function registerModule($m) {
-      $name= $m->getName();
-      if (isset(xp::$registry['modules'][$name])) {
-        raise('lang.IllegalStateException', 'Module "'.$name.'" already registered');
-      }
-
-      xp::$registry['modules'][$name]= $m;
-      return $m;
-    }
-
-    /**
-     * Unregister a module
-     * 
-     * @param  lang.Module m
-     */
-    public static function removeModule($m) {
-      unset(xp::$registry['modules'][$m->getName()]);
-    }
-
-    /**
      * Register a class loader as a delegate
      *
      * @param   lang.IClassLoader l
@@ -216,11 +117,6 @@
      * @return  lang.IClassLoader the registered loader
      */
     public static function registerLoader(IClassLoader $l, $before= FALSE) {
-      if ($l->providesResource('module.xp')) {
-        if (NULL === ($m= self::declareModule($l))) return;   // Extended module
-        $l= self::registerModule($m);
-      }
-
       if ($before) {
         self::$delegates= array_merge(array($l->instanceId() => $l), self::$delegates);
       } else {
@@ -236,10 +132,6 @@
      * @return  bool TRUE if the delegate was unregistered
      */
     public static function removeLoader(IClassLoader $l) {
-
-      // FIXME: we should not be using self::removeModule() specialization
-      if ($l instanceof Module) self::removeModule($l);
-
       $id= $l->instanceId();
       if (!isset(self::$delegates[$id])) return FALSE;
       unset(self::$delegates[$id]);
