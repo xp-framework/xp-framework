@@ -81,24 +81,24 @@
       
       // Register it
       if (NULL === $package) {
-        $name= substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
-      } else {
-        $name= strtr($package, '.', '·').'·'.substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
-      }
-
-      if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-
-        // Class is not available as shortnamed class, now try namespaced variant:
-        $name= strtr($class, '.', '\\');
-        if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-          unset(xp::$registry['classloader.'.$class]);
-          raise('lang.ClassFormatException', 'Class "'.$name.'" not declared in loaded file');
+        if (FALSE === ($p= strrpos($class, '.'))) {
+          $name= $class;
+        } else {
+          $name= substr($class, $p+ 1);
+          if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
+            $name= strtr($class, '.', '\\');
+            if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
+              unset(xp::$registry['classloader.'.$class]);
+              raise('lang.ClassFormatException', 'Class "'.$name.'" not declared in loaded file');
+            }
+          } else {
+            class_alias($name, strtr($class, '.', '\\'));
+          }
         }
-      } else if (FALSE !== $p) {
-
-        // Create namespaced variant
-        class_alias($name, strtr($class, '.', '\\'));
+      } else {
+        $name= strtr($class, '.', '·');
       }
+
       xp::$registry['class.'.$name]= $class;
       method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
       if (0 == xp::$registry['cl.level']) {
