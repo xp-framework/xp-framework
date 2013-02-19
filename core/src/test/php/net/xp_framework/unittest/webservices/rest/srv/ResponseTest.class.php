@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  $package= 'net.xp_framework.unittest.rest.srv';
+  $package= 'net.xp_framework.unittest.webservices.rest.srv';
 
   uses(
     'unittest.TestCase',
@@ -16,7 +16,7 @@
    *
    * @see  xp://webservices.rest.srv.Response
    */
-  class net暖p_framework暉nittest斟est新rv愛esponseTest extends TestCase {
+  class net暖p_framework暉nittest暈ebservices斟est新rv愛esponseTest extends TestCase {
 
     /**
      * Test constructor
