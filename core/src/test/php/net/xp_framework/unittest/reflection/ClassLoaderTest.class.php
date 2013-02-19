@@ -309,6 +309,28 @@
       $this->assertFalse($this->libraryLoader->providesPackage('net.xp_frame'));
     }
     
-    
+    /**
+     * Test "Classone" class is not provided
+     *
+     * @see   https://github.com/xp-framework/xp-framework/pull/235
+     */
+    #[@test]
+    public function doesNotProvideClassone() {
+      $this->assertFalse(ClassLoader::getDefault()
+        ->providesClass('net.xp_framework.unittest.reflection.classes.Classone')
+      );
+    }
+
+    /**
+     * Test "Classone" class is not provided
+     *
+     * @see   https://github.com/xp-framework/xp-framework/pull/235
+     */
+    #[@test, @expect('lang.ClassNotFoundException')]
+    public function loadingClassoneFails() {
+      ClassLoader::getDefault()
+        ->loadClass('net.xp_framework.unittest.reflection.classes.Classone')
+      ;
+    }
   }
 ?>
