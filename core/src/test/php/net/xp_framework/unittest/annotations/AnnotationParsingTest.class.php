@@ -495,9 +495,37 @@
      * Test broken annotation
      *
      */
-    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated or malformed array/')]
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated array/')]
     public function unterminatedArray() {
       $this->parse('#[@ignore(array(1]');
+    }
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated array/')]
+    public function unterminatedArrayKey() {
+      $this->parse('#[@ignore(name = array(1]');
+    }
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Malformed array/')]
+    public function malformedArray() {
+      $this->parse('#[@ignore(array(1 ,, 2))]');
+    }
+
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Malformed array/')]
+    public function malformedArrayKey() {
+      $this->parse('#[@ignore(name= array(1 ,, 2))]');
     }
 
     /**

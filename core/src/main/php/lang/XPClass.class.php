@@ -618,7 +618,9 @@
             $p= $offset+ $la+ 1;
             while ($b > 0) {
               $p+= strcspn($input, $ba.'"\'', $p);
-              if ($p >= $length) break; 
+              if ($p >= $length) {
+                raise('lang.ClassFormatException', 'Parse error: Unterminated array in '.$context);
+              }
               if ($ba{0} === $input{$p}) $b++; else if ($ba{1} === $input{$p}) $b--;else if ('\'' === $input{$p} || '"' === $input{$p}) {
                 $q= $input{$p};
                 $p++;
@@ -631,7 +633,7 @@
               $p++;
             }
             if ($p >= $length || !is_array($value= @eval('return array('.substr($input, $offset+ $la+ 1, $p- $offset- $la- 1- 1).');'))) {
-              raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed array in '.$context);
+              raise('lang.ClassFormatException', 'Parse error: Malformed array in '.$context);
             }
             $offset= $p;
           } else if ('=' !== $peek{strlen($peek)- 1}) {
@@ -652,7 +654,9 @@
                 $p= $offset+ $la;
                 while ($b > 0) {
                   $p+= strcspn($input, $ba.'"\'', $p);
-                  if ($p > $length) break; 
+                  if ($p >= $length) {
+                    raise('lang.ClassFormatException', 'Parse error: Unterminated array in '.$context);
+                  }
                   if ($ba{0} === $input{$p}) $b++; else if ($ba{1} === $input{$p}) $b--; else if ('\'' === $input{$p} || '"' === $input{$p}) {
                     $q= $input{$p};
                     $p++;
@@ -665,7 +669,7 @@
                   $p++;
                 }
                 if (!is_array($value[$key]= @eval('return array('.substr($input, $offset+ $la, $p- $offset- $la- 1).');'))) {
-                  raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed array in '.$context);
+                  raise('lang.ClassFormatException', 'Parse error: Malformed array in '.$context);
                 }
                 $offset= $p;
               } else if ('\'' === $input{$offset} || '"' === $input{$offset}) {
