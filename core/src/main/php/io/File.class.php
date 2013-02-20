@@ -181,7 +181,7 @@
         0 != strncmp('php://', $this->uri, 6) &&
         (FILE_MODE_READ == $mode) && 
         (!$this->exists())
-      ) throw new FileNotFoundException($this->uri.' not found');
+      ) throw new FileNotFoundException('File "'.$this->uri.'" not found');
       
       $this->_fd= fopen($this->uri, $this->mode);
       if (!$this->_fd) {
