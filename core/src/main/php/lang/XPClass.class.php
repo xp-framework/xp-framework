@@ -611,13 +611,15 @@
               raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
             }
             $offset= $p+ 1;
-          } else if ('array' === substr($peek, 0, 5)) {
+          } else if ('[' === ($a= $peek{0}) || 'array(' === ($a= substr($peek, 0, 6))) {
+            $la= strlen($a);
+            $ba= '[' === $a ? '[]' : '()';
             $b= 1;
-            $p= $offset+ 1+ 6;
+            $p= $offset+ $la+ 1;
             while ($b > 0) {
-              $p+= strcspn($input, '()"\'', $p);
+              $p+= strcspn($input, $ba.'"\'', $p);
               if ($p >= $length) break; 
-              if ('(' === $input{$p}) $b++; else if (')' === $input{$p}) $b--; else if ('\'' === $input{$p} || '"' === $input{$p}) {
+              if ($ba{0} === $input{$p}) $b++; else if ($ba{1} === $input{$p}) $b--;else if ('\'' === $input{$p} || '"' === $input{$p}) {
                 $q= $input{$p};
                 $p++;
                 while (($s= strcspn($input, $q, $p)) !== 0) {
@@ -628,28 +630,7 @@
               }
               $p++;
             }
-            if (!is_array($value= @eval('return '.substr($input, $offset+ 1, $p- $offset- 1).';'))) {
-              raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed array in '.$context);
-            }
-            $offset= $p;
-          } else if ('[' === $peek{0}) {
-            $b= 1;
-            $p= $offset+ 1+ 1;
-            while ($b > 0) {
-              $p+= strcspn($input, '[]"\'', $p);
-              if ($p >= $length) break;
-              if ('[' === $input{$p}) $b++; else if (']' === $input{$p}) $b--; else if ('\'' === $input{$p} || '"' === $input{$p}) {
-                $q= $input{$p};
-                $p++;
-                while (($s= strcspn($input, $q, $p)) !== 0) {
-                  $p+= $s;
-                  if ('\\' !== $input{$p- 1}) break;
-                  $p++;
-                }
-              }
-              $p++;
-            }
-            if (!is_array($value= @eval('return array('.substr($input, $offset+ 2, $p- $offset- 2- 1).');'))) {
+            if ($p >= $length || !is_array($value= @eval('return array('.substr($input, $offset+ $la+ 1, $p- $offset- $la- 1- 1).');'))) {
               raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed array in '.$context);
             }
             $offset= $p;
