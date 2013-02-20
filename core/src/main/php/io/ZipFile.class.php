@@ -30,7 +30,7 @@
         ('php://' != substr($this->uri, 0, 6)) &&
         (FILE_MODE_READ == $mode) && 
         (!$this->exists())
-      ) throw new FileNotFoundException($this->uri);
+      ) throw new FileNotFoundException('File "'.$this->uri.'" not found');
       
       $this->_fd= gzopen($this->uri, $this->mode.$compression);
       if (!$this->_fd) throw new IOException('cannot open '.$this->uri.' mode '.$this->mode);
