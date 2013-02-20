@@ -12,15 +12,5 @@
    * @see      xp://io.IOException
    */
   class FileNotFoundException extends IOException {
-  
-    /**
-     * Constructor
-     *
-     * @param   string msg The exception message
-     * @param   lang.Throwable cause default NULL
-     */
-    public function __construct($msg, $cause= NULL) {
-      parent::__construct($msg, $cause);
-    }
   }
 ?>
