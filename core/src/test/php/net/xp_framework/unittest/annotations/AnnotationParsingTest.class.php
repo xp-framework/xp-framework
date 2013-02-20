@@ -499,5 +499,18 @@
         $this->parse("#[@permissions(['rn=login, rt=config', 'rn=admin, rt=config'])]")
       );
     }
+
+    /**
+     * Test short array syntax
+     *
+     */
+    #[@test]
+    public function shortArraySyntaxAsValue() {
+      $this->assertEquals(
+        array(0 => array('permissions' => array('names' => array('rn=login, rt=config', 'rn=admin, rt=config'))), 1 => array()),
+        $this->parse("#[@permissions(names = ['rn=login, rt=config', 'rn=admin, rt=config'])]")
+      );
+    }
+
   }
 ?>
