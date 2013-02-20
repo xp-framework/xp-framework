@@ -68,6 +68,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for array shorthand as annotation value - see issue #66
+  (friebe)
 - Simplified enum declaration - see pull request #229
   (friebe)
 - Implemented rest of pull request #166 and changed all classes depending
