@@ -250,6 +250,18 @@
     }
 
     /**
+     * Tests simple annotation with multiple values
+     *
+     */
+    #[@test]
+    public function multiValueUsingShortArray() {
+      $this->assertEquals(
+        array(0 => array('xmlmapping' => array('hw_server', 'server')), 1 => array()),
+        $this->parse("#[@xmlmapping(['hw_server', 'server'])]")
+      );
+    }
+
+    /**
      * Tests simple annotation with an array value
      *
      */
@@ -493,7 +505,7 @@
      *
      */
     #[@test]
-    public function shortArraySyntaxAsKey() {
+    public function shortArraySyntaxAsValue() {
       $this->assertEquals(
         array(0 => array('permissions' => array('rn=login, rt=config', 'rn=admin, rt=config')), 1 => array()),
         $this->parse("#[@permissions(['rn=login, rt=config', 'rn=admin, rt=config'])]")
@@ -505,7 +517,7 @@
      *
      */
     #[@test]
-    public function shortArraySyntaxAsValue() {
+    public function shortArraySyntaxAsKey() {
       $this->assertEquals(
         array(0 => array('permissions' => array('names' => array('rn=login, rt=config', 'rn=admin, rt=config'))), 1 => array()),
         $this->parse("#[@permissions(names = ['rn=login, rt=config', 'rn=admin, rt=config'])]")
