@@ -100,12 +100,12 @@
      */
     public function toString() {
       return sprintf(
-        '%s(%s @ %s, PID %d) {%s%s}',
+        '%s(%s @ %s, PID %d) {%s}%s',
         $this->getClassName(),
         LogLevel::nameOf($this->level),
         date('r', $this->timestamp),
         $this->processId,
-        NULL === $this->context ? '' : $this->context->format().' - ',
+        NULL === $this->context ? '' : ' '.$this->context->toString(),
         xp::stringOf($this->arguments)
       );
     }
