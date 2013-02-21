@@ -7,6 +7,7 @@
   uses(
     'util.log.LogLevel', 
     'util.log.Appender', 
+    'util.log.LogContext',
     'util.log.LoggingEvent', 
     'util.log.layout.DefaultLayout'
   );
@@ -40,6 +41,7 @@
   class LogCategory extends Object {
     protected static $DEFAULT_LAYOUT= NULL;
     protected $_appenders= array();
+    protected $context= NULL;
 
     public $flags= 0;
     public $identifier= '';
@@ -53,11 +55,41 @@
      *
      * @param   string identifier
      * @param   int flags (defaults to all)
+     * @param   util.log.LogContext context
      */
-    public function __construct($identifier, $flags= LogLevel::ALL) {
+    public function __construct($identifier, $flags= LogLevel::ALL, $context= NULL) {
       $this->flags= $flags;
       $this->identifier= $identifier;
+      $this->context= $context;
       $this->_appenders= array();
+    }
+
+    /**
+     * Setter for context
+     *
+     * @param  util.log.LogContext context
+     * @return void
+     */
+    public function setContext(LogContext $context) {
+    	$this->context= $context;
+    }
+    
+    /**
+     * Retrieves whether this log category has a context
+     *
+     * @return bool
+     */
+    public function hasContext() {
+    	return NULL !== $this->context;
+    }
+    
+    /**
+     * Getter for context
+     *
+     * @return util.log.LogContext
+     */
+    public function getContext() {
+    	return $this->context;
     }
 
     /**
@@ -87,7 +119,7 @@
      */
     protected function callAppenders($level, $args) {
       if (!($this->flags & $level)) return;
-      $event= new LoggingEvent($this, time(), getmypid(), $level, $args);
+      $event= new LoggingEvent($this, time(), getmypid(), $level, $args, $this->context);
       foreach ($this->_appenders as $appflag => $appenders) {
         if (!($level & $appflag)) continue;
         foreach ($appenders as $appender) {
