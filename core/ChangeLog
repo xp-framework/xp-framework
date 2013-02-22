@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Features
+~~~~~~~~
+- Added ability to inspect web configuration - see pull request #238
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - Fixed class loading inconsistencies with case-insensitive filesystems.
