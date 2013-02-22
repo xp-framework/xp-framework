@@ -93,6 +93,17 @@ Version 5.8.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Features
+~~~~~~~~
+- Added ability to inspect web configuration - see pull request #238
+  (friebe)
+
+Bugfixes
+~~~~~~~~
+- Fixed class loading inconsistencies with case-insensitive filesystems.
+  See pull request #235.
+  (friebe)
+
 
 Version 5.8.11, released 2013-01-30
 -----------------------------------
