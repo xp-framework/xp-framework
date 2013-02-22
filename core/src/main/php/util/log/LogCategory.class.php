@@ -119,7 +119,7 @@
      */
     protected function callAppenders($level, $args) {
       if (!($this->flags & $level)) return;
-      $event= new LoggingEvent($this, time(), getmypid(), $level, $args, $this->context);
+      $event= new LoggingEvent($this, time(), getmypid(), $level, $args);
       foreach ($this->_appenders as $appflag => $appenders) {
         if (!($level & $appflag)) continue;
         foreach ($appenders as $appender) {
