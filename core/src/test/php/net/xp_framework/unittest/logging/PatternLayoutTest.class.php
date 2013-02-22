@@ -100,13 +100,13 @@
       $context->put('key1', 'val1');
 
       $event= new LoggingEvent(
-        new LogCategory('default', NULL, NULL, 0),
+        new LogCategory('default', LogLevel::ALL, $context),
         1258733284,
         1,
         LogLevel::INFO,
-        array('Hello'),
-        $context
+        array('Hello')
       );
+
       $this->assertEquals(
         'key1=val1',
         create(new PatternLayout('%x'))->format($event)

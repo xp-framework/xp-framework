@@ -17,7 +17,6 @@
     protected $processId= 0;
     protected $level= 0;
     protected $arguments= array();
-    protected $context= NULL;
     
     /**
      * Creates a new logging event
@@ -27,15 +26,13 @@
      * @param   int processId
      * @param   int level one debug, info, warn or error
      * @param   var[] arguments
-     * @param   util.log.LogContext context
      */
-    public function __construct($category, $timestamp, $processId, $level, array $arguments, $context= NULL) {
+    public function __construct($category, $timestamp, $processId, $level, array $arguments) {
       $this->category= $category;
       $this->timestamp= $timestamp;
       $this->processId= $processId;
       $this->level= $level;
       $this->arguments= $arguments;
-      $this->context= $context;
     }
     
     /**
@@ -48,12 +45,12 @@
     }
 
     /**
-     * Gets context
+     * Gets category context
      *
      * @return  util.log.LogContext
      */
     public function getContext() {
-      return $this->context;
+      return $this->category->getContext();
     }
 
     /**
@@ -105,7 +102,7 @@
         LogLevel::nameOf($this->level),
         date('r', $this->timestamp),
         $this->processId,
-        NULL === $this->context ? '' : ' '.$this->context->toString(),
+        NULL === ($context= $this->getContext()) ? '' : ' '.$context->toString(),
         xp::stringOf($this->arguments)
       );
     }

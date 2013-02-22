@@ -182,7 +182,7 @@ appender.util.log.FileAppender.param.filename="/var/log/xp/default.log"
       ')));
 
       with ($cat= $this->logger->getCategory('context')); {
-        $this->assertTrue(NULL !== $cat->hasContext());
+        $this->assertTrue($cat->hasContext());
         $this->assertInstanceOf('util.log.context.NestedLogContext', $cat->getContext());
       }
     }
