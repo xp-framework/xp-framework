@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('util.log.LogContext');
+  uses('util.log.Context');
 
   /**
    * Mapped Log Context
    *
    * @see http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/MDC.html
    */
-  class MappedLogContext extends LogContext {
+  class MappedLogContext extends Object implements util·log·Context {
     protected $queue= array();
 
     /**
@@ -77,6 +77,21 @@
         $s[]= $key.'='.$info;
       }
       return implode(' ', $s);
+    }
+
+    /**
+     * Creates a string representation of this object
+     *
+     * @return string
+     */
+    public function toString() {
+      $s= $this->getClassName().'{';
+      $s.= 0 === count($this->queue) ? '' : "\n";
+      foreach ($this->queue as $key => $info) {
+        $s.= '  '.$key.'='.$info."\n";
+      }
+      $s.= '}';
+      return $s;
     }
   }
 ?>

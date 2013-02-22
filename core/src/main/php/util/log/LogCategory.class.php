@@ -7,7 +7,7 @@
   uses(
     'util.log.LogLevel', 
     'util.log.Appender', 
-    'util.log.LogContext',
+    'util.log.Context',
     'util.log.LoggingEvent', 
     'util.log.layout.DefaultLayout'
   );
@@ -55,7 +55,7 @@
      *
      * @param   string identifier
      * @param   int flags (defaults to all)
-     * @param   util.log.LogContext context
+     * @param   util.log.Context context
      */
     public function __construct($identifier, $flags= LogLevel::ALL, $context= NULL) {
       $this->flags= $flags;
@@ -67,10 +67,10 @@
     /**
      * Setter for context
      *
-     * @param  util.log.LogContext context
+     * @param  util.log.Context context
      * @return void
      */
-    public function setContext(LogContext $context) {
+    public function setContext(util·log·Context $context) {
     	$this->context= $context;
     }
     
@@ -86,7 +86,7 @@
     /**
      * Getter for context
      *
-     * @return util.log.LogContext
+     * @return util.log.Context
      */
     public function getContext() {
     	return $this->context;

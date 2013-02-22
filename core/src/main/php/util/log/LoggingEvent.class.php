@@ -47,7 +47,7 @@
     /**
      * Gets category context
      *
-     * @return  util.log.LogContext
+     * @return  util.log.Context
      */
     public function getContext() {
       return $this->category->getContext();

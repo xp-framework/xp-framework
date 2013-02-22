@@ -88,5 +88,17 @@
       $this->context->push('val2');
       $this->assertEquals('val1 val2', $this->context->format());
     }
+
+    /**
+     * Tests NestedLogContext::toString()
+     *
+     */
+    #[@test]
+    public function toStringTest() {
+      $this->assertEquals('util.log.context.NestedLogContext{}', $this->context->toString());
+      $this->context->push('val1');
+      $this->context->push('val2');
+      $this->assertEquals('util.log.context.NestedLogContext{val1 > val2}', $this->context->toString());
+    }
   }
 ?>

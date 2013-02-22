@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('util.log.LogContext');
+  uses('util.log.Context');
 
   /**
    * Nested Log Context
    *
    * @see http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/NDC.html
    */
-  class NestedLogContext extends LogContext {
+  class NestedLogContext extends Object implements util·log·Context {
     protected $queue= array();
 
     /**
@@ -69,6 +69,15 @@
     public function format() {
       if (0 === $this->getDepth()) return '';
       return implode(' ', $this->queue);
+    }
+
+    /**
+     * Creates a string representation of this object
+     *
+     * @return string
+     */
+    public function toString() {
+      return $this->getClassName().'{'.implode(' > ', $this->queue).'}';
     }
   }
 ?>

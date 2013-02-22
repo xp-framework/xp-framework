@@ -99,5 +99,20 @@
       $this->context->put('key2', 'val2');
       $this->assertEquals('key1=val1 key2=val2', $this->context->format());
     }
+
+    /**
+     * Tests MappedLogContext::toString()
+     *
+     */
+    #[@test]
+    public function toStringTest() {
+      $this->assertEquals('util.log.context.MappedLogContext{}', $this->context->toString());
+      $this->context->put('key1', 'val1');
+      $this->context->put('key2', 'val2');
+      $this->assertEquals(
+        "util.log.context.MappedLogContext{\n  key1=val1\n  key2=val2\n}",
+        $this->context->toString()
+      );
+    }
   }
 ?>

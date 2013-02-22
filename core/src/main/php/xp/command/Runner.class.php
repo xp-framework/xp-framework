@@ -13,6 +13,7 @@
     'io.streams.ConsoleInputStream',
     'io.streams.ConsoleOutputStream',
     'util.log.Logger',
+    'util.log.context.EnvironmentAware',
     'util.PropertyManager',
     'util.FilesystemPropertySource',
     'util.ResourcePropertySource',
@@ -290,7 +291,7 @@
 
       // Setup logger context for all registered log categories
       foreach (Logger::getInstance()->getCategories() as $category) {
-        if (NULL === ($context= $category->getContext())) continue;
+        if (NULL === ($context= $category->getContext()) || !($context instanceof EnvironmentAware)) continue;
         $context->setHostname(System::getProperty('host.name'));
         $context->setRunner($this->getClassName());
         $context->setInstance($class->getName());
