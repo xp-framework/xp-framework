@@ -71,6 +71,7 @@
      * Entry point method. Receives the following arguments from web.php:
      * <ol>
      *   <li>The web root</li>
+     *   <li>The configuration directory</li>
      *   <li>The server profile</li>
      *   <li>The script URL</li>
      * </ol>
@@ -79,8 +80,8 @@
      */
     public static function main(array $args) {
       $r= new self($args[0], $args[1]);
-      $r->configure(new Properties($args[0].'/etc/web.ini'));
-      $r->run($args[2]);
+      $r->configure(new Properties($args[1].DIRECTORY_SEPARATOR.'web.ini'));
+      $r->run($args[3]);
     }
     
     /**
