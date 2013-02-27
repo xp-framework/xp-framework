@@ -164,8 +164,8 @@
      * @param   string str
      * @return  xml.rdf.RDFNewsfeed
      */
-    public static function fromString($str) {
-      return parent::fromString($str, __CLASS__);
+    public static function fromString($str, $c= __CLASS__) {
+      return parent::fromString($str, $c);
     }
 
     /**
@@ -174,8 +174,8 @@
      * @param   io.File file
      * @return  xml.rdf.RDFNewsfeed
      */
-    public static function fromFile($file) {
-      return parent::fromFile($file, __CLASS__);
+    public static function fromFile($file, $c= __CLASS__) {
+      return parent::fromFile($file, $c);
     }
     
     /**
