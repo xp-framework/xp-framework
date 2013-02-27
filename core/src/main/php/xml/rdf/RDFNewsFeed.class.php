@@ -56,9 +56,10 @@
    *   </rss>
    * </xmp>
    *
-   * @see http://www.w3.org/RDF/
-   * @see http://dublincore.org/2001/08/14/dces#
-   * @see http://dublincore.org/2001/08/14/dces_deDE
+   * @see   http://www.w3.org/RDF/
+   * @see   http://dublincore.org/2001/08/14/dces#
+   * @see   http://dublincore.org/2001/08/14/dces_deDE
+   * @test  xp://net.xp_framework.unittest.xml.RDFNewsFeedTest
    */
   class RDFNewsFeed extends Tree {
     public 
