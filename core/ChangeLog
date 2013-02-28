@@ -70,8 +70,6 @@ Features
 ~~~~~~~~
 - Changed xp::stringOf() to indent objects
   (friebe)
-- Added log context implementation - see pull request #239
-  (mrosoiu)
 - Added support for array shorthand as annotation value - see issue #66
   (friebe)
 - Simplified enum declaration - see pull request #229
@@ -99,6 +97,8 @@ Git commit: ?????
 
 Features
 ~~~~~~~~
+- Added log context implementation - see pull request #239
+  (mrosoiu)
 - Added ability to inspect web configuration - see pull request #238
   (friebe)
 
