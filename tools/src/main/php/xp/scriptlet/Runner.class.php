@@ -13,6 +13,7 @@
     'util.FilesystemPropertySource',
     'util.ResourcePropertySource',
     'util.log.Logger',
+    'util.log.context.EnvironmentAware',
     'rdbms.ConnectionManager',
     'scriptlet.HttpScriptlet',
     'peer.http.HttpConstants'
@@ -168,7 +169,17 @@
 
       $cm= ConnectionManager::getInstance();
       $pm->hasProperties('database') && $cm->configure($pm->getProperties('database'));
-      
+
+      // Setup logger context for all registered log categories
+      foreach (Logger::getInstance()->getCategories() as $category) {
+        if (NULL === ($context= $category->getContext()) || !($context instanceof EnvironmentAware)) continue;
+        $context->setHostname($_SERVER['SERVER_NAME']);
+        $context->setRunner($this->getClassName());
+        $context->setInstance($application->getScriptlet());
+        $context->setResource($url);
+        $context->setParams($_SERVER['QUERY_STRING']);
+      }
+
       // Set environment variables
       foreach ($application->getEnvironment() as $key => $value) {
         $_SERVER[$key]= $this->expand($value);
