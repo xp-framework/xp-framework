@@ -13,6 +13,7 @@
     'io.streams.ConsoleInputStream',
     'io.streams.ConsoleOutputStream',
     'util.log.Logger',
+    'util.log.context.EnvironmentAware',
     'util.PropertyManager',
     'util.FilesystemPropertySource',
     'util.ResourcePropertySource',
@@ -287,6 +288,16 @@
 
       $cm= ConnectionManager::getInstance();
       $pm->hasProperties('database') && $cm->configure($pm->getProperties('database'));
+
+      // Setup logger context for all registered log categories
+      foreach (Logger::getInstance()->getCategories() as $category) {
+        if (NULL === ($context= $category->getContext()) || !($context instanceof EnvironmentAware)) continue;
+        $context->setHostname(System::getProperty('host.name'));
+        $context->setRunner($this->getClassName());
+        $context->setInstance($class->getName());
+        $context->setResource(NULL);
+        $context->setParams($params->string);
+      }
 
       $instance= $class->newInstance();
       $instance->in= self::$in;
