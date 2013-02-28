@@ -17,6 +17,7 @@
   /**
    * REST scriptlet
    *
+   * @test  xp://net.xp_framework.unittest.webservices.rest.srv.RestScriptletTest
    */
   class RestScriptlet extends HttpScriptlet implements Traceable {
     protected 
