@@ -38,7 +38,8 @@
       $this->base= rtrim($base, '/');
 
       // Context class
-      $this->context= XPClass::forName('' === (string)$context ? 'webservices.rest.srv.RestContext' : $context); 
+      $class= XPClass::forName('' === (string)$context ? 'webservices.rest.srv.RestContext' : $context); 
+      $this->context= $class->newInstance();
 
       // Create router
       if ('' === (string)$router) {
@@ -58,6 +59,7 @@
      */
     public function setTrace($cat) {
       $this->cat= $cat;
+      $this->context->setTrace($this->cat);
     }
 
     /**
@@ -72,10 +74,28 @@
     /**
      * Gets the router
      *
-     * @return webservices.rest.srv.AbstractRestRouter router
+     * @return webservices.rest.srv.AbstractRestRouter
      */
     public function getRouter() {
       return $this->router;
+    }
+
+    /**
+     * Sets a context
+     *
+     * @param  webservices.rest.srv.RestContext context
+     */
+    public function setContext(RestContext $context) {
+      $this->context= $context;
+    }
+
+    /**
+     * Gets the context
+     *
+     * @return webservices.rest.srv.RestContext
+     */
+    public function getContext() {
+      return $this->context;
     }
 
     /**
@@ -106,15 +126,14 @@
       );
 
       // Iterate over all applicable routes
+      $ctx= clone $this->context;
       foreach ($this->router->targetsFor(
         $request->getMethod(), 
         $url->getPath(), 
         $request->getHeader('Content-Type', NULL), 
         $accept
       ) as $target) {
-        $context= $this->context->newInstance();
-        $context->setTrace($this->cat);
-        if ($context->process($target, $request, $response)) return;
+        if ($ctx->process($target, $request, $response)) return;
       }
 
       // No route
