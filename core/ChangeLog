@@ -8,6 +8,8 @@ Git commit: ?????
 
 Features
 ~~~~~~~~
+- Added log context implementation - see pull request #239
+  (mrosoiu)
 - Added ability to inspect web configuration - see pull request #238
   (friebe)
 
