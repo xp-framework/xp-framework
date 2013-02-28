@@ -61,6 +61,24 @@
     }
 
     /**
+     * Sets a router
+     *
+     * @param  webservices.rest.srv.AbstractRestRouter router
+     */
+    public function setRouter(AbstractRestRouter $router) {
+      $this->router= $router;
+    }
+
+    /**
+     * Gets the router
+     *
+     * @return webservices.rest.srv.AbstractRestRouter router
+     */
+    public function getRouter() {
+      return $this->router;
+    }
+
+    /**
      * Calculate method to invoke
      *
      * @param   scriptlet.HttpScriptletRequest request 
