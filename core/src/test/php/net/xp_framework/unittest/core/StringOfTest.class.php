@@ -271,5 +271,26 @@
       $this->assertEquals($stringRep, xp::stringOf($object), 'first');
       $this->assertEquals($stringRep, xp::stringOf($object), 'second');
     }
+
+    /**
+     * Test indentations
+     *
+     */
+    #[@test]
+    public function indenting() {
+      $cl= ClassLoader::defineClass('net.xp_framework.unittest.core.StringOfTest_IndentingFixture', 'lang.Object', array(), '{
+        protected $inner= NULL;
+        public function __construct($inner) {
+          $this->inner= $inner;
+        }
+        public function toString() {
+          return "object {\n  ".xp::stringOf($this->inner, "  ")."\n}";
+        }
+      }');
+      $this->assertEquals(
+        "object {\n  object {\n    null\n  }\n}",
+        $cl->newInstance($cl->newInstance(NULL))->toString()
+      );
+    }
   }
 ?>

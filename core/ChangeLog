@@ -68,6 +68,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Changed xp::stringOf() to indent objects
+  (friebe)
 - Added log context implementation - see pull request #239
   (mrosoiu)
 - Added support for array shorthand as annotation value - see issue #66

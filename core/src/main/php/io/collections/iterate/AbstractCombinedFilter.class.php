@@ -46,7 +46,7 @@
     public function toString() {
       $s= $this->getClassName().'('.$this->_size.")@{\n";
       for ($i= 0; $i < $this->_size; $i++) {
-        $s.= '  '.str_replace("\n", "\n  ", $this->list[$i]->toString())."\n";
+        $s.= '  '.xp::stringOf($this->list[$i], '  ')."\n";
       }
       return $s.'}';
     }

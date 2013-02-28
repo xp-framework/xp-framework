@@ -37,7 +37,7 @@
       // Dump configured applications
       $conf= new xp·scriptlet·WebConfiguration(new Properties($webroot.'/etc/web.ini'));
       foreach ($conf->mappedApplications($profile) as $url => $app) {
-        Console::writeLine('  Route<', $url, '*> => ', str_replace("\n", "\n  ", $app->toString()));
+        Console::writeLine('  Route<', $url, '*> => ', xp::stringOf($app, '  '));
       }
 
       Console::writeLine('}');

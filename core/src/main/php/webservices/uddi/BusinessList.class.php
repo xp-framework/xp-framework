@@ -88,7 +88,7 @@
         var_export($this->truncated, 1)
       );
       for ($i= 0; $i < $s; $i++) {
-        $r.= '  '.str_replace("\n", "\n  ", $this->items[$i]->toString())."\n";
+        $r.= '  '.xp::stringOf($this->items[$i], '  ')."\n";
       }
       return $r.= '}';
     }
