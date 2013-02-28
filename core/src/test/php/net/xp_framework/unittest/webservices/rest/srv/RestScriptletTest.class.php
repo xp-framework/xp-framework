@@ -45,5 +45,17 @@
       $fixture->setRouter($router);
       $this->assertEquals($router, $fixture->getRouter());
     }
+
+    /**
+     * Test constructor
+     * 
+     */
+    #[@test]
+    public function context_accessors() {
+      $fixture= $this->newFixture();
+      $context= new RestContext();
+      $fixture->setContext($context);
+      $this->assertEquals($context, $fixture->getContext());
+    }
   }
 ?>
