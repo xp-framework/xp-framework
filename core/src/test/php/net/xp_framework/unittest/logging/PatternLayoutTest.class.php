@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'util.log.layout.PatternLayout'
+    'util.log.layout.PatternLayout',
+    'util.log.context.MappedLogContext'
   );
 
   /**
@@ -86,6 +87,29 @@
       $this->assertEquals(
         '[16:08:04 1214 warn] Hello',
         create(new PatternLayout('[%t %p %l] %m'))->format($this->newLoggingEvent())
+      );
+    }
+
+    /**
+     * Test format token %x
+     *
+     */
+    #[@test]
+    public function tokenContext() {
+      $context= new MappedLogContext();
+      $context->put('key1', 'val1');
+
+      $event= new LoggingEvent(
+        new LogCategory('default', LogLevel::ALL, $context),
+        1258733284,
+        1,
+        LogLevel::INFO,
+        array('Hello')
+      );
+
+      $this->assertEquals(
+        'key1=val1',
+        create(new PatternLayout('%x'))->format($event)
       );
     }
   }

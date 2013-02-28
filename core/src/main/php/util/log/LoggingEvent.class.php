@@ -45,6 +45,15 @@
     }
 
     /**
+     * Gets category context
+     *
+     * @return  util.log.Context
+     */
+    public function getContext() {
+      return $this->category->getContext();
+    }
+
+    /**
      * Gets timestamp
      *
      * @return  int
@@ -88,11 +97,12 @@
      */
     public function toString() {
       return sprintf(
-        '%s(%s @ %s, PID %d) {%s}',
+        '%s(%s @ %s, PID %d) {%s}%s',
         $this->getClassName(),
-        LogLevel::named($this->level),
+        LogLevel::nameOf($this->level),
         date('r', $this->timestamp),
         $this->processId,
+        NULL === ($context= $this->getContext()) ? '' : ' '.$context->toString(),
         xp::stringOf($this->arguments)
       );
     }

@@ -166,5 +166,25 @@ appender.util.log.FileAppender.levels="ERROR|WARN"
         }
       }
     }
+
+    /**
+     * Test configuring the logger with context
+     *
+     */
+    #[@test]
+    public function configureWithContext() {
+      $this->logger->configure(Properties::fromString(trim('
+[context]
+appenders="util.log.FileAppender"
+context="util.log.context.NestedLogContext"
+appender.util.log.FileAppender.params="filename"
+appender.util.log.FileAppender.param.filename="/var/log/xp/default.log"
+      ')));
+
+      with ($cat= $this->logger->getCategory('context')); {
+        $this->assertTrue($cat->hasContext());
+        $this->assertInstanceOf('util.log.context.NestedLogContext', $cat->getContext());
+      }
+    }
   }
 ?>
