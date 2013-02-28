@@ -11,7 +11,7 @@
    *
    * @see http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/NDC.html
    */
-  class NestedLogContext extends Object implements utilÂ·logÂ·Context {
+  class NestedLogContext extends Object implements util·log·Context {
     protected $queue= array();
 
     /**

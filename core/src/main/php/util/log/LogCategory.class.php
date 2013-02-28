@@ -70,7 +70,7 @@
      * @param  util.log.Context context
      * @return void
      */
-    public function setContext(utilÂ·logÂ·Context $context) {
+    public function setContext(util·log·Context $context) {
     	$this->context= $context;
     }
     

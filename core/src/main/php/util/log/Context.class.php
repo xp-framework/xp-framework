@@ -10,7 +10,7 @@
    * Interface to be implemented by all log contexts
    *
    */
-  interface utilÂ·logÂ·Context {
+  interface util·log·Context {
 
     /**
      * Creates the string representation of this log context (to be written
