@@ -18,6 +18,9 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed peer.ftp.server.FtpProtocol port claim strategy when
+  opening passive mode sockets - see pull request #245
+  (kiesel, friebe)
 - Fixed class loading inconsistencies with case-insensitive filesystems.
   See pull request #235.
   (friebe)
