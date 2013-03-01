@@ -57,6 +57,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed peer.ftp.server.FtpProtocol port claim strategy when
+  opening passive mode sockets - see pull request #245
+  (kiesel, friebe)
 - Fixed generic types not allowing argument default values
   (friebe)
 - Fixed issue #132: Namespaced classes not usable in generics
