@@ -16,6 +16,7 @@
     'webservices.rest.srv.DefaultExceptionMapper',
     'util.collections.HashTable',
     'util.PropertyManager',
+    'util.log.Logger',
     'util.log.Traceable'
   );
 
@@ -151,7 +152,7 @@
       $type= isset($inject['type']) ? $inject['type'] : $routine->getParameter(0)->getTypeName();
       switch ($type) {
         case 'util.log.LogCategory': 
-          $args= array($this->cat);
+          $args= array(isset($inject['name']) ? Logger::getInstance()->getCategory($inject['name']) : $this->cat);
           break;
 
         case 'util.Properties': 

@@ -9,6 +9,7 @@
     'scriptlet.HttpScriptletRequest',
     'scriptlet.HttpScriptletResponse',
     'webservices.rest.srv.RestContext',
+    'util.log.Logger',
     'util.log.LogCategory'
   );
   
@@ -372,6 +373,24 @@
       }');
       $cat= new LogCategory('test');
       $this->fixture->setTrace($cat);
+      $this->assertEquals(
+        $cat,
+        $this->fixture->handlerInstanceFor($class)->cat
+      );
+    }
+
+    /**
+     * Test handlerInstanceFor() injection
+     *
+     */
+    #[@test]
+    public function named_logcategory_injection() {
+      $class= ClassLoader::defineClass('AbstractRestRouterTest_NamedLogcategoryInjection', 'lang.Object', array(), '{
+        public $cat;
+        #[@inject(type = "util.log.LogCategory", name = "test")]
+        public function setTrace($cat) { $this->cat= $cat; }
+      }');
+      $cat= Logger::getInstance()->getCategory('test');
       $this->assertEquals(
         $cat,
         $this->fixture->handlerInstanceFor($class)->cat
