@@ -343,6 +343,45 @@
 
     /**
      * Test handlerInstanceFor() injection
+     *
+     */
+    #[@test]
+    public function typename_injection() {
+      $class= ClassLoader::defineClass('AbstractRestRouterTest_TypeNameInjection', 'lang.Object', array(), '{
+        protected $context;
+
+        /** @param webservices.rest.srv.RestContext context */
+        #[@inject]
+        public function __construct($context) { $this->context= $context; }
+        public function equals($cmp) { return $cmp instanceof self && $this->context->equals($cmp->context); }
+      }');
+      $this->assertEquals(
+        $class->newInstance($this->fixture),
+        $this->fixture->handlerInstanceFor($class)
+      );
+    }
+
+    /**
+     * Test handlerInstanceFor() injection
+     *
+     */
+    #[@test]
+    public function typerestriction_injection() {
+      $class= ClassLoader::defineClass('AbstractRestRouterTest_TypeRestrictionInjection', 'lang.Object', array(), '{
+        protected $context;
+
+        #[@inject]
+        public function __construct(RestContext $context) { $this->context= $context; }
+        public function equals($cmp) { return $cmp instanceof self && $this->context->equals($cmp->context); }
+      }');
+      $this->assertEquals(
+        $class->newInstance($this->fixture),
+        $this->fixture->handlerInstanceFor($class)
+      );
+    }
+
+    /**
+     * Test handlerInstanceFor() injection
      * 
      */
     #[@test]
