@@ -49,6 +49,7 @@
      */
     public function rename($target) {
       unset($this->storage->entries[$this->name]);
+      $this->name= $target;
       $this->storage->entries[$target]= $this;
       return TRUE;
     }
