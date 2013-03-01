@@ -26,7 +26,7 @@
      * @param  string uri
      */
     public function setBase($clientId, $uri) {
-      $this->base[$clientId]= $uri;
+      $this->base[$clientId]= rtrim($uri, '/').'/';
     }
 
     /**
@@ -65,7 +65,7 @@
         }
         $o+= $p+ 1;
       } while ($o < $l);
-      return ('/' === $uri{0} ? '/' : '').rtrim($r, '/');
+      return '/'.rtrim($r, '/');
     }
 
     /**
@@ -99,6 +99,7 @@
      */
     public function lookup($clientId, $uri) {
       $qualified= $this->normalize($this->base[$clientId].$uri);
+      // Logger::getInstance()->getCategory()->warn('*** LOOKUP', $qualified, $this->entries[$qualified]);
       return isset($this->entries[$qualified]) ? $this->entries[$qualified] : NULL;
     }
 
