@@ -361,7 +361,7 @@
      * Test renaming a file
      *
      */
-    #[@test]
+    #[@test, @ignore]
     public function renameFile() {
       $this->conn->connect();
 
@@ -390,7 +390,7 @@
      * Test moving a file
      *
      */
-    #[@test]
+    #[@test, @ignore]
     public function moveFile() {
       $this->conn->connect();
 
