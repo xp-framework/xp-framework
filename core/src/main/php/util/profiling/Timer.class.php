@@ -42,6 +42,9 @@
     /**
      * Measure a closure
      *
+     * @see    http://php.net/manual/en/language.types.callable.php
+     * @param  var block a callable
+     * @throws lang.IllegalArgumentException when block is not callable
      */
     public function measure($block) {
       if (!is_callable($block)) {
