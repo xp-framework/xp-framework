@@ -43,7 +43,6 @@
       return $this->base[$clientId];
     }
 
-
     /**
      * Normalize a given URI
      * 
@@ -69,6 +68,17 @@
         $o+= $p+ 1;
       } while ($o < $l);
       return '/'.rtrim($r, '/');
+    }
+
+    /**
+     * Helper method
+     *
+     * @param   string clientId
+     * @param   string uri
+     * @return  string
+     */
+    public function realname($clientId, $uri) {
+      return $this->normalize($this->base[$clientId], $uri);
     }
 
     /**

@@ -38,6 +38,7 @@
      */
     public function delete() {
       unset($this->storage->entries[$this->name]);
+      return TRUE;
     }
 
     /**
@@ -49,6 +50,7 @@
     public function rename($target) {
       unset($this->storage->entries[$this->name]);
       $this->storage->entries[$target]= $this;
+      return TRUE;
     }
 
     /**
