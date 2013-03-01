@@ -65,7 +65,6 @@
         }
       }');
 
-      $args[0]= 'C:\cygwin\home\friebe\devel\xp.thekid.core\debug';
       isset($args[0]) && $protocol->setTrace(Logger::getInstance()
         ->getCategory()
         ->withAppender(new FileAppender($args[0]))
