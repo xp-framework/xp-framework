@@ -149,7 +149,7 @@
       if ($routine->numParameters() < 1) return array();
 
       $inject= $routine->getAnnotation('inject');
-      $type= isset($inject['type']) ? $inject['type'] : $routine->getParameter(0)->getTypeName();
+      $type= isset($inject['type']) ? $inject['type'] : $routine->getParameter(0)->getType()->getName();
       switch ($type) {
         case 'util.log.LogCategory': 
           $args= array(isset($inject['name']) ? Logger::getInstance()->getCategory($inject['name']) : $this->cat);
