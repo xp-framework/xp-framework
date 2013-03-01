@@ -930,11 +930,9 @@
     public function onPasv($socket, $params) {
       $this->mode[$socket->hashCode()]= self::DATA_PASSIVE;
 
-      if ($this->datasock[$socket->hashCode()]) {
-        $port= $this->datasock[$socket->hashCode()]->port;   // Recycle it!
-      } else {      
-        $port= rand(1000, 65536);
-        $this->datasock[$socket->hashCode()]= new ServerSocket($this->server->socket->host, $port);
+      // Open a new server socket if non exists
+      if (!$this->datasock[$socket->hashCode()]) {
+        $this->datasock[$socket->hashCode()]= new ServerSocket($this->server->socket->host, 0);
         try {
           $this->datasock[$socket->hashCode()]->create();
           $this->datasock[$socket->hashCode()]->bind();
@@ -945,7 +943,10 @@
           return;
         }
       }
+
+      // Enter passive
       $this->cat && $this->cat->debug('Passive mode: Data socket is', $this->datasock[$socket->hashCode()]);
+      $port= $this->datasock[$socket->hashCode()]->port;
       $octets= strtr(gethostbyname($this->server->socket->host), '.', ',').','.($port >> 8).','.($port & 0xFF);
       $this->answer($socket, 227, 'Entering passive mode ('.$octets.')');
     }
