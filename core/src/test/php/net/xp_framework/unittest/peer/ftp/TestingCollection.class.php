@@ -142,7 +142,7 @@
       foreach ($this->storage->entries as $name => $entry) {
         if ($cmp === substr($name, 0, strrpos($name, '/')+ 1) && $entry !== $this) $r[]= $entry;
       }
-      // DEBUG Console::writeLine('ls ', $this, ' => ', $r);
+      // Logger::getInstance()->getCategory()->warn('*** LS', $this, $r);
       return $r;
     }
 
