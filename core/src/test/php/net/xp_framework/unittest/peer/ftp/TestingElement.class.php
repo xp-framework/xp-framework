@@ -12,6 +12,24 @@
    * @see   xp://net.xp_framework.unittest.peer.ftp.TestingServer
    */
   class TestingElement extends Object implements StorageElement {
+    protected $name= '';
+    protected $storage= NULL;
+    protected $perm= 0666;
+    protected $contents= '';
+    protected $offset= 0;
+
+    /**
+     * Constructor
+     *
+     * @param  string name
+     * @param  peer.ftp.server.storage.Storage storage
+     * @param  string contents
+     */
+    public function __construct($name, $storage, $contents= '') {
+      $this->name= $name;
+      $this->storage= $storage;
+      $this->contents= $contents;
+    }
 
     /**
      * Deletes an entry
@@ -19,7 +37,7 @@
      * @return  bool TRUE to indicate success
      */
     public function delete() {
-      // TBI
+      unset($this->storage->entries[$this->name]);
     }
 
     /**
@@ -29,7 +47,8 @@
      * @return  bool TRUE to indicate success
      */
     public function rename($target) {
-      // TBI
+      unset($this->storage->entries[$this->name]);
+      $this->storage->entries[$target]= $this;
     }
 
     /**
@@ -38,7 +57,7 @@
      * @return string
      */
     public function getFilename() {
-      // TBI
+      return $this->name;
     }
 
     /**
@@ -47,7 +66,7 @@
      * @return  string
      */
     public function getName() {
-      // TBI
+      return basename($this->name);
     }
 
     /**
@@ -56,7 +75,7 @@
      * @return  string
      */
     public function getOwner() {
-      // TBI
+      return 'test';
     }
 
     /**
@@ -65,7 +84,7 @@
      * @return  string
      */
     public function getGroup() {
-      // TBI
+      return 'testers';
     }
 
     /**
@@ -74,7 +93,7 @@
      * @return  int bytes
      */
     public function getSize() {
-      // TBI
+      return strlen($this->contents);
     }
 
     /**
@@ -83,7 +102,7 @@
      * @return  int unix timestamp
      */
     public function getModifiedStamp() {
-      // TBI
+      return time();
     }
 
     /**
@@ -94,7 +113,7 @@
      * @return  int
      */
     public function getPermissions() {
-      // TBI
+      return $this->perm;
     }
 
     /**
@@ -104,7 +123,7 @@
      * @param   int permissions
      */
     public function setPermissions($permissions) {
-      // TBI
+      $this->perm= $permissions;
     }
 
     /**
@@ -113,7 +132,7 @@
      * @return  int
      */
     public function numLinks() {
-      // TBI
+      return 1;
     }
 
     /**
@@ -122,7 +141,7 @@
      * @param   string mode of of the SE_* constants
      */
     public function open($mode) {
-      // TBI
+      $this->offset= 0;
     }
 
     /**
@@ -131,7 +150,9 @@
      * @return  string
      */
     public function read() {
-      // TBI
+      $chunk= substr($this->content, $this->offset, 4096);
+      $this->offset+= strlen($chunk);
+      return $chunk;
     }
 
     /**
@@ -140,7 +161,7 @@
      * @param   string buf
      */
     public function write($buf) {
-      // TBI
+      $this->content.= $buf;
     }
 
     /**
@@ -148,7 +169,16 @@
      *
      */
     public function close() {
-      // TBI
+      $this->offset= 0;
+    }
+
+    /**
+     * Creates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->name.', '.strlen($this->content).' bytes)';
     }
   }
 ?>

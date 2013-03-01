@@ -42,8 +42,15 @@
      */
     public static function main(array $args) {
       $stor= new TestingStorage();
-      $stor->entries['.trash']= new TestingCollection('.trash', $stor);
-      $stor->entries['.trash/do-not-remove.txt']= new TestingElement('.trash/do-not-remove.txt', $stor);
+      $stor->entries['/']= new TestingCollection('/', $stor);
+      $stor->entries['/.trash']= new TestingCollection('/.trash', $stor);
+      $stor->entries['/.trash/do-not-remove.txt']= new TestingElement('/.trash/do-not-remove.txt', $stor);
+      $stor->entries['/htdocs']= new TestingCollection('/htdocs', $stor);
+      $stor->entries['/htdocs/file with whitespaces.html']= new TestingElement('/htdocs/file with whitespaces.html', $stor);
+      $stor->entries['/htdocs/index.html']= new TestingElement('/htdocs/index.html', $stor);
+      $stor->entries['/outer']= new TestingCollection('/outer', $stor);
+      $stor->entries['/outer/inner']= new TestingCollection('/outer/inner', $stor);
+      $stor->entries['/outer/inner/index.html']= new TestingElement('/outer/inner/index.html', $stor);
 
       $auth= newinstance('lang.Object', array(), '{
         public function authenticate($user, $password) {
@@ -58,6 +65,7 @@
         }
       }');
 
+      $args[0]= 'C:\cygwin\home\friebe\devel\xp.thekid.core\debug';
       isset($args[0]) && $protocol->setTrace(Logger::getInstance()
         ->getCategory()
         ->withAppender(new FileAppender($args[0]))
