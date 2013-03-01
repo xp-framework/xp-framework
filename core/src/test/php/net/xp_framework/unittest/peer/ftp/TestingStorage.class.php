@@ -102,14 +102,14 @@
       $qualified= $this->normalize($this->base[$clientId], $uri);
       switch ($type) {
         case ST_ELEMENT:
-          $this->entries[$qualified]= new TestingElement($qualified, $this);
+          return new TestingElement($qualified, $this);
           break;
 
         case ST_COLLECTION:
-          $this->entries[$qualified]= new TestingCollection($qualified, $this);
+          return new TestingCollection($qualified, $this);
           break;
       }
-      return $this->entries[$qualified];
+      return xp::null();
     }
 
     /**
@@ -135,15 +135,7 @@
      */
     public function create($clientId, $uri, $type) {
       $qualified= $this->normalize($this->base[$clientId], $uri);
-      switch ($type) {
-        case ST_ELEMENT:
-          $this->entries[$qualified]= new TestingElement($qualified, $this);
-          break;
-
-        case ST_COLLECTION:
-          $this->entries[$qualified]= new TestingCollection($qualified, $this);
-          break;
-      }
+      $this->entries[$qualified]= $this->createEntry($clientId, $uri, $type);
       return $this->entries[$qualified];
     }
   }
