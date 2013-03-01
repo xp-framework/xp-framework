@@ -26,7 +26,8 @@
      * @param  string uri
      */
     public function setBase($clientId, $uri) {
-      $this->base[$clientId]= rtrim($uri, '/').'/';
+      $this->base[$clientId]= $this->normalize($this->base[$clientId], $uri);
+      return $this->base[$clientId];
     }
 
     /**
@@ -46,10 +47,12 @@
     /**
      * Normalize a given URI
      *
+     * @param   string base
      * @param   string uri
      * @return  string
      */
-    protected function normalize($uri) {
+    protected function normalize($base, $uri) {
+      if ('/' !== $uri{0}) $uri= $base.'/'.$uri;
       $r= '';
       $o= 0;
       $l= strlen($uri);
@@ -77,7 +80,7 @@
      * @return peer.ftp.server.storage.StorageEntry
      */
     public function createEntry($clientId, $uri, $type) {
-      $qualified= $this->normalize($this->base[$clientId].$uri);
+      $qualified= $this->normalize($this->base[$clientId], $uri);
       switch ($type) {
         case ST_ELEMENT:
           $this->entries[$qualified]= new TestingElement($qualified, $this);
@@ -98,7 +101,7 @@
      * @return peer.ftp.server.storage.StorageEntry
      */
     public function lookup($clientId, $uri) {
-      $qualified= $this->normalize($this->base[$clientId].$uri);
+      $qualified= $this->normalize($this->base[$clientId], $uri);
       // Logger::getInstance()->getCategory()->warn('*** LOOKUP', $qualified, $this->entries[$qualified]);
       return isset($this->entries[$qualified]) ? $this->entries[$qualified] : NULL;
     }
@@ -112,7 +115,7 @@
      * @return peer.ftp.server.storage.StorageEntry
      */
     public function create($clientId, $uri, $type) {
-      $qualified= $this->normalize($this->base[$clientId].$uri);
+      $qualified= $this->normalize($this->base[$clientId], $uri);
       switch ($type) {
         case ST_ELEMENT:
           $this->entries[$qualified]= new TestingElement($qualified, $this);
