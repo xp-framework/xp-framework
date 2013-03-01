@@ -40,12 +40,34 @@
      *
      */
     #[@test]
-    public function elapsedTimeGreaterThanZero() {
+    public function elapsedTimeGreaterThanZeroUsingStartAndStop() {
       $this->fixture->start();
       usleep(100 * 1000);
       $this->fixture->stop();
       $elapsed= $this->fixture->elapsedTime();
       $this->assertTrue($elapsed > 0.0, 'Elapsed time should be greater than zero');
+    }
+
+    /**
+     * Tests elapsed time after 100 milliseconds
+     *
+     */
+    #[@test]
+    public function elapsedTimeGreaterThanZeroUsingMeasure() {
+      $this->fixture->measure(function() {
+        usleep(100 * 1000);
+      });
+      $elapsed= $this->fixture->elapsedTime();
+      $this->assertTrue($elapsed > 0.0, 'Elapsed time should be greater than zero');
+    }
+
+    /**
+     * Tests measure()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function notCallable() {
+      $this->fixture->measure('@not-callable@');
     }
   }
 ?>

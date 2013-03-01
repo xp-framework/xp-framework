@@ -38,7 +38,21 @@
     public function stop() {
       $this->stop= microtime(TRUE);
     }
-    
+
+    /**
+     * Measure a closure
+     *
+     */
+    public function measure($block) {
+      if (!is_callable($block)) {
+        throw new IllegalArgumentException('Cannot call '.xp::stringOf($block));
+      }
+
+      $this->start= microtime(TRUE);
+      $block();
+      $this->stop= microtime(TRUE);
+    }
+
     /**
      * Retrieve elapsed time
      *
