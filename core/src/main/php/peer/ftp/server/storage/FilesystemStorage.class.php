@@ -88,7 +88,9 @@
         DIRECTORY_SEPARATOR
       );
       
-      return $this->base[$clientId];
+      // Return base directory for a given client - all
+      // directories returned should use forward slashes!
+      return strtr($this->base[$clientId], DIRECTORY_SEPARATOR, '/');
     }
     
     /**
