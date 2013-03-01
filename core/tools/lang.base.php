@@ -120,7 +120,7 @@
         $protect[(string)$arg->hashCode()]= TRUE;
         $s= $arg->toString();
         unset($protect[(string)$arg->hashCode()]);
-        return $s;
+        return $indent ? str_replace("\n", "\n".$indent, $s) : $s;
       } else if (is_array($arg)) {
         $ser= serialize($arg);
         if (isset($protect[$ser])) return '->{:recursion:}';

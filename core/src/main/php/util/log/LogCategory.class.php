@@ -7,6 +7,7 @@
   uses(
     'util.log.LogLevel', 
     'util.log.Appender', 
+    'util.log.Context',
     'util.log.LoggingEvent', 
     'util.log.layout.DefaultLayout'
   );
@@ -40,6 +41,7 @@
   class LogCategory extends Object {
     protected static $DEFAULT_LAYOUT= NULL;
     protected $_appenders= array();
+    protected $context= NULL;
 
     public $flags= 0;
     public $identifier= '';
@@ -53,11 +55,41 @@
      *
      * @param   string identifier
      * @param   int flags (defaults to all)
+     * @param   util.log.Context context
      */
-    public function __construct($identifier, $flags= LogLevel::ALL) {
+    public function __construct($identifier, $flags= LogLevel::ALL, $context= NULL) {
       $this->flags= $flags;
       $this->identifier= $identifier;
+      $this->context= $context;
       $this->_appenders= array();
+    }
+
+    /**
+     * Setter for context
+     *
+     * @param  util.log.Context context
+     * @return void
+     */
+    public function setContext(util·log·Context $context) {
+    	$this->context= $context;
+    }
+    
+    /**
+     * Retrieves whether this log category has a context
+     *
+     * @return bool
+     */
+    public function hasContext() {
+    	return NULL !== $this->context;
+    }
+    
+    /**
+     * Getter for context
+     *
+     * @return util.log.Context
+     */
+    public function getContext() {
+    	return $this->context;
     }
 
     /**

@@ -23,6 +23,7 @@
    *   <li>%p - Process ID</li>
    *   <li>%% - A literal percent sign (%)</li>
    *   <li>%n - A line break</li>
+   *   <li>%x - Context information, if available</li>
    * </ul>
    *
    * @test    xp://net.xp_framework.unittest.logging.PatternLayoutTest
@@ -51,7 +52,7 @@
               break;
             }
             default: {    // Any other character - verify it's supported
-              if (!strspn($format{$i}, 'mclLtp')) {
+              if (!strspn($format{$i}, 'mclLtpx')) {
                 throw new IllegalArgumentException('Unknown format token "'.$format{$i}.'"');
               }
               $this->format[]= '%'.$format{$i};
@@ -91,6 +92,7 @@
           case '%l': $out.= strtolower(LogLevel::nameOf($event->getLevel())); break;
           case '%L': $out.= strtoupper(LogLevel::nameOf($event->getLevel())); break;
           case '%p': $out.= $event->getProcessId(); break;
+          case '%x': $out.= NULL == ($context= $event->getContext()) ? '' : $context->format(); break;
           default: $out.= $token;
         }
       }

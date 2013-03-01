@@ -56,9 +56,10 @@
    *   </rss>
    * </xmp>
    *
-   * @see http://www.w3.org/RDF/
-   * @see http://dublincore.org/2001/08/14/dces#
-   * @see http://dublincore.org/2001/08/14/dces_deDE
+   * @see   http://www.w3.org/RDF/
+   * @see   http://dublincore.org/2001/08/14/dces#
+   * @see   http://dublincore.org/2001/08/14/dces_deDE
+   * @test  xp://net.xp_framework.unittest.xml.RDFNewsFeedTest
    */
   class RDFNewsFeed extends Tree {
     public 
@@ -164,8 +165,8 @@
      * @param   string str
      * @return  xml.rdf.RDFNewsfeed
      */
-    public static function fromString($str) {
-      return parent::fromString($str, __CLASS__);
+    public static function fromString($str, $c= __CLASS__) {
+      return parent::fromString($str, $c);
     }
 
     /**
@@ -174,8 +175,8 @@
      * @param   io.File file
      * @return  xml.rdf.RDFNewsfeed
      */
-    public static function fromFile($file) {
-      return parent::fromFile($file, __CLASS__);
+    public static function fromFile($file, $c= __CLASS__) {
+      return parent::fromFile($file, $c);
     }
     
     /**

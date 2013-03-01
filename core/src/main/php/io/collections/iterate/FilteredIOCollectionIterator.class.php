@@ -63,7 +63,7 @@
      * @return  string
      */
     public function toString() {
-      return parent::toString()."@{\n  ".str_replace("\n", "\n  ", $this->filter->toString())."\n}";
+      return parent::toString()."@{\n  ".xp::stringOf($this->filter, '  ')."\n}";
     }
   }
 ?>

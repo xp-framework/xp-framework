@@ -74,7 +74,7 @@
     public function toString() {
       $r= $this->getClassName().'@(class= '.$this->className.") {\n";
       for ($i= 0; $i < $this->methods->length; $i++) {
-        $r.= '  - '.str_replace("\n", "\n  ", $this->methods[$i]->toString())."\n";
+        $r.= '  - '.xp::stringOf($this->methods[$i], '  ')."\n";
       }
       return $r.'}';
     }    

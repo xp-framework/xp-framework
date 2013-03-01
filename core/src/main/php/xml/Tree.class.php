@@ -284,7 +284,7 @@
         $this->getClassName(),
         $this->version,
         $this->encoding,
-        str_replace("\n", "\n  ", xp::stringOf($this->root))
+        xp::stringOf($this->root, '  ')
       );
     }
   } 
