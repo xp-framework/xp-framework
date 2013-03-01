@@ -150,7 +150,8 @@
      * @return  string
      */
     public function read() {
-      $chunk= substr($this->content, $this->offset, 4096);
+      if ($this->offset >= strlen($this->contents)) return FALSE;
+      $chunk= substr($this->contents, $this->offset, 4096);
       $this->offset+= strlen($chunk);
       return $chunk;
     }
@@ -161,7 +162,7 @@
      * @param   string buf
      */
     public function write($buf) {
-      $this->content.= $buf;
+      $this->contents.= $buf;
     }
     
     /**
