@@ -36,7 +36,36 @@
      * @return string uri
      */
     public function getBase($clientId) {
+      if (!isset($this->base[$clientId])) {
+        $this->base[$clientId]= '/';
+      }
       return $this->base[$clientId];
+    }
+
+
+    /**
+     * Normalize a given URI
+     * 
+     * @param   string uri
+     * @return  string
+     */
+    protected function normalize($uri) {
+      $r= '';
+      $o= 0;
+      $l= strlen($uri);
+      do {
+        $p= strcspn($uri, '/', $o);
+        $element= substr($uri, $o, $p);
+        if ('' === $element || '.' === $element) {
+          // NOOP
+        } else if ('..' === $element) {
+          $r= substr($r, 0, strrpos($r, '/', -2)).'/';
+        } else {
+          $r.= $element.'/';
+        }
+        $o+= $p+ 1;
+      } while ($o < $l);
+      return ('/' === $uri{0} ? '/' : '').rtrim($r, '/');
     }
 
     /**
@@ -48,10 +77,17 @@
      * @return peer.ftp.server.storage.StorageEntry 
      */
     public function createEntry($clientId, $uri, $type) {
-      $qualified= $this->base[$clientId].$uri;
+      $qualified= $this->normalize($this->base[$clientId].$uri);
+      switch ($type) {
+        case ST_ELEMENT:
+          $this->entries[$qualified]= new TestingElement($qualified, $this);
+          break;
 
-      Console::writeLine('CreateEntry ', $qualified);
-      return NULL;
+        case ST_COLLECTION:
+          $this->entries[$qualified]= new TestingCollection($qualified, $this);
+          break;
+      }
+      return $this->entries[$qualified];
     }
 
     /**
@@ -62,7 +98,7 @@
      * @return peer.ftp.server.storage.StorageEntry 
      */
     public function lookup($clientId, $uri) {
-      $qualified= $this->base[$clientId].$uri;
+      $qualified= $this->normalize($this->base[$clientId].$uri);
       return isset($this->entries[$qualified]) ? $this->entries[$qualified] : NULL;
     }
 
@@ -75,8 +111,7 @@
      * @return peer.ftp.server.storage.StorageEntry 
      */
     public function create($clientId, $uri, $type) {
-      $qualified= $this->base[$clientId].$uri;
-
+      $qualified= $this->normalize($this->base[$clientId].$uri);
       switch ($type) {
         case ST_ELEMENT:
           $this->entries[$qualified]= new TestingElement($qualified, $this);

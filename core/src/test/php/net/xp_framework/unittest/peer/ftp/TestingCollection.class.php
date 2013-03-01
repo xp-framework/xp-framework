@@ -12,6 +12,20 @@
    * @see   xp://net.xp_framework.unittest.peer.ftp.TestingServer
    */
   class TestingCollection extends Object implements StorageCollection {
+    protected $name= '';
+    protected $storage= NULL;
+    protected $perm= 040777;        // drwxrwxrx
+
+    /**
+     * Constructor
+     *
+     * @param  string name
+     * @param  peer.ftp.server.storage.Storage storage
+     */
+    public function __construct($name, $storage) {
+      $this->name= $name;
+      $this->storage= $storage;
+    }
 
     /**
      * Deletes an entry
@@ -19,7 +33,7 @@
      * @return  bool TRUE to indicate success
      */
     public function delete() {
-      // TBI
+      unset($this->storage->entries[$this->name]);
     }
 
     /**
@@ -29,7 +43,8 @@
      * @return  bool TRUE to indicate success
      */
     public function rename($target) {
-      // TBI
+      unset($this->storage->entries[$this->name]);
+      $this->storage->entries[$target]= $this;
     }
 
     /**
@@ -38,7 +53,7 @@
      * @return string
      */
     public function getFilename() {
-      // TBI
+      return $this->name;
     }
 
     /**
@@ -47,7 +62,7 @@
      * @return  string
      */  
     public function getName() {
-      // TBI
+      return basename($this->name);
     }
     
     /**
@@ -56,7 +71,7 @@
      * @return  string
      */  
     public function getOwner() {
-      // TBI
+      return 'test';
     }
 
     /**
@@ -65,7 +80,7 @@
      * @return  string
      */  
     public function getGroup() {
-      // TBI
+      return 'testers';
     }
     
     /**
@@ -74,7 +89,7 @@
      * @return  int bytes
      */  
     public function getSize() {
-      // TBI
+      return 0;
     }
 
     /**
@@ -83,7 +98,7 @@
      * @return  int unix timestamp
      */  
     public function getModifiedStamp() {
-      // TBI
+      return time();
     }
     
     /**
@@ -94,7 +109,7 @@
      * @return  int
      */  
     public function getPermissions() {
-      // TBI
+      return $this->perm;
     }
 
     /**
@@ -104,7 +119,7 @@
      * @param   int permissions
      */  
     public function setPermissions($permissions) {
-      // TBI
+      $this->perm= $permissions;
     }
 
     /**
@@ -113,7 +128,7 @@
      * @return  int
      */  
     public function numLinks() {
-      // TBI
+      return 1;
     }
 
     /**
@@ -122,8 +137,22 @@
      * @return  peer.ftp.server.storage.StorageEntry[]
      */
     public function elements() {
-      
+      $cmp= rtrim($this->name, '/').'/';
+      $r= array(new self($cmp.'.', $this->storage), new self($cmp.'..', $this->storage));
+      foreach ($this->storage->entries as $name => $entry) {
+        if ($cmp === substr($name, 0, strrpos($name, '/')+ 1) && $entry !== $this) $r[]= $entry;
+      }
+      // DEBUG Console::writeLine('ls ', $this, ' => ', $r);
+      return $r;
     }
 
+    /**
+     * Creates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->name.')';
+    }
   }
 ?>
