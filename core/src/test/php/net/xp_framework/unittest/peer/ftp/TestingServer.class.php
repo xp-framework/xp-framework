@@ -33,6 +33,7 @@
    * @see   xp://net.xp_framework.unittest.peer.ftp.IntegrationTest
    */
   class net·xp_framework·unittest·peer·ftp·TestingServer extends Object {
+    const FTPROOT= 'net.xp_framework.unittest.peer.ftp.ftproot';
 
     /**
      * Start server
@@ -40,7 +41,8 @@
      * @param   string[] args
      */
     public static function main(array $args) {
-      $stor= new FilesystemStorage(dirname(__FILE__).DIRECTORY_SEPARATOR.'ftproot'.DIRECTORY_SEPARATOR);
+      $cl= ClassLoader::getDefault()->findPackage(self::FTPROOT);
+      $stor= new FilesystemStorage($cl->path.DIRECTORY_SEPARATOR.strtr(self::FTPROOT, '.', DIRECTORY_SEPARATOR));
 
       $auth= newinstance('lang.Object', array(), '{
         public function authenticate($user, $password) {
