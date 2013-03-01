@@ -31,6 +31,15 @@
     }
 
     /**
+     * Adds a storage entry
+     *
+     * @param   peer.ftp.server.storage.StorageEntry $e
+     */
+    public function add(StorageEntry $e) {
+      $this->entries[$e->getFileName()]= $e;
+    }
+
+    /**
      * Gets base
      *
      * @param  int clientId

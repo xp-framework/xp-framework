@@ -42,15 +42,15 @@
      */
     public static function main(array $args) {
       $stor= new TestingStorage();
-      $stor->entries['/']= new TestingCollection('/', $stor);
-      $stor->entries['/.trash']= new TestingCollection('/.trash', $stor);
-      $stor->entries['/.trash/do-not-remove.txt']= new TestingElement('/.trash/do-not-remove.txt', $stor);
-      $stor->entries['/htdocs']= new TestingCollection('/htdocs', $stor);
-      $stor->entries['/htdocs/file with whitespaces.html']= new TestingElement('/htdocs/file with whitespaces.html', $stor);
-      $stor->entries['/htdocs/index.html']= new TestingElement('/htdocs/index.html', $stor, "<html/>\n");
-      $stor->entries['/outer']= new TestingCollection('/outer', $stor);
-      $stor->entries['/outer/inner']= new TestingCollection('/outer/inner', $stor);
-      $stor->entries['/outer/inner/index.html']= new TestingElement('/outer/inner/index.html', $stor);
+      $stor->add(new TestingCollection('/', $stor));
+      $stor->add(new TestingCollection('/.trash', $stor));
+      $stor->add(new TestingElement('/.trash/do-not-remove.txt', $stor));
+      $stor->add(new TestingCollection('/htdocs', $stor));
+      $stor->add(new TestingElement('/htdocs/file with whitespaces.html', $stor));
+      $stor->add(new TestingElement('/htdocs/index.html', $stor, "<html/>\n"));
+      $stor->add(new TestingCollection('/outer', $stor));
+      $stor->add(new TestingCollection('/outer/inner', $stor));
+      $stor->add(new TestingElement('/outer/inner/index.html', $stor));
 
       $auth= newinstance('lang.Object', array(), '{
         public function authenticate($user, $password) {
