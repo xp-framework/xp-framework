@@ -8,7 +8,8 @@
     'unittest.TestCase',
     'scriptlet.HttpScriptletRequest',
     'scriptlet.HttpScriptletResponse',
-    'webservices.rest.srv.RestContext'
+    'webservices.rest.srv.RestContext',
+    'util.log.LogCategory'
   );
   
   /**
@@ -361,6 +362,25 @@
     /**
      * Test handlerInstanceFor() injection
      * 
+     */
+    #[@test]
+    public function unnamed_logcategory_injection() {
+      $class= ClassLoader::defineClass('AbstractRestRouterTest_UnnamedLogcategoryInjection', 'lang.Object', array(), '{
+        public $cat;
+        #[@inject(type = "util.log.LogCategory")]
+        public function setTrace($cat) { $this->cat= $cat; }
+      }');
+      $cat= new LogCategory('test');
+      $this->fixture->setTrace($cat);
+      $this->assertEquals(
+        $cat,
+        $this->fixture->handlerInstanceFor($class)->cat
+      );
+    }
+
+    /**
+     * Test handlerInstanceFor() injection
+     *
      */
     #[@test, @expect(class = 'lang.reflect.TargetInvocationException', withMessage= '/InjectionError::setTrace/')]
     public function injection_error() {
