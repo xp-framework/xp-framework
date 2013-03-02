@@ -57,9 +57,6 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
-- Fixed peer.ftp.server.FtpProtocol port claim strategy when
-  opening passive mode sockets - see pull request #245
-  (kiesel, friebe)
 - Fixed generic types not allowing argument default values
   (friebe)
 - Fixed issue #132: Namespaced classes not usable in generics
@@ -110,6 +107,12 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Changed FTP integration tests to use in-memory storage and reinstate them
+  in the test configuration. See pull request #246.
+  (friebe)
+- Fixed peer.ftp.server.FtpProtocol port claim strategy when
+  opening passive mode sockets - see pull request #245
+  (kiesel, friebe)
 - Fixed class loading inconsistencies with case-insensitive filesystems.
   See pull request #235.
   (friebe)
