@@ -18,6 +18,9 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Changed FTP integration tests to use in-memory storage and reinstate them
+  in the test configuration. See pull request #246.
+  (friebe)
 - Fixed peer.ftp.server.FtpProtocol port claim strategy when
   opening passive mode sockets - see pull request #245
   (kiesel, friebe)
