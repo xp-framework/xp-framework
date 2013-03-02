@@ -12,7 +12,7 @@
     'util.log.FileAppender',
     'peer.server.Server',
     'peer.ftp.server.FtpProtocol',
-    'peer.ftp.server.storage.FilesystemStorage'
+    'net.xp_framework.unittest.peer.ftp.TestingStorage'
   );
   
   /**
@@ -41,8 +41,16 @@
      * @param   string[] args
      */
     public static function main(array $args) {
-      $cl= ClassLoader::getDefault()->findPackage(self::FTPROOT);
-      $stor= new FilesystemStorage($cl->path.DIRECTORY_SEPARATOR.strtr(self::FTPROOT, '.', DIRECTORY_SEPARATOR));
+      $stor= new TestingStorage();
+      $stor->add(new TestingCollection('/', $stor));
+      $stor->add(new TestingCollection('/.trash', $stor));
+      $stor->add(new TestingElement('/.trash/do-not-remove.txt', $stor));
+      $stor->add(new TestingCollection('/htdocs', $stor));
+      $stor->add(new TestingElement('/htdocs/file with whitespaces.html', $stor));
+      $stor->add(new TestingElement('/htdocs/index.html', $stor, "<html/>\n"));
+      $stor->add(new TestingCollection('/outer', $stor));
+      $stor->add(new TestingCollection('/outer/inner', $stor));
+      $stor->add(new TestingElement('/outer/inner/index.html', $stor));
 
       $auth= newinstance('lang.Object', array(), '{
         public function authenticate($user, $password) {

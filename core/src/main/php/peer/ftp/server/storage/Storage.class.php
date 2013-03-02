@@ -38,6 +38,15 @@
     public function getBase($clientId);
 
     /**
+     * Helper method
+     *
+     * @param   string clientId
+     * @param   string uri
+     * @return  string
+     */
+    public function realname($clientId, $uri);
+
+    /**
      * Looks up a element. Returns a StorageCollection, a StorageElement 
      * or NULL in case it nothing is found.
      *
