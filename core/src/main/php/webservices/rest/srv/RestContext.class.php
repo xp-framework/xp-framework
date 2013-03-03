@@ -118,7 +118,7 @@
      * @param  lang.Type type 
      */
     protected static function isAssignableFrom($self, $t) {
-      if ($self instanceof XPClass) {
+      if ($self instanceof XPClass && $t instanceof XPClass) {
         return $self->equals($t) || $t->isSubclassOf($self);
       } else {
         return $self->equals($t);
