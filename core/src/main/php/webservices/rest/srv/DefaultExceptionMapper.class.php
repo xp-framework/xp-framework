@@ -9,9 +9,6 @@
   /**
    * Default exception mapping
    *
-   * <code>
-   *   { "message" : "Exception message" }
-   * </code>
    */
   class DefaultExceptionMapper extends Object implements ExceptionMapper {
     protected $statusCode;
@@ -29,9 +26,10 @@
      * Maps an exception
      *
      * @param  lang.Throwable t
+     * @param  webservices.rest.srv.RestContext ctx
      * @return webservices.rest.srv.Response
      */
-    public function asResponse($t) {
+    public function asResponse($t, RestContext $ctx) {
       return Response::error($this->statusCode)->withPayload(
         new Payload(array('message' => $t->getMessage()))
       );

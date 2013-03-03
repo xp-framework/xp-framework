@@ -103,7 +103,6 @@
       );
     }
 
-
     /**
      * Fixture for handle() tests
      *
@@ -313,7 +312,7 @@
     public function handle_exception_with_mapper() {
       $t= new Throwable('Test');
       $this->fixture->addExceptionMapping('lang.Throwable', newinstance('webservices.rest.srv.ExceptionMapper', array(), '{
-        public function asResponse($t) {
+        public function asResponse($t, RestContext $ctx) {
           return Response::error(500)->withPayload(array("message" => $t->getMessage()));
         }
       }'));
