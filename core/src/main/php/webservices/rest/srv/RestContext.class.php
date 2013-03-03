@@ -14,6 +14,7 @@
     'webservices.rest.srv.ExceptionMapper',
     'webservices.rest.srv.ParamReader',
     'webservices.rest.srv.DefaultExceptionMapper',
+    'webservices.rest.srv.DefaultExceptionMarshaller',
     'util.collections.HashTable',
     'util.PropertyManager',
     'util.log.Logger',
@@ -48,6 +49,8 @@
       $this->addExceptionMapping('lang.ElementNotFoundException', new DefaultExceptionMapper(404));
       $this->addExceptionMapping('lang.MethodNotImplementedException', new DefaultExceptionMapper(501));
       $this->addExceptionMapping('lang.FormatException', new DefaultExceptionMapper(422));
+
+      $this->addMarshaller('lang.Throwable', new DefaultExceptionMarshaller());
     }
 
     /**
