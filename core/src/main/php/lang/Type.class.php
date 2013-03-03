@@ -193,5 +193,15 @@
     public function isInstance($obj) {
       return self::$VAR === $this;      // VAR is always true, VOID never
     }
+
+    /**
+     * Tests whether this type is assignable from another type
+     *
+     * @param   var type
+     * @return  bool
+     */
+    public function isAssignableFrom($type) {
+      return self::$VAR === $this;      // VAR is always assignable, VOID never
+    }
   }
 ?>
