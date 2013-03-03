@@ -82,7 +82,7 @@
       // See if we can find an exception mapper
       foreach ($this->mappers->keys() as $type) {
         if (!$type->isInstance($t)) continue;
-        $r= $this->mappers[$type]->asResponse($t);
+        $r= $this->mappers[$type]->asResponse($t, $this);
         $r->payload->properties= $properties;
         return $r;
       }
