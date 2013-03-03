@@ -14,6 +14,7 @@
     'webservices.rest.srv.ExceptionMapper',
     'webservices.rest.srv.ParamReader',
     'webservices.rest.srv.DefaultExceptionMapper',
+    'webservices.rest.srv.DefaultExceptionMarshaller',
     'util.collections.HashTable',
     'util.PropertyManager',
     'util.log.Logger',
@@ -48,6 +49,8 @@
       $this->addExceptionMapping('lang.ElementNotFoundException', new DefaultExceptionMapper(404));
       $this->addExceptionMapping('lang.MethodNotImplementedException', new DefaultExceptionMapper(501));
       $this->addExceptionMapping('lang.FormatException', new DefaultExceptionMapper(422));
+
+      $this->addMarshaller('lang.Throwable', new DefaultExceptionMarshaller());
     }
 
     /**
@@ -67,7 +70,21 @@
      * @param  webservices.rest.TypeMarshaller m
      */
     public function addMarshaller($type, TypeMarshaller $m) {
-      $this->marshallers[$type instanceof Type ? $type : Type::forName($type)]= $m;
+      $keys= $this->marshallers->keys();
+
+      // Add marshaller
+      $t= $type instanceof Type ? $type : Type::forName($type);
+      $this->marshallers[$t]= $m;
+
+      // Iterate over map keys before having altered the map, checking for
+      // any marshallers less specific than the added marshaller, and move
+      // them to the end. E.g. if a marshaller for Dates is added, it needs 
+      // to be in the map *before* the one for for Objects!
+      foreach ($keys as $type) {
+        if ($type->isAssignableFrom($t)) {
+          $this->marshallers->put($type, $this->marshallers->remove($type));
+        }
+      }
     }
 
     /**
@@ -82,14 +99,14 @@
       // See if we can find an exception mapper
       foreach ($this->mappers->keys() as $type) {
         if (!$type->isInstance($t)) continue;
-        $r= $this->mappers[$type]->asResponse($t);
+        $r= $this->mappers[$type]->asResponse($t, $this);
         $r->payload->properties= $properties;
         return $r;
       }
 
       // Default: Use error 500 ("Internal Server Error") and the exception message
       return Response::error(HttpConstants::STATUS_INTERNAL_SERVER_ERROR)
-        ->withPayload(new Payload(array('message' => $t->getMessage()), $properties))
+        ->withPayload($this->marshal(new Payload($t), $properties))
       ;
     }
 
@@ -118,7 +135,7 @@
      * @param  lang.Type type 
      */
     protected static function isAssignableFrom($self, $t) {
-      if ($self instanceof XPClass) {
+      if ($self instanceof XPClass && $t instanceof XPClass) {
         return $self->equals($t) || $t->isSubclassOf($self);
       } else {
         return $self->equals($t);
