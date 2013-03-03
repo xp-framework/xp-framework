@@ -70,7 +70,17 @@
      * @param  webservices.rest.TypeMarshaller m
      */
     public function addMarshaller($type, TypeMarshaller $m) {
-      $this->marshallers[$type instanceof Type ? $type : Type::forName($type)]= $m;
+      $t= $type instanceof Type ? $type : Type::forName($type);
+      $add= new HashTable();
+      foreach ($this->marshallers->keys() as $type) {
+        if ($type->isAssignableFrom($t)) {
+          $add[$type]= $this->marshallers->remove($type);
+        }
+      }
+      $this->marshallers[$t]= $m;
+      foreach ($add->keys() as $type) {
+        $this->marshallers[$type]= $add->get($type);
+      }
     }
 
     /**
