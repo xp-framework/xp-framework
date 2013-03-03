@@ -77,7 +77,47 @@
       $this->assertFalse($this->class->isSubclassOf(XPClass::forName('util.Date')));
       $this->assertFalse($this->class->isSubclassOf(XPClass::forName('net.xp_framework.unittest.reflection.TestClass')));
     }
-   
+
+    /**
+     * Tests assignability
+     *
+     * @see     xp://lang.XPClass#isAssignableFrom
+     */
+    #[@test]
+    public function selfIsAssignableFromFixture() {
+      $this->assertTrue($this->class->isAssignableFrom($this->class));
+    }
+
+    /**
+     * Tests assignability
+     *
+     * @see     xp://lang.XPClass#isAssignableFrom
+     */
+    #[@test]
+    public function objectIsAssignableFromFixture() {
+      $this->assertTrue(XPClass::forName('lang.Object')->isAssignableFrom($this->class));
+    }
+
+    /**
+     * Tests assignability
+     *
+     * @see     xp://lang.XPClass#isAssignableFrom
+     */
+    #[@test]
+    public function parentIsAssignableFromFixture() {
+      $this->assertTrue(XPClass::forName('net.xp_framework.unittest.reflection.AbstractTestClass')->isAssignableFrom($this->class));
+    }
+
+    /**
+     * Tests assignability
+     *
+     * @see     xp://lang.XPClass#isAssignableFrom
+     */
+    #[@test]
+    public function thisIsNotAssignableFromFixture() {
+      $this->assertFalse($this->getClass()->isAssignableFrom($this->class));
+    }
+
     /**
      * Tests the parent class
      *

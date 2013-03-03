@@ -363,6 +363,25 @@
     }
 
     /**
+     * Tests whether this class is assignable from a given type
+     *
+     * <code>
+     *   // util.Date instanceof lang.Object
+     *   XPClass::forName('lang.Object')->isAssignableFrom('util.Date');   // TRUE
+     * </code>
+     *
+     * @param   var type
+     * @return  bool
+     */
+    public function isAssignableFrom($type) {
+      $t= $type instanceof Type ? $type : Type::forName($type);
+      return $t instanceof self
+        ? $t->name === $this->name || $t->_reflect->isSubclassOf($this->_reflect)
+        : FALSE
+      ;
+    }
+
+    /**
      * Determines whether the specified object is an instance of this
      * class. This is the equivalent of the is() core functionality.
      *
