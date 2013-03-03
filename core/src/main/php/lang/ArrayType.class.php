@@ -76,5 +76,15 @@
       }
       return TRUE;
     }
+
+    /**
+     * Tests whether this type is assignable from another type
+     *
+     * @param   var type
+     * @return  bool
+     */
+    public function isAssignableFrom($type) {
+      return $this->equals($type instanceof Type ? $type : Type::forName($type));
+    }
   }
 ?>
