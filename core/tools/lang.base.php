@@ -69,14 +69,19 @@
 
         // Register class name and call static initializer if available
         if (NULL === $package) {
-          $name= substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
-          if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-
-            // Use namespaced variant of class name
-            $name= strtr($class, '.', '\\');
+          if (FALSE === ($p= strrpos($class, '.'))) {
+            $name= $class;
+          } else {
+            $name= substr($class, $p+ 1);
+            if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
+              $name= strtr($class, '.', '\\');
+            } else {
+              class_alias($name, strtr($class, '.', '\\'));
+            }
           }
         } else {
           $name= strtr($class, '.', '·');
+          class_alias($name, strtr($class, '.', '\\'));
         }
         xp::$registry['class.'.$name]= $class;
         method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
@@ -127,7 +132,7 @@
         $protect[(string)$arg->hashCode()]= TRUE;
         $s= $arg->toString();
         unset($protect[(string)$arg->hashCode()]);
-        return $s;
+        return $indent ? str_replace("\n", "\n".$indent, $s) : $s;
       } else if (is_array($arg)) {
         $ser= serialize($arg);
         if (isset($protect[$ser])) return '->{:recursion:}';
@@ -279,7 +284,7 @@
       static $version= NULL;
 
       if (NULL === $version) {
-        $version= Module::forName('xp-framework/core')->getVersion();
+        $version= trim(XPClass::forName('lang.Object')->getClassLoader()->getResource('VERSION'));
       }
       return $version;
     }
@@ -729,8 +734,7 @@
     $cl= xp::$registry['loader']->findClass($name);
     if ($cl instanceof null) return FALSE;
 
-    $decl= $cl->loadClass0($name);
-    strstr($decl, '\\') || class_alias($decl, $class);
+    $cl->loadClass0($name);
     return TRUE;
   }
   // }}}

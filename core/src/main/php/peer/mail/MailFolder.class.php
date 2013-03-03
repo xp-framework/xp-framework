@@ -60,7 +60,7 @@
         "]@{\n  name  -> ".
         $this->store->getClassName().
         "\n  cache -> ".
-        str_replace("\n", "\n  ", $this->store->cache->toString()).
+        xp::stringOf($this->store->cache, '  ').
         "\n}"
       );
     }

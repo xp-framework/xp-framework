@@ -436,7 +436,7 @@
       } else {
         $s.= NULL === $this->content ? "\n" : "\n  ".xp::stringOf($this->content)."\n";
         foreach ($this->children as $child) {
-          $s.= '  '.str_replace("\n", "\n  ", xp::stringOf($child))."\n";
+          $s.= '  '.xp::stringOf($child, '  ')."\n";
         }
       }
       return $s.'}';

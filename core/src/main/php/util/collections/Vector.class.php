@@ -280,7 +280,7 @@
     public function toString() {
       $r= $this->getClassName().'['.$this->size."]@{\n";
       for ($i= 0; $i < $this->size; $i++) {
-        $r.= '  '.$i.': '.str_replace("\n", "\n  ", xp::stringOf($this->elements[$i]))."\n";
+        $r.= '  '.$i.': '.xp::stringOf($this->elements[$i], '  ')."\n";
       } 
       return $r.'}';
     }

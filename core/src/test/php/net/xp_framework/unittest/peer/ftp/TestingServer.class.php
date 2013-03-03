@@ -12,7 +12,7 @@
     'util.log.FileAppender',
     'peer.server.Server',
     'peer.ftp.server.FtpProtocol',
-    'peer.ftp.server.storage.FilesystemStorage'
+    'net.xp_framework.unittest.peer.ftp.TestingStorage'
   );
   
   /**
@@ -33,6 +33,7 @@
    * @see   xp://net.xp_framework.unittest.peer.ftp.IntegrationTest
    */
   class net·xp_framework·unittest·peer·ftp·TestingServer extends Object {
+    const FTPROOT= 'net.xp_framework.unittest.peer.ftp.ftproot';
 
     /**
      * Start server
@@ -40,7 +41,16 @@
      * @param   string[] args
      */
     public static function main(array $args) {
-      $stor= new FilesystemStorage(__DIR__.DIRECTORY_SEPARATOR.'ftproot'.DIRECTORY_SEPARATOR);
+      $stor= new TestingStorage();
+      $stor->add(new TestingCollection('/', $stor));
+      $stor->add(new TestingCollection('/.trash', $stor));
+      $stor->add(new TestingElement('/.trash/do-not-remove.txt', $stor));
+      $stor->add(new TestingCollection('/htdocs', $stor));
+      $stor->add(new TestingElement('/htdocs/file with whitespaces.html', $stor));
+      $stor->add(new TestingElement('/htdocs/index.html', $stor, "<html/>\n"));
+      $stor->add(new TestingCollection('/outer', $stor));
+      $stor->add(new TestingCollection('/outer/inner', $stor));
+      $stor->add(new TestingElement('/outer/inner/index.html', $stor));
 
       $auth= newinstance('lang.Object', array(), '{
         public function authenticate($user, $password) {

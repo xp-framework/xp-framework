@@ -9,7 +9,8 @@
     'util.log.Logger',
     'util.log.Appender',
     'util.log.LogAppender',
-    'util.log.layout.PatternLayout'
+    'util.log.layout.PatternLayout',
+    'util.log.context.NestedLogContext'
   );
 
   /**
@@ -434,6 +435,29 @@
       $app3= $this->cat->addAppender($this->mockAppender(), LogLevel::INFO);
       $app4= $this->cat->addAppender($this->mockAppender(), LogLevel::DEBUG);
       $this->assertEquals(array($app1, $app2, $app3, $app4), $this->cat->getAppenders());
+    }
+
+
+    /**
+     * Tests LogCategory::hasContext()
+     *
+     */
+    #[@test]
+    public function hasContext() {
+      $this->assertFalse($this->cat->hasContext());
+      $this->cat->setContext(new NestedLogContext());
+      $this->assertTrue($this->cat->hasContext());
+    }
+
+    /**
+     * Tests LogCategory::getContext()
+     *
+     */
+    #[@test]
+    public function getContext() {
+      $context= new NestedLogContext();
+      $this->cat->setContext($context);
+      $this->assertEquals($context, $this->cat->getContext());
     }
   }
 ?>

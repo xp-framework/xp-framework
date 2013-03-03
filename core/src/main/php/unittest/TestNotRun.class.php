@@ -46,7 +46,7 @@
         $this->getClassName().
         '(test= '.$this->test->getClassName().'::'.$this->test->getName().
         sprintf(', time= %.3f seconds', $this->elapsed()).") {\n  ".
-        str_replace("\n", "\n  ", $this->reason)."\n".
+        xp::stringOf($this->reason, '  ')."\n".
         ' }'
       );
     }

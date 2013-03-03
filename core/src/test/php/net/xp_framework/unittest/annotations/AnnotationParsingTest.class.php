@@ -250,6 +250,18 @@
     }
 
     /**
+     * Tests simple annotation with multiple values
+     *
+     */
+    #[@test]
+    public function multiValueUsingShortArray() {
+      $this->assertEquals(
+        array(0 => array('xmlmapping' => array('hw_server', 'server')), 1 => array()),
+        $this->parse("#[@xmlmapping(['hw_server', 'server'])]")
+      );
+    }
+
+    /**
      * Tests simple annotation with an array value
      *
      */
@@ -483,9 +495,62 @@
      * Test broken annotation
      *
      */
-    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated or malformed array/')]
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated array/')]
     public function unterminatedArray() {
       $this->parse('#[@ignore(array(1]');
     }
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated array/')]
+    public function unterminatedArrayKey() {
+      $this->parse('#[@ignore(name = array(1]');
+    }
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Malformed array/')]
+    public function malformedArray() {
+      $this->parse('#[@ignore(array(1 ,, 2))]');
+    }
+
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Malformed array/')]
+    public function malformedArrayKey() {
+      $this->parse('#[@ignore(name= array(1 ,, 2))]');
+    }
+
+    /**
+     * Test short array syntax
+     *
+     */
+    #[@test]
+    public function shortArraySyntaxAsValue() {
+      $this->assertEquals(
+        array(0 => array('permissions' => array('rn=login, rt=config', 'rn=admin, rt=config')), 1 => array()),
+        $this->parse("#[@permissions(['rn=login, rt=config', 'rn=admin, rt=config'])]")
+      );
+    }
+
+    /**
+     * Test short array syntax
+     *
+     */
+    #[@test]
+    public function shortArraySyntaxAsKey() {
+      $this->assertEquals(
+        array(0 => array('permissions' => array('names' => array('rn=login, rt=config', 'rn=admin, rt=config'))), 1 => array()),
+        $this->parse("#[@permissions(names = ['rn=login, rt=config', 'rn=admin, rt=config'])]")
+      );
+    }
+
   }
 ?>
