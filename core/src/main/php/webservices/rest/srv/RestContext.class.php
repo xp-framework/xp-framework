@@ -92,7 +92,7 @@
 
       // Default: Use error 500 ("Internal Server Error") and the exception message
       return Response::error(HttpConstants::STATUS_INTERNAL_SERVER_ERROR)
-        ->withPayload(new Payload(array('message' => $t->getMessage()), $properties))
+        ->withPayload($this->marshal(new Payload($t), $properties))
       ;
     }
 

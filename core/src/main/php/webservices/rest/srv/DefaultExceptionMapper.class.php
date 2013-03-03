@@ -7,7 +7,8 @@
   uses('webservices.rest.srv.ExceptionMapper');
 
   /**
-   * Default exception mapping
+   * Default exception mapping - uses a given error code and then uses the
+   * context's marshalling for exceptions.
    *
    */
   class DefaultExceptionMapper extends Object implements ExceptionMapper {
@@ -30,9 +31,7 @@
      * @return webservices.rest.srv.Response
      */
     public function asResponse($t, RestContext $ctx) {
-      return Response::error($this->statusCode)->withPayload(
-        new Payload(array('message' => $t->getMessage()))
-      );
+      return Response::error($this->statusCode)->withPayload($ctx->marshal(new Payload($t)));
     }
   }
 ?>
