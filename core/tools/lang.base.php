@@ -18,7 +18,7 @@
       $trace= debug_backtrace();
       $scope= $trace[2]['args'][0];
       xp::$registry['cl.inv'][]= function() use ($class, $scope) {
-        call_user_func(array($class, '__import'), xp::reflect($scope));
+        $class::__import(xp::reflect($scope));
       };
     }
   }
