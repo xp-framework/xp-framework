@@ -667,11 +667,11 @@
      * Test marshalling is also applied to exceptions in mapException()
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function marshal_exceptions() {
       $this->fixture->addMarshaller('unittest.AssertionFailedError', newinstance('webservices.rest.TypeMarshaller', array(), '{
         public function marshal($t) {
-          return "expected ".xp::stringOf($this->expect)." but was ".xp::stringOf($t->actual);
+          return "expected ".xp::stringOf($t->expect)." but was ".xp::stringOf($t->actual);
         }
         public function unmarshal($name) {
           // Not needed
