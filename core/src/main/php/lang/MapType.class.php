@@ -76,5 +76,19 @@
       }
       return TRUE;
     }
+
+    /**
+     * Tests whether this type is assignable from another type
+     *
+     * @param   var type
+     * @return  bool
+     */
+    public function isAssignableFrom($type) {
+      $t= $type instanceof Type ? $type : Type::forName($type);
+      return $t instanceof self 
+        ? $t->componentType()->isAssignableFrom($this->componentType())
+        : FALSE
+      ;
+    }
   }
 ?>
