@@ -119,6 +119,36 @@
     }
 
     /**
+     * Tests assignability
+     *
+     * @see     xp://lang.XPClass#isAssignableFrom
+     */
+    #[@test]
+    public function primitiveIsNotAssignableFromFixture() {
+      $this->assertFalse($this->getClass()->isAssignableFrom('int'));
+    }
+
+    /**
+     * Tests assignability
+     *
+     * @see     xp://lang.XPClass#isAssignableFrom
+     */
+    #[@test]
+    public function primitiveTypeIsNotAssignableFromFixture() {
+      $this->assertFalse($this->getClass()->isAssignableFrom(Primitive::$INT));
+    }
+
+    /**
+     * Tests assignability
+     *
+     * @see     xp://lang.XPClass#isAssignableFrom
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function isAssignableFromIllegalArgument() {
+      $this->getClass()->isAssignableFrom('@not-a-type@');
+    }
+
+    /**
      * Tests the parent class
      *
      * @see     xp://lang.XPClass#getParentClass
