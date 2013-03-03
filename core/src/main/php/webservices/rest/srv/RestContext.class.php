@@ -70,16 +70,20 @@
      * @param  webservices.rest.TypeMarshaller m
      */
     public function addMarshaller($type, TypeMarshaller $m) {
+      $keys= $this->marshallers->keys();
+
+      // Add marshaller
       $t= $type instanceof Type ? $type : Type::forName($type);
-      $add= new HashTable();
-      foreach ($this->marshallers->keys() as $type) {
-        if ($type->isAssignableFrom($t)) {
-          $add[$type]= $this->marshallers->remove($type);
-        }
-      }
       $this->marshallers[$t]= $m;
-      foreach ($add->keys() as $type) {
-        $this->marshallers[$type]= $add->get($type);
+
+      // Iterate over map keys before having altered the map, checking for
+      // any marshallers less specific than the added marshaller, and move
+      // them to the end. E.g. if a marshaller for Dates is added, it needs
+      // to be in the map *before* the one for for Objects!
+      foreach ($keys as $type) {
+        if ($type->isAssignableFrom($t)) {
+          $this->marshallers->put($type, $this->marshallers->remove($type));
+        }
       }
     }
 
