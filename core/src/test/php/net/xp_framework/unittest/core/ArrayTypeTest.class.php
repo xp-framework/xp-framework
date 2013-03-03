@@ -177,5 +177,14 @@
     public function stringArrayNotAssignableFromVoid() {
       $this->assertFalse(ArrayType::forName('string[]')->isAssignableFrom('void'));
     }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function varArrayAssignableFromIntArray() {
+      $this->assertFalse(ArrayType::forName('var[]')->isAssignableFrom('int[]'));
+    }
   }
 ?>

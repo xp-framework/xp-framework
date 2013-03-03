@@ -84,7 +84,11 @@
      * @return  bool
      */
     public function isAssignableFrom($type) {
-      return $this->equals($type instanceof Type ? $type : Type::forName($type));
+      $t= $type instanceof Type ? $type : Type::forName($type);
+      return $t instanceof self 
+        ? $t->componentType()->isAssignableFrom($this->componentType())
+        : FALSE
+      ;
     }
   }
 ?>
