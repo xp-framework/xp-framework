@@ -662,5 +662,25 @@
         $route, $this->newRequest()
       );
     }
+
+    /**
+     * Test marshalling is also applied to exceptions in mapException()
+     *
+     */
+    #[@test, @ignore]
+    public function marshal_exceptions() {
+      $this->fixture->addMarshaller('unittest.AssertionFailedError', newinstance('webservices.rest.TypeMarshaller', array(), '{
+        public function marshal($t) {
+          return "expected ".xp::stringOf($this->expect)." but was ".xp::stringOf($t->actual);
+        }
+        public function unmarshal($name) {
+          // Not needed
+        }
+      }'));
+      $this->assertEquals(
+        Response::error(500)->withPayload(new Payload('expected 1 but was 2', array('name' => 'exception'))),
+        $this->fixture->mapException(new AssertionFailedError('Test', 2, 1))
+      );
+    }
   }
 ?>
