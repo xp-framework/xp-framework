@@ -139,5 +139,15 @@
         : $this === Type::forName(gettype($obj))
       ;
     }
+
+    /**
+     * Tests whether this type is assignable from another type
+     *
+     * @param   var type
+     * @return  bool
+     */
+    public function isAssignableFrom($type) {
+      return $this === ($type instanceof Type ? $type : Type::forName($type));
+    }
   }
 ?>
