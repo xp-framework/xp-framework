@@ -103,7 +103,6 @@
       );
     }
 
-
     /**
      * Fixture for handle() tests
      *
@@ -313,7 +312,7 @@
     public function handle_exception_with_mapper() {
       $t= new Throwable('Test');
       $this->fixture->addExceptionMapping('lang.Throwable', newinstance('webservices.rest.srv.ExceptionMapper', array(), '{
-        public function asResponse($t) {
+        public function asResponse($t, RestContext $ctx) {
           return Response::error(500)->withPayload(array("message" => $t->getMessage()));
         }
       }'));
@@ -661,6 +660,26 @@
       $this->assertProcess(
         204, array(), NULL,
         $route, $this->newRequest()
+      );
+    }
+
+    /**
+     * Test marshalling is also applied to exceptions in mapException()
+     *
+     */
+    #[@test]
+    public function marshal_exceptions() {
+      $this->fixture->addMarshaller('unittest.AssertionFailedError', newinstance('webservices.rest.TypeMarshaller', array(), '{
+        public function marshal($t) {
+          return "expected ".xp::stringOf($t->expect)." but was ".xp::stringOf($t->actual);
+        }
+        public function unmarshal($name) {
+          // Not needed
+        }
+      }'));
+      $this->assertEquals(
+        Response::error(500)->withPayload(new Payload('expected 1 but was 2', array('name' => 'exception'))),
+        $this->fixture->mapException(new AssertionFailedError('Test', 2, 1))
       );
     }
   }
