@@ -118,16 +118,17 @@
       $this->channel->publisher= $publisher;
       $this->channel->copyright= $rights;
      
-      $node= Node::fromArray(array(
-        'title'         => $title,
-        'link'          => $link,
-        'description'   => $description,
-        'dc:language'   => $language,
-        'dc:date'       => $date->toString(DATE_ATOM),
-        'dc:creator'    => $creator,
-        'dc:publisher'  => $publisher,
-        'dc:rights'     => $rights
-      ), 'channel');
+      $node= create(new Node('channel'))
+        ->withChild(new Node('title', $title))
+        ->withChild(new Node('link', $link))
+        ->withChild(new Node('description', $description))
+        ->withChild(new Node('dc:language', $language))
+        ->withChild(new Node('dc:date', $date->toString(DATE_ATOM)))
+        ->withChild(new Node('dc:creator', $creator))
+        ->withChild(new Node('dc:publisher', $publisher))
+        ->withChild(new Node('dc:rights', $rights))
+      ;
+
       $node->setAttribute('rdf:about', $link);
       $items= $node->addChild(new Node('items'));;
 
@@ -150,11 +151,11 @@
       $this->image->url= $url;
       $this->image->title= $title;
 
-      $node= Node::fromArray(array(
-        'title'         => $title,
-        'url'           => $url,
-        'link'          => $link
-      ), 'image');
+      $node= create(new Node('image'))
+        ->withChild(new Node('title', $title))
+        ->withChild(new Node('url', $url))
+        ->withChild(new Node('link', $link))
+      ;
       if (!isset($this->image->node)) $node= $this->root()->addChild($node);
       $this->image->node= $node;
     }
@@ -198,12 +199,12 @@
       $item->link= $link;
       $item->description= $description;
       
-      $node= Node::fromArray(array(
-        'title'         => $title,
-        'link'          => $link,
-        'description'   => $description,
-        'dc:date'       => $date->toString(DATE_ATOM)
-      ), 'item');
+      $node= create(new Node('item'))
+        ->withChild(new Node('title', $title))
+        ->withChild(new Node('link', $link))
+        ->withChild(new Node('description', $description))
+        ->withChild(new Node('dc:date', $date->toString(DATE_ATOM)))
+      ;
       $node->setAttribute('rdf:about', $link);
       $item->node= $this->root()->addChild($node);
       $this->items[]= $item;
@@ -261,7 +262,7 @@
           $this->items[sizeof($this->items)- 1]->node= $this->_objs[$this->_cnt];
           break;
       }
-    }          
+    }
 
     /**
      * Callback for XML parser
