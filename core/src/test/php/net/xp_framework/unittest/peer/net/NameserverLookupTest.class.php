@@ -9,10 +9,17 @@
     'peer.net.NameserverLookup'
   );
 
+  /**
+   * Test nameserver lookup API
+   *
+   * @see   xp://peer.net.NameserverLookup'
+   */
   class NameserverLookupTest extends TestCase {
-    protected
-      $cut  = NULL;
+    protected $cut= NULL;
 
+    /**
+     * Sets up test case and defines dummy nameserver lookup fixture
+     */
     public function setUp() {
       $this->cut= newinstance('peer.net.NameserverLookup', array(), '{
         protected $results= array();
