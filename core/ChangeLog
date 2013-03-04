@@ -113,6 +113,9 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #251 - PHP 5.3.3 failing missing methods test. Behaviour
+  change (only in that PHP version) caused by https://bugs.php.net/51176
+  (friebe)
 - Changed FTP integration tests to use in-memory storage and reinstate them
   in the test configuration. See pull request #246.
   (friebe)
