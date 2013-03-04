@@ -101,14 +101,14 @@
       $title, 
       $link, 
       $description= '', 
-      $date= NULL, 
+      Date $date= NULL,
       $language= '',
       $creator= '', 
       $publisher= '', 
       $rights= ''
     ) {
       if (NULL === $date) $date= Date::now();
-      
+
       $this->channel->title= $title;
       $this->channel->link= $link;
       $this->channel->description= $description;
@@ -188,7 +188,7 @@
      * @param   string util.Date default NULL date defaulting to current date/time
      * @return  object the added item
      */
-    public function addItem($title, $link, $description= '', $date= NULL) {
+    public function addItem($title, $link, $description= '', Date $date= NULL) {
       if (NULL === $date) {
         $date= isset($this->channel->date) ? $this->channel->date : Date::now();
       }
