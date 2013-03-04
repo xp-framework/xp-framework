@@ -131,7 +131,7 @@
      * Tests missing methods
      *
      */
-    #[@test, @expect(class= 'lang.Error', withMessage= '/Call to undefined static method lang.Object::run()/')]
+    #[@test, @runtime('[5.3.0,'), @expect(class= 'lang.Error', withMessage= '/Call to undefined method Object::run/')]
     public function missingStaticParentPassMethodInvocation() {
       $b= ClassLoader::defineClass('MissingMethodsTest_StaticPassBaseFixture', 'lang.Object', array(), '{
         public static function run() {
