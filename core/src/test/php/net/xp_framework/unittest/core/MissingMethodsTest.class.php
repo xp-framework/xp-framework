@@ -36,5 +36,19 @@
       }');
       $o->run();
     }
+
+    /**
+     * Tests missing static methods
+     *
+     */
+    #[@test, @expect(class= 'lang.Error', withMessage= '/Call to undefined method Object::run/')]
+    public function missingStaticParentMethodInvocation() {
+      $o= newinstance('lang.Object', array(), '{
+        public static function run() {
+          parent::run();
+        }
+      }');
+      call_user_func(array($o, 'run'));
+    }
   }
 ?>
