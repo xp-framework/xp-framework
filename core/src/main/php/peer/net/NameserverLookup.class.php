@@ -24,6 +24,26 @@
    */
   class NameserverLookup extends Object {
 
+    static function __static() {
+      if (defined('DNS_A')) return;
+
+      // Define DNS_* constants for PHP versions without these
+      define('DNS_A',            1);
+      define('DNS_NS',           2);
+      define('DNS_CNAME',       16);
+      define('DNS_SOA',         32);
+      define('DNS_PTR',       2048);
+      define('DNS_HINFO',     4096);
+      define('DNS_MX',       16384);
+      define('DNS_TXT',      32768);
+      define('DNS_SRV',   33554432);
+      define('DNS_NAPTR', 67108864);
+      define('DNS_A6',    16777216);
+      define('DNS_AAAA', 134217728);
+      define('DNS_ANY',  268435456);
+      define('DNS_ALL',  251713587);
+    }
+
     /**
      * Perform "real" dns lookup
      *
