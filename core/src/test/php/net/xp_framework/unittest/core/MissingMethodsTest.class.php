@@ -13,6 +13,32 @@
   class MissingMethodsTest extends TestCase {
 
     /**
+     * Setup test. Verifies PHP version constraint
+     *
+     */
+    public function setUp() {
+      static $ops= array(
+        'l' => array('[' =>  'ge', ']' => 'gt'),
+        'u' => array('[' =>  'lt', ']' => 'le'),
+      );
+
+      $method= $this->getClass()->getMethod($this->name);
+      if ($method->hasAnnotation('runtime')) {
+        $constraint= $method->getAnnotation('runtime');
+        $lim= explode(',', $constraint, 2);
+        $cmp= substr(PHP_VERSION, 0, 5);
+        $result= (
+          ($lim[0] ? version_compare($cmp, substr($lim[0], 1), $ops['l'][$lim[0]{0}]) : TRUE) &&
+          ($lim[1] ? version_compare($cmp, substr($lim[1], 0, -1), $ops['u'][$lim[1]{strlen($lim[1]) - 1}]) : TRUE)
+        );
+
+        if (!$result) {
+          throw new PrerequisitesNotMetError('PHP version '.$compare.' not compatible', NULL, $limits);
+        }
+      }
+    }
+
+    /**
      * Tests missing methods
      *
      */
@@ -41,14 +67,14 @@
      * Tests missing static methods
      *
      */
-    #[@test, @expect(class= 'lang.Error', withMessage= '/Call to undefined method Object::run/')]
+    #[@test, @runtime('[5.3.0,'), @expect(class= 'lang.Error', withMessage= '/Call to undefined method Object::run/')]
     public function missingStaticParentMethodInvocation() {
       $o= newinstance('lang.Object', array(), '{
         public static function run() {
           parent::run();
         }
       }');
-      call_user_func(array($o, 'run'));
+      call_user_func(array($o->getClass()->literal(), 'run'));
     }
   }
 ?>

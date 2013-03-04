@@ -59,6 +59,13 @@
         return call_user_func_array(array($t[1]['args'][0][0], substr($name, 1)), $args);
       }
       $t= debug_backtrace();
+
+      // This is a bug in PHP 5.3.3, parent::method() will always invoke __callStatic()
+      // Check up two levels if we can find an object, this is an indicator that this
+      // situations is occurring.
+      if (isset($t[2]['object'])) {
+        return $t[2]['object']->__call($name, $args);
+      }
       throw new Error('Call to undefined method '.$t[1]['class'].'::'.$name);
     }
 
