@@ -51,7 +51,7 @@
         if (NULL != $scope && isset(xp::$registry['ext'][$scope])) {
           foreach (xp::$registry['ext'][$scope] as $type => $class) {
             if (!$instance instanceof $type || !method_exists($class, $name)) continue;
-            array_unshift($args, $this);
+            array_unshift($args, $instance);
             return call_user_func_array(array($class, $name), $args);
           }
         }
