@@ -81,7 +81,7 @@
      * Tests missing methods
      *
      */
-    #[@test, @expect(class= 'lang.Error', withMessage= '/Call to undefined static method MissingMethodsTest_BaseFixture::run()/')]
+    #[@test, @expect(class= 'lang.Error', withMessage= '/Call to undefined method MissingMethodsTest_BaseFixture::run/')]
     public function missingStaticParentParentMethodInvocation() {
       $b= ClassLoader::defineClass('MissingMethodsTest_BaseFixture', 'lang.Object', array(), '{}');
       $c= ClassLoader::defineClass('MissingMethodsTest_ChildFixture', $b->getName(), array(), '{
