@@ -39,7 +39,8 @@
 
       // This is a bug in PHP 5.3.3, parent::method() will always invoke __callStatic()
       // Check up to the next level if we can find an object, this is an indicator that 
-      // this situations is occurring.
+      // this situations is occurring. In other PHP version, we don't have an object here
+      // in any case reproducable at the time of writing, thus saving version_compare()
       if (isset($t[$i+ 1]['object'])) {
         $instance= $t[$i+ 1]['object'];
 
