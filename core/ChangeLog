@@ -8,8 +8,11 @@ Git commit: ?????
 
 Features
 ~~~~~~~~
-- Added ability to inject arbitrary log category by its name in REST handlers
-  http://news.planet-xp.net/article/502/2013/03/01/
+- Separated REST exception marshalling (payload representation) from the 
+  way it is mapped to the response (headers) - see pull request #248
+  (friebe)
+- Added ability to inject arbitrary log categories by their name in REST 
+  handlers - http://news.planet-xp.net/article/502/2013/03/01/
   (friebe)
 - Added log context implementation - see pull request #239
   (mrosoiu)
