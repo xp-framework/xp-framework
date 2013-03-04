@@ -48,7 +48,7 @@
           parent::run();
         }
       }');
-      call_user_func(array($o, 'run'));
+      call_user_func(array($o->getClass()->literal(), 'run'));
     }
   }
 ?>
