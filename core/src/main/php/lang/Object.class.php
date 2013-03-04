@@ -30,11 +30,17 @@
      *
      */
     public static function __callStatic($name, $args) {
-      $self= get_called_class();
+      $t= debug_backtrace();
+
+      // Get self
+      $i= 1; $s= sizeof($t);
+      while (!isset($t[$i]['class']) && $i++ < $s) { }
+      $self= $t[$i]['class'];
+
       if ("\7" === $name{0}) {
         return call_user_func_array(array($self, substr($name, 1)), $args);
       }
-      throw new Error('Call to undefined method '.$self.'::'.$name);
+      throw new Error('Call to undefined static method '.xp::nameOf($self).'::'.$name.'()');
     }
 
     /**

@@ -41,7 +41,7 @@
      * Tests missing static methods
      *
      */
-    #[@test, @expect(class= 'lang.Error', withMessage= '/Call to undefined method Object::run/')]
+    #[@test, @expect(class= 'lang.Error', withMessage= '/Call to undefined static method lang.Object::run()/')]
     public function missingStaticParentMethodInvocation() {
       $o= newinstance('lang.Object', array(), '{
         public static function run() {
