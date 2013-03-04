@@ -43,12 +43,27 @@
      */
     #[@test, @expect(class= 'lang.Error', withMessage= '/Call to undefined static method lang.Object::run()/')]
     public function missingStaticParentMethodInvocation() {
-      $o= newinstance('lang.Object', array(), '{
+      $f= ClassLoader::defineClass('MissingMethodsTest_Fixture', 'lang.Object', array(), '{
         public static function run() {
           parent::run();
         }
       }');
-      call_user_func(array($o->getClass()->literal(), 'run'));
+      call_user_func(array($f->literal(), 'run'));
+    }
+
+    /**
+     * Tests missing methods
+     *
+     */
+    #[@test, @expect(class= 'lang.Error', withMessage= '/Call to undefined static method MissingMethodsTest_BaseFixture::run()/')]
+    public function missingStaticParentParentMethodInvocation() {
+      $b= ClassLoader::defineClass('MissingMethodsTest_BaseFixture', 'lang.Object', array(), '{}');
+      $c= ClassLoader::defineClass('MissingMethodsTest_ChildFixture', $b->getName(), array(), '{
+        public static function run() {
+          parent::run();
+        }
+      }');
+      call_user_func(array($c->literal(), 'run'));
     }
   }
 ?>
