@@ -261,5 +261,76 @@
       );
     }
 
+    /**
+     * Setting connect timeouts w/o connection object yields
+     * an IllegalStateException
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function setConnectTimeoutWithNoConnectionFails() {
+      $this->newFixture()->setConnectTimeout(31337);
+    }
+
+    /**
+     * Test set connect timeout values can be read
+     * later.
+     *
+     */
+    #[@test]
+    public function setConnectTimeout() {
+      $fixture= $this->newFixture();
+      $fixture->setBase('http://localhost/');
+      $fixture->setConnectTimeout(31337);
+
+      $this->assertEquals(31337, $fixture->getConnectTimeout());
+    }
+
+    /**
+     * Setting timeouts w/o connection object yields
+     * an IllegalStateException
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function setTimeoutWithoutConnectionFails() {
+      $this->newFixture()->setTimeout(31337);
+    }
+
+    /**
+     * Test set timeout values can be read
+     * later.
+     *
+     */
+    #[@test]
+    public function setTimeout() {
+      $fixture= $this->newFixture();
+      $fixture->setBase('http://localhost/');
+      $fixture->setTimeout(31337);
+
+      $this->assertEquals(31337, $fixture->getTimeout());
+    }
+
+    /**
+     * Test connect timeouts are inherited from HttpConnection
+     *
+     */
+    #[@test]
+    public function inheritsAConnectionsDefaultConnectTimeout() {
+      $fixture= $this->newFixture();
+      $fixture->setBase('http://localhost/');
+
+      $this->assertEquals(2.0, $fixture->getConnectTimeout());
+    }
+
+    /**
+     * Test timeouts are inherited from HttpConnection
+     *
+     */
+    #[@test]
+    public function inheritsAConnectionsDefaultTimeout() {
+      $fixture= $this->newFixture();
+      $fixture->setBase('http://localhost/');
+
+      $this->assertEquals(60, $fixture->getTimeout());
+    }
   }
 ?>

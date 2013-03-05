@@ -91,6 +91,62 @@
     }
 
     /**
+     * Set connect timeout
+     *
+     * @param   float timeout
+     * @throws  lang.IllegalStateException if no connection is set
+     */
+    public function setConnectTimeout($timeout) {
+      if (NULL === $this->connection) {
+        throw new IllegalStateException('No connection set');
+      }
+
+      $this->connection->setConnectTimeout($timeout);
+    }
+
+    /**
+     * Retrieve connect timeout
+     *
+     * @return  float
+     * @throws  lang.IllegalStateException if no connection is set
+     */
+    public function getConnectTimeout() {
+      if (NULL === $this->connection) {
+        throw new IllegalStateException('No connection set');
+      }
+
+      return $this->connection->getConnectTimeout();
+    }
+
+    /**
+     * Set timeout
+     *
+     * @param   int timeout
+     * @throws  lang.IllegalStateException if no connection is set
+     */
+    public function setTimeout($timeout) {
+      if (NULL === $this->connection) {
+        throw new IllegalStateException('No connection set');
+      }
+
+      $this->connection->setTimeout($timeout);
+    }
+
+    /**
+     * Get timeout
+     *
+     * @return  int
+     * @throws  lang.IllegalStateException if no connection is set
+     */
+    public function getTimeout() {
+      if (NULL === $this->connection) {
+        throw new IllegalStateException('No connection set');
+      }
+
+      return $this->connection->getTimeout();
+    }
+
+    /**
      * Sets deserializer
      *
      * @param   string mediaType e.g. "text/xml"
