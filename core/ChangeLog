@@ -8,6 +8,8 @@ Git commit: ?????
 
 Features
 ~~~~~~~~
+- Added accessors for HTTP timeouts to RestClient - see pull request #250
+  (kiesel)
 - Separated REST exception marshalling (payload representation) from the 
   way it is mapped to the response (headers) - see pull request #248
   (friebe)
