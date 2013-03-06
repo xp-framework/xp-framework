@@ -27,6 +27,9 @@
       $session=         NULL;
 
     protected
+      $cookies=         NULL;
+
+    protected
       $inputStream=     NULL,
       $paramlookup=     array(),
       $headerlookup=    array();
@@ -98,11 +101,43 @@
      * @return  peer.http.Cookie[]
      */
     public function getCookies() {
+      $this->initCookies();
+
       $r= array();
-      foreach (array_keys($_COOKIE) as $name) {
-        $r[]= new Cookie($name, $_COOKIE[$name]);
+      foreach ($this->cookies as $name => $cookie) {
+        $r[]= $cookie;
       }
       return $r;
+    }
+
+    /**
+     * Initialize cookies if not done
+     *
+     * @param   type name
+     * @return  type
+     * @throws  type description
+     */
+    protected function initCookies() {
+      if (is_array($this->cookies)) return;
+
+      $this->cookies= array();
+      foreach ($_COOKIE as $name => $value) {
+        $this->cookies[$name]= new Cookie($name, $value);
+      }
+    }
+
+    /**
+     * Description of method
+     *
+     * @param   type name
+     * @return  type
+     * @throws  type description
+     */
+    public function addCookie(Cookie $cookie) {
+      $this->initCookies();
+
+      $this->cookies[$cookie->getName()]= $cookie;
+      return $cookie;
     }
     
     /**
@@ -120,7 +155,8 @@
      * @return  bool
      */
     public function hasCookie($name) {
-      return isset($_COOKIE[$name]);
+      $this->initCookies();
+      return isset($this->cookies[$name]);
     }
 
     /**
@@ -130,7 +166,8 @@
      * @return  peer.http.Cookie
      */
     public function getCookie($name, $default= NULL) {
-      if (isset($_COOKIE[$name])) return new Cookie($name, $_COOKIE[$name]); else return $default;
+      $this->initCookies();
+      if (isset($this->cookies[$name])) return $this->cookies[$name]; else return $default;
     }
 
     /**
