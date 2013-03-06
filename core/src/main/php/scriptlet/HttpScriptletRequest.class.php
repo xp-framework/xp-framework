@@ -127,11 +127,10 @@
     }
 
     /**
-     * Description of method
+     * Add cookie
      *
-     * @param   type name
-     * @return  type
-     * @throws  type description
+     * @param   scriptlet.Cookie cookie
+     * @return  scriptlet.Cookie added cookie
      */
     public function addCookie(Cookie $cookie) {
       $this->initCookies();
