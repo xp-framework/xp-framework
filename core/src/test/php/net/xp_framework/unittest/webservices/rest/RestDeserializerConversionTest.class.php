@@ -598,5 +598,53 @@
         ->get(NULL)
       );
     }
+
+    /**
+     * Test string wrapper type
+     *
+     */
+    #[@test]
+    public function string_wrapper() {
+      $this->assertEquals(
+        new String('Hello'),
+        $this->fixture->convert(Primitive::$STRING->wrapperClass(), 'Hello')
+      );
+    }
+
+    /**
+     * Test integer wrapper type
+     *
+     */
+    #[@test]
+    public function integer_wrapper() {
+      $this->assertEquals(
+        new Integer(5),
+        $this->fixture->convert(Primitive::$INT->wrapperClass(), 5)
+      );
+    }
+
+    /**
+     * Test double wrapper type
+     *
+     */
+    #[@test]
+    public function double_wrapper() {
+      $this->assertEquals(
+        new Double(5.0),
+        $this->fixture->convert(Primitive::$DOUBLE->wrapperClass(), 5.0)
+      );
+    }
+
+    /**
+     * Test bool wrapper type
+     *
+     */
+    #[@test]
+    public function bool_wrapper() {
+      $this->assertEquals(
+        new Boolean(TRUE),
+        $this->fixture->convert(Primitive::$BOOL->wrapperClass(), TRUE)
+      );
+    }
   }
 ?>
