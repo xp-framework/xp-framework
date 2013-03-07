@@ -159,11 +159,11 @@
      * Sets payload
      *
      * @param   var payload
-     * @param   string type The Content-Type
+     * @param   webservices.rest.RestSerializer serializer
      * @return  self
      */
-    public function withPayload($payload, $type) {
-      $this->setPayload($payload, $type);
+    public function withPayload($payload, RestSerializer $serializer) {
+      $this->setPayload($payload, $serializer);
       return $this;
     }
 
