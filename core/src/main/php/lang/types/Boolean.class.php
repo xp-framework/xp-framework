@@ -36,12 +36,14 @@
         $this->value= $value;
       } else if (is_int($value)) {
         $this->value= 0 !== $value;
+      } else if ('0' === $value) {
+        $this->value= FALSE;
+      } else if (is_string($value) && ($l= strlen($value)) && strspn($value, '1234567890') === $l) {
+        $this->value= TRUE;
       } else if (0 === strncasecmp($value, 'true', 4)) {
         $this->value= TRUE;
       } else if (0 === strncasecmp($value, 'false', 5)) {
         $this->value= FALSE;
-      } else if (is_numeric($value)) {
-        $this->value= '0' !== $value;
       } else {
         throw new IllegalArgumentException('Not a valid boolean: '.xp::stringOf($value));
       }
