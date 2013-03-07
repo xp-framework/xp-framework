@@ -100,7 +100,14 @@
 
         // Generic approach
         $return= $type->newInstance();
-        foreach ((array)$data as $name => $value) {
+        if (NULL === $data) {
+          $iter= array();
+        } else if (is_array($data) || $data instanceof Traversable) {
+          $iter= $data;
+        } else {
+          $iter= array($data);
+        }
+        foreach ($iter as $name => $value) {
           foreach ($this->variantsOf($name) as $variant) {
             if ($type->hasField($variant)) {
               $field= $type->getField($variant);
