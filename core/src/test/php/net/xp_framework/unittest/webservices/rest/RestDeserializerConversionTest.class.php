@@ -582,7 +582,6 @@
       );
     }
 
-
     /**
      * Test static members
      *
