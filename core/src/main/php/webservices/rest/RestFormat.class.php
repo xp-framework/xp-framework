@@ -97,7 +97,7 @@
     public static function forMediaType($mediatype) {
       if ('application/x-www-form-urlencoded' === $mediatype) {
         return self::$FORM;
-      } else if (preg_match('#[/\+]json$#', $mediatype)) {
+      } else if ('text/x-json' === $mediatype || 'text/javascript' === $mediatype || preg_match('#[/\+]json$#', $mediatype)) {
         return self::$JSON;
       } else if (preg_match('#[/\+]xml$#', $mediatype)) {
         return self::$XML;
