@@ -28,11 +28,12 @@
     /**
      * Unmarshals input
      *
+     * @param  lang.Type target
      * @param  var in
      * @return lang.Throwable
      */
-    public function unmarshal($in) {
-      return $in instanceof Throwable ? $in : new Throwable((string)$in);
+    public function unmarshal(Type $target, $in) {
+      return $in instanceof Throwable ? $in : $target->newInstance((string)$in);
     }
   }
 ?>

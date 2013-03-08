@@ -151,7 +151,7 @@
      */
     public function unmarshal(Type $target, $in) {
       foreach ($this->marshallers->keys() as $type) {
-        if ($type->isAssignableFrom($target)) return $this->marshallers[$type]->unmarshal($in);
+        if ($type->isAssignableFrom($target)) return $this->marshallers[$type]->unmarshal($target, $in);
       }
       return $in;
     }
