@@ -50,6 +50,24 @@
     }
 
     /**
+     * Get serializer
+     *
+     * @return webservices.rest.RestSerializer
+     */
+    public function serializer() {
+      return $this->serializer;
+    }
+
+    /**
+     * Get deserializer
+     *
+     * @return webservices.rest.RestDeserializer
+     */
+    public function deserializer() {
+      return $this->deserializer;
+    }
+
+    /**
      * Deserialize from input
      *
      * @param  io.streams.InputStream in
