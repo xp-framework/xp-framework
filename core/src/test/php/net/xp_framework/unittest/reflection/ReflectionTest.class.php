@@ -77,7 +77,77 @@
       $this->assertFalse($this->class->isSubclassOf(XPClass::forName('util.Date')));
       $this->assertFalse($this->class->isSubclassOf(XPClass::forName('net.xp_framework.unittest.reflection.TestClass')));
     }
-   
+
+    /**
+     * Tests assignability
+     *
+     * @see     xp://lang.XPClass#isAssignableFrom
+     */
+    #[@test]
+    public function selfIsAssignableFromFixture() {
+      $this->assertTrue($this->class->isAssignableFrom($this->class));
+    }
+
+    /**
+     * Tests assignability
+     *
+     * @see     xp://lang.XPClass#isAssignableFrom
+     */
+    #[@test]
+    public function objectIsAssignableFromFixture() {
+      $this->assertTrue(XPClass::forName('lang.Object')->isAssignableFrom($this->class));
+    }
+
+    /**
+     * Tests assignability
+     *
+     * @see     xp://lang.XPClass#isAssignableFrom
+     */
+    #[@test]
+    public function parentIsAssignableFromFixture() {
+      $this->assertTrue(XPClass::forName('net.xp_framework.unittest.reflection.AbstractTestClass')->isAssignableFrom($this->class));
+    }
+
+    /**
+     * Tests assignability
+     *
+     * @see     xp://lang.XPClass#isAssignableFrom
+     */
+    #[@test]
+    public function thisIsNotAssignableFromFixture() {
+      $this->assertFalse($this->getClass()->isAssignableFrom($this->class));
+    }
+
+    /**
+     * Tests assignability
+     *
+     * @see     xp://lang.XPClass#isAssignableFrom
+     */
+    #[@test]
+    public function primitiveIsNotAssignableFromFixture() {
+      $this->assertFalse($this->getClass()->isAssignableFrom('int'));
+    }
+
+    /**
+     * Tests assignability
+     *
+     * @see     xp://lang.XPClass#isAssignableFrom
+     */
+    #[@test]
+    public function primitiveTypeIsNotAssignableFromFixture() {
+      $this->assertFalse($this->getClass()->isAssignableFrom(Primitive::$INT));
+    }
+
+    /**
+     * Tests assignability
+     *
+     * @see     xp://lang.XPClass#isAssignableFrom
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function isAssignableFromIllegalArgument() {
+      $this->getClass()->isAssignableFrom('@not-a-type@');
+    }
+
     /**
      * Tests the parent class
      *

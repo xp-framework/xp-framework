@@ -322,5 +322,77 @@
     public function falseIsNotAnInstanceOfInt() {
       $this->assertFalse(Primitive::$INTEGER->isInstance(FALSE));
     }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringIsAssignableFromString() {
+      $this->assertTrue(Primitive::$STRING->isAssignableFrom('string'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringIsAssignableFromStringType() {
+      $this->assertTrue(Primitive::$STRING->isAssignableFrom(Primitive::$STRING));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringIsNotAssignableFromIntType() {
+      $this->assertFalse(Primitive::$STRING->isAssignableFrom(Primitive::$INT));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringIsNotAssignableFromClassType() {
+      $this->assertFalse(Primitive::$STRING->isAssignableFrom($this->getClass()));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringIsNotAssignableFromStringArray() {
+      $this->assertFalse(Primitive::$STRING->isAssignableFrom('string[]'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringIsNotAssignableFromStringMap() {
+      $this->assertFalse(Primitive::$STRING->isAssignableFrom('[:string]'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringIsNotAssignableFromVar() {
+      $this->assertFalse(Primitive::$STRING->isAssignableFrom('var'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringIsNotAssignableFromVoid() {
+      $this->assertFalse(Primitive::$STRING->isAssignableFrom('void'));
+    }
   }
 ?>
