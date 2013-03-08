@@ -345,5 +345,59 @@
     public function intIsNotInstanceOfVoid() {
       $this->assertFalse(Type::$VOID->isInstance(0));
     }
+
+    /**
+     * Test isAssignableFrom() method on Type::$VOID
+     *
+     */
+    #[@test]
+    public function voidIsNotAssignableFromInt() {
+      $this->assertFalse(Type::$VOID->isAssignableFrom('int'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on Type::$VOID
+     *
+     */
+    #[@test]
+    public function voidIsNotAssignableFromVoidType() {
+      $this->assertFalse(Type::$VOID->isAssignableFrom(Type::$VOID));
+    }
+
+    /**
+     * Test isAssignableFrom() method on Type::$VOID
+     *
+     */
+    #[@test]
+    public function voidIsNotAssignableFromVoid() {
+      $this->assertFalse(Type::$VOID->isAssignableFrom('void'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on Type::$VAR
+     *
+     */
+    #[@test]
+    public function varIsAssignableFromInt() {
+      $this->assertTrue(Type::$VAR->isAssignableFrom('int'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on Type::$VAR
+     *
+     */
+    #[@test]
+    public function varIsAssignableFromVarType() {
+      $this->assertTrue(Type::$VAR->isAssignableFrom(Type::$VAR));
+    }
+
+    /**
+     * Test isAssignableFrom() method on Type::$VAR
+     *
+     */
+    #[@test]
+    public function varIsAssignableFromVar() {
+      $this->assertTrue(Type::$VAR->isAssignableFrom('var'));
+    }
   }
 ?>
