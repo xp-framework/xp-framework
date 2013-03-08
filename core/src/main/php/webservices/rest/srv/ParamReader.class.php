@@ -6,7 +6,7 @@
 
   uses(
     'lang.Enum',
-    'webservices.rest.srv.RestFormat',
+    'webservices.rest.RestFormat',
     'webservices.rest.RestDeserializer'
   );
 
@@ -54,7 +54,7 @@
       self::$sources['body']= self::$BODY= newinstance(__CLASS__, array(5, 'body'), '{
         static function __static() { }
         public function read($name, $type, $target, $request) {
-          return RestFormat::forMediaType($target["input"])->read($request, $type); 
+          return RestFormat::forMediaType($target["input"])->read($request->getInputStream(), $type); 
         }
       }');
     }
