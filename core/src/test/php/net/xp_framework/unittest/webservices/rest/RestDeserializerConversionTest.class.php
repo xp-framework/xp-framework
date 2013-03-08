@@ -451,51 +451,6 @@
      *
      */
     #[@test]
-    public function constructor() {
-      $class= ClassLoader::defineClass('RestConversionTest_Constructor', 'net.xp_framework.unittest.webservices.rest.ConstructorFixture', array(), '{
-        public function __construct($id) { $this->id= (int)$id; }
-      }');
-      $this->assertEquals(
-        $class->newInstance(4711),
-        $this->fixture->convert($class, array('id' => 4711))
-      );
-    }
-
-    /**
-     * Test value object's constructor is called
-     *
-     */
-    #[@test]
-    public function constructor_inside_wrapper() {
-      $wrapped= ClassLoader::defineClass('RestConversionTest_Constructor', 'net.xp_framework.unittest.webservices.rest.ConstructorFixture', array(), '{
-        public function __construct($id) { $this->id= (int)$id; }
-      }');
-      $container= ClassLoader::defineClass('RestConversionTest_ConstructorWrapper', 'lang.Object', array(), '{
-        protected $ids= array();
-        /** @param RestConversionTest_Constructor[] ids **/
-        public function __construct(array $ids) { $this->ids= $ids; }
-        public function equals($cmp) { 
-          if (!($cmp instanceof self) || sizeof($this->ids) !== sizeof($cmp->ids)) return FALSE;
-          foreach ($this->ids as $offset => $id) {
-            if (!$id->equals($cmp->ids[$offset])) return FALSE;
-          }
-          return TRUE;
-        }
-      }');
-      $c= $container->newInstance(array());
-      $c->ids= array($wrapped->newInstance(1), $wrapped->newInstance(2));
-
-      $this->assertEquals(
-        $c,
-        $this->fixture->convert($container, array('ids' => array(array('id' => 1), array('id' => 2))))
-      );
-    }
-
-    /**
-     * Test value object's constructor is called
-     *
-     */
-    #[@test]
     public function static_valueof_method() {
       $class= ClassLoader::defineClass('RestConversionTest_StaticValueOf', 'net.xp_framework.unittest.webservices.rest.ConstructorFixture', array(), '{
         protected function __construct($id) { $this->id= (int)$id; }
@@ -627,7 +582,6 @@
       );
     }
 
-
     /**
      * Test static members
      *
@@ -642,6 +596,54 @@
         ->getClass()
         ->getField('instance')
         ->get(NULL)
+      );
+    }
+
+    /**
+     * Test string wrapper type
+     *
+     */
+    #[@test]
+    public function string_wrapper() {
+      $this->assertEquals(
+        new String('Hello'),
+        $this->fixture->convert(Primitive::$STRING->wrapperClass(), 'Hello')
+      );
+    }
+
+    /**
+     * Test integer wrapper type
+     *
+     */
+    #[@test]
+    public function integer_wrapper() {
+      $this->assertEquals(
+        new Integer(5),
+        $this->fixture->convert(Primitive::$INT->wrapperClass(), 5)
+      );
+    }
+
+    /**
+     * Test double wrapper type
+     *
+     */
+    #[@test]
+    public function double_wrapper() {
+      $this->assertEquals(
+        new Double(5.0),
+        $this->fixture->convert(Primitive::$DOUBLE->wrapperClass(), 5.0)
+      );
+    }
+
+    /**
+     * Test bool wrapper type
+     *
+     */
+    #[@test]
+    public function bool_wrapper() {
+      $this->assertEquals(
+        new Boolean(TRUE),
+        $this->fixture->convert(Primitive::$BOOL->wrapperClass(), TRUE)
       );
     }
   }

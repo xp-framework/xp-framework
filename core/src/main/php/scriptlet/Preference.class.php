@@ -66,6 +66,16 @@
     }
 
     /**
+     * ValueOf factory method
+     *
+     * @param   var arg
+     * @return  self
+     */
+    public static function valueOf($arg) {
+      return new self($arg);
+    }
+
+    /**
      * Returns all preferred values in order of quality-rating
      *
      * @return  string[]
