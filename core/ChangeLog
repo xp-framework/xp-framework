@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Heads up!
+~~~~~~~~~
+- Removed public one-arg constructor magic from REST deserialization
+  See pull request #252
+  (friebe, ilankin)
+
 Features
 ~~~~~~~~
 - Added accessors for HTTP timeouts to RestClient - see pull request #250
@@ -72,7 +78,6 @@ Features
 Version 5.8.10, released 2013-01-03
 -----------------------------------
 Git commit: 15aecfd82eae2db390868c0debd190a3b0023167
-
 
 Heads up!
 ~~~~~~~~~
