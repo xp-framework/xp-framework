@@ -141,10 +141,17 @@
      * Sets payload
      *
      * @param   var payload
-     * @param   webservices.rest.RestSerializer serializer
+     * @param   var format
      */
-    public function setPayload($payload, RestSerializer $serializer) {
-      $this->body= new RequestData($serializer->serialize($payload));
+    public function setPayload($payload, $format) {
+      if ($format instanceof RestFormat) {
+        $serializer= $format->serializer();
+      } else if ($format instanceof RestSerializer) {
+        $serializer= $format;
+      } else {
+        throw new IllegalArgumentException('Expected either a RestFormat or a RestSerializer instance, '.xp::typeOf($format).' given');
+      }
+      $this->body= new RequestData($serializer->serialize($payload));  
 
       // Update content type header
       foreach ($this->headers as $i => $header) {
