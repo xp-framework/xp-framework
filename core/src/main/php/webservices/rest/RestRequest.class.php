@@ -140,7 +140,7 @@
     /**
      * Sets payload
      *
-     * @param   var payload
+     * @param   var payload either a RestFormat or a RestSerializer instance
      * @param   var format
      */
     public function setPayload($payload, $format) {
@@ -166,11 +166,11 @@
      * Sets payload
      *
      * @param   var payload
-     * @param   webservices.rest.RestSerializer serializer
+     * @param   var format
      * @return  self
      */
-    public function withPayload($payload, RestSerializer $serializer) {
-      $this->setPayload($payload, $serializer);
+    public function withPayload($payload, $format) {
+      $this->setPayload($payload, $format);
       return $this;
     }
 

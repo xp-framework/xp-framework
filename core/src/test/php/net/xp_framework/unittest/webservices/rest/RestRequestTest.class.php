@@ -180,6 +180,35 @@
     }
 
     /**
+     * Test withPayload()
+     *
+     */
+    #[@test]
+    public function withPayloadAndSerializer() {
+      $fixture= new RestRequest();
+      $this->assertEquals($fixture, $fixture->withPayload(NULL, new RestJsonSerializer()));
+    }
+
+    /**
+     * Test withPayload()
+     *
+     */
+    #[@test]
+    public function withPayloadAndRestFormat() {
+      $fixture= new RestRequest();
+      $this->assertEquals($fixture, $fixture->withPayload(NULL, RestFormat::$JSON));
+    }
+
+    /**
+     * Test withPayload()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function withPayloadAndNull() {
+      create(new RestRequest())->withPayload(NULL, NULL);
+    }
+
+    /**
      * Test payload
      *
      */
