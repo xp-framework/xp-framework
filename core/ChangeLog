@@ -100,6 +100,8 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed TypeMarshaller::unmarshal() signature - see pull request #255
+  (friebe)
 - Removed public one-arg constructor magic from REST deserialization
   See pull request #252
   (friebe, ilankin)
