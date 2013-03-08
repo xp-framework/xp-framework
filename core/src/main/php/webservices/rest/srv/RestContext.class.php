@@ -31,10 +31,6 @@
     protected $marshallers;
     protected $cat= NULL;
 
-    static function __static() {
-      xp::extensions(__CLASS__, __CLASS__);
-    }
-
     /**
      * Constructor
      */
@@ -126,20 +122,6 @@
         break;
       }
       return NULL === $payload->value ? NULL : new Payload($payload->value, $properties);
-    }
-
-    /**
-     * Returns whether this type instance is assignable from a given type "t"
-     *
-     * @param  lang.Type self
-     * @param  lang.Type type 
-     */
-    protected static function isAssignableFrom($self, $t) {
-      if ($self instanceof XPClass && $t instanceof XPClass) {
-        return $self->equals($t) || $t->isSubclassOf($self);
-      } else {
-        return $self->equals($t);
-      }
     }
 
     /**
