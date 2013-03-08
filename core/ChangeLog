@@ -71,6 +71,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added Type::isAssignableFrom() - see pull request #249
+  (friebe)
 - Changed xp::stringOf() to indent objects
   (friebe)
 - Added support for array shorthand as annotation value - see issue #66
