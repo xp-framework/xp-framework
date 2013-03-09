@@ -8,7 +8,6 @@
     'unittest.TestCase',
     'util.log.Logger',
     'util.log.Appender',
-    'util.log.LogAppender',
     'util.log.layout.PatternLayout',
     'util.log.context.NestedLogContext'
   );
@@ -348,20 +347,6 @@
       $this->cat->warn('Test');
       $this->assertEquals(array(), $app1->messages);
       $this->assertEquals(array(array('warn', 'Test')), $app2->messages); 
-    }
-
-    /**
-     * Tests adding a deprecated util.log.LogAppender results in it being
-     * wrapped in a util.log.LogAppenderAdapter
-     *
-     * @deprecated
-     */
-    #[@test]
-    public function logAppenderAdapter() {
-      $added= $this->cat->addAppender(newinstance('util.log.LogAppender', array(), '{
-        public function append() { }
-      }'));
-      $this->assertClass($added, 'util.log.LogAppenderAdapter');
     }
 
     /**

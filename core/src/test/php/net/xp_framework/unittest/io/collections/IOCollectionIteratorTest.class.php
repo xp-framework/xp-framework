@@ -19,6 +19,7 @@
     'io.collections.iterate.NameMatchesFilter',
     'io.collections.iterate.NameEqualsFilter',
     'io.collections.iterate.ExtensionEqualsFilter',
+    'io.collections.iterate.UriMatchesFilter',
     'io.collections.iterate.SizeBiggerThanFilter',
     'io.collections.iterate.SizeEqualsFilter',
     'io.collections.iterate.SizeSmallerThanFilter',
@@ -204,6 +205,65 @@
       $this->assertEquals(
         array('./sub/sec/lang.base.php', './sub/sec/__xp__.php'), 
         $this->filterFixtureWith(new ExtensionEqualsFilter('.php'), TRUE)
+      );
+    }
+
+    /**
+     * Test UriMatchesFilter
+     *
+     * @see     xp://io.collections.iterate.UriMatchesFilter
+     */
+    #[@test]
+    public function uriMatches() {
+      $this->assertEquals(
+        array('./first.txt', './second.txt'),
+        $this->filterFixtureWith(new UriMatchesFilter('/\.txt$/'), FALSE)
+      );
+    }
+
+    /**
+     * Test UriMatchesFilter
+     *
+     * @see     xp://io.collections.iterate.UriMatchesFilter
+     */
+    #[@test]
+    public function uriMatchesRecursive() {
+      $this->assertEquals(
+        array('./sub/', './sub/IMG_6100.jpg', './sub/IMG_6100.txt', './sub/sec/', './sub/sec/lang.base.php', './sub/sec/__xp__.php'),
+        $this->filterFixtureWith(new UriMatchesFilter('/sub/'), TRUE)
+      );
+    }
+
+    /**
+     * Test UriMatchesFilter
+     *
+     * @see     xp://io.collections.iterate.UriMatchesFilter
+     */
+    #[@test]
+    public function uriMatchesDirectorySeparators() {
+      with ($src= $this->addElement($this->fixture, new MockCollection('./sub/src'))); {
+        $this->addElement($src, new MockElement('./sub/src/Generic.xp')); 
+      }
+      $this->assertEquals(
+        array('./sub/src/Generic.xp'),
+        $this->filterFixtureWith(new UriMatchesFilter('/sub\/src\/.+/'), TRUE)
+      );
+    }
+
+    /**
+     * Test UriMatchesFilter
+     *
+     * @see     xp://io.collections.iterate.UriMatchesFilter
+     */
+    #[@test]
+    public function uriMatchesPlatformDirectorySeparators() {
+      $mockName= '.'.DIRECTORY_SEPARATOR.'sub'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Generic.xp';
+      with ($src= $this->addElement($this->fixture, new MockCollection('.'.DIRECTORY_SEPARATOR.'sub'.DIRECTORY_SEPARATOR.'src'))); {
+        $this->addElement($src, new MockElement($mockName));
+      }
+      $this->assertEquals(
+        array($mockName),
+        $this->filterFixtureWith(new UriMatchesFilter('/sub\/src\/.+/'), TRUE)
       );
     }
     
