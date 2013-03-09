@@ -71,6 +71,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made the RestFormat class usable within the client - pull request #256
+  (friebe)
 - Added Type::isAssignableFrom() - see pull request #249
   (friebe)
 - Changed xp::stringOf() to indent objects
