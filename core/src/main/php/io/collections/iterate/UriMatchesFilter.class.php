@@ -7,7 +7,9 @@
   uses('io.collections.iterate.IterationFilter');
 
   /**
-   * Iteration filter matching on the complete URI
+   * Iteration filter matching on the complete URI. Always use forward
+   * slashes to match on directory components regardless of the platform
+   * the XP Framework is running on!
    *
    * @see   xp://io.collections.iterate.NameMatchesFilter
    * @see   php://preg_match
