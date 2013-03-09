@@ -257,11 +257,12 @@
      */
     #[@test]
     public function uriMatchesPlatformDirectorySeparators() {
+      $mockName= '.'.DIRECTORY_SEPARATOR.'sub'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Generic.xp';
       with ($src= $this->addElement($this->fixture, new MockCollection('.'.DIRECTORY_SEPARATOR.'sub'.DIRECTORY_SEPARATOR.'src'))); {
-        $this->addElement($src, new MockElement('.'.DIRECTORY_SEPARATOR.'sub'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Generic.xp')); 
+        $this->addElement($src, new MockElement($mockName));
       }
       $this->assertEquals(
-        array('.\\sub\\src\\Generic.xp'),
+        array($mockName),
         $this->filterFixtureWith(new UriMatchesFilter('/sub\/src\/.+/'), TRUE)
       );
     }
