@@ -233,6 +233,38 @@
         $this->filterFixtureWith(new UriMatchesFilter('/sub/'), TRUE)
       );
     }
+
+    /**
+     * Test UriMatchesFilter
+     *
+     * @see     xp://io.collections.iterate.UriMatchesFilter
+     */
+    #[@test]
+    public function uriMatchesUnixDirectorySeparators() {
+      with ($src= $this->addElement($this->fixture, new MockCollection('./sub/src'))); {
+        $this->addElement($src, new MockElement('./sub/src/Generic.xp')); 
+      }
+      $this->assertEquals(
+        array('./sub/src/Generic.xp'),
+        $this->filterFixtureWith(new UriMatchesFilter('/sub\/src\/.+/'), TRUE)
+      );
+    }
+
+    /**
+     * Test UriMatchesFilter
+     *
+     * @see     xp://io.collections.iterate.UriMatchesFilter
+     */
+    #[@test]
+    public function uriMatchesWindowsDirectorySeparators() {
+      with ($src= $this->addElement($this->fixture, new MockCollection('.\\sub\\src'))); {
+        $this->addElement($src, new MockElement('.\\sub\\src\\Generic.xp')); 
+      }
+      $this->assertEquals(
+        array('.\\sub\\src\\Generic.xp'),
+        $this->filterFixtureWith(new UriMatchesFilter('/sub\/src\/.+/'), TRUE)
+      );
+    }
     
     /**
      * Test SizeEqualsFilter

@@ -31,7 +31,7 @@
      * @return  bool
      */
     public function accept($element) {
-      return (bool)preg_match($this->pattern, $element->getURI());
+      return (bool)preg_match($this->pattern, strtr($element->getURI(), DIRECTORY_SEPARATOR, '/'));
     }
 
     /**
