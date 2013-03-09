@@ -240,7 +240,7 @@
      * @see     xp://io.collections.iterate.UriMatchesFilter
      */
     #[@test]
-    public function uriMatchesUnixDirectorySeparators() {
+    public function uriMatchesDirectorySeparators() {
       with ($src= $this->addElement($this->fixture, new MockCollection('./sub/src'))); {
         $this->addElement($src, new MockElement('./sub/src/Generic.xp')); 
       }
@@ -256,9 +256,9 @@
      * @see     xp://io.collections.iterate.UriMatchesFilter
      */
     #[@test]
-    public function uriMatchesWindowsDirectorySeparators() {
-      with ($src= $this->addElement($this->fixture, new MockCollection('.\\sub\\src'))); {
-        $this->addElement($src, new MockElement('.\\sub\\src\\Generic.xp')); 
+    public function uriMatchesPlatformDirectorySeparators() {
+      with ($src= $this->addElement($this->fixture, new MockCollection('.'.DIRECTORY_SEPARATOR.'sub'.DIRECTORY_SEPARATOR.'src'))); {
+        $this->addElement($src, new MockElement('.'.DIRECTORY_SEPARATOR.'sub'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Generic.xp')); 
       }
       $this->assertEquals(
         array('.\\sub\\src\\Generic.xp'),
