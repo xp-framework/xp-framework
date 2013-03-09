@@ -8,8 +8,8 @@
     'peer.http.HttpConstants',
     'scriptlet.Preference',
     'webservices.rest.TypeMarshaller',
+    'webservices.rest.RestFormat',
     'webservices.rest.srv.Response',
-    'webservices.rest.srv.RestFormat',
     'webservices.rest.srv.RestParamSource',
     'webservices.rest.srv.ExceptionMapper',
     'webservices.rest.srv.ParamReader',
@@ -321,7 +321,7 @@
       }
       if (NULL !== $result->payload) {
         $response->setContentType($target['output']);
-        RestFormat::forMediaType($target['output'])->write($response, $result->payload);
+        RestFormat::forMediaType($target['output'])->write($response->getOutputStream(), $result->payload);
       }
 
       // Handled
