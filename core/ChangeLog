@@ -71,6 +71,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added Type::isAssignableFrom() - see pull request #249
+  (friebe)
 - Changed xp::stringOf() to indent objects
   (friebe)
 - Added support for array shorthand as annotation value - see issue #66
@@ -97,6 +99,14 @@ Features
 Version 5.8.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
+
+Heads up!
+~~~~~~~~~
+- Changed TypeMarshaller::unmarshal() signature - see pull request #255
+  (friebe)
+- Removed public one-arg constructor magic from REST deserialization
+  See pull request #252
+  (friebe, ilankin)
 
 Features
 ~~~~~~~~

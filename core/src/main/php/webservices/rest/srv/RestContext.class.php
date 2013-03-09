@@ -31,10 +31,6 @@
     protected $marshallers;
     protected $cat= NULL;
 
-    static function __static() {
-      xp::extensions(__CLASS__, __CLASS__);
-    }
-
     /**
      * Constructor
      */
@@ -129,20 +125,6 @@
     }
 
     /**
-     * Returns whether this type instance is assignable from a given type "t"
-     *
-     * @param  lang.Type self
-     * @param  lang.Type type 
-     */
-    protected static function isAssignableFrom($self, $t) {
-      if ($self instanceof XPClass && $t instanceof XPClass) {
-        return $self->equals($t) || $t->isSubclassOf($self);
-      } else {
-        return $self->equals($t);
-      }
-    }
-
-    /**
      * Unmarshal a type to a given target
      *
      * @param  lang.Type target
@@ -151,7 +133,7 @@
      */
     public function unmarshal(Type $target, $in) {
       foreach ($this->marshallers->keys() as $type) {
-        if ($type->isAssignableFrom($target)) return $this->marshallers[$type]->unmarshal($in);
+        if ($type->isAssignableFrom($target)) return $this->marshallers[$type]->unmarshal($target, $in);
       }
       return $in;
     }

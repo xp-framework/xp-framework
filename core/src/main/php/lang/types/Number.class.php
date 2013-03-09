@@ -30,6 +30,16 @@
     }
     
     /**
+     * ValueOf factory
+     *
+     * @param   string $value
+     * @return  self
+     */
+    public static function valueOf($value) {
+      return new static($value);
+    }
+
+    /**
      * Returns the value of this number as an int.
      *
      * @return  int

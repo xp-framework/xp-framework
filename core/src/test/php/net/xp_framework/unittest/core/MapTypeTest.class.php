@@ -141,5 +141,86 @@
     public function varMap() {
       $this->assertTrue(MapType::forName('[:var]')->isInstance(array('one' => 1, 'two' => 'Zwei', 'three' => new Integer(3))));
     }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringMapAssignableFromStringMap() {
+      $this->assertTrue(MapType::forName('[:string]')->isAssignableFrom('[:string]'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringMapAssignableFromStringMapType() {
+      $this->assertTrue(MapType::forName('[:string]')->isAssignableFrom(MapType::forName('[:string]')));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringMapNotAssignableFromIntType() {
+      $this->assertFalse(MapType::forName('[:string]')->isAssignableFrom(Primitive::$INT));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringMapNotAssignableFromClassType() {
+      $this->assertFalse(MapType::forName('[:string]')->isAssignableFrom($this->getClass()));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringMapNotAssignableFromString() {
+      $this->assertFalse(MapType::forName('[:string]')->isAssignableFrom('string'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringMapNotAssignableFromStringArray() {
+      $this->assertFalse(MapType::forName('[:string]')->isAssignableFrom('string[]'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringMapNotAssignableFromVar() {
+      $this->assertFalse(MapType::forName('[:string]')->isAssignableFrom('var'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringMapNotAssignableFromVoid() {
+      $this->assertFalse(MapType::forName('[:string]')->isAssignableFrom('void'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function varMapAssignableFromIntMap() {
+      $this->assertFalse(MapType::forName('[:var]')->isAssignableFrom('[:int]'));
+    }
   }
 ?>

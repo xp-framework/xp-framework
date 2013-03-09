@@ -134,9 +134,18 @@
      * Tests unacceptable values
      *
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
-    public function numericStringIsNotAValidBoolean() {
-      new Boolean('1');
+    #[@test]
+    public function numericStringIsAValidBoolean() {
+      $this->assertEquals(Boolean::$TRUE, new Boolean('1'));
+    }
+
+    /**
+     * Tests unacceptable values
+     *
+     */
+    #[@test]
+    public function zeroNumericStringIsAValidBoolean() {
+      $this->assertEquals(Boolean::$FALSE, new Boolean('0'));
     }
 
     /**

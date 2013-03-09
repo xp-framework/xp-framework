@@ -105,5 +105,86 @@
     public function intArrayIsNotAnInstanceOfStringArray() {
       $this->assertFalse(ArrayType::forName('string[]')->isInstance(array(1, 2)));
     }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringArrayAssignableFromStringArray() {
+      $this->assertTrue(ArrayType::forName('string[]')->isAssignableFrom('string[]'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringArrayAssignableFromStringArrayType() {
+      $this->assertTrue(ArrayType::forName('string[]')->isAssignableFrom(ArrayType::forName('string[]')));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringArrayNotAssignableFromIntType() {
+      $this->assertFalse(ArrayType::forName('string[]')->isAssignableFrom(Primitive::$INT));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringArrayNotAssignableFromClassType() {
+      $this->assertFalse(ArrayType::forName('string[]')->isAssignableFrom($this->getClass()));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringArrayNotAssignableFromString() {
+      $this->assertFalse(ArrayType::forName('string[]')->isAssignableFrom('string'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringArrayNotAssignableFromStringMap() {
+      $this->assertFalse(ArrayType::forName('string[]')->isAssignableFrom('[:string]'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringArrayNotAssignableFromVar() {
+      $this->assertFalse(ArrayType::forName('string[]')->isAssignableFrom('var'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function stringArrayNotAssignableFromVoid() {
+      $this->assertFalse(ArrayType::forName('string[]')->isAssignableFrom('void'));
+    }
+
+    /**
+     * Test isAssignableFrom() method on strings
+     *
+     */
+    #[@test]
+    public function varArrayAssignableFromIntArray() {
+      $this->assertFalse(ArrayType::forName('var[]')->isAssignableFrom('int[]'));
+    }
   }
 ?>
