@@ -7,7 +7,7 @@
   uses(
     'scriptlet.HttpScriptlet',
     'scriptlet.Preference',
-    'webservices.rest.srv.RestFormat',
+    'webservices.rest.RestFormat',
     'webservices.rest.srv.RestContext',
     'webservices.rest.srv.Response',
     'webservices.rest.srv.RestDefaultRouter',

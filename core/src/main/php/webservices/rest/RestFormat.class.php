@@ -10,13 +10,15 @@
     'webservices.rest.RestJsonDeserializer',
     'webservices.rest.RestXmlSerializer',
     'webservices.rest.RestXmlDeserializer',
-    'webservices.rest.RestFormDeserializer'
+    'webservices.rest.RestFormDeserializer',
+    'io.streams.InputStream',
+    'io.streams.OutputStream'
   );
 
   /**
    * Rest format
    *
-   * @test  xp://net.xp_framework.unittest.webservices.rest.srv.RestFormatTest
+   * @test  xp://net.xp_framework.unittest.webservices.rest.RestFormatTest
    */
   class RestFormat extends Enum {
     public static $UNKNOWN;
@@ -48,24 +50,42 @@
     }
 
     /**
-     * Read the payload from the request
+     * Get serializer
      *
-     * @param  scriptlet.Request request
-     * @param  lang.Type type
-     * @return var
+     * @return webservices.rest.RestSerializer
      */
-    public function read($request, $type) {
-      return $this->deserializer->deserialize($request->getInputStream(), $type);
+    public function serializer() {
+      return $this->serializer;
     }
 
     /**
-     * Read the payload from the request
+     * Get deserializer
      *
-     * @param  scriptlet.Response request
+     * @return webservices.rest.RestDeserializer
+     */
+    public function deserializer() {
+      return $this->deserializer;
+    }
+
+    /**
+     * Deserialize from input
+     *
+     * @param  io.streams.InputStream in
+     * @param  lang.Type type
+     * @return var
+     */
+    public function read(InputStream $in, $type) {
+      return $this->deserializer->deserialize($in, $type);
+    }
+
+    /**
+     * Serialize and write to output
+     *
+     * @param  io.streams.OutputStream out
      * @param  webservices.rest.Payload value
      */
-    public function write($response, Payload $value= NULL) {
-      $response->getOutputStream()->write($this->serializer->serialize($value));
+    public function write(OutputStream $out, Payload $value= NULL) {
+      $out->write($this->serializer->serialize($value));
     }
 
     /**
@@ -77,7 +97,7 @@
     public static function forMediaType($mediatype) {
       if ('application/x-www-form-urlencoded' === $mediatype) {
         return self::$FORM;
-      } else if (preg_match('#[/\+]json$#', $mediatype)) {
+      } else if ('text/x-json' === $mediatype || 'text/javascript' === $mediatype || preg_match('#[/\+]json$#', $mediatype)) {
         return self::$JSON;
       } else if (preg_match('#[/\+]xml$#', $mediatype)) {
         return self::$XML;
