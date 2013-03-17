@@ -25,6 +25,7 @@
      *   <li>The values TRUE or FALSE</li>
      *   <li>An integer - any non-zero value will be regarded TRUE</li>
      *   <li>The strings "true" and "false", case-insensitive</li>
+     *   <li>Numeric strings - any non-zero value will be regarded TRUE</li>
      * </ul>
      *
      * @param   var value
@@ -35,6 +36,10 @@
         $this->value= $value;
       } else if (is_int($value)) {
         $this->value= 0 !== $value;
+      } else if ('0' === $value) {
+        $this->value= FALSE;
+      } else if (is_string($value) && ($l= strlen($value)) && strspn($value, '1234567890') === $l) {
+        $this->value= TRUE;
       } else if (0 === strncasecmp($value, 'true', 4)) {
         $this->value= TRUE;
       } else if (0 === strncasecmp($value, 'false', 5)) {
@@ -43,7 +48,17 @@
         throw new IllegalArgumentException('Not a valid boolean: '.xp::stringOf($value));
       }
     }
-    
+
+    /**
+     * ValueOf factory
+     *
+     * @param   string $value
+     * @return  self
+     */
+    public static function valueOf($value) {
+      return new self($value);
+    }
+
     /**
      * Returns the value of this number as an int.
      *

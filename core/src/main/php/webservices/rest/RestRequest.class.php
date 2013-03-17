@@ -140,11 +140,18 @@
     /**
      * Sets payload
      *
-     * @param   var payload
-     * @param   webservices.rest.RestSerializer serializer
+     * @param   var payload either a RestFormat or a RestSerializer instance
+     * @param   var format
      */
-    public function setPayload($payload, RestSerializer $serializer) {
-      $this->body= new RequestData($serializer->serialize($payload));
+    public function setPayload($payload, $format) {
+      if ($format instanceof RestFormat) {
+        $serializer= $format->serializer();
+      } else if ($format instanceof RestSerializer) {
+        $serializer= $format;
+      } else {
+        throw new IllegalArgumentException('Expected either a RestFormat or a RestSerializer instance, '.xp::typeOf($format).' given');
+      }
+      $this->body= new RequestData($serializer->serialize($payload));  
 
       // Update content type header
       foreach ($this->headers as $i => $header) {
@@ -159,11 +166,11 @@
      * Sets payload
      *
      * @param   var payload
-     * @param   string type The Content-Type
+     * @param   var format
      * @return  self
      */
-    public function withPayload($payload, $type) {
-      $this->setPayload($payload, $type);
+    public function withPayload($payload, $format) {
+      $this->setPayload($payload, $format);
       return $this;
     }
 

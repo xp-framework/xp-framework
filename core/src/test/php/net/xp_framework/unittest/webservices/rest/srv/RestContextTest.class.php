@@ -70,14 +70,14 @@
     public function marshal_this_with_typemarshaller() {
       $this->fixture->addMarshaller('unittest.TestCase', newinstance('webservices.rest.TypeMarshaller', array(), '{
         public function marshal($t) {
-          return $t->getClassName()."::".$t->getName();
+          return $t->getName();
         }
-        public function unmarshal($name) {
+        public function unmarshal(Type $target, $name) {
           // Not needed
         }
       }'));
       $this->assertEquals(
-        new Payload($this->getClassName().'::'.$this->getName()),
+        new Payload($this->getName()),
         $this->fixture->marshal(new Payload($this))
       );
     }
@@ -92,17 +92,15 @@
         public function marshal($t) {
           // Not needed
         }
-        public function unmarshal($name) {
-          sscanf($name, "%[^:]::%s", $class, $test);
-          return XPClass::forName($class)->newInstance($test);
+        public function unmarshal(Type $target, $name) {
+          return $target->newInstance($name);
         }
       }'));
       $this->assertEquals(
         $this,
-        $this->fixture->unmarshal($this->getClass(), $this->getClassName().'::'.$this->getName())
+        $this->fixture->unmarshal($this->getClass(), $this->getName())
       );
     }
-
 
     /**
      * Fixture for handle() tests
@@ -313,7 +311,7 @@
     public function handle_exception_with_mapper() {
       $t= new Throwable('Test');
       $this->fixture->addExceptionMapping('lang.Throwable', newinstance('webservices.rest.srv.ExceptionMapper', array(), '{
-        public function asResponse($t) {
+        public function asResponse($t, RestContext $ctx) {
           return Response::error(500)->withPayload(array("message" => $t->getMessage()));
         }
       }'));
@@ -661,6 +659,26 @@
       $this->assertProcess(
         204, array(), NULL,
         $route, $this->newRequest()
+      );
+    }
+
+    /**
+     * Test marshalling is also applied to exceptions in mapException()
+     *
+     */
+    #[@test]
+    public function marshal_exceptions() {
+      $this->fixture->addMarshaller('unittest.AssertionFailedError', newinstance('webservices.rest.TypeMarshaller', array(), '{
+        public function marshal($t) {
+          return "expected ".xp::stringOf($t->expect)." but was ".xp::stringOf($t->actual);
+        }
+        public function unmarshal(Type $target, $name) {
+          // Not needed
+        }
+      }'));
+      $this->assertEquals(
+        Response::error(500)->withPayload(new Payload('expected 1 but was 2', array('name' => 'exception'))),
+        $this->fixture->mapException(new AssertionFailedError('Test', 2, 1))
       );
     }
   }

@@ -23,9 +23,10 @@
     /**
      * Unmarshals input
      *
+     * @param  lang.Type target
      * @param  var in
      * @return T
      */
-    public function unmarshal($in);
+    public function unmarshal(Type $target, $in);
   }
 ?>

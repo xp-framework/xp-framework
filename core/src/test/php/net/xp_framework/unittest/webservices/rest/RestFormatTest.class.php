@@ -6,56 +6,17 @@
 
   uses(
     'unittest.TestCase',
-    'webservices.rest.srv.RestFormat',
-    'scriptlet.Request',
-    'scriptlet.Response',
+    'webservices.rest.RestFormat',
+    'io.streams.MemoryInputStream',
     'io.streams.MemoryOutputStream'
   );
   
   /**
    * Test default router
    *
-   * @see  xp://webservices.rest.srv.RestDefaultRouter
+   * @see  xp://webservices.rest.RestFormat
    */
   class RestFormatTest extends TestCase {
-    protected static $request;
-    protected static $response;
-
-    /**
-     * Creates request and response dummies
-     */
-    #[@beforeClass]
-    public static function createDummies() {
-      self::$request= ClassLoader::defineClass('RestFormat_Request', 'lang.Object', array('scriptlet.Request'), '{
-        public $content;
-        public function __construct($payload) { $this->content= new MemoryInputStream($payload); }
-        public function hasSession() { }
-        public function getSession() { }
-        public function getCookies() { }
-        public function hasCookie($name) { }
-        public function getCookie($name, $default= NULL) { }
-        public function getHeader($name, $default= NULL) { }
-        public function getParam($name, $default= NULL) { }
-        public function hasParam($name) { }
-        public function getParams() { }
-        public function getURL() { }
-        public function getMethod() { }
-        public function getQueryString() { }
-        public function getInputStream() { return $this->content; }
-      }');
-      self::$response= ClassLoader::defineClass('RestFormat_Response', 'lang.Object', array('scriptlet.Response'), '{
-        public $content;
-        public function __construct() { $this->content= new MemoryOutputStream(); }
-        public function setCookie($cookie) { }
-        public function setHeader($name, $value) { }
-        public function setStatus($sc) { }
-        public function setContentLength($length) { }
-        public function setContentType($type) { }
-        public function isCommitted() { }
-        public function flush() { }
-        public function getOutputStream() { return $this->content; }
-      }');
-    }
 
     /**
      * Test JSON
@@ -63,9 +24,9 @@
      */
     #[@test]
     public function json_serialize() {
-      $res= self::$response->newInstance();
+      $res= new MemoryOutputStream();
       RestFormat::$JSON->write($res, new Payload(array('name' => 'Timm')));
-      $this->assertEquals('{ "name" : "Timm" }', $res->content->getBytes());
+      $this->assertEquals('{ "name" : "Timm" }', $res->getBytes());
     }
 
     /**
@@ -74,7 +35,7 @@
      */
     #[@test]
     public function json_deserialize() {
-      $req= self::$request->newInstance('{ "name" : "Timm" }');
+      $req= new MemoryInputStream('{ "name" : "Timm" }');
       $v= RestFormat::$JSON->read($req, MapType::forName('[:string]'));
       $this->assertEquals(array('name' => 'Timm'), $v); 
     }
@@ -85,11 +46,11 @@
      */
     #[@test]
     public function xml_serialize() {
-      $res= self::$response->newInstance();
+      $res= new MemoryOutputStream();
       RestFormat::$XML->write($res, new Payload(array('name' => 'Timm')));
       $this->assertEquals(
         '<?xml version="1.0" encoding="UTF-8"?>'."\n".'<root><name>Timm</name></root>', 
-        $res->content->getBytes()
+        $res->getBytes()
       );
     }
 
@@ -99,7 +60,7 @@
      */
     #[@test]
     public function xml_deserialize() {
-      $req= self::$request->newInstance('<?xml version="1.0" encoding="UTF-8"?>'."\n".'<root><name>Timm</name></root>');
+      $req= new MemoryInputStream('<?xml version="1.0" encoding="UTF-8"?>'."\n".'<root><name>Timm</name></root>');
       $v= RestFormat::$XML->read($req, MapType::forName('[:string]'));
       $this->assertEquals(array('name' => 'Timm'), $v); 
     }
@@ -110,7 +71,7 @@
      */
     #[@test]
     public function xml_deserialize_without_xml_declaration() {
-      $req= self::$request->newInstance('<root><name>Timm</name></root>');
+      $req= new MemoryInputStream('<root><name>Timm</name></root>');
       $v= RestFormat::$XML->read($req, MapType::forName('[:string]'));
       $this->assertEquals(array('name' => 'Timm'), $v); 
     }
@@ -121,7 +82,7 @@
      */
     #[@test]
     public function form_deserialize() {
-      $req= self::$request->newInstance('name=Timm');
+      $req= new MemoryInputStream('name=Timm');
       $v= RestFormat::$FORM->read($req, MapType::forName('[:string]'));
       $this->assertEquals(array('name' => 'Timm'), $v);
     }

@@ -8,6 +8,9 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed message for missing static methods to include the word "static"
+  and made it consistent with the one for missing non-static methods
+  (friebe)
 - Minimum PHP version requirement is now PHP 5.3.0!
   http://news.planet-xp.net/article/501/2013/02/06/
   (friebe)
@@ -68,6 +71,10 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made the RestFormat class usable within the client - pull request #256
+  (friebe)
+- Added Type::isAssignableFrom() - see pull request #249
+  (friebe)
 - Changed xp::stringOf() to indent objects
   (friebe)
 - Added support for array shorthand as annotation value - see issue #66
@@ -95,10 +102,23 @@ Version 5.8.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Heads up!
+~~~~~~~~~
+- Changed TypeMarshaller::unmarshal() signature - see pull request #255
+  (friebe)
+- Removed public one-arg constructor magic from REST deserialization
+  See pull request #252
+  (friebe, ilankin)
+
 Features
 ~~~~~~~~
-- Added ability to inject arbitrary log category by its name in REST handlers
-  http://news.planet-xp.net/article/502/2013/03/01/
+- Added accessors for HTTP timeouts to RestClient - see pull request #250
+  (kiesel)
+- Separated REST exception marshalling (payload representation) from the 
+  way it is mapped to the response (headers) - see pull request #248
+  (friebe)
+- Added ability to inject arbitrary log categories by their name in REST 
+  handlers - http://news.planet-xp.net/article/502/2013/03/01/
   (friebe)
 - Added log context implementation - see pull request #239
   (mrosoiu)
@@ -107,6 +127,17 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #242 - DataSet generator skips indices
+  (friebe)
+- Fixed issue #251 - PHP 5.3.3 failing missing methods test. Behaviour
+  change (only in that PHP version) caused by https://bugs.php.net/51176
+  (friebe)
+- Changed FTP integration tests to use in-memory storage and reinstate them
+  in the test configuration. See pull request #246.
+  (friebe)
+- Fixed peer.ftp.server.FtpProtocol port claim strategy when
+  opening passive mode sockets - see pull request #245
+  (kiesel, friebe)
 - Fixed class loading inconsistencies with case-insensitive filesystems.
   See pull request #235.
   (friebe)
