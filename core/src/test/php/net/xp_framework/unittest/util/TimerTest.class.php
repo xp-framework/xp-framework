@@ -16,23 +16,14 @@
    * @see      xp://util.profiling.Timer
    */
   class TimerTest extends TestCase {
-    protected $fixture= NULL;
     
-    /**
-     * Setup method. Creates the map member
-     *
-     */
-    public function setUp() {
-      $this->fixture= new Timer();
-    }
-        
     /**
      * Tests elapsed time is zero if not started yet
      *
      */
     #[@test]
     public function initiallyZero() {
-      $this->assertEquals(0.0, $this->fixture->elapsedTime());
+      $this->assertEquals(0.0, create(new Timer())->elapsedTime());
     }
 
     /**
@@ -41,10 +32,11 @@
      */
     #[@test]
     public function elapsedTimeGreaterThanZeroUsingStartAndStop() {
-      $this->fixture->start();
+      $fixture= new Timer();
+      $fixture->start();
       usleep(100 * 1000);
-      $this->fixture->stop();
-      $elapsed= $this->fixture->elapsedTime();
+      $fixture->stop();
+      $elapsed= $fixture->elapsedTime();
       $this->assertTrue($elapsed > 0.0, 'Elapsed time should be greater than zero');
     }
 
@@ -54,10 +46,10 @@
      */
     #[@test]
     public function elapsedTimeGreaterThanZeroUsingMeasure() {
-      $this->fixture->measure(function() {
+      $fixture= Timer::measure(function() {
         usleep(100 * 1000);
       });
-      $elapsed= $this->fixture->elapsedTime();
+      $elapsed= $fixture->elapsedTime();
       $this->assertTrue($elapsed > 0.0, 'Elapsed time should be greater than zero');
     }
 
@@ -67,7 +59,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function notCallable() {
-      $this->fixture->measure('@not-callable@');
+      Timer::measure('@not-callable@');
     }
   }
 ?>

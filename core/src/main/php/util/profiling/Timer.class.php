@@ -44,16 +44,19 @@
      *
      * @see    http://php.net/manual/en/language.types.callable.php
      * @param  var block a callable
+     * @return self
      * @throws lang.IllegalArgumentException when block is not callable
      */
-    public function measure($block) {
+    public static function measure($block) {
       if (!is_callable($block)) {
         throw new IllegalArgumentException('Cannot call '.xp::stringOf($block));
       }
 
-      $this->start= microtime(TRUE);
+      $self= new self();
+      $self->start= microtime(TRUE);
       $block();
-      $this->stop= microtime(TRUE);
+      $self->stop= microtime(TRUE);
+      return $self;
     }
 
     /**
