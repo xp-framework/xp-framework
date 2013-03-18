@@ -106,6 +106,13 @@
     }
 
     /**
+     * Closes underlying stream
+     */
+    public function close() {
+      $this->stream->close();
+    }
+
+    /**
      * Seeks a stream
      *
      * @param   int offset absolute offset
