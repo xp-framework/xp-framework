@@ -42,9 +42,22 @@
     protected function includeUri($stylesheet) {
       $name= $this->getClass()->getPackage()->getResourceAsStream($stylesheet.'.xsl')->getURI();
       
-      // FIXME: workaround for "xsl:include : invalid URI reference C:\cygwin\...\include.xsl"
-      // oddity in PHP's XSL libraries (needs forward-slash even on Windows)
-      return strstr($name, '://') ? $name : 'file:///'.strtr($name, array(DIRECTORY_SEPARATOR => '/', ' ' => '%20'));
+      // Normalize URI according to http://en.wikipedia.org/wiki/File_URI_scheme
+      // * "f:\a dir\c.xsl"       => "file:///f:/a%20dor/c.xsl"
+      // * "/a dir/c.xsl"         => "file:///a%20dir/c.xsl"
+      // * "xar://f:\a.xar?c.xsl" => "xar:///f:/a.xar?c.csl"
+      // * "xar:///a.xar?c.xsl"   => "xar:///a.xar?c.csl"
+      if (FALSE === ($p= strpos($name, '://'))) {
+        $scheme= 'file';
+      } else {
+        $scheme= substr($name, 0, $p);
+        $name= substr($name, $p+ 3);
+      }
+      if (':' === $name{1}) {
+        $name= '/'.$name;
+      }
+      $uri= $scheme.'://'.strtr($name, array(DIRECTORY_SEPARATOR => '/', ' ' => '%20'));
+      return $uri;
     }
 
     /**

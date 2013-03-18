@@ -348,6 +348,10 @@
         2 => 'a240id/V1size/V1offset/a*reserved'
       );
       
+      if ('/' === $archive{0} && ':' === $archive{2}) {
+        $archive= substr($archive, 1);    // Handle xar:///f:/archive.xar => f:/archive.xar
+      }
+
       if (!isset($archives[$archive])) {
         $archives[$archive]= array();
         $current= &$archives[$archive];
