@@ -10,7 +10,7 @@
     'io.collections.iterate.FilteredIOCollectionIterator',
     'io.collections.iterate.NegationOfFilter',
     'io.collections.iterate.AllOfFilter',
-    'io.collections.iterate.RegexFilter',
+    'io.collections.iterate.UriMatchesFilter',
     'io.collections.iterate.CollectionFilter'
   );
 
@@ -64,7 +64,7 @@
           $iterator= new FilteredIOCollectionIterator(
             $collection,
             new AllOfFilter(array(
-              new NegationOfFilter(new RegexFilter('#'.$qs.'(CVS|\.svn|\.git|\.arch|\.hg|_darcs|\.bzr)'.$qs.'#')),
+              new NegationOfFilter(new UriMatchesFilter('#'.$qs.'(CVS|\.svn|\.git|\.arch|\.hg|_darcs|\.bzr)'.$qs.'#')),
               new NegationOfFilter(new CollectionFilter())
             )),
             TRUE

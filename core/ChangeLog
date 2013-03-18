@@ -8,6 +8,8 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed deprecated classes (see pull request #254)
+  (kiesel)
 - Changed message for missing static methods to include the word "static"
   and made it consistent with the one for missing non-static methods
   (friebe)
