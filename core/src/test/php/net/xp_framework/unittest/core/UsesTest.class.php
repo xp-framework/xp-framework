@@ -26,6 +26,7 @@
     protected function useAllOf($uses, $decl= '') {
       with ($out= $err= '', $p= Runtime::getInstance()->newInstance(NULL, 'class', 'xp.runtime.Evaluate', array())); {
         $p->in->write($decl.'
+          ClassLoader::registerPath(\''.strtr($this->getClass()->getClassLoader()->path, '\\', '/').'\');
           $errors= 0;
           foreach (array("'.implode('", "', $uses).'") as $class) {
             try {
