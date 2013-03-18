@@ -26,6 +26,7 @@
      */
     public function setUp() {
       $this->holder= new RootDoc();
+      $this->holder->addSourceLoader($this->getClass()->getClassLoader());
     }
     
     /**

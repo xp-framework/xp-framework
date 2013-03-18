@@ -29,7 +29,9 @@
      *
      */
     public function setUp() {
-      $this->fixture= create(new RootDoc())->classNamed($this->getClassName());
+      $root= new RootDoc();
+      $root->addSourceLoader($this->getClass()->getClassLoader());
+      $this->fixture= $root->classNamed($this->getClassName());
     }
 
     /**
