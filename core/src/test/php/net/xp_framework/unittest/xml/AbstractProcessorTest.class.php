@@ -56,8 +56,7 @@
       if (':' === $name{1}) {
         $name= '/'.$name;
       }
-      $uri= $scheme.'://'.strtr($name, array(DIRECTORY_SEPARATOR => '/', ' ' => '%20'));
-      return $uri;
+      return $scheme.'://'.strtr($name, array(DIRECTORY_SEPARATOR => '/', ' ' => '%20', '?' => '%3F'));
     }
 
     /**
