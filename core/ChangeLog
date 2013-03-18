@@ -71,6 +71,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added new Timer::measure() method - see pull request #244
+  http://news.planet-xp.net/article/506/2013/03/18/
+  (friebe)
 - Made the RestFormat class usable within the client - pull request #256
   (friebe)
 - Added Type::isAssignableFrom() - see pull request #249
