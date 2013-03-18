@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+
+Version 5.8.12, released 2013-03-18
+-----------------------------------
+Git commit: 555625b57645d1b77ce4fd9ebd6fcb9d0154ddf2
+
 Heads up!
 ~~~~~~~~~
 - Changed TypeMarshaller::unmarshal() signature - see pull request #255
