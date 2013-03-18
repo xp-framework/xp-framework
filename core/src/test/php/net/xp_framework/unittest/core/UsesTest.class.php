@@ -51,15 +51,32 @@
     }
 
     /**
+     * Assertion helper
+     *
+     * @param  int exitv expected exit value
+     * @param  string[] out expected STDOUT lines
+     * @param  string[] err expected STDERR lines
+     * @param  var[] r actualy useAllOf() output
+     */
+    protected function assertResult($exitv, $out, $err, $r) {
+      $this->assertEquals(
+        array('exitv' => $exitv, 'out' => $out, 'err' => $err),
+        array('exitv' => $r[0], 'out' => $r[1], 'err' => $r[2])
+      );
+    }
+
+    /**
      * Test
      *
      */
     #[@test]
     public function useExistingClass() {
-      $r= $this->useAllOf(array($this->getClassName()));
-      $this->assertEquals(0, $r[0], 'exitcode');
-      $this->assertEquals(array('+OK '.$this->getClassName()), $r[1]);
-      $this->assertEquals(array(''), $r[2]);
+      $this->assertResult(
+        0, 
+        array('+OK '.$this->getClassName()),
+        array(''),
+        $this->useAllOf(array($this->getClassName()))
+      );
     }
 
     /**
@@ -68,10 +85,12 @@
      */
     #[@test]
     public function useNonExistantClass() {
-      $r= $this->useAllOf(array('does.not.exist'));
-      $this->assertEquals(1, $r[0], 'exitcode');
-      $this->assertEquals(array('-ERR does.not.exist: lang.ClassNotFoundException'), $r[1]);
-      $this->assertEquals(array(''), $r[2]);
+      $this->assertResult(
+        1, 
+        array('-ERR does.not.exist: lang.ClassNotFoundException'),
+        array(''),
+        $this->useAllOf(array('does.not.exist'))
+      );
     }
 
     /**
@@ -80,13 +99,12 @@
      */
     #[@test]
     public function useClasses() {
-      $r= $this->useAllOf(array($this->getClassName(), 'does.not.exist'));
-      $this->assertEquals(1, $r[0], 'exitcode');
-      $this->assertEquals(
+      $this->assertResult(
+        1, 
         array('+OK '.$this->getClassName(), '-ERR does.not.exist: lang.ClassNotFoundException'),
-        $r[1]
+        array(''),
+        $this->useAllOf(array($this->getClassName(), 'does.not.exist'))
       );
-      $this->assertEquals(array(''), $r[2]);
     }
 
     /**
@@ -116,10 +134,12 @@
      */
     #[@test]
     public function circularDependency() {
-      $r= $this->useAllOf(array('net.xp_framework.unittest.bootstrap.A'));
-      $this->assertEquals(0, $r[0], 'exitcode');
-      $this->assertEquals(array('+OK net.xp_framework.unittest.bootstrap.A'), $r[1]);
-      $this->assertEquals(array(''), $r[2]);
+      $this->assertResult(
+        0, 
+        array('+OK net.xp_framework.unittest.bootstrap.A'),
+        array(''),
+        $this->useAllOf(array('net.xp_framework.unittest.bootstrap.A'))
+      );
     }
 
     /**
@@ -130,10 +150,12 @@
      */
     #[@test]
     public function circularDependencyWithTicks() {
-      $r= $this->useAllOf(array('net.xp_framework.unittest.bootstrap.A'), 'declare(ticks=1)');
-      $this->assertEquals(0, $r[0], 'exitcode');
-      $this->assertEquals(array('+OK net.xp_framework.unittest.bootstrap.A'), $r[1]);
-      $this->assertEquals(array(''), $r[2]);
+      $this->assertResult(
+        0, 
+        array('+OK net.xp_framework.unittest.bootstrap.A'),
+        array(''),
+        $this->useAllOf(array('net.xp_framework.unittest.bootstrap.A'), 'declare(ticks=1)')
+      );
     }
   }
 ?>
