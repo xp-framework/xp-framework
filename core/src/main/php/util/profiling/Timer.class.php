@@ -38,7 +38,27 @@
     public function stop() {
       $this->stop= microtime(TRUE);
     }
-    
+
+    /**
+     * Measure a closure
+     *
+     * @see    http://php.net/manual/en/language.types.callable.php
+     * @param  var block a callable
+     * @return self
+     * @throws lang.IllegalArgumentException when block is not callable
+     */
+    public static function measure($block) {
+      if (!is_callable($block)) {
+        throw new IllegalArgumentException('Cannot call '.xp::stringOf($block));
+      }
+
+      $self= new self();
+      $self->start= microtime(TRUE);
+      $block();
+      $self->stop= microtime(TRUE);
+      return $self;
+    }
+
     /**
      * Retrieve elapsed time
      *
