@@ -142,7 +142,7 @@
     public static function instanceFor($path, $expand= TRUE) {
       static $pool= array();
       
-      $path= $expand && 0 !== strncmp('xar%3A%2F%2F', $path, 12) ? realpath($path) : $path;
+      $path= $expand && 0 !== strncmp('xar://', urldecode($path), 6) ? realpath($path) : $path;
       if (!isset($pool[$path])) {
         $pool[$path]= new self($path);
       }

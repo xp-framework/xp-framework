@@ -100,11 +100,10 @@
       } else {
         $before= (bool)$before;
       }
-      $resolved= realpath($element);
-      if (is_dir($resolved)) {
-        return self::registerLoader(FileSystemClassLoader::instanceFor($resolved), $before);
-      } else if (is_file($resolved)) {
-        return self::registerLoader(ArchiveClassLoader::instanceFor($resolved), $before);
+      if (is_dir($element)) {
+        return self::registerLoader(FileSystemClassLoader::instanceFor($element), $before);
+      } else if (is_file($element)) {
+        return self::registerLoader(ArchiveClassLoader::instanceFor($element), $before);
       }
       raise('lang.ElementNotFoundException', 'Element "'.$element.'" not found');
     }

@@ -444,6 +444,7 @@
 
       if (!isset($current['index'][$file])) return FALSE;
       return array(
+        'mode'  => 0100644,
         'size'  => $current['index'][$file][0],
         'dev'   => crc32($archive),
         'ino'   => $current['index'][$file][2]
