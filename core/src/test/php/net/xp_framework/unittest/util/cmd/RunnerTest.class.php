@@ -695,7 +695,11 @@
           $this->out->write($this->copy); 
         }
       }');
-      $return= $this->runWith(array('-cp', $this->getClass()->getPackage()->getResourceAsStream('instructions.xar')->getURI(), $command->getClassName(), '-cp', 'Copy'));
+      $return= $this->runWith(array(
+        '-cp', $this->getClass()->getPackage()->getResourceAsStream('instructions.xar')->getURI(), 
+        $command->getClassName(),
+        '-cp', 'Copy'
+      ));
       $this->assertEquals(0, $return);
       $this->assertEquals('', $this->err->getBytes());
       $this->assertEquals('lang.XPClass<net.xp_forge.instructions.Copy>', $this->out->getBytes());
