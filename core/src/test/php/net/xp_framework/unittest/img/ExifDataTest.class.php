@@ -193,7 +193,7 @@
      *
      * @see     http://exif.org/samples.html
      */
-    #[@test]
+    #[@test, @ignore('Not reliable within XAR files, see issue #259')]
     public function exifSampleKodakDC210() {
       $i= $this->extractFromFile($this->resourceAsFile('kodak-dc210.jpg', 'exif_org'));
       $this->assertEquals('1/30', $i->getExposureTime());
