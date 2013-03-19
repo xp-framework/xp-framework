@@ -374,7 +374,8 @@
     // {{{ function bool stream_open(string path, string mode, int options, string opened_path)
     //     Open the given stream and check if file exists
     function stream_open($path, $mode, $options, $opened_path) {
-      sscanf(urldecode($path), 'xar://%[^?]?%[^$]', $this->archive, $this->filename);
+      sscanf(strtr($path, ';', '?'), 'xar://%[^?]?%[^$]', $archive, $this->filename);
+      $this->archive= urldecode($archive);
       $current= self::acquire($this->archive);
       return isset($current['index'][$this->filename]);
     }
@@ -439,7 +440,8 @@
     // {{{ <string,int> url_stat(string path)
     //     Retrieve status of url
     function url_stat($path) {
-      sscanf(urldecode($path), 'xar://%[^?]?%[^$]', $archive, $file);
+      sscanf(strtr($path, '*', '?'), 'xar://%[^?]?%[^$]', $archive, $file);
+      $archive= urldecode($archive);
       $current= self::acquire($archive);
       if (!isset($current['index'][$file])) return FALSE;
       return array(

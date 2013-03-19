@@ -45,8 +45,8 @@
       // Normalize URI according to http://en.wikipedia.org/wiki/File_URI_scheme
       // * "f:\a dir\c.xsl"       => "file:///f:/a%20dor/c.xsl"
       // * "/a dir/c.xsl"         => "file:///a%20dir/c.xsl"
-      // * "xar://f:\a.xar?c.xsl" => "xar:///f:/a.xar?c.csl"
-      // * "xar:///a.xar?c.xsl"   => "xar:///a.xar?c.csl"
+      // * "xar://f:\a.xar?c.xsl" => "xar:///f:/a.xar;c.csl"
+      // * "xar:///a.xar?c.xsl"   => "xar:///a.xar;c.csl"
       if (FALSE === ($p= strpos($name, '://'))) {
         $scheme= 'file';
       } else {
@@ -56,7 +56,7 @@
       if (':' === $name{1}) {
         $name= '/'.$name;
       }
-      return $scheme.'://'.strtr($name, array(DIRECTORY_SEPARATOR => '/', ' ' => '%20', '?' => '%3F'));
+      return $scheme.'://'.strtr($name, array(DIRECTORY_SEPARATOR => '/', ' ' => '%20', '?' => ';'));
     }
 
     /**
