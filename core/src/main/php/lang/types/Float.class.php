@@ -12,5 +12,15 @@
    * @purpose  Wrapper
    */
   class Float extends Number {
+
+    /**
+     * ValueOf factory
+     *
+     * @param   string $value
+     * @return  self
+     */
+    public static function valueOf($value) {
+      return new self($value);
+    }
   }
 ?>

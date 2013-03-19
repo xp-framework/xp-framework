@@ -35,9 +35,7 @@
      * @param   string $value
      * @return  self
      */
-    public static function valueOf($value) {
-      return new static($value);
-    }
+    public abstract static function valueOf($value);
 
     /**
      * Returns the value of this number as an int.
