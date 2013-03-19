@@ -267,5 +267,23 @@
     public function stdin() {
       $this->assertEquals('php://stdin', create(new File('php://stdin'))->getURI());
     }
+
+    /**
+     * Test composing filename by File("xar://...")
+     *
+     */
+    #[@test]
+    public function xarSchemeAllowed() {
+      $this->assertEquals('xar://test.xar?test.txt', create(new File('xar://test.xar?test.txt'))->getURI());
+    }
+
+    /**
+     * Test composing filename by File("res://...")
+     *
+     */
+    #[@test]
+    public function resSchemeAllowed() {
+      $this->assertEquals('res://test.txt', create(new File('res://test.txt'))->getURI());
+    }
   }
 ?>
