@@ -285,5 +285,77 @@
     public function resSchemeAllowed() {
       $this->assertEquals('res://test.txt', create(new File('res://test.txt'))->getURI());
     }
+
+    /**
+     * Test getFileName()
+     *
+     */
+    #[@test]
+    public function xarSchemeFileNameInRoot() {
+      $this->assertEquals('test.txt', create(new File('xar://test.xar?test.txt'))->getFileName());
+    }
+
+    /**
+     * Test getPath()
+     *
+     */
+    #[@test]
+    public function xarSchemePathInRoot() {
+      $this->assertEquals('xar://test.xar?', create(new File('xar://test.xar?test.txt'))->getPath());
+    }
+
+    /**
+     * Test getFileName()
+     *
+     */
+    #[@test]
+    public function xarSchemeFileNameInSubdir() {
+      $this->assertEquals('test.txt', create(new File('xar://test.xar?dir/test.txt'))->getFileName());
+    }
+
+    /**
+     * Test getPath()
+     *
+     */
+    #[@test]
+    public function xarSchemePathInSubdir() {
+      $this->assertEquals('xar://test.xar?dir', create(new File('xar://test.xar?dir/test.txt'))->getPath());
+    }
+
+    /**
+     * Test getFileName()
+     *
+     */
+    #[@test]
+    public function resSchemeFileName() {
+      $this->assertEquals('test.txt', create(new File('res://test.txt'))->getFileName());
+    }
+
+    /**
+     * Test getPath()
+     *
+     */
+    #[@test]
+    public function resSchemePath() {
+      $this->assertEquals('res://', create(new File('res://test.txt'))->getPath());
+    }
+
+    /**
+     * Test getPath()
+     *
+     */
+    #[@test]
+    public function resSchemePathInSubDir() {
+      $this->assertEquals('res://dir', create(new File('res://dir/test.txt'))->getPath());
+    }
+
+    /**
+     * Test getPath()
+     *
+     */
+    #[@test]
+    public function resSchemeExtension() {
+      $this->assertEquals('txt', create(new File('res://test.txt'))->getExtension());
+    }
   }
 ?>
