@@ -222,9 +222,9 @@
         $this->packages[0][$name]= $replace;
       }
 
-      return $name == strtr($name, $this->packages)
+      return $name == @strtr($name, $this->packages)
         ? strtr($name, $this->packages[0])
-        : strtr($name, $this->packages)      // BC
+        : @strtr($name, $this->packages)      // BC
       ;
     }
         
