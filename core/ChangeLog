@@ -8,6 +8,9 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed ability to supply multiple classpaths via one "-cp" argument
+  in XPCLIs (xp.command.Runner, see issue #259, not portable!)
+  (friebe)
 - Removed deprecated classes (see pull request #254)
   (kiesel)
 - Changed message for missing static methods to include the word "static"
