@@ -440,7 +440,7 @@
     // {{{ <string,int> url_stat(string path)
     //     Retrieve status of url
     function url_stat($path) {
-      sscanf(strtr($path, '*', '?'), 'xar://%[^?]?%[^$]', $archive, $file);
+      sscanf(strtr($path, ';', '?'), 'xar://%[^?]?%[^$]', $archive, $file);
       $archive= urldecode($archive);
       $current= self::acquire($archive);
       if (!isset($current['index'][$file])) return FALSE;
