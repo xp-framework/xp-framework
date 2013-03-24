@@ -85,7 +85,7 @@
      * @param  io.streams.InputStream $in The input stream to read from
      * @param  string $name The input stream's name
      * @return img.io.ImageMetaData
-     * @throws lang.ImagingException if the input stream cannot be parsed
+     * @throws img.ImagingException if the input stream cannot be parsed
      */
     public function read(InputStream $in, $name= 'input stream') {
       if ("\xff\xd8\xff" !== $in->read(3)) {
