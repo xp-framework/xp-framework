@@ -8,6 +8,9 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed object identity calculation from microtime() to uniqid in order
+  to correctly work with PHP 5.5.0beta1. See issue #260 for details
+  (friebe)
 - Removed ability to supply multiple classpaths via one "-cp" argument
   in XPCLIs (xp.command.Runner, see issue #259, not portable!)
   (friebe)
