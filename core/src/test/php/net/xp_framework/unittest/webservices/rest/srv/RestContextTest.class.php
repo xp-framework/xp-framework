@@ -475,10 +475,7 @@
         }
       }');
       foreach ($params as $name => $value) {
-        if ('Cookie' === $name) {
-        } else {
-          $r->setParam($name, $value);
-        }
+        $r->setParam($name, $value);
       }
       if (isset($headers['Cookie'])) {
         foreach (explode(';', $headers['Cookie']) as $cookie) {
