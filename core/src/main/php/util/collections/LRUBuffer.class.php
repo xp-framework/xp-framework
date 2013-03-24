@@ -17,8 +17,8 @@
   #[@generic(self= 'T')]
   class LRUBuffer extends Object {
     protected
+      $prefix    = 0,
       $size      = 0,
-      $_access   = array(),
       $_elements = array();
 
     /**
@@ -28,6 +28,9 @@
      * @throws  lang.IllegalArgumentException is size is not greater than zero
      */
     public function __construct($size) {
+      static $u;
+
+      $this->prefix= ++$u;
       $this->setSize($size);
     }
     
@@ -46,18 +49,15 @@
      */
     #[@generic(params= 'T', return= 'T')]
     public function add($element) {
-      $h= $element instanceof Generic ? $element->hashCode() : serialize($element);
-      $this->_access[$h]= microtime(TRUE);
+      $h= $this->prefix.($element instanceof Generic ? $element->hashCode() : serialize($element));
       $this->_elements[$h]= $element;
 
       // Check if this buffer's size has been exceeded
-      if (sizeof($this->_access) <= $this->size) return NULL;
+      if (sizeof($this->_elements) <= $this->size) return NULL;
       
-      // Find the position of the smallest value and delete it
-      $p= array_search(min($this->_access), $this->_access, TRUE);
+      // Delete the element first added
+      $p= key($this->_elements);
       $victim= $this->_elements[$p];
-
-      unset($this->_access[$p]);
       unset($this->_elements[$p]);
 
       return $victim;
@@ -70,8 +70,9 @@
      */
     #[@generic(params= 'T')]
     public function update($element) {
-      $h= $element instanceof Generic ? $element->hashCode() : serialize($element);
-      $this->_access[$h]= microtime(TRUE);
+      $h= $this->prefix.($element instanceof Generic ? $element->hashCode() : serialize($element));
+      unset($this->_elements[$h]);
+      $this->_elements= $this->_elements + array($h => $element);
     }
     
     /**
@@ -80,7 +81,7 @@
      * @return  int
      */
     public function numElements() {
-      return sizeof($this->_access);
+      return sizeof($this->_elements);
     }
     
     /**
@@ -116,8 +117,7 @@
       return (
         $cmp instanceof self &&
         $this->size === $cmp->size &&
-        $this->__generic === $cmp->__generic &&
-        $this->_access === $cmp->_access
+        array_keys($this->_elements) === array_keys($cmp->_elements)
       );
     }
   }
