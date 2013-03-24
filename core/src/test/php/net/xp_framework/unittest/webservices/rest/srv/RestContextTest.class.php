@@ -480,7 +480,7 @@
       if (isset($headers['Cookie'])) {
         foreach (explode(';', $headers['Cookie']) as $cookie) {
           sscanf(trim($cookie), '%[^=]=%s', $name, $value);
-          $_COOKIE[$name]= $value;
+          $r->addCookie(new Cookie($name, $value));
         }
         unset($headers['Cookie']);
       }
