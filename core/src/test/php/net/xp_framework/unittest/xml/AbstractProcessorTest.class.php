@@ -240,7 +240,7 @@
     #[@test]
     public function baseAccessors() {
       $file= Runtime::getInstance()->getExecutable()->getFilename();
-      $path= rtrim(dirname($file), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+      $path= rtrim(realpath(dirname($file)), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
       $this->processor->setBase($path);
       $this->assertEquals($path, $this->processor->getBase());
     }
@@ -252,7 +252,7 @@
     #[@test]
     public function setBaseAddsTrailingDirectorySeparator() {
       $file= Runtime::getInstance()->getExecutable()->getFilename();
-      $path= rtrim(dirname($file), DIRECTORY_SEPARATOR);
+      $path= rtrim(realpath(dirname($file)), DIRECTORY_SEPARATOR);
       $this->processor->setBase($path);
       $this->assertEquals($path.DIRECTORY_SEPARATOR, $this->processor->getBase());
     }
