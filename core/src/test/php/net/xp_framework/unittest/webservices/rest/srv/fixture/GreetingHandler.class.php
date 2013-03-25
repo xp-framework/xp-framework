@@ -94,5 +94,19 @@
     public function greet_user($name) {
       return 'Hello '.$name;
     }
+
+    /**
+     * Download a greeting
+     *
+     * @return  webservices.rest.StreamingOutput
+     */
+    #[@webmethod(verb= 'GET', path= '/')]
+    public function download_greeting() {
+      return StreamingOutput::of(new MemoryInputStream('Hello World'))
+        ->withMediaType('text/plain; charset=utf-8')
+        ->withContentLength(11)
+        ->withStatus(200)
+      ;
+    }
   }
 ?>

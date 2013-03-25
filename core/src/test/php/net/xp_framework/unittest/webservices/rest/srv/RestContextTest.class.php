@@ -9,6 +9,7 @@
     'scriptlet.HttpScriptletRequest',
     'scriptlet.HttpScriptletResponse',
     'webservices.rest.srv.RestContext',
+    'webservices.rest.StreamingOutput',
     'util.log.Logger',
     'util.log.LogCategory'
   );
@@ -679,6 +680,26 @@
       $this->assertEquals(
         Response::error(500)->withPayload(new Payload('expected 1 but was 2', array('name' => 'exception'))),
         $this->fixture->mapException(new AssertionFailedError('Test', 2, 1))
+      );
+    }
+
+    /**
+     * Test handle()
+     *
+     */
+    #[@test]
+    public function process_streaming_output() {
+      $route= array(
+        'target'   => $this->fixtureMethod('GreetingHandler', 'download_greeting'),
+        'params'   => array(),
+        'segments' => array(),
+        'input'    => NULL,
+        'output'   => NULL
+      );
+
+      $this->assertProcess(
+        200, array('Content-Type: text/plain; charset=utf-8', 'Content-Length: 11'), 'Hello World',
+        $route, $this->newRequest()
       );
     }
   }
