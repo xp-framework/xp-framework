@@ -96,37 +96,30 @@
     }
 
     /**
-     * Writes this payload to an output stream
+     * Write response headers
      *
      * @param  scriptlet.Response response
      * @param  peer.URL base
      * @param  string format
-     * @return bool handled
      */
-    public function writeTo($response, $base, $format) {
-      $response->setStatus($this->status);
+    protected function writeHead($response, $base, $format) {
       $response->setContentType($this->mediaType);
       if (NULL !== $this->contentLength) {
         $response->setContentLength($this->contentLength);
       }
+    }
 
-      // Headers
-      foreach ($this->headers as $name => $value) {
-        if ('Location' === $name) {
-          $url= clone $base;
-          $response->setHeader($name, $url->setPath($value)->getURL());
-        } else {
-          $response->setHeader($name, $value);
-        }
-      }
-      foreach ($this->cookies as $cookie) {
-        $response->setCookie($cookie);
-      }
-
+    /**
+     * Write response body
+     *
+     * @param  scriptlet.Response response
+     * @param  peer.URL base
+     * @param  string format
+     */
+    protected function writeBody($response, $base, $format) {
       $output= $response->getOutputStream();
       $output->flush();
       $this->write($output);
-      return TRUE;
     }
   }
 ?>

@@ -39,13 +39,50 @@
     }
 
     /**
-     * Writes this payload to an output stream
+     * Write response headers
+     *
+     * @param  scriptlet.Response response
+     * @param  peer.URL base
+     * @param  string format
+     */
+    protected abstract function writeHead($response, $base, $format);
+
+    /**
+     * Write response body
+     *
+     * @param  scriptlet.Response response
+     * @param  peer.URL base
+     * @param  string format
+     */
+    protected abstract function writeBody($response, $base, $format);
+
+    /**
+     *  this payload to an output stream
      *
      * @param  scriptlet.Response response
      * @param  peer.URL base
      * @param  string format
      * @return bool handled
      */
-    public abstract function writeTo($response, $base, $format);
+    public function writeTo($response, $base, $format) {
+      $response->setStatus($this->status);
+      $this->writeHead($response, $base, $format);
+
+      // Headers
+      foreach ($this->headers as $name => $value) {
+        if ('Location' === $name) {
+          $url= clone $base;
+          $response->setHeader($name, $url->setPath($value)->getURL());
+        } else {
+          $response->setHeader($name, $value);
+        }
+      }
+      foreach ($this->cookies as $cookie) {
+        $response->setCookie($cookie);
+      }
+
+      $this->writeBody($response, $base, $format);
+      return TRUE;
+    }
   }
 ?>

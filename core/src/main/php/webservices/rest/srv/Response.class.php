@@ -186,35 +186,29 @@
     }
 
     /**
-     * Writes this payload to an output stream
+     * Write response headers
      *
      * @param  scriptlet.Response response
      * @param  peer.URL base
      * @param  string format
-     * @return bool handled
      */
-    public function writeTo($response, $base, $format) {
-      $response->setStatus($this->status);
-
-      // Headers
-      foreach ($this->headers as $name => $value) {
-        if ('Location' === $name) {
-          $url= clone $base;
-          $response->setHeader($name, $url->setPath($value)->getURL());
-        } else {
-          $response->setHeader($name, $value);
-        }
+    protected function writeHead($response, $base, $format) {
+      if (NULL !== $this->payload && !isset($this->headers['Content-Type'])) {
+        $response->setContentType($format);
       }
-      foreach ($this->cookies as $cookie) {
-        $response->setCookie($cookie);
-      }
+    }
 
-      // Payload
+    /**
+     * Write response body
+     *
+     * @param  scriptlet.Response response
+     * @param  peer.URL base
+     * @param  string format
+     */
+    protected function writeBody($response, $base, $format) {
       if (NULL !== $this->payload) {
-        isset($this->headers['Content-Type']) || $response->setContentType($format);
         RestFormat::forMediaType($format)->write($response->getOutputStream(), $this->payload);
       }
-      return TRUE;
     }
 
     /**
