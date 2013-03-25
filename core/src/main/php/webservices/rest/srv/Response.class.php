@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('webservices.rest.Payload', 'scriptlet.Cookie');
+  uses('webservices.rest.Output', 'webservices.rest.Payload', 'scriptlet.Cookie');
 
   /**
    * The Response class can be used to control the HTTP status code and headers
@@ -20,7 +20,7 @@
    *
    * @test  xp://net.xp_framework.unittest.webservices.rest.srv.ResponseTest
    */
-  class Response extends Object {
+  class Response extends Object implements webservices·rest·Output {
     public $status;
     public $headers= array();
     public $cookies= array();
@@ -207,6 +207,38 @@
           case $a1[$k] !== $a2[$k]:
             return FALSE;
         }
+      }
+      return TRUE;
+    }
+
+    /**
+     * Writes this payload to an output stream
+     *
+     * @param  scriptlet.Response response
+     * @param  peer.URL base
+     * @param  string format
+     * @return bool handled
+     */
+    public function writeTo($response, $base, $format) {
+      $response->setStatus($this->status);
+
+      // Headers
+      foreach ($this->headers as $name => $value) {
+        if ('Location' === $name) {
+          $url= clone $base;
+          $response->setHeader($name, $url->setPath($value)->getURL());
+        } else {
+          $response->setHeader($name, $value);
+        }
+      }
+      foreach ($this->cookies as $cookie) {
+        $response->setCookie($cookie);
+      }
+
+      // Payload
+      if (NULL !== $this->payload) {
+        isset($this->headers['Content-Type']) || $response->setContentType($format);
+        RestFormat::forMediaType($format)->write($response->getOutputStream(), $this->payload);
       }
       return TRUE;
     }
