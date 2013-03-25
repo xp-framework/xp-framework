@@ -23,7 +23,7 @@
      *
      * @param  io.streams.InputStream inputStream
      */
-    public function __construct(InputStream $inputStream) {
+    public function __construct(InputStream $inputStream= NULL) {
       $this->inputStream= $inputStream;
     }
 
@@ -98,6 +98,18 @@
     }
 
     /**
+     * Writes to output. This default implementation will copy data from
+     * the input stream while data is available on it.
+     *
+     * @param  io.streams.OutputStream out
+     */
+    public function write($out) {
+      while ($this->inputStream->available()) {
+        $out->write($this->inputStream->read());
+      }
+    }
+
+    /**
      * Writes this payload to an output stream
      *
      * @param  scriptlet.Response response
@@ -124,9 +136,7 @@
 
       $output= $response->getOutputStream();
       $output->flush();
-      while ($this->inputStream->available()) {
-        $output->write($this->inputStream->read());
-      }
+      $this->write($output);
       return TRUE;
     }
   }
