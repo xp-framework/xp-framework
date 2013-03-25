@@ -57,7 +57,7 @@
     protected abstract function writeBody($response, $base, $format);
 
     /**
-     *  this payload to an output stream
+     * Write this output to the scriptlet's response
      *
      * @param  scriptlet.Response response
      * @param  peer.URL base
