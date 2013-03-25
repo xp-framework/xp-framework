@@ -104,7 +104,7 @@
      *
      * @return  webservices.rest.srv.Output
      */
-    #[@webmethod(verb= 'GET', path= '/')]
+    #[@webmethod(verb= 'GET', path= '/download')]
     public function download_greeting() {
       return StreamingOutput::of(new MemoryInputStream('Hello World'))
         ->withMediaType('text/plain; charset=utf-8')

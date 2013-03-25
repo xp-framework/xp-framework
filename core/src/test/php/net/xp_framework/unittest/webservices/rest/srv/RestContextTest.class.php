@@ -690,7 +690,7 @@
     public function process_streaming_output() {
       $route= array(
         'target'   => $this->fixtureMethod('GreetingHandler', 'download_greeting'),
-        'params'   => array(),
+        'params'   => array(0 => '/download'),
         'segments' => array(),
         'input'    => NULL,
         'output'   => NULL
