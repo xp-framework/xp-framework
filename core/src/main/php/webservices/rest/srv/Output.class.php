@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  $package= 'webservices.rest';
+  $package= 'webservices.rest.srv';
 
   /**
    * Represents output
    *
    */
-  abstract class webservices·rest·Output extends Object {
+  abstract class webservices·rest·srv·Output extends Object {
     protected $status;
     protected $headers= array();
     protected $cookies= array();

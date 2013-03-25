@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses('net.xp_framework.unittest.webservices.rest.srv.fixture.Greeting');
+  uses(
+    'net.xp_framework.unittest.webservices.rest.srv.fixture.Greeting',
+    'webservices.rest.srv.Response',
+    'webservices.rest.srv.StreamingOutput'
+  );
 
   /**
    * Fixture for default router
@@ -98,7 +102,7 @@
     /**
      * Download a greeting
      *
-     * @return  webservices.rest.StreamingOutput
+     * @return  webservices.rest.srv.Output
      */
     #[@webmethod(verb= 'GET', path= '/')]
     public function download_greeting() {

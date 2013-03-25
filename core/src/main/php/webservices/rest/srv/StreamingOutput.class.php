@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  uses('webservices.rest.Output', 'util.MimeType');
+  uses('webservices.rest.srv.Output', 'util.MimeType');
 
   /**
    * Represents a stream to be output
    *
    */
-  class StreamingOutput extends webservices·rest·Output {
+  class StreamingOutput extends webservices·rest·srv·Output {
     protected $inputStream= NULL;
     protected $mediaType= 'application/octet-stream';
     protected $contentLength= 0;

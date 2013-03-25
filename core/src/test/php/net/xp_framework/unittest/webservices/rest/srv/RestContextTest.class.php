@@ -9,7 +9,6 @@
     'scriptlet.HttpScriptletRequest',
     'scriptlet.HttpScriptletResponse',
     'webservices.rest.srv.RestContext',
-    'webservices.rest.StreamingOutput',
     'util.log.Logger',
     'util.log.LogCategory'
   );

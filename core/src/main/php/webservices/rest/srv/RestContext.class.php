@@ -228,7 +228,7 @@
       // use its status, headers and payload. For any other methods, set status to "OK".
       if (Type::$VOID->equals($method->getReturnType())) {
         return Response::status(HttpConstants::STATUS_NO_CONTENT);
-      } else if ($result instanceof webservices·rest·Output) {
+      } else if ($result instanceof webservices·rest·srv·Output) {
         $result->payload= $this->marshal($result->payload, $properties);
         return $result;
       } else {

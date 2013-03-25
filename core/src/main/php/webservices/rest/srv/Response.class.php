@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('webservices.rest.Output', 'webservices.rest.Payload', 'scriptlet.Cookie');
+  uses('webservices.rest.srv.Output', 'webservices.rest.Payload', 'scriptlet.Cookie');
 
   /**
    * The Response class can be used to control the HTTP status code and headers
@@ -20,7 +20,7 @@
    *
    * @test  xp://net.xp_framework.unittest.webservices.rest.srv.ResponseTest
    */
-  class Response extends webservices·rest·Output {
+  class Response extends webservices·rest·srv·Output {
     public $payload;
 
     /**
