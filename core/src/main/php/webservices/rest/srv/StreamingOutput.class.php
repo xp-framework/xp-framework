@@ -13,7 +13,7 @@
   class StreamingOutput extends webservices·rest·srv·Output {
     public $inputStream= NULL;
     public $mediaType= 'application/octet-stream';
-    public $contentLength= 0;
+    public $contentLength= NULL;
     public $payload= NULL;
   
     /**
@@ -38,12 +38,12 @@
       } else if ($arg instanceof File) {
         return create(new self($arg->getInputStream()))
           ->withMediaType(MimeType::getByFileName($arg->getFileName()))
-          ->withSize($arg->getSize())
+          ->withContentLength($arg->getSize())
         ;
       } else if ($arg instanceof IOElement) {
         return create(new self($arg->getInputStream()))
           ->withMediaType(MimeType::getByFileName($arg->getURI()))
-          ->withSize($arg->getSize())
+          ->withContentLength($arg->getSize())
         ;
       } else {
         throw new IllegalArgumentException('Expected either an InputStream, File, or IOElement, have '.xp::typeOf($arg));
