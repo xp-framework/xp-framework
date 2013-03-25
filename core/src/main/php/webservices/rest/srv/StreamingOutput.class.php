@@ -11,9 +11,9 @@
    *
    */
   class StreamingOutput extends webservices·rest·srv·Output {
-    protected $inputStream= NULL;
-    protected $mediaType= 'application/octet-stream';
-    protected $contentLength= 0;
+    public $inputStream= NULL;
+    public $mediaType= 'application/octet-stream';
+    public $contentLength= 0;
     public $payload= NULL;
   
     /**
