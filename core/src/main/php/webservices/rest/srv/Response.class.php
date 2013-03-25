@@ -21,9 +21,6 @@
    * @test  xp://net.xp_framework.unittest.webservices.rest.srv.ResponseTest
    */
   class Response extends webservices·rest·Output {
-    public $status;
-    public $headers= array();
-    public $cookies= array();
     public $payload;
 
     /**
@@ -141,29 +138,6 @@
       $self= new self();
       $self->status= $code;
       return $self;
-    }
-
-    /**
-     * Adds a header and returns this instance
-     * 
-     * @param   string name
-     * @param   string value
-     * @return  self
-     */
-    public function withHeader($name, $value) {
-      $this->headers[$name]= $value;
-      return $this;
-    }
-
-    /**
-     * Adds a cookie and returns this instance
-     * 
-     * @param   scriptlet.Cookie cookie
-     * @return  self
-     */
-    public function withCookie(Cookie $cookie) {
-      $this->cookies[]= $cookie;
-      return $this;
     }
 
     /**

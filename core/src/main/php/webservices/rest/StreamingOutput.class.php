@@ -14,8 +14,6 @@
     protected $inputStream= NULL;
     protected $mediaType= 'application/octet-stream';
     protected $contentLength= 0;
-    protected $statusCode= 200;
-    protected $headers= array();
     public $payload= NULL;
   
     /**
@@ -59,7 +57,7 @@
      * @return self
      */
     public function withStatus($status) {
-      $this->statusCode= $status;
+      $this->status= $status;
       return $this;
     }
 
@@ -86,18 +84,6 @@
     }
 
     /**
-     * Adds a header and returns this instance
-     * 
-     * @param   string name
-     * @param   string value
-     * @return  self
-     */
-    public function withHeader($name, $value) {
-      $this->headers[$name]= $value;
-      return $this;
-    }
-
-    /**
      * Writes to output. This default implementation will copy data from
      * the input stream while data is available on it.
      *
@@ -118,7 +104,7 @@
      * @return bool handled
      */
     public function writeTo($response, $base, $format) {
-      $response->setStatus($this->statusCode);
+      $response->setStatus($this->status);
       $response->setContentType($this->mediaType);
       if (NULL !== $this->contentLength) {
         $response->setContentLength($this->contentLength);
@@ -132,6 +118,9 @@
         } else {
           $response->setHeader($name, $value);
         }
+      }
+      foreach ($this->cookies as $cookie) {
+        $response->setCookie($cookie);
       }
 
       $output= $response->getOutputStream();
