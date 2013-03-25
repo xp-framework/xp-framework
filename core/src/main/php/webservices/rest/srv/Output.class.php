@@ -11,9 +11,9 @@
    *
    */
   abstract class webservices·rest·srv·Output extends Object {
-    protected $status;
-    protected $headers= array();
-    protected $cookies= array();
+    public $status;
+    public $headers= array();
+    public $cookies= array();
 
     /**
      * Adds a header and returns this instance
