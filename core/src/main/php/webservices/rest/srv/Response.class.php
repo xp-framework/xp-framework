@@ -20,7 +20,7 @@
    *
    * @test  xp://net.xp_framework.unittest.webservices.rest.srv.ResponseTest
    */
-  class Response extends Object implements webservices·rest·Output {
+  class Response extends webservices·rest·Output {
     public $status;
     public $headers= array();
     public $cookies= array();

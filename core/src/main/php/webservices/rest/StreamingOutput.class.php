@@ -10,7 +10,7 @@
    * Represents a stream to be output
    *
    */
-  class StreamingOutput extends Object implements webservices·rest·Output {
+  class StreamingOutput extends webservices·rest·Output {
     protected $inputStream= NULL;
     protected $mediaType= 'application/octet-stream';
     protected $contentLength= 0;

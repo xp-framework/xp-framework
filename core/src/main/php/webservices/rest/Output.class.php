@@ -10,7 +10,7 @@
    * Represents output
    *
    */
-  interface webservices·rest·Output {
+  abstract class webservices·rest·Output extends Object {
 
     /**
      * Writes this payload to an output stream
@@ -20,6 +20,6 @@
      * @param  string format
      * @return bool handled
      */
-    public function writeTo($response, $base, $format);
+    public abstract function writeTo($response, $base, $format);
   }
 ?>
