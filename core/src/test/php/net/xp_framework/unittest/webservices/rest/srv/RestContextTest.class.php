@@ -40,6 +40,16 @@
     }
 
     /**
+     * Returns a class object for a given fixture class
+     *
+     * @param  string class
+     * @return lang.XPClass
+     */
+    protected function fixtureClass($class) {
+      return self::$package->loadClass($class);
+    }
+
+    /**
      * Returns a method from given fixture class
      *
      * @param  string class
@@ -495,6 +505,7 @@
     #[@test]
     public function greet_implicit_segment_and_param() {
       $route= array(
+        'handler'  => $this->fixtureClass('ImplicitGreetingHandler'),
         'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet'),
         'params'   => array(),
         'segments' => array(0 => '/implicit/greet/test', 'name' => 'test', 1 => 'test'),
@@ -514,6 +525,7 @@
     #[@test]
     public function greet_implicit_segment_and_missing_param() {
       $route= array(
+        'handler'  => $this->fixtureClass('ImplicitGreetingHandler'),
         'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet'),
         'params'   => array(),
         'segments' => array(0 => '/implicit/greet/test', 'name' => 'test', 1 => 'test'),
@@ -533,6 +545,7 @@
     #[@test]
     public function greet_implicit_payload() {
       $route= array(
+        'handler'  => $this->fixtureClass('ImplicitGreetingHandler'),
         'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet_posted'),
         'params'   => array(),
         'segments' => array(0 => '/greet'),
@@ -552,6 +565,7 @@
     #[@test]
     public function greet_intl() {
       $route= array(
+        'handler'  => $this->fixtureClass('GreetingHandler'),
         'target'   => $this->fixtureMethod('GreetingHandler', 'greet_intl'),
         'params'   => array('language' => new RestParamSource('Accept-Language', ParamReader::$HEADER)),
         'segments' => array(0 => '/intl/greet/test', 'name' => 'test', 1 => 'test'),
@@ -571,6 +585,7 @@
     #[@test]
     public function greet_user() {
       $route= array(
+        'handler'  => $this->fixtureClass('GreetingHandler'),
         'target'   => $this->fixtureMethod('GreetingHandler', 'greet_user'),
         'params'   => array('name' => new RestParamSource('user', ParamReader::$COOKIE)),
         'segments' => array(0 => '/user/greet'),
@@ -609,6 +624,7 @@
     #[@test]
     public function process_greet_successfully() {
       $route= array(
+        'handler'  => $this->fixtureClass('GreetingHandler'),
         'target'   => $this->fixtureMethod('GreetingHandler', 'greet'),
         'params'   => array('name' => new RestParamSource('name', ParamReader::$PATH)),
         'segments' => array(0 => '/greet/Test', 'name' => 'Test', 1 => 'Test'),
@@ -628,6 +644,7 @@
     #[@test]
     public function process_greet_with_missing_parameter() {
       $route= array(
+        'handler'  => $this->fixtureClass('GreetingHandler'),
         'target'   => $this->fixtureMethod('GreetingHandler', 'greet'),
         'params'   => array('name' => new RestParamSource('name', ParamReader::$PATH)),
         'segments' => array(0 => '/greet/'),
@@ -647,6 +664,7 @@
     #[@test]
     public function process_greet_and_go() {
       $route= array(
+        'handler'  => $this->fixtureClass('GreetingHandler'),
         'target'   => $this->fixtureMethod('GreetingHandler', 'greet_and_go'),
         'params'   => array('name' => new RestParamSource('name', ParamReader::$PATH)), 
         'segments' => array(0 => '/greet/and/go/test', 'name' => 'test', 1 => 'test'),
@@ -686,15 +704,44 @@
     #[@test]
     public function process_streaming_output() {
       $route= array(
+        'handler'  => $this->fixtureClass('GreetingHandler'),
         'target'   => $this->fixtureMethod('GreetingHandler', 'download_greeting'),
-        'params'   => array(0 => '/download'),
-        'segments' => array(),
+        'params'   => array(),
+        'segments' => array(0 => '/download'),
         'input'    => NULL,
         'output'   => NULL
       );
 
       $this->assertProcess(
         200, array('Content-Type: text/plain; charset=utf-8', 'Content-Length: 11'), 'Hello World',
+        $route, $this->newRequest()
+      );
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
+    public function process_extended() {
+      $extended= ClassLoader::defineClass(
+        'net.xp_framework.unittest.webservices.rest.srv.fixture.GreetingHandlerExtended',
+        $this->fixtureClass('GreetingHandler')->getName(),
+        array(),
+        '{}'
+      );
+
+      $route= array(
+        'handler'  => $extended,
+        'target'   => $extended->getMethod('greet_class'),
+        'params'   => array(),
+        'segments' => array(0 => '/greet/class'),
+        'input'    => NULL,
+        'output'   => 'text/json'
+      );
+
+      $this->assertProcess(
+        200, array('Content-Type: text/json'), '"Hello '.$extended->getName().'"',
         $route, $this->newRequest()
       );
     }
