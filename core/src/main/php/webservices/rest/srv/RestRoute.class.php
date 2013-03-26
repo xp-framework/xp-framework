@@ -14,6 +14,7 @@
   class RestRoute extends Object {
     protected $verb= '';
     protected $path= '';
+    protected $handler= NULL;
     protected $target= NULL;
     protected $accepts= array();
     protected $produces= array();
@@ -24,13 +25,15 @@
      * 
      * @param  string verb
      * @param  string path
+     * @param  lang.XPClass handler
      * @param  lang.reflect.Method target
      * @param  string[] accepts
      * @param  string[] produces
      */
-    public function __construct($verb, $path, $target, $accepts, $produces) {
+    public function __construct($verb, $path, $handler, $target, $accepts, $produces) {
       $this->verb= strtoupper($verb);
       $this->path= $path;
+      $this->handler= $handler;
       $this->target= $target;
       $this->accepts= $accepts;
       $this->produces= $produces;
@@ -64,6 +67,15 @@
       static $replace= '(?P<$1>[%\w:\+\-\.]*)';
 
       return '#^'.preg_replace($search, $replace, $this->path).'$#';
+    }
+
+    /**
+     * Get handler
+     *
+     * @return lang.XPClass
+     */
+    public function getHandler() {
+      return $this->handler;
     }
 
     /**
@@ -123,12 +135,13 @@
         $params.= ', @$'.$name.': '.$source->toString();
       }
       return sprintf(
-        '%s(%s %s%s -> %s %s(%s)%s)',
+        '%s(%s %s%s -> %s %s::%s(%s)%s)',
         $this->getClassName(),
         $this->verb,
         $this->path,
         NULL === $this->accepts ? '' : ' @ '.implode(', ', $this->accepts),
         $this->target->getReturnTypeName(),
+        $this->handler->getName(),
         $this->target->getName(),
         substr($params, 2),
         NULL === $this->produces ? '' : ' @ '.implode(', ', $this->produces)
