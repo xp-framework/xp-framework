@@ -100,6 +100,16 @@
     }
 
     /**
+     * Greet handler class
+     *
+     * @return  string
+     */
+    #[@webmethod(verb= 'GET', path= '/class/greet')]
+    public function greet_class() {
+      return 'Hello '.$this->getClassName();
+    }
+
+    /**
      * Download a greeting
      *
      * @return  webservices.rest.srv.Output
