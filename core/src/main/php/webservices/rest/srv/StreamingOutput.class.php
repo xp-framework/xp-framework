@@ -16,6 +16,7 @@
     public $contentLength= NULL;
     public $lastModified= NULL;
     public $payload= NULL;
+    public $buffered= FALSE;
   
     /**
      * Creates a new streaming output instance with a given input stream
@@ -138,7 +139,7 @@
      */
     protected function writeBody($response, $base, $format) {
       $output= $response->getOutputStream();
-      $output->flush();
+      $this->buffered || $output->flush();
       $this->write($output);
     }
 

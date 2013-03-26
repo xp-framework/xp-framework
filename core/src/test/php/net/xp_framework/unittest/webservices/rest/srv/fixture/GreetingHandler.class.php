@@ -106,11 +106,13 @@
      */
     #[@webmethod(verb= 'GET', path= '/download')]
     public function download_greeting() {
-      return StreamingOutput::of(new MemoryInputStream('Hello World'))
+      $s= StreamingOutput::of(new MemoryInputStream('Hello World'))
         ->withMediaType('text/plain; charset=utf-8')
         ->withContentLength(11)
         ->withStatus(200)
       ;
+      $s->buffered= TRUE;       // For easier testability!
+      return $s;
     }
   }
 ?>

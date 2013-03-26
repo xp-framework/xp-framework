@@ -217,6 +217,12 @@
       }
 
       $this->committed= TRUE;
+
+      // Flush buffer if not empty
+      if (NULL !== $this->content) {
+        echo $this->content;
+        $this->content= NULL;
+      }
     }
 
     /**
@@ -270,7 +276,11 @@
      * @param   string s string to add to the content
      */
     public function write($s) {
-      $this->content.= $s;
+      if ($this->committed) {
+        echo $s;
+      } else {
+        $this->content.= $s;
+      }
     }
     
     /**

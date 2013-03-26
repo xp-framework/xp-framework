@@ -150,5 +150,48 @@
       $this->r->flush();
       $this->assertTrue($this->r->isCommitted());
     }
+
+    /**
+     * Test write()
+     *
+     */
+    #[@test]
+    public function writeToBuffer() {
+      $this->r->write('Hello');
+      $this->assertEquals('Hello', $this->r->getContent());
+    }
+
+    /**
+     * Test write()
+     *
+     */
+    #[@test]
+    public function writeDirectly() {
+      $this->r->flush();
+
+      ob_start();
+      $this->r->write('Hello');
+      $content= ob_get_contents();
+      ob_end_clean();
+
+      $this->assertEquals('Hello', $content);
+    }
+
+    /**
+     * Test write()
+     *
+     */
+    #[@test]
+    public function writeBufferedAndDirectWrites() {
+      $this->r->write('Hello');   // This will be buffered
+
+      ob_start();
+      $this->r->flush();          // This will flush the buffer
+      $this->r->write('World');
+      $content= ob_get_contents();
+      ob_end_clean();
+
+      $this->assertEquals('HelloWorld', $content);
+    }
   }
 ?>
