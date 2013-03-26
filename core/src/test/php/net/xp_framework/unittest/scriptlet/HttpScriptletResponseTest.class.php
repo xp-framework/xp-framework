@@ -113,5 +113,42 @@
       $this->assertEquals('', $content);
     }
 
+    /**
+     * Test flush()
+     *
+     */
+    #[@test]
+    public function flush() {
+      $this->r->flush();
+    }
+
+    /**
+     * Test flush()
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function flushCalledTwice() {
+      $this->r->flush();
+      $this->r->flush();
+    }
+
+    /**
+     * Test isCommitted()
+     *
+     */
+    #[@test]
+    public function isCommitted() {
+      $this->assertFalse($this->r->isCommitted());
+    }
+
+    /**
+     * Test isCommitted()
+     *
+     */
+    #[@test]
+    public function isCommittedAfterFlush() {
+      $this->r->flush();
+      $this->assertTrue($this->r->isCommitted());
+    }
   }
 ?>
