@@ -260,7 +260,7 @@
      */
     public function sendContent() {
       if (NULL !== ($content= $this->getContent())) {
-        echo $this->getContent();
+        echo $content;
       }
     }
     
