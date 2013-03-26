@@ -294,7 +294,7 @@
       try {
         $this->cat && $this->cat->debug('->', $target);
         $result= $this->handle(
-          $this->handlerInstanceFor($target['target']->getDeclaringClass()),
+          $this->handlerInstanceFor($target['handler']),
           $target['target'],
           $this->argumentsFor($target, $request)
         );
