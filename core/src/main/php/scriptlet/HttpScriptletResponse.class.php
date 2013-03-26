@@ -19,7 +19,8 @@
    */  
   class HttpScriptletResponse extends Object implements scriptlet·Response {
     protected
-      $uri=             NULL;
+      $uri=             NULL,
+      $committed=       FALSE;
     
     public
       $version=         '1.1',
@@ -111,7 +112,7 @@
      * @return  bool
      */
     public function isCommitted() {
-      return headers_sent();
+      return $this->committed;
     }
 
     /**
@@ -200,20 +201,22 @@
      *
      */
     public function flush() {
-      if (headers_sent($file, $line))
+      if ($this->committed) {
+        headers_sent($file, $line);
         throw new IllegalStateException('Headers have already been sent at: '.$file.', line '.$line);
-        
-      switch (php_sapi_name()) {
-        case 'cgi':
-          header('Status: '.$this->statusCode);
-          break;
+      }
 
-        default:
-          header(sprintf('HTTP/%s %d', $this->version, $this->statusCode));
-      } 
+      if ('cgi' === PHP_SAPI) {
+        header('Status: '.$this->statusCode);
+      } else {
+        header(sprintf('HTTP/%s %d', $this->version, $this->statusCode));
+      }
+
       foreach ($this->headers as $header) {
         header(strtr($header, array("\r" => '', "\n" => "\n\t")), FALSE);
       }
+
+      $this->committed= TRUE;
     }
 
     /**
