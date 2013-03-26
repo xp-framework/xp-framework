@@ -47,6 +47,7 @@
         create(new StreamingOutput($s))
           ->withMediaType('application/octet-stream')
           ->withContentLength(NULL)
+          ->withLastModified(NULL)
         ,
         StreamingOutput::of($s)
       );
@@ -64,11 +65,13 @@
         public function getFileName() { return "test.txt"; }
         public function getSize() { return 6100; }
         public function getInputStream() { return $this->stream; }
+        public function lastModified() { return 1364291580; }
       }');
       $this->assertEquals(
         create(new StreamingOutput($f->getInputStream()))
           ->withMediaType('text/plain')
           ->withContentLength(6100)
+          ->withLastModified(new Date('2013-03-26 10:53:00'))
         ,
         StreamingOutput::of($f)
       );
@@ -87,7 +90,7 @@
         public function getSize() { return 6100; }
         public function createdAt() { return NULL; }
         public function lastAccessed() { return NULL; }
-        public function lastModified() { return NULL; }
+        public function lastModified() { return new Date("2013-03-26 10:53:00"); }
         public function getOrigin() { return NULL; }
         public function setOrigin(IOCollection $origin) { }
         public function getInputStream() { return $this->stream; }
@@ -97,6 +100,7 @@
         create(new StreamingOutput($e->getInputStream()))
           ->withMediaType('text/plain')
           ->withContentLength(6100)
+          ->withLastModified(new Date('2013-03-26 10:53:00'))
         ,
         StreamingOutput::of($e)
       );

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('webservices.rest.srv.Output', 'util.MimeType');
+  uses('webservices.rest.srv.Output', 'util.MimeType', 'util.Date');
 
   /**
    * Represents a stream to be output
@@ -14,6 +14,7 @@
     public $inputStream= NULL;
     public $mediaType= 'application/octet-stream';
     public $contentLength= NULL;
+    public $lastModified= NULL;
     public $payload= NULL;
   
     /**
@@ -39,11 +40,13 @@
         return create(new self($arg->getInputStream()))
           ->withMediaType(MimeType::getByFileName($arg->getFileName()))
           ->withContentLength($arg->getSize())
+          ->withLastModified(new Date($arg->lastModified()))
         ;
       } else if ($arg instanceof IOElement) {
         return create(new self($arg->getInputStream()))
           ->withMediaType(MimeType::getByFileName($arg->getURI()))
           ->withContentLength($arg->getSize())
+          ->withLastModified($arg->lastModified())
         ;
       } else {
         throw new IllegalArgumentException('Expected either an InputStream, File, or IOElement, have '.xp::typeOf($arg));
@@ -84,6 +87,17 @@
     }
 
     /**
+     * Sets lastModified
+     *
+     * @param  util.Date date
+     * @return self
+     */
+    public function withLastModified(Date $date= NULL) {
+      $this->lastModified= $date;
+      return $this;
+    }
+
+    /**
      * Writes to output. This default implementation will copy data from
      * the input stream while data is available on it.
      *
@@ -106,6 +120,12 @@
       $response->setContentType($this->mediaType);
       if (NULL !== $this->contentLength) {
         $response->setContentLength($this->contentLength);
+      }
+      if (NULL !== $this->lastModified) {
+        $response->setHeader('Last-Modified', TimeZone::getByName('GMT')
+          ->translate($this->lastModified)
+          ->toString('D, d M Y H:i:s \G\M\T')
+        );
       }
     }
 
