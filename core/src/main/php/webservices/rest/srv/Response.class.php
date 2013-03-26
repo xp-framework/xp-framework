@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('webservices.rest.srv.Output', 'webservices.rest.Payload', 'scriptlet.Cookie');
+  uses('webservices.rest.srv.Output', 'webservices.rest.Payload');
 
   /**
    * The Response class can be used to control the HTTP status code and headers

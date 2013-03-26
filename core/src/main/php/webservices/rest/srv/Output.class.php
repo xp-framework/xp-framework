@@ -6,6 +6,8 @@
 
   $package= 'webservices.rest.srv';
 
+  uses('scriptlet.Cookie');
+
   /**
    * Represents output
    *
