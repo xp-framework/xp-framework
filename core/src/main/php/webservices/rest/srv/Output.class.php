@@ -86,5 +86,50 @@
       $this->writeBody($response, $base, $format);
       return TRUE;
     }
+
+    /**
+     * Helper method to compare two arrays recursively
+     *
+     * @param   array a1
+     * @param   array a2
+     * @return  bool
+     */
+    protected function arrayequals($a1, $a2) {
+      if (sizeof($a1) != sizeof($a2)) return FALSE;
+
+      foreach (array_keys((array)$a1) as $k) {
+        switch (TRUE) {
+          case !array_key_exists($k, $a2):
+            return FALSE;
+
+          case is_array($a1[$k]):
+            if (!$this->arrayequals($a1[$k], $a2[$k])) return FALSE;
+            break;
+
+          case $a1[$k] instanceof Generic:
+            if (!$a1[$k]->equals($a2[$k])) return FALSE;
+            break;
+
+          case $a1[$k] !== $a2[$k]:
+            return FALSE;
+        }
+      }
+      return TRUE;
+    }
+
+    /**
+     * Returns whether a given value is equal to this Response instance
+     *
+     * @param  var cmp
+     * @return bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self &&
+        $this->status === $cmp->status &&
+        $this->arrayequals($this->headers, $cmp->headers) &&
+        $this->arrayequals($this->cookies, $cmp->cookies)
+      );
+    }
   }
 ?>

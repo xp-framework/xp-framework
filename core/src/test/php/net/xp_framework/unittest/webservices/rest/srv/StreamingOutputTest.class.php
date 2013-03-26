@@ -43,11 +43,13 @@
     #[@test]
     public function of_with_input_stream() {
       $s= new MemoryInputStream('Test');
-
-      $o= StreamingOutput::of($s);
-      $this->assertEquals($s, $o->inputStream, 'inputStream');
-      $this->assertEquals('application/octet-stream', $o->mediaType, 'mediaType');
-      $this->assertEquals(NULL, $o->contentLength, 'contentLength');
+      $this->assertEquals(
+        create(new StreamingOutput($s))
+          ->withMediaType('application/octet-stream')
+          ->withContentLength(NULL)
+        ,
+        StreamingOutput::of($s)
+      );
     }
 
     /**
@@ -63,11 +65,13 @@
         public function getSize() { return 6100; }
         public function getInputStream() { return $this->stream; }
       }');
-
-      $o= StreamingOutput::of($f);
-      $this->assertEquals($f->getInputStream(), $o->inputStream, 'inputStream');
-      $this->assertEquals('text/plain', $o->mediaType, 'mediaType');
-      $this->assertEquals(6100, $o->contentLength, 'contentLength');
+      $this->assertEquals(
+        create(new StreamingOutput($f->getInputStream()))
+          ->withMediaType('text/plain')
+          ->withContentLength(6100)
+        ,
+        StreamingOutput::of($f)
+      );
     }
 
     /**
@@ -89,11 +93,13 @@
         public function getInputStream() { return $this->stream; }
         public function getOutputStream() { return NULL; }
       }');
-
-      $o= StreamingOutput::of($e);
-      $this->assertEquals($e->getInputStream(), $o->inputStream, 'inputStream');
-      $this->assertEquals('text/plain', $o->mediaType, 'mediaType');
-      $this->assertEquals(6100, $o->contentLength, 'contentLength');
+      $this->assertEquals(
+        create(new StreamingOutput($e->getInputStream()))
+          ->withMediaType('text/plain')
+          ->withContentLength(6100)
+        ,
+        StreamingOutput::of($e)
+      );
     }
   }
 ?>

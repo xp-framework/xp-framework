@@ -121,5 +121,20 @@
       $output->flush();
       $this->write($output);
     }
+
+    /**
+     * Returns whether a given value is equal to this Response instance
+     *
+     * @param  var cmp
+     * @return bool
+     */
+    public function equals($cmp) {
+      return (
+        parent::equals($cmp) &&
+        $this->mediaType === $cmp->mediaType &&
+        $this->contentLength === $cmp->contentLength &&
+        (NULL === $this->inputStream ? NULL === $cmp->inputStream : $this->inputStream->equals($cmp->inputStream))
+      );
+    }
   }
 ?>
