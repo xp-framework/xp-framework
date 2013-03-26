@@ -175,5 +175,22 @@
       $c= $this->getClass();
       $this->fixture->newGenericType(array($c, $c, $c));
     }
+
+
+    /**
+     * Test newGenericType()
+     *
+     */
+    #[@test]
+    public function abstractMethod() {
+      $abstractMethod= XPClass::forName('net.xp_framework.unittest.core.generics.ArrayFilter')
+        ->newGenericType(array($this->fixture))
+        ->getMethod('accept')
+      ;
+      $this->assertEquals(
+        $this->fixture,
+        $abstractMethod->getParameter(0)->getType()
+      );
+    }
   }
 ?>
