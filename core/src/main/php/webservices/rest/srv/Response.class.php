@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('webservices.rest.Payload', 'scriptlet.Cookie');
+  uses('webservices.rest.srv.Output', 'webservices.rest.Payload');
 
   /**
    * The Response class can be used to control the HTTP status code and headers
@@ -20,10 +20,7 @@
    *
    * @test  xp://net.xp_framework.unittest.webservices.rest.srv.ResponseTest
    */
-  class Response extends Object {
-    public $status;
-    public $headers= array();
-    public $cookies= array();
+  class Response extends webservices·rest·srv·Output {
     public $payload;
 
     /**
@@ -144,29 +141,6 @@
     }
 
     /**
-     * Adds a header and returns this instance
-     * 
-     * @param   string name
-     * @param   string value
-     * @return  self
-     */
-    public function withHeader($name, $value) {
-      $this->headers[$name]= $value;
-      return $this;
-    }
-
-    /**
-     * Adds a cookie and returns this instance
-     * 
-     * @param   scriptlet.Cookie cookie
-     * @return  self
-     */
-    public function withCookie(Cookie $cookie) {
-      $this->cookies[]= $cookie;
-      return $this;
-    }
-
-    /**
      * Sets payload and returns this instance
      * 
      * @param   var data
@@ -182,33 +156,29 @@
     }
 
     /**
-     * Helper method to compare two arrays recursively
+     * Write response headers
      *
-     * @param   array a1
-     * @param   array a2
-     * @return  bool
+     * @param  scriptlet.Response response
+     * @param  peer.URL base
+     * @param  string format
      */
-    protected function arrayequals($a1, $a2) {
-      if (sizeof($a1) != sizeof($a2)) return FALSE;
-
-      foreach (array_keys((array)$a1) as $k) {
-        switch (TRUE) {
-          case !array_key_exists($k, $a2): 
-            return FALSE;
-
-          case is_array($a1[$k]):
-            if (!$this->arrayequals($a1[$k], $a2[$k])) return FALSE;
-            break;
-
-          case $a1[$k] instanceof Generic:
-            if (!$a1[$k]->equals($a2[$k])) return FALSE;
-            break;
-
-          case $a1[$k] !== $a2[$k]:
-            return FALSE;
-        }
+    protected function writeHead($response, $base, $format) {
+      if (NULL !== $this->payload && !isset($this->headers['Content-Type'])) {
+        $response->setContentType($format);
       }
-      return TRUE;
+    }
+
+    /**
+     * Write response body
+     *
+     * @param  scriptlet.Response response
+     * @param  peer.URL base
+     * @param  string format
+     */
+    protected function writeBody($response, $base, $format) {
+      if (NULL !== $this->payload) {
+        RestFormat::forMediaType($format)->write($response->getOutputStream(), $this->payload);
+      }
     }
 
     /**
@@ -219,11 +189,8 @@
      */
     public function equals($cmp) {
       return (
-        $cmp instanceof self && 
-        $this->status === $cmp->status &&
-        (NULL === $this->payload ? NULL === $cmp->payload : $this->payload->equals($cmp->payload)) &&
-        $this->arrayequals($this->headers, $cmp->headers) &&
-        $this->arrayequals($this->cookies, $cmp->cookies)
+        parent::equals($cmp) &&
+        (NULL === $this->payload ? NULL === $cmp->payload : $this->payload->equals($cmp->payload))
       );
     }
   }

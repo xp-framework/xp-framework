@@ -228,7 +228,7 @@
       // use its status, headers and payload. For any other methods, set status to "OK".
       if (Type::$VOID->equals($method->getReturnType())) {
         return Response::status(HttpConstants::STATUS_NO_CONTENT);
-      } else if ($result instanceof Response) {
+      } else if ($result instanceof webservices·rest·srv·Output) {
         $result->payload= $this->marshal($result->payload, $properties);
         return $result;
       } else {
@@ -307,25 +307,7 @@
       }
 
       // Have a result
-      $response->setStatus($result->status);
-      foreach ($result->headers as $name => $value) {
-        if ('Location' === $name) {
-          $url= clone $request->getURL();
-          $response->setHeader($name, $url->setPath($value)->getURL());
-        } else {
-          $response->setHeader($name, $value);
-        }
-      }
-      foreach ($result->cookies as $cookie) {
-        $response->setCookie($cookie);
-      }
-      if (NULL !== $result->payload) {
-        $response->setContentType($target['output']);
-        RestFormat::forMediaType($target['output'])->write($response->getOutputStream(), $result->payload);
-      }
-
-      // Handled
-      return TRUE;
+      return $result->writeTo($response, $request->getURL(), $target['output']);
     }
 
     /**

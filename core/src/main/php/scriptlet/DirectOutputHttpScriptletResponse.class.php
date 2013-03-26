@@ -11,6 +11,7 @@
    * content directly onto the output stream in contrast to the base
    * implementation that caches all output.
    *
+   * @deprecated  Just call Response::flush() - this will make the response unbuffered!
    * @see      xp://scriptlet.HttpScriptletResponse
    * @purpose  Response class specialized for huge amounts of data
    */
