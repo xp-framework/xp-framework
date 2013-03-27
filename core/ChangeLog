@@ -79,6 +79,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added ability to subclass REST handlers - see pull request #262
+  (friebe)
 - Implemented REST file downloads API - see pull request #261
   (friebe)
 - Added new Timer::measure() method - see pull request #244
