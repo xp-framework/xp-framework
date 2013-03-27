@@ -58,18 +58,19 @@
 
       isset($webservice['path']) && $base.= rtrim($webservice['path'], '/');
       foreach ($class->getMethods() as $method) {
-        if ($method->hasAnnotation('webmethod')) $this->addWebmethod($method, $base);
+        if ($method->hasAnnotation('webmethod')) $this->addWebmethod($class, $method, $base);
       }
     }
 
     /**
      * Add a webmethod
      *
+     * @param  lang.XPClass class
      * @param  lang.reflect.Method method
      * @param  string base
      * @throws lang.IllegalArgumentException
      */
-    public function addWebmethod($method, $base= '') {
+    public function addWebmethod($class, $method, $base= '') {
       try {
         $webmethod= $method->getAnnotation('webmethod');
       } catch (ElementNotFoundException $e) {
@@ -80,6 +81,7 @@
       $route= $this->addRoute(new RestRoute(
         $webmethod['verb'],
         $base.(isset($webmethod['path']) ? rtrim($webmethod['path'], '/') : ''),
+        $class,
         $method,
         isset($webmethod['accepts']) ? (array)$webmethod['accepts'] : NULL,
         isset($webmethod['returns']) ? (array)$webmethod['returns'] : NULL
