@@ -65,7 +65,6 @@
      * @param   string charset default NULL
      */
     public function __construct($initial= '', $charset= NULL) {
-      if (NULL === $initial) return;
       $this->buffer= $this->asIntern($initial, $charset);
       $this->length= iconv_strlen($this->buffer, STR_ENC);
     }
@@ -193,10 +192,7 @@
      */
     public function substring($start, $length= 0) {
       if (0 === $length) $length= $this->length;
-      $self= new self(NULL);
-      $self->buffer= iconv_substr($this->buffer, $start, $length, STR_ENC);
-      $self->length= iconv_strlen($self->buffer);
-      return $self;
+      return new self(iconv_substr($this->buffer, $start, $length, STR_ENC), STR_ENC);
     }
 
     /**
