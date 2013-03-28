@@ -184,6 +184,7 @@
      * @return  bool
      */
     public function indexOf($arg, $start= 0) {
+      if ('' === ($needle= $this->asIntern($arg))) return -1;
       $r= __str::pos($this->buffer, $this->asIntern($arg), $start, STR_ENC);
       return FALSE === $r ? -1 : $r;
     }
@@ -196,7 +197,8 @@
      * @return  bool
      */
     public function lastIndexOf($arg) {
-      $r= __str::rpos($this->buffer, $this->asIntern($arg), STR_ENC);
+      if ('' === ($needle= $this->asIntern($arg))) return -1;
+      $r= __str::rpos($this->buffer, $needle, STR_ENC);
       return FALSE === $r ? -1 : $r;
     }
 
@@ -276,7 +278,7 @@
       $bytes= $this->asIntern($arg);
 
       return (
-        __str::len($this->buffer, STR_ENC) - __str::len($bytes, STR_ENC) === 
+        $this->length - __str::len($bytes, STR_ENC) ===
         __str::rpos($this->buffer, $bytes, STR_ENC)
       );
     }
