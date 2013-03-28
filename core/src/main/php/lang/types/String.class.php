@@ -57,7 +57,7 @@
         return $arg->buffer;
       } else if ($arg instanceof Character) {
         return $arg->getBytes(STR_ENC)->buffer;
-      } else if (is_string($arg) || $arg instanceof Bytes) {
+      } else {
         $charset= strtoupper($charset ? $charset : iconv_get_encoding('input_encoding'));
 
         // Convert the input to internal encoding
@@ -71,8 +71,6 @@
           ));
         }
         return $buffer;
-      } else {
-        return (string)$arg;
       }
     }
 
