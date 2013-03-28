@@ -79,6 +79,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Greatly improved the performance of the lang.types.String class by using
+  the "mbstring" extension when available. See pull request #267.
+  (friebe, pdietz, kiesel)
 - Added ability to subclass REST handlers - see pull request #262
   (friebe)
 - Implemented REST file downloads API - see pull request #261
