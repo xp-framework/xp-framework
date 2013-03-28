@@ -10,8 +10,6 @@
     'lang.types.String'
   );
 
-  define('LRUTEST_BUFFER_DEAULT_SIZE',  3);
-
   /**
    * Test LRUBuffer class
    *
@@ -19,15 +17,16 @@
    * @purpose  Unit Test
    */
   class LRUBufferTest extends TestCase {
-    public
-      $buffer= NULL;
+    const DEFAULT_SIZE = 3;
+
+    protected $buffer= NULL;
     
     /**
      * Setup method. Creates the buffer member
      *
      */
     public function setUp() {
-      $this->buffer= new LRUBuffer(LRUTEST_BUFFER_DEAULT_SIZE);
+      $this->buffer= new LRUBuffer(self::DEFAULT_SIZE);
     }
     
     /**
@@ -45,7 +44,7 @@
      */
     #[@test]
     public function getSize() {
-      $this->assertEquals(LRUTEST_BUFFER_DEAULT_SIZE, $this->buffer->getSize());
+      $this->assertEquals(self::DEFAULT_SIZE, $this->buffer->getSize());
     }
 
     /**
@@ -162,7 +161,7 @@
      */
     #[@test]
     public function doesNotEqualWithDifferentSize() {
-      $this->assertFalse($this->buffer->equals(new LRUBuffer(LRUTEST_BUFFER_DEAULT_SIZE - 1)));
+      $this->assertFalse($this->buffer->equals(new LRUBuffer(self::DEFAULT_SIZE - 1)));
     }
  
     /**
@@ -171,7 +170,7 @@
      */
     #[@test]
     public function doesNotEqualWithSameElements() {
-      $other= new LRUBuffer(LRUTEST_BUFFER_DEAULT_SIZE);
+      $other= new LRUBuffer(self::DEFAULT_SIZE);
       with ($string= new String('Hello')); {
         $other->add($string);
         $this->buffer->add($string);

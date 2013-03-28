@@ -51,7 +51,8 @@
      * @param   string message
      */
     public function __construct($message, $cause= NULL) {
-      $this->__id= microtime();
+      static $u= 0;
+      $this->__id= uniqid('', TRUE);
       $this->message= is_string($message) ? $message : xp::stringOf($message);
       $this->cause= $cause;
       $this->fillInStackTrace();
@@ -315,8 +316,7 @@
      */
     public function equals($cmp) {
       if (!$cmp instanceof Generic) return FALSE;
-      if (!$this->__id) $this->__id= microtime();
-      if (!$cmp->__id) $cmp->__id= microtime();
+      if (!$cmp->__id) $cmp->__id= uniqid('', TRUE);
       return $this === $cmp;
     }
     

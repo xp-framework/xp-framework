@@ -143,28 +143,31 @@
     public function setURI($uri) {
       static $allowed= array('xar://*', 'php://stderr', 'php://stdout', 'php://stdin', 'res://*');
 
+      // Check validity, handle scheme and non-scheme URIs
       $uri= (string)$uri;
       if (0 === strlen($uri) || FALSE !== strpos($uri, "\0")) {
         throw new IllegalArgumentException('Invalid filename "'.addcslashes($uri, "\0..\17").'"');
-      } else if (FALSE !== strpos($uri, '://')) {
+      } else if (FALSE !== ($s= strpos($uri, '://'))) {
         if (!in_array($uri, $allowed) && !in_array(substr($uri, 0, 6).'*', $allowed)) {
           throw new IllegalArgumentException('Invalid scheme URI "'.$uri.'"');
         }
-        $this->path= NULL;
-        $this->extension= NULL;
-        $this->filename= $this->uri= $uri;
+        $this->uri= $uri;
+        $p= max($s+ 3, FALSE === ($pq= strpos($uri, '?', $s)) ? -1 : $pq+ 1);
       } else {
         $this->uri= realpath($uri);
-
-        // Bug in real_path when file does not exist
         if ('' == $this->uri && $uri != $this->uri) $this->uri= $uri;
-
-        with ($pathinfo= pathinfo($this->uri)); {
-          $this->path= $pathinfo['dirname'];
-          $this->filename= $pathinfo['basename'];
-          $this->extension= isset($pathinfo['extension']) ? $pathinfo['extension'] : NULL;
-        }
+        $p= 0;
       }
+
+      // Split into components. Always allow forward slashes!
+      $p= max(
+        $p,
+        FALSE === ($ps= strrpos($uri, '/', $s)) ? -1 : $ps,
+        FALSE === ($pd= strrpos($uri, DIRECTORY_SEPARATOR, $s)) ? -1 : $pd
+      );
+      $this->path= substr($uri, 0, $p);
+      $this->filename= ltrim(substr($uri, $p), '/'.DIRECTORY_SEPARATOR);
+      $this->extension= (FALSE === ($pe= strrpos($this->filename, '.', $s))) ? NULL : substr($this->filename, $pe+ 1);
     }
 
     /**

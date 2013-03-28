@@ -209,9 +209,7 @@
           $offset+= 2; $i++;
           break;
         case '-cp':
-          foreach (explode(PATH_SEPARATOR, $params->list[$i+ 1]) as $element) {
-            ClassLoader::registerPath($element, NULL);
-          }
+          ClassLoader::registerPath($params->list[$i+ 1], NULL);
           $offset+= 2; $i++;
           break;
         case '-v':

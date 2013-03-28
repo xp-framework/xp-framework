@@ -11,6 +11,18 @@
   define('MODIFIER_PROTECTED',  512);
   define('MODIFIER_PRIVATE',   1024);
 
+  // {{{ final class import
+  final class import {
+    function __construct($str) {
+      $class= xp::$registry['loader']->loadClass0($str);
+      $trace= debug_backtrace();
+      $scope= $trace[2]['args'][0];
+      xp::$registry['cl.inv'][]= function() use ($class, $scope) {
+        $class::__import(xp::reflect($scope));
+      };
+    }
+  }
+  // }}}
 
   // {{{ final class xp
   final class xp {
@@ -336,6 +348,10 @@
         2 => 'a240id/V1size/V1offset/a*reserved'
       );
       
+      if ('/' === $archive{0} && ':' === $archive{2}) {
+        $archive= substr($archive, 1);    // Handle xar:///f:/archive.xar => f:/archive.xar
+      }
+
       if (!isset($archives[$archive])) {
         $archives[$archive]= array();
         $current= &$archives[$archive];
@@ -358,10 +374,8 @@
     // {{{ function bool stream_open(string path, string mode, int options, string opened_path)
     //     Open the given stream and check if file exists
     function stream_open($path, $mode, $options, $opened_path) {
-      sscanf($path, 'xar://%[^?]?%[^$]', $archive, $file);
+      sscanf(strtr($path, ';', '?'), 'xar://%[^?]?%[^$]', $archive, $this->filename);
       $this->archive= urldecode($archive);
-      $this->filename= $file;
-      
       $current= self::acquire($this->archive);
       return isset($current['index'][$this->filename]);
     }
@@ -426,12 +440,12 @@
     // {{{ <string,int> url_stat(string path)
     //     Retrieve status of url
     function url_stat($path) {
-      sscanf($path, 'xar://%[^?]?%[^$]', $archive, $file);
+      sscanf(strtr($path, ';', '?'), 'xar://%[^?]?%[^$]', $archive, $file);
       $archive= urldecode($archive);
       $current= self::acquire($archive);
-
       if (!isset($current['index'][$file])) return FALSE;
       return array(
+        'mode'  => 0100644,
         'size'  => $current['index'][$file][0],
         'dev'   => crc32($archive),
         'ino'   => $current['index'][$file][2]

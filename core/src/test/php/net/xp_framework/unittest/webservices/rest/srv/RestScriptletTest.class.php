@@ -57,5 +57,22 @@
       $fixture->setContext($context);
       $this->assertEquals($context, $fixture->getContext());
     }
+
+    /**
+     * Test "cannot route" message
+     *
+     * @see  https://github.com/xp-framework/xp-framework/issues/258
+     */
+    #[@test]
+    public function cannot_route() {
+      $fixture= $this->newFixture();
+      $req= new HttpScriptletRequest();
+      $req->setURI(new URL('http://localhost/'));
+      $res= new HttpScriptletResponse();
+      $fixture->doProcess($req, $res);
+
+      $this->assertEquals(404, $res->statusCode);
+      $this->assertEquals('{ "message" : "Could not route request to http:\/\/localhost\/" }', $res->getContent());
+    }
   }
 ?>

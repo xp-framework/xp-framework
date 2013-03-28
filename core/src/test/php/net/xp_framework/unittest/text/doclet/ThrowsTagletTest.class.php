@@ -26,8 +26,10 @@
      *
      */
     public function setUp() {
+      $root= new RootDoc();
+      $root->addSourceLoader($this->getClass()->getClassLoader());
       $this->holder= new Doc();
-      $this->holder->setRoot(new RootDoc());
+      $this->holder->setRoot($root);
     }
     
     /**

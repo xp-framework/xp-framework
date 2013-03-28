@@ -164,6 +164,55 @@
      *
      */
     #[@test]
+    public function getBodyWithJsonPayloadUsingRestFormat() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), RestFormat::$JSON);
+      $this->assertEquals('{ "title" : "New issue" }', $fixture->getBody()->data);
+    }
+
+    /**
+     * Test setPayload()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function setPayloadAndNull() {
+      create(new RestRequest())->setPayload(NULL, NULL);
+    }
+
+    /**
+     * Test withPayload()
+     *
+     */
+    #[@test]
+    public function withPayloadAndSerializer() {
+      $fixture= new RestRequest();
+      $this->assertEquals($fixture, $fixture->withPayload(NULL, new RestJsonSerializer()));
+    }
+
+    /**
+     * Test withPayload()
+     *
+     */
+    #[@test]
+    public function withPayloadAndRestFormat() {
+      $fixture= new RestRequest();
+      $this->assertEquals($fixture, $fixture->withPayload(NULL, RestFormat::$JSON));
+    }
+
+    /**
+     * Test withPayload()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function withPayloadAndNull() {
+      create(new RestRequest())->withPayload(NULL, NULL);
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
     public function hasBodyWithXmlPayload() {
       $fixture= new RestRequest();
       $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());

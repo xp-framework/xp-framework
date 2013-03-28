@@ -40,6 +40,16 @@
     }
 
     /**
+     * Returns a class object for a given fixture class
+     *
+     * @param  string class
+     * @return lang.XPClass
+     */
+    protected function fixtureClass($class) {
+      return self::$package->loadClass($class);
+    }
+
+    /**
      * Returns a method from given fixture class
      *
      * @param  string class
@@ -70,14 +80,14 @@
     public function marshal_this_with_typemarshaller() {
       $this->fixture->addMarshaller('unittest.TestCase', newinstance('webservices.rest.TypeMarshaller', array(), '{
         public function marshal($t) {
-          return $t->getClassName()."::".$t->getName();
+          return $t->getName();
         }
-        public function unmarshal($name) {
+        public function unmarshal(Type $target, $name) {
           // Not needed
         }
       }'));
       $this->assertEquals(
-        new Payload($this->getClassName().'::'.$this->getName()),
+        new Payload($this->getName()),
         $this->fixture->marshal(new Payload($this))
       );
     }
@@ -92,17 +102,15 @@
         public function marshal($t) {
           // Not needed
         }
-        public function unmarshal($name) {
-          sscanf($name, "%[^:]::%s", $class, $test);
-          return XPClass::forName($class)->newInstance($test);
+        public function unmarshal(Type $target, $name) {
+          return $target->newInstance($name);
         }
       }'));
       $this->assertEquals(
         $this,
-        $this->fixture->unmarshal($this->getClass(), $this->getClassName().'::'.$this->getName())
+        $this->fixture->unmarshal($this->getClass(), $this->getName())
       );
     }
-
 
     /**
      * Fixture for handle() tests
@@ -313,7 +321,7 @@
     public function handle_exception_with_mapper() {
       $t= new Throwable('Test');
       $this->fixture->addExceptionMapping('lang.Throwable', newinstance('webservices.rest.srv.ExceptionMapper', array(), '{
-        public function asResponse($t) {
+        public function asResponse($t, RestContext $ctx) {
           return Response::error(500)->withPayload(array("message" => $t->getMessage()));
         }
       }'));
@@ -477,15 +485,12 @@
         }
       }');
       foreach ($params as $name => $value) {
-        if ('Cookie' === $name) {
-        } else {
-          $r->setParam($name, $value);
-        }
+        $r->setParam($name, $value);
       }
       if (isset($headers['Cookie'])) {
         foreach (explode(';', $headers['Cookie']) as $cookie) {
           sscanf(trim($cookie), '%[^=]=%s', $name, $value);
-          $_COOKIE[$name]= $value;
+          $r->addCookie(new Cookie($name, $value));
         }
         unset($headers['Cookie']);
       }
@@ -500,6 +505,7 @@
     #[@test]
     public function greet_implicit_segment_and_param() {
       $route= array(
+        'handler'  => $this->fixtureClass('ImplicitGreetingHandler'),
         'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet'),
         'params'   => array(),
         'segments' => array(0 => '/implicit/greet/test', 'name' => 'test', 1 => 'test'),
@@ -519,6 +525,7 @@
     #[@test]
     public function greet_implicit_segment_and_missing_param() {
       $route= array(
+        'handler'  => $this->fixtureClass('ImplicitGreetingHandler'),
         'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet'),
         'params'   => array(),
         'segments' => array(0 => '/implicit/greet/test', 'name' => 'test', 1 => 'test'),
@@ -538,6 +545,7 @@
     #[@test]
     public function greet_implicit_payload() {
       $route= array(
+        'handler'  => $this->fixtureClass('ImplicitGreetingHandler'),
         'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet_posted'),
         'params'   => array(),
         'segments' => array(0 => '/greet'),
@@ -557,6 +565,7 @@
     #[@test]
     public function greet_intl() {
       $route= array(
+        'handler'  => $this->fixtureClass('GreetingHandler'),
         'target'   => $this->fixtureMethod('GreetingHandler', 'greet_intl'),
         'params'   => array('language' => new RestParamSource('Accept-Language', ParamReader::$HEADER)),
         'segments' => array(0 => '/intl/greet/test', 'name' => 'test', 1 => 'test'),
@@ -576,6 +585,7 @@
     #[@test]
     public function greet_user() {
       $route= array(
+        'handler'  => $this->fixtureClass('GreetingHandler'),
         'target'   => $this->fixtureMethod('GreetingHandler', 'greet_user'),
         'params'   => array('name' => new RestParamSource('user', ParamReader::$COOKIE)),
         'segments' => array(0 => '/user/greet'),
@@ -614,6 +624,7 @@
     #[@test]
     public function process_greet_successfully() {
       $route= array(
+        'handler'  => $this->fixtureClass('GreetingHandler'),
         'target'   => $this->fixtureMethod('GreetingHandler', 'greet'),
         'params'   => array('name' => new RestParamSource('name', ParamReader::$PATH)),
         'segments' => array(0 => '/greet/Test', 'name' => 'Test', 1 => 'Test'),
@@ -633,6 +644,7 @@
     #[@test]
     public function process_greet_with_missing_parameter() {
       $route= array(
+        'handler'  => $this->fixtureClass('GreetingHandler'),
         'target'   => $this->fixtureMethod('GreetingHandler', 'greet'),
         'params'   => array('name' => new RestParamSource('name', ParamReader::$PATH)),
         'segments' => array(0 => '/greet/'),
@@ -652,6 +664,7 @@
     #[@test]
     public function process_greet_and_go() {
       $route= array(
+        'handler'  => $this->fixtureClass('GreetingHandler'),
         'target'   => $this->fixtureMethod('GreetingHandler', 'greet_and_go'),
         'params'   => array('name' => new RestParamSource('name', ParamReader::$PATH)), 
         'segments' => array(0 => '/greet/and/go/test', 'name' => 'test', 1 => 'test'),
@@ -660,6 +673,75 @@
       );
       $this->assertProcess(
         204, array(), NULL,
+        $route, $this->newRequest()
+      );
+    }
+
+    /**
+     * Test marshalling is also applied to exceptions in mapException()
+     *
+     */
+    #[@test]
+    public function marshal_exceptions() {
+      $this->fixture->addMarshaller('unittest.AssertionFailedError', newinstance('webservices.rest.TypeMarshaller', array(), '{
+        public function marshal($t) {
+          return "expected ".xp::stringOf($t->expect)." but was ".xp::stringOf($t->actual);
+        }
+        public function unmarshal(Type $target, $name) {
+          // Not needed
+        }
+      }'));
+      $this->assertEquals(
+        Response::error(500)->withPayload(new Payload('expected 1 but was 2', array('name' => 'exception'))),
+        $this->fixture->mapException(new AssertionFailedError('Test', 2, 1))
+      );
+    }
+
+    /**
+     * Test handle()
+     *
+     */
+    #[@test]
+    public function process_streaming_output() {
+      $route= array(
+        'handler'  => $this->fixtureClass('GreetingHandler'),
+        'target'   => $this->fixtureMethod('GreetingHandler', 'download_greeting'),
+        'params'   => array(),
+        'segments' => array(0 => '/download'),
+        'input'    => NULL,
+        'output'   => NULL
+      );
+
+      $this->assertProcess(
+        200, array('Content-Type: text/plain; charset=utf-8', 'Content-Length: 11'), 'Hello World',
+        $route, $this->newRequest()
+      );
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
+    public function process_extended() {
+      $extended= ClassLoader::defineClass(
+        'net.xp_framework.unittest.webservices.rest.srv.fixture.GreetingHandlerExtended',
+        $this->fixtureClass('GreetingHandler')->getName(),
+        array(),
+        '{}'
+      );
+
+      $route= array(
+        'handler'  => $extended,
+        'target'   => $extended->getMethod('greet_class'),
+        'params'   => array(),
+        'segments' => array(0 => '/greet/class'),
+        'input'    => NULL,
+        'output'   => 'text/json'
+      );
+
+      $this->assertProcess(
+        200, array('Content-Type: text/json'), '"Hello '.$extended->getName().'"',
         $route, $this->newRequest()
       );
     }

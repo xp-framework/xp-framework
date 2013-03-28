@@ -42,6 +42,16 @@
     }
 
     /**
+     * Returns a class object for a given fixture class
+     *
+     * @param  string class
+     * @return lang.XPClass
+     */
+    protected function fixtureClass($class) {
+      return self::$package->loadClass($class);
+    }
+
+    /**
      * Returns a method from given fixture class
      *
      * @param  string class
@@ -60,6 +70,7 @@
     public function greet_default() {
       $this->assertEquals(
         array(array(
+          'handler'  => $this->fixtureClass('GreetingHandler'),
           'target'   => $this->fixtureMethod('GreetingHandler', 'greet'),
           'params'   => array(
             'name'     => new RestParamSource('name', ParamReader::$PATH), 
@@ -81,6 +92,7 @@
     public function greet_custom() {
       $this->assertEquals(
         array(array(
+          'handler'  => $this->fixtureClass('GreetingHandler'),
           'target'   => $this->fixtureMethod('GreetingHandler', 'hello'),
           'params'   => array('name' => new RestParamSource('name', ParamReader::$PATH)),
           'segments' => array(0 => '/hello/test', 'name' => 'test', 1 => 'test'),
@@ -99,6 +111,7 @@
     public function greet_post() {
       $this->assertEquals(
         array(array(
+          'handler'  => $this->fixtureClass('GreetingHandler'),
           'target'   => $this->fixtureMethod('GreetingHandler', 'greet_posted'),
           'params'   => array(),
           'segments' => array(0 => '/greet'),
@@ -118,6 +131,7 @@
       $this->assertEquals(
         array(
           array(
+            'handler'  => $this->fixtureClass('GreetingHandler'),
             'target'   => $this->fixtureMethod('GreetingHandler', 'hello_posted'),
             'params'   => array(),
             'segments' => array(0 => '/greet'),
@@ -125,6 +139,7 @@
             'output'   => 'text/json'
           ),
           array(
+            'handler'  => $this->fixtureClass('GreetingHandler'),
             'target'   => $this->fixtureMethod('GreetingHandler', 'greet_posted'),
             'params'   => array(),
             'segments' => array(0 => '/greet'),
@@ -168,6 +183,7 @@
     public function implicit_path() {
       $this->assertEquals(
         array(array(
+          'handler'  => $this->fixtureClass('ImplicitGreetingHandler'),
           'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'hello_world'),
           'params'   => array(),
           'segments' => array(0 => '/implicit'),

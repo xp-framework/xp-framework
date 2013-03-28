@@ -426,5 +426,62 @@
       $r->addHeader('headername', 'b');
       $this->assertEquals('b', $r->getHeader('HeaderName'));
     }
+
+    /**
+     * Test initially cookies are empty
+     *
+     */
+    #[@test]
+    public function cookiesInitiallyEmpty() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $this->assertEquals(array(), $r->getCookies());
+    }
+
+    /**
+     * Test adding cookies works
+     *
+     */
+    #[@test]
+    public function addCookie() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+
+      $this->assertInstanceOf('scriptlet.Cookie', $r->addCookie(new Cookie('cookie', 'value')));
+    }
+
+    /**
+     * Test hasCookie finds added cookie
+     *
+     */
+    #[@test]
+    public function hasCookieDetectsAddedCookie() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+
+      $r->addCookie(new Cookie('cookie', 'value'));
+      $this->assertTrue($r->hasCookie('cookie'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function getCookieReturnsCookie() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+
+      $r->addCookie(new Cookie('cookie', 'value'));
+      $this->assertEquals('value', $r->getCookie('cookie')->getValue());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function methodName() {
+      $_COOKIE['name']= 'value';
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+
+      $this->assertEquals('value', $r->getCookie('name')->getValue());
+    }
   }
 ?>

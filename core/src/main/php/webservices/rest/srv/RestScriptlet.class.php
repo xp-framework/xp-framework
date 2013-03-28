@@ -7,7 +7,7 @@
   uses(
     'scriptlet.HttpScriptlet',
     'scriptlet.Preference',
-    'webservices.rest.srv.RestFormat',
+    'webservices.rest.RestFormat',
     'webservices.rest.srv.RestContext',
     'webservices.rest.srv.Response',
     'webservices.rest.srv.RestDefaultRouter',
@@ -138,7 +138,8 @@
 
       // No route
       $response->setStatus(HttpConstants::STATUS_NOT_FOUND);
-      RestFormat::forMediaType($accept->match($this->router->getOutputFormats()))->write($response, new Payload(
+      $format= RestFormat::forMediaType($accept->match($this->router->getOutputFormats()));
+      $format->write($response->getOutputStream(), new Payload(
         array('message' => 'Could not route request to '.$url->getURL()), array('name' => 'error')
       ));
     }

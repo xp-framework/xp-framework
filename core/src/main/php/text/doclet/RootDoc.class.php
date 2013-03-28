@@ -93,7 +93,16 @@
       }
       $this->sourcepath[$l->hashCode()]= $l;
     }
-    
+
+    /**
+     * Adds a source loader
+     *
+     * @param   lang.IClassLoader
+     */
+    public function addSourceLoader(IClassLoader $l) {
+      $this->sourcepath[$l->hashCode()]= $l;
+    }
+
     /**
      * Start a doclet
      *

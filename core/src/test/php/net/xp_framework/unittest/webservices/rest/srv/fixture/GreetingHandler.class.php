@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses('net.xp_framework.unittest.webservices.rest.srv.fixture.Greeting');
+  uses(
+    'net.xp_framework.unittest.webservices.rest.srv.fixture.Greeting',
+    'webservices.rest.srv.Response',
+    'webservices.rest.srv.StreamingOutput'
+  );
 
   /**
    * Fixture for default router
@@ -93,6 +97,32 @@
     #[@webmethod(verb= 'GET', path= '/user/greet'), @$name: cookie('user')]
     public function greet_user($name) {
       return 'Hello '.$name;
+    }
+
+    /**
+     * Greet handler class
+     *
+     * @return  string
+     */
+    #[@webmethod(verb= 'GET', path= '/class/greet')]
+    public function greet_class() {
+      return 'Hello '.$this->getClassName();
+    }
+
+    /**
+     * Download a greeting
+     *
+     * @return  webservices.rest.srv.Output
+     */
+    #[@webmethod(verb= 'GET', path= '/download')]
+    public function download_greeting() {
+      $s= StreamingOutput::of(new MemoryInputStream('Hello World'))
+        ->withMediaType('text/plain; charset=utf-8')
+        ->withContentLength(11)
+        ->withStatus(200)
+      ;
+      $s->buffered= TRUE;       // For easier testability!
+      return $s;
     }
   }
 ?>

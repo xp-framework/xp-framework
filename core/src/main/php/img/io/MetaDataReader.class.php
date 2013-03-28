@@ -80,15 +80,34 @@
     }
 
     /**
+     * Read a given amount of bytes and does not return until this 
+     * amount has been reached (except if there is no more data 
+     * available!)
+     *
+     * @param  io.streams.InputStream $in
+     * @param  int $size
+     * @return string
+     */
+    protected function readFully($in, $size) {
+      $data= '';
+      $l= 0;
+      do {
+        $data.= $in->read($size - $l);
+        $l= strlen($data);
+      } while ($in->available() && $l < $size);
+      return $data;
+    }
+
+    /**
      * Reads meta data from the given input stream
      *
      * @param  io.streams.InputStream $in The input stream to read from
      * @param  string $name The input stream's name
      * @return img.io.ImageMetaData
-     * @throws lang.ImagingException if the input stream cannot be parsed 
+     * @throws img.ImagingException if the input stream cannot be parsed
      */
     public function read(InputStream $in, $name= 'input stream') {
-      if ("\xff\xd8\xff" !== $in->read(3)) {
+      if ("\xff\xd8\xff" !== $this->readFully($in, 3)) {
         throw new ImagingException('Could not find start of image marker in JPEG data '.$name);
       }
       $offset= 3;
@@ -96,17 +115,17 @@
       // Parse JPEG headers
       $data= new ImageMetaData();
       $data->setSource($name);
-      while ("\xd9" !== ($marker= $in->read(1))) {
+      while ("\xd9" !== ($marker= $this->readFully($in, 1))) {
         $offset++;
         if ("\xda" === $marker) break;      // Stop at SOS (Start Of Scan)
 
         if ($marker < "\xd0" || $marker > "\xd7") {
-          $size= current(unpack('n', $in->read(2)));
-          $data->addSegment($this->segmentFor($marker, $in->read($size - 2)));
+          $size= current(unpack('n', $this->readFully($in, 2)));
+          $data->addSegment($this->segmentFor($marker, $this->readFully($in, $size - 2)));
           $offset+= $size;
         }
 
-        if ("\xff" !== ($c= $in->read(1))) {
+        if ("\xff" !== ($c= $this->readFully($in, 1))) {
           throw new ImagingException(sprintf(
             'JPEG header corrupted, have x%02x, expecting xff at offset %d',
             ord($c),

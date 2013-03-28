@@ -34,13 +34,13 @@
    *   }
    * </code>
    *
+   * @test    xp://net.xp_framework.unittest.io.archive.ZipArchiveReaderTest
    * @test    xp://net.xp_framework.unittest.io.archive.ZipFileEntriesTest
    * @test    xp://net.xp_framework.unittest.io.archive.ZipFileIteratorTest
    * @see     xp://io.archive.zip.ZipArchive#open
    */
   class ZipArchiveReader extends Object {
-    protected
-      $impl = NULL;
+    protected $impl= NULL;
 
     /**
      * Creation constructor
@@ -82,6 +82,13 @@
      */
     public function iterator() {
       return new ZipIterator($this->impl);
+    }
+
+    /**
+     * Closes underlying stream
+     */
+    public function close() {
+      $this->impl->close();
     }
   }
 ?>

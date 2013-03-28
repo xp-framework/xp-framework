@@ -121,6 +121,7 @@
 
         // Found possible candidate
         $matching[]= array(
+          'handler'  => $route->getHandler(),
           'target'   => $route->getTarget(), 
           'params'   => $route->getParams(),
           'segments' => $segments,
