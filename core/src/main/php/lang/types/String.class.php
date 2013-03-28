@@ -9,18 +9,20 @@
   uses('lang.types.Character', 'lang.types.Bytes');
 
   if (extension_loaded('mbstring')) {
+    mb_internal_encoding(STR_ENC);
     class __str {
-      static function len($buf) { return mb_strlen($buf, STR_ENC); }
-      static function substr($buf, $start, $length) { return mb_substr($buf, $start, $length, STR_ENC); }
-      static function pos($buf, $needle, $start) { return mb_strpos($buf, $needle, $start, STR_ENC); }
-      static function rpos($buf, $needle) { return mb_strrpos($buf, $needle, STR_ENC); }
+      static function len($buf) { return mb_strlen($buf); }
+      static function substr($buf, $start, $length) { return mb_substr($buf, $start, $length); }
+      static function pos($buf, $needle, $start) { return mb_strpos($buf, $needle, $start); }
+      static function rpos($buf, $needle) { return mb_strrpos($buf, $needle); }
     }
   } else {
+    iconv_set_encoding('internal_encoding', STR_ENC);
     class __str {
-      static function len($buf) { return iconv_strlen($buf, STR_ENC); }
-      static function substr($buf, $start, $length) { return iconv_substr($buf, $start, $length, STR_ENC); }
-      static function pos($buf, $needle, $start) { return iconv_strpos($buf, $needle, $start, STR_ENC); }
-      static function rpos($buf, $needle) { return iconv_strrpos($buf, $needle, STR_ENC); }
+      static function len($buf) { return iconv_strlen($buf); }
+      static function substr($buf, $start, $length) { return iconv_substr($buf, $start, $length); }
+      static function pos($buf, $needle, $start) { return iconv_strpos($buf, $needle, $start); }
+      static function rpos($buf, $needle) { return iconv_strrpos($buf, $needle); }
     }
   }
 
