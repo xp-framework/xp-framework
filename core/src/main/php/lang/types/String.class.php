@@ -8,6 +8,22 @@
 
   uses('lang.types.Character', 'lang.types.Bytes');
 
+  if (extension_loaded('mbstring')) {
+    class __str {
+      static function len($buf) { return mb_strlen($buf, STR_ENC); }
+      static function substr($buf, $start, $length) { return mb_substr($buf, $start, $length, STR_ENC); }
+      static function pos($buf, $needle, $start) { return mb_strpos($buf, $needle, $start, STR_ENC); }
+      static function rpos($buf, $needle, $start) { return mb_strrpos($buf, $needle, $start, STR_ENC); }
+    }
+  } else {
+    class __str {
+      static function len($buf) { return iconv_strlen($buf, STR_ENC); }
+      static function substr($buf, $start, $length) { return iconv_substr($buf, $start, $length, STR_ENC); }
+      static function pos($buf, $needle, $start) { return iconv_strpos($buf, $needle, $start, STR_ENC); }
+      static function rpos($buf, $needle, $start) { return iconv_strrpos($buf, $needle, $start, STR_ENC); }
+    }
+  }
+
   /**
    * Represents a string
    *
@@ -67,7 +83,7 @@
     public function __construct($initial= '', $charset= NULL) {
       if (NULL === $initial) return;
       $this->buffer= $this->asIntern($initial, $charset);
-      $this->length= iconv_strlen($this->buffer, STR_ENC);
+      $this->length= __str::len($this->buffer, STR_ENC);
     }
 
     /**
@@ -98,14 +114,14 @@
       }
       
       $char= $this->asIntern($value);
-      if (1 != iconv_strlen($char, STR_ENC)) {
+      if (1 != __str::len($char, STR_ENC)) {
         throw new IllegalArgumentException('Set only allows to set one character!');
       }
       
       $this->buffer= (
-        iconv_substr($this->buffer, 0, $offset, STR_ENC).
+        __str::substr($this->buffer, 0, $offset, STR_ENC).
         $char.
-        iconv_substr($this->buffer, $offset+ 1, $this->length, STR_ENC)
+        __str::substr($this->buffer, $offset+ 1, $this->length, STR_ENC)
       );
     }
 
@@ -129,10 +145,10 @@
         raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
       }
       $this->buffer= (
-        iconv_substr($this->buffer, 0, $offset, STR_ENC).
-        iconv_substr($this->buffer, $offset+ 1, $this->length, STR_ENC)
+        __str::substr($this->buffer, 0, $offset, STR_ENC).
+        __str::substr($this->buffer, $offset+ 1, $this->length, STR_ENC)
       );
-      $this->length= iconv_strlen($this->buffer, STR_ENC);
+      $this->length= __str::len($this->buffer, STR_ENC);
     }
 
     /**
@@ -156,7 +172,7 @@
       if ($offset >= $this->length || $offset < 0) {
         raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
       }
-      return new Character(iconv_substr($this->buffer, $offset, 1, STR_ENC), STR_ENC);
+      return new Character(__str::substr($this->buffer, $offset, 1, STR_ENC), STR_ENC);
     }
 
     /**
@@ -168,7 +184,7 @@
      * @return  bool
      */
     public function indexOf($arg, $start= 0) {
-      $r= iconv_strpos($this->buffer, $this->asIntern($arg), $start, STR_ENC);
+      $r= __str::pos($this->buffer, $this->asIntern($arg), $start, STR_ENC);
       return FALSE === $r ? -1 : $r;
     }
 
@@ -180,7 +196,7 @@
      * @return  bool
      */
     public function lastIndexOf($arg) {
-      $r= iconv_strrpos($this->buffer, $this->asIntern($arg), STR_ENC);
+      $r= __str::rpos($this->buffer, $this->asIntern($arg), STR_ENC);
       return FALSE === $r ? -1 : $r;
     }
 
@@ -194,8 +210,8 @@
     public function substring($start, $length= 0) {
       if (0 === $length) $length= $this->length;
       $self= new self(NULL);
-      $self->buffer= iconv_substr($this->buffer, $start, $length, STR_ENC);
-      $self->length= iconv_strlen($self->buffer);
+      $self->buffer= __str::substr($this->buffer, $start, $length, STR_ENC);
+      $self->length= __str::len($self->buffer);
       return $self;
     }
 
@@ -218,7 +234,7 @@
      */
     public function replace($old, $new= '') {
       $this->buffer= str_replace($this->asIntern($old), $this->asIntern($new), $this->buffer);
-      $this->length= iconv_strlen($this->buffer, STR_ENC);
+      $this->length= __str::len($this->buffer, STR_ENC);
       return $this;
     }
 
@@ -236,7 +252,7 @@
      */
     public function concat($arg) {
       $this->buffer.= $this->asIntern($arg);
-      $this->length= iconv_strlen($this->buffer, STR_ENC);
+      $this->length= __str::len($this->buffer, STR_ENC);
       return $this;
     }
 
@@ -260,8 +276,8 @@
       $bytes= $this->asIntern($arg);
 
       return (
-        iconv_strlen($this->buffer, STR_ENC) - iconv_strlen($bytes, STR_ENC) === 
-        iconv_strrpos($this->buffer, $bytes, STR_ENC)
+        __str::len($this->buffer, STR_ENC) - __str::len($bytes, STR_ENC) === 
+        __str::rpos($this->buffer, $bytes, STR_ENC)
       );
     }
  
