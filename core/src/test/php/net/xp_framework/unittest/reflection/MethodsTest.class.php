@@ -659,5 +659,32 @@
         $this->fixture->getMethod('isDateBefore')->getParameter(0)->getTypeRestriction()
       );
     }
+
+    /**
+     * Tests non-documented return value
+     *
+     * @see     xp://lang.reflect.Method#getReturnTypeName
+     * @see     xp://lang.reflect.Method#getReturnType
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#notDocumented
+     */
+    #[@test]
+    public function notDocumentedReturnType() {
+      $this->assertEquals('var', $this->fixture->getMethod('notDocumented')->getReturnTypeName());
+      $this->assertEquals(Type::$VAR, $this->fixture->getMethod('notDocumented')->getReturnType());
+    }
+
+    /**
+     * Tests non-documented param
+     *
+     * @see     xp://lang.reflect.Method#getReturnTypeName
+     * @see     xp://lang.reflect.Method#getReturnType
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#notDocumented
+     */
+    #[@test]
+    public function notDocumentedParameterType() {
+      $this->assertEquals('var', $this->fixture->getMethod('notDocumented')->getParameter(0)->getTypeName());
+      $this->assertEquals(Type::$VAR, $this->fixture->getMethod('notDocumented')->getParameter(0)->getType());
+    }
+
   }
 ?>

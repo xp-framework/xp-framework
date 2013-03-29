@@ -99,6 +99,9 @@
       $this->date= $date;
     }
 
+    public function notDocumented($param) {
+    }
+
     /**
      * Set date
      *
