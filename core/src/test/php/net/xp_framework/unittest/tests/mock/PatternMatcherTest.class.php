@@ -6,10 +6,7 @@
 
   uses(
     'unittest.mock.arguments.PatternMatcher',
-    'unittest.mock.MockRepository',
-    'lang.Type',
-    'lang.Object',
-    'util.Date'   
+    'unittest.TestCase'
   );
 
   /**
