@@ -85,6 +85,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added pattern Argument Matcher for Mocking Framework - pull request #268
+  (ilankin)
 - Made configuration directory passable to scriptlet runners, and change
   xpws command line to support this via "-c". See pull request #266.
   (friebe)
