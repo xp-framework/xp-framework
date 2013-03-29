@@ -1094,6 +1094,18 @@
           } else if (3 === $state[0]) {             // Method body
             if (';' === $tokens[$i][0]) {
               // Abstract method
+              if (isset($annotations[0]['generic']['return'])) {
+                $meta[1][$m][DETAIL_RETURNS]= strtr($annotations[0]['generic']['return'], $placeholders);
+              }
+              if (isset($annotations[0]['generic']['params'])) {
+                foreach (explode(',', $annotations[0]['generic']['params']) as $j => $placeholder) {
+                  if ('' !== ($replaced= strtr(ltrim($placeholder), $placeholders))) {
+                    $meta[1][$m][DETAIL_ARGUMENTS][$j]= $replaced;
+                  }
+                }
+              }
+              $annotations= array();
+              unset($meta[1][$m][DETAIL_ANNOTATIONS]['generic']);
               array_shift($state);
             } else if ('{' === $tokens[$i][0]) {
               $braces= 1;
@@ -1137,7 +1149,7 @@
                 }
               }
 
-              $annotations= array();              
+              $annotations= array();
               unset($meta[1][$m][DETAIL_ANNOTATIONS]['generic']);
               continue;
             }
