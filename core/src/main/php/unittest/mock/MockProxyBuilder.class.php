@@ -289,7 +289,7 @@
         // Create method
         $bytes.= (
           'public function '.$method->getName().'('.$signature.') { '.
-          'return $this->'.$this->getHandlerName().'->invoke($this, \''.$method->getName(TRUE).'\', array('.$args.')); '.
+          'return $this->'.$this->getHandlerName().'->invoke($this, \''.$method->getName(TRUE).'\', func_get_args()); '.
           '}'."\n"
         );
       }
