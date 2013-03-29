@@ -40,6 +40,9 @@
   }
   // }}}
 
+  $webroot= getenv('WEB_ROOT') ?: $_SERVER['DOCUMENT_ROOT'].'/..';
+  $configd= ini_get('user_dir') ?: $webroot.'/etc';
+
   // Set error status to 500 by default - if a fatal error occurs,
   // this guarantees to at least send an error code.
   switch (php_sapi_name()) {
@@ -48,12 +51,10 @@
       break;
 
     case 'cli-server':
-      if (FALSE === getenv('DOCUMENT_ROOT')) {
-        $_SERVER['DOCUMENT_ROOT'].= DIRECTORY_SEPARATOR.'static';
-      }
       if (is_file($_SERVER['DOCUMENT_ROOT'].$_SERVER['REQUEST_URI'])) {
         return FALSE;
       }
+
       header('HTTP/1.0 500 Internal Server Error');
       $_SERVER['SCRIPT_URL']= substr($_SERVER['REQUEST_URI'], 0, strcspn($_SERVER['REQUEST_URI'], '?#'));
       $_SERVER['SERVER_PROFILE']= getenv('SERVER_PROFILE');
@@ -69,21 +70,23 @@
   ini_set('error_append_string', '</xmp>');
   ini_set('html_errors', 0);
 
-  $webroot= $_SERVER['DOCUMENT_ROOT'].'/..';
+  // Set up class path
   $paths= array();
-  foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
+  list($use, $include)= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
+  foreach (explode(PATH_SEPARATOR, $use) as $path) {
     $paths[]= ('~' == $path{0}
       ? str_replace('~', $webroot, $path)
       : $path
     );
   }
-  set_include_path(rtrim(scanpath($paths, $webroot), PATH_SEPARATOR));
+  set_include_path(scanpath($paths, $webroot).$include);
   
   // Bootstrap 
   if (!include(__DIR__.DIRECTORY_SEPARATOR.'lang.base.php')) {
     trigger_error('[bootstrap] Cannot determine boot class path', E_USER_ERROR);
     exit(0x3d);
   }
+
   uses('xp.scriptlet.Runner');
-  exit(xp新criptlet愛unner::main(array($webroot, $_SERVER['SERVER_PROFILE'], $_SERVER['SCRIPT_URL'])));
+  exit(xp新criptlet愛unner::main(array($webroot, $configd, $_SERVER['SERVER_PROFILE'], $_SERVER['SCRIPT_URL'])));
 ?>
