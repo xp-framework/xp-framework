@@ -68,6 +68,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed Reflection bugs for abstract methods in generic classes. See
+  pull request #263
+  (friebe)
 - Fixed generic types not allowing argument default values
   (friebe)
 - Fixed issue #132: Namespaced classes not usable in generics
