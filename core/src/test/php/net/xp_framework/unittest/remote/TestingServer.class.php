@@ -11,10 +11,8 @@
     'util.log.Logger',
     'util.log.FileAppender',
     'peer.server.Server',
-    'lang.archive.Archive',
-    'lang.archive.ArchiveClassLoader',
     'remote.server.EascProtocol',
-    'remote.server.deploy.scan.DeploymentScanner'
+    'remote.server.deploy.scan.FileSystemScanner'
   );
   
   /**
@@ -55,28 +53,7 @@
       
       $s= new Server('127.0.0.1', 0);
       try {
-        $protocol= new EascProtocol(newinstance('remote.server.deploy.scan.DeploymentScanner', array(), '{
-          private $changed= TRUE;
-
-          public function scanDeployments() {
-            $changed= $this->changed;
-            $this->changed= FALSE;
-            return $changed;
-          }
-
-          public function getDeployments() {
-            $res= "net/xp_framework/unittest/remote/deploy/beans.test.CalculatorBean.xar";
-
-            with ($d= new Deployment($res)); {
-              $d->setClassLoader(new ArchiveClassLoader(new Archive(ClassLoader::getDefault()->getResourceAsStream($res))));
-              $d->setImplementation("beans.test.CalculatorBeanImpl");
-              $d->setInterface("beans.test.Calculator");
-              $d->setDirectoryName("xp/test/Calculator");
-
-              return array($d);
-            }
-          }
-        }'));
+        $protocol= new EascProtocol(new FileSystemScanner(__DIR__.DIRECTORY_SEPARATOR.'deploy'.DIRECTORY_SEPARATOR));
         $protocol->initialize();
 
         $s->setProtocol($protocol);
