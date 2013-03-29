@@ -8,6 +8,9 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed reflection to use "var" instead of "void" as return type when
+  no api documentation is available. See pull request #264
+  (friebe)
 - Changed object identity calculation from microtime() to uniqid in order
   to correctly work with PHP 5.5.0beta1. See issue #260 for details
   (friebe)
