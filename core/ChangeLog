@@ -85,6 +85,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made configuration directory passable to scriptlet runners, and change
+  xpws command line to support this via "-c". See pull request #266.
+  (friebe)
 - Greatly improved the performance of the lang.types.String class by using
   the "mbstring" extension when available. See pull request #267.
   (friebe, pdietz, kiesel)
