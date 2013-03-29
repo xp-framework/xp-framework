@@ -66,6 +66,15 @@
     }
 
     /**
+     * String cast overloading
+     *
+     * @return  string
+     */
+    public function __toString() {
+      return $this->regex;
+    }
+
+    /**
      * Returns whether a given object is equal to this
      *
      * @param   lang.Generic cmp
