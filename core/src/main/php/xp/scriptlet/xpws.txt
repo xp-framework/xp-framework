@@ -8,8 +8,10 @@ Usage:
 
 Options is one of:
 
+  * -w <path>    : Specify web root. Defaults to "."
+  * -c <path>    : Specify configuration directory. Defaults to "./etc"
   * -r <path>    : Specify document root. Defaults to "./static"
   * -p <profile> : Set SERVER_PROFILE. Defaults to "dev"
-
+  * -cp <path>   : Add class path entry.
 
 Host and port default to "localhost:8080".
