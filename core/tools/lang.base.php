@@ -41,6 +41,7 @@
     public static $loader= NULL;
     public static $classpath= NULL;
     public static $errors= array();
+    public static $meta= array();
     public static $registry = array(
       'sapi'       => array()
     );

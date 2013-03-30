@@ -30,7 +30,7 @@
     
       // Workaround for missing detail information about return types in
       // builtin classes.
-      xp::$registry['details.php.Exception']= array(
+      xp::$meta['php.Exception']= array(
         'class' => array(4 => NULL, array()),
         0 => array(),
         1 => array(

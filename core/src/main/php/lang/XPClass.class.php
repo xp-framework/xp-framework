@@ -914,14 +914,14 @@
      */
     public static function detailsForClass($class) {
       if (!$class) return NULL;        // Border case
-      if (isset(xp::$registry['details.'.$class])) return xp::$registry['details.'.$class];
+      if (isset(xp::$meta[$class])) return xp::$meta[$class];
 
       // Retrieve class' sourcecode
       $cl= self::_classLoaderFor($class);
       if (!$cl || !($bytes= $cl->loadClassBytes($class))) return NULL;
 
       // Return details for specified class
-      return xp::$registry['details.'.$class]= self::parseDetails($bytes, $class);
+      return xp::$meta[$class]= self::parseDetails($bytes, $class);
     }
 
     /**
@@ -990,7 +990,7 @@
 
       // Create class if it doesn't exist yet
       if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-        $meta= xp::$registry['details.'.$self->name];
+        $meta= xp::$meta[$self->name];
 
         // Parse placeholders into a lookup map
         $placeholders= array();
@@ -1187,7 +1187,7 @@
         eval($src);
         method_exists($name, '__static') && call_user_func(array($name, '__static'));
         unset($meta['class'][DETAIL_ANNOTATIONS]['generic']);
-        xp::$registry['details.'.$qname]= $meta;
+        xp::$meta[$qname]= $meta;
         xp::$cn[$name]= $qname;
       }
       

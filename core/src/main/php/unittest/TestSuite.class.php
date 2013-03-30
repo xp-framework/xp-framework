@@ -428,7 +428,6 @@
           $m->invoke(NULL, array());
         } catch (TargetInvocationException $ignored) { }
       }
-      unset(xp::$registry['details.'.$class->getName()]); // TODO: This should be part of xp::gc()
     }
 
     /**
