@@ -576,8 +576,8 @@
      * @return  lang.IClassLoader
      */
     protected static function _classLoaderFor($name) {
-      if (isset(xp::$registry[$l= 'classloader.'.$name])) {
-        sscanf(xp::$registry[$l], '%[^:]://%[^$]', $cl, $argument);
+      if (isset(xp::$cl[$name])) {
+        sscanf(xp::$cl[$name], '%[^:]://%[^$]', $cl, $argument);
         return call_user_func(array(xp::reflect($cl), 'instanceFor'), $argument);
       }
       return NULL;    // Internal class, e.g.

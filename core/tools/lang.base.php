@@ -29,6 +29,7 @@
     const CLASS_FILE_EXT= '.class.php';
     const ENCODING= 'iso-8859-1';
 
+    public static $cl= array();
     public static $cli= array();
     public static $cll= 0;
     public static $registry = array(
@@ -41,7 +42,7 @@
     // {{{ public string loadClass0(string name)
     //     Loads a class by its fully qualified name
     function loadClass0($class) {
-      if (isset(xp::$registry['classloader.'.$class])) {
+      if (isset(xp::$cl[$class])) {
         return substr(array_search($class, xp::$registry, TRUE), 6);
       }
 
@@ -58,12 +59,12 @@
 
         // Load class        
         $package= NULL;
-        xp::$registry['classloader.'.$class]= $cl.'://'.$path;
+        xp::$cl[$class]= $cl.'://'.$path;
         xp::$cll++;
         $r= include($f);
         xp::$cll--;
         if (FALSE === $r) {
-          unset(xp::$registry['classloader.'.$class]);
+          unset(xp::$cl[$class]);
           continue;
         }
 

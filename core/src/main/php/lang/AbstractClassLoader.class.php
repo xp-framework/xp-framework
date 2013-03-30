@@ -43,11 +43,11 @@
      * @throws  lang.ClassFormatException in case the class format is invalud
      */
     public function loadClass0($class) {
-      if (isset(xp::$registry['classloader.'.$class])) return xp::reflect($class);
+      if (isset(xp::$cl[$class])) return xp::reflect($class);
 
       // Load class
       $package= NULL;
-      xp::$registry['classloader.'.$class]= $this->getClassName().'://'.$this->path;
+      xp::$cl[$class]= $this->getClassName().'://'.$this->path;
       xp::$cll++;
       try {
         $r= include($this->classUri($class));
@@ -75,7 +75,7 @@
       }
       xp::$cll--;
       if (FALSE === $r) {
-        unset(xp::$registry['classloader.'.$class]);
+        unset(xp::$cl[$class]);
         throw new ClassNotFoundException($class, array($this));
       }
       
@@ -88,7 +88,7 @@
           if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
             $name= strtr($class, '.', '\\');
             if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-              unset(xp::$registry['classloader.'.$class]);
+              unset(xp::$cl[$class]);
               raise('lang.ClassFormatException', 'Class "'.$name.'" not declared in loaded file');
             }
           } else {
