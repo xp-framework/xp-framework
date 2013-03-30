@@ -36,8 +36,8 @@
       'xp'    => '<xp>',
       'null'  => '<null>'
     );
+    public static $errors= array();
     public static $registry = array(
-      'errors'     => array(),
       'sapi'       => array()
     );
     
@@ -180,9 +180,9 @@
     //     Runs the garbage collector
     static function gc($file= NULL) {
       if ($file) {
-        unset(xp::$registry['errors'][$file]);
+        unset(xp::$errors[$file]);
       } else {
-        xp::$registry['errors']= array();
+        xp::$errors= array();
       }
     }
     // }}}
@@ -197,13 +197,12 @@
     // {{{ public bool errorAt(string file [, int line)
     //     Returns whether an error occured at the specified position
     static function errorAt($file, $line= -1) {
-      $errors= xp::$registry['errors'];
       
       // If no line is given, check for an error in the file
-      if ($line < 0) return !empty($errors[$file]);
+      if ($line < 0) return !empty(xp::$errors[$file]);
       
       // Otherwise, check for an error in the file on a certain line
-      return !empty($errors[$file][$line]);
+      return !empty(xp::$errors[$file][$line]);
     }
     // }}}
     
@@ -469,14 +468,14 @@
       $class= (isset($bt[1]['class']) ? $bt[1]['class'] : NULL);
       $method= (isset($bt[1]['function']) ? $bt[1]['function'] : NULL);
       
-      if (!isset(xp::$registry['errors'][$file][$line][$msg])) {
-        xp::$registry['errors'][$file][$line][$msg]= array(
+      if (!isset(xp::$errors[$file][$line][$msg])) {
+        xp::$errors[$file][$line][$msg]= array(
           'class'   => $class,
           'method'  => $method,
           'cnt'     => 1
         );
       } else {
-        xp::$registry['errors'][$file][$line][$msg]['cnt']++;
+        xp::$errors[$file][$line][$msg]['cnt']++;
       }
     }
   }

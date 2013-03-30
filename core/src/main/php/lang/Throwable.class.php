@@ -147,7 +147,7 @@
       );
 
       // Error messages
-      foreach (xp::$registry['errors'] as $file => $list) {
+      foreach (xp::$errors as $file => $list) {
         $this->addStackTraceFor($file, NULL, NULL, NULL, array(), $list);
       }
 

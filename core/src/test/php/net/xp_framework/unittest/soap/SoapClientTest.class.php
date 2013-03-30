@@ -231,7 +231,7 @@
         $client->transport
       );
 
-      $this->assertEquals(1, sizeof(xp::registry('errors')));
+      $this->assertEquals(1, sizeof(xp::$errors));
       xp::gc();
     }
 
@@ -259,7 +259,7 @@
       }
 
       $this->assertEquals('urn://test', $client->action);
-      $this->assertEquals(1, sizeof(xp::registry('errors')));
+      $this->assertEquals(1, sizeof(xp::$errors));
       xp::gc();
     }
   }

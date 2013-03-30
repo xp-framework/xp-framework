@@ -87,28 +87,28 @@
     public function divide($other) {
       if ($other instanceof self) {
         if (NULL === ($r= bcdiv($this->num, $other->num, 0))) {     // inlined
-          $e= key(xp::$registry['errors'][__FILE__][__LINE__- 1]);
+          $e= key(xp::$errors[__FILE__][__LINE__- 1]);
           xp::gc(__FILE__);
           throw new IllegalArgumentException($e);
         }
         return new self($r);
       } else if (is_int($other)) {
         if (NULL === ($r= bcdiv($this->num, $other, 0))) {          // inlined
-          $e= key(xp::$registry['errors'][__FILE__][__LINE__- 1]);
+          $e= key(xp::$errors[__FILE__][__LINE__- 1]);
           xp::gc(__FILE__);
           throw new IllegalArgumentException($e);
         }
         return new self($r);
       } else if ($other instanceof BigFloat) {
         if (NULL === ($r= bcdiv($this->num, $other->num))) {        // inlined
-          $e= key(xp::$registry['errors'][__FILE__][__LINE__- 1]);
+          $e= key(xp::$errors[__FILE__][__LINE__- 1]);
           xp::gc(__FILE__);
           throw new IllegalArgumentException($e);
         }
         return new BigFloat($r);
       } else {
         if (NULL === ($r= bcdiv($this->num, $other))) {             // inlined
-          $e= key(xp::$registry['errors'][__FILE__][__LINE__- 1]);
+          $e= key(xp::$errors[__FILE__][__LINE__- 1]);
           xp::gc(__FILE__);
           throw new IllegalArgumentException($e);
         }
@@ -154,7 +154,7 @@
      */
     public function divide0($other) {
       if (NULL === ($r= bcdiv($this->num, $other instanceof self ? $other->num : $other, 0))) {
-        $e= key(xp::$registry['errors'][__FILE__][__LINE__- 1]);
+        $e= key(xp::$errors[__FILE__][__LINE__- 1]);
         xp::gc(__FILE__);
         throw new IllegalArgumentException($e);
       }
@@ -194,7 +194,7 @@
      */
     public function modulo($other) {
       if (NULL === ($r= bcmod($this->num, $other instanceof self ? $other->num : $other))) {
-        $e= key(xp::$registry['errors'][__FILE__][__LINE__- 1]);
+        $e= key(xp::$errors[__FILE__][__LINE__- 1]);
         xp::gc(__FILE__);
         throw new IllegalArgumentException($e);
       }

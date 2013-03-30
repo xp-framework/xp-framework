@@ -61,10 +61,10 @@
       trigger_error('Test');
       $this->assertEquals(
         array(__FILE__ => array(__LINE__ - 2 => array('Test' => array('class' => NULL, 'method' => 'trigger_error', 'cnt' => 1)))),
-        xp::$registry['errors']
+        xp::$errors
       );
       xp::gc();
-      $this->assertEquals(array(), xp::$registry['errors']);
+      $this->assertEquals(array(), xp::$errors);
     }
 
     /**

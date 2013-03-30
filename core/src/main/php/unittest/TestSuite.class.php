@@ -288,9 +288,9 @@
                 $timer->elapsedTime()
               )
             ));
-          } else if (sizeof(xp::registry('errors')) > 0) {
+          } else if (sizeof(xp::$errors) > 0) {
             $this->notifyListeners('testWarning', array(
-              $result->set($test, new TestWarning($test, $this->formatErrors(xp::registry('errors')), $timer->elapsedTime()))
+              $result->set($test, new TestWarning($test, $this->formatErrors(xp::$errors), $timer->elapsedTime()))
             ));
           } else {
             $this->notifyListeners('testSucceeded', array(
@@ -334,9 +334,9 @@
             $timer->elapsedTime()
           )
         ));
-      } else if (sizeof(xp::registry('errors')) > 0) {
+      } else if (sizeof(xp::$errors) > 0) {
         $this->notifyListeners('testWarning', array(
-          $result->set($test, new TestWarning($test, $this->formatErrors(xp::registry('errors')), $timer->elapsedTime()))
+          $result->set($test, new TestWarning($test, $this->formatErrors(xp::$errors), $timer->elapsedTime()))
         ));
       } else if ($eta && $timer->elapsedTime() > $eta) {
         $this->notifyListeners('testFailed', array(
