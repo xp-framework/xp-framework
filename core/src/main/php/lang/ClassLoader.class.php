@@ -55,7 +55,7 @@
       xp::$loader= new self();
       
       // Scan include-path, setting up classloaders for each element
-      foreach (xp::$registry['classpath'] as $element) {
+      foreach (xp::$classpath as $element) {
         if ('!' === $element{0}) {
           $before  = TRUE;
           $element = substr($element, 1);

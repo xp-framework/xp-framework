@@ -38,6 +38,7 @@
     );
     public static $null= NULL;
     public static $loader= NULL;
+    public static $classpath= NULL;
     public static $errors= array();
     public static $registry = array(
       'sapi'       => array()
@@ -50,7 +51,7 @@
         return substr(array_search($class, xp::$cn, TRUE), 6);
       }
 
-      foreach (xp::$registry['classpath'] as $path) {
+      foreach (xp::$classpath as $path) {
 
         // If path is a directory and the included file exists, load it
         if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT)) {
@@ -212,7 +213,7 @@
     //     Sets an SAPI
     static function sapi() {
       foreach ($a= func_get_args() as $name) {
-        foreach (xp::$registry['classpath'] as $path) {
+        foreach (xp::$classpath as $path) {
           $filename= 'sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php';
           if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.$filename)) {
             require_once($f);
@@ -229,7 +230,7 @@
     }
     // }}}
     
-    // {{{ internal var registry(var args*)
+    // {{{ deprecated internal var registry(var args*)
     //     Stores static data
     static function registry() {
       switch (func_num_args()) {
@@ -763,7 +764,7 @@
   // Registry initialization
   xp::$null= new null();
   xp::$loader= new xp();
-  xp::$registry['classpath']= explode(PATH_SEPARATOR, get_include_path());
+  xp::$classpath= explode(PATH_SEPARATOR, get_include_path());
 
   // Register stream wrapper for .xar class loading
   stream_wrapper_register('xar', 'xarloader');

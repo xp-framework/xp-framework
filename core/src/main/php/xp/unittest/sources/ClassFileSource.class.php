@@ -38,7 +38,7 @@
     public function testCasesWith($arguments) {
       $uri= $this->file->getURI();
       $path= dirname($uri);
-      $paths= array_flip(array_filter(array_map('realpath', xp::registry('classpath'))));
+      $paths= array_flip(array_filter(array_map('realpath', xp::$classpath)));
 
       // Search class path
       while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 

@@ -62,7 +62,7 @@
      *
      */
     public function __construct() {
-      $this->setSourcePath(xp::$registry['classpath']);
+      $this->setSourcePath(xp::$classpath);
     }
 
     /**
