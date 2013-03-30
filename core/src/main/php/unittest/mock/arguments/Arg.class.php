@@ -7,8 +7,8 @@
   uses(
     'unittest.mock.arguments.IArgumentMatcher',
     'unittest.mock.arguments.AnyMatcher',
-    'unittest.mock.arguments.TypeMatcher',
     'unittest.mock.arguments.DynamicMatcher',
+    'unittest.mock.arguments.TypeMatcher',
     'unittest.mock.MockProxyBuilder'
   );
 
@@ -63,6 +63,16 @@
       
       $proxyClass= $builder->createProxyClass(ClassLoader::getDefault(), $interfaces, $parentClass);
       return $proxyClass->newInstance(new TypeMatcher($typeName));
+    }
+
+
+    /**
+     * Accessor method for a pattern matcher.
+     * 
+     * @param   pattern string
+     */
+    public static function match($pattern) {
+      return new PatternMatcher($pattern);
     }
   }
 ?>
