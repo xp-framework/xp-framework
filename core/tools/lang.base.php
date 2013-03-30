@@ -36,6 +36,7 @@
       'xp'    => '<xp>',
       'null'  => '<null>'
     );
+    public static $null= NULL;
     public static $loader= NULL;
     public static $errors= array();
     public static $registry = array(
@@ -191,7 +192,7 @@
     // {{{ public <null> null()
     //     Runs a fatal-error safe version of NULL
     static function null() {
-      return xp::$registry['null'];
+      return xp::$null;
     }
     // }}}
 
@@ -300,7 +301,7 @@
     // {{{ public object __construct(void)
     //     Constructor to avoid magic __call invokation
     public function __construct() {
-      if (isset(xp::$registry['null'])) {
+      if (isset(xp::$null)) {
         throw new IllegalAccessException('Cannot create new instances of xp::null()');
       }
     }
@@ -760,7 +761,7 @@
   ini_set('magic_quotes_runtime', FALSE);
   
   // Registry initialization
-  xp::$registry['null']= new null();
+  xp::$null= new null();
   xp::$loader= new xp();
   xp::$registry['classpath']= explode(PATH_SEPARATOR, get_include_path());
 
