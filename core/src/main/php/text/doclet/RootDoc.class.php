@@ -222,10 +222,13 @@
      * @return  string qualified name
      */
     public function qualifyName($doc, $name) {
-      if (!($lookup= xp::registry('class.'.$name))) {
+      if (isset(xp::$cn[$name])) {
         foreach ($doc->usedClasses->classes as $class) {
-          if (xp::reflect($class) == $name) return $class;
+          if (xp::reflect($class) === $name) return $class;
         }
+        $lookup= xp::$cn[$name];
+      } else {
+        $lookup= NULL;
       }
 
       // Nothing found!

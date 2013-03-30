@@ -29,21 +29,23 @@
     const CLASS_FILE_EXT= '.class.php';
     const ENCODING= 'iso-8859-1';
 
-    public static $cl= array();
     public static $cli= array();
     public static $cll= 0;
+    public static $cl= array();
+    public static $cn= array(
+      'xp'    => '<xp>',
+      'null'  => '<null>'
+    );
     public static $registry = array(
       'errors'     => array(),
-      'sapi'       => array(),
-      'class.xp'   => '<xp>',
-      'class.null' => '<null>',
+      'sapi'       => array()
     );
     
     // {{{ public string loadClass0(string name)
     //     Loads a class by its fully qualified name
     function loadClass0($class) {
       if (isset(xp::$cl[$class])) {
-        return substr(array_search($class, xp::$registry, TRUE), 6);
+        return substr(array_search($class, xp::$cn, TRUE), 6);
       }
 
       foreach (xp::$registry['classpath'] as $path) {
@@ -84,7 +86,7 @@
           $name= strtr($class, '.', '·');
           class_alias($name, strtr($class, '.', '\\'));
         }
-        xp::$registry['class.'.$name]= $class;
+        xp::$cn[$name]= $class;
         method_exists($name, '__static') && xp::$cli[]= array($name, '__static');
         if (0 === xp::$cll) {
           $invocations= xp::$cli;
@@ -102,8 +104,7 @@
     // {{{ public string nameOf(string name)
     //     Returns the fully qualified name
     static function nameOf($name) {
-      $k= 'class.'.$name;
-      return isset(xp::$registry[$k]) ? xp::$registry[$k] : 'php.'.$name;
+      return isset(xp::$cn[$name]) ? xp::$cn[$name] : 'php.'.$name;
     }
     // }}}
 
@@ -263,9 +264,9 @@
           }
         }
         return substr($l, 0, -1);
-      } else {      
-        $l= array_search($type, xp::$registry, TRUE);
-        return $l ? substr($l, 6) : substr($type, (FALSE === $p= strrpos($type, '.')) ? 0 : $p+ 1);
+      } else {
+        $l= array_search($type, xp::$cn, TRUE);
+        return $l ?: substr($type, (FALSE === $p= strrpos($type, '.')) ? 0 : $p+ 1);
       }
     }
     // }}}

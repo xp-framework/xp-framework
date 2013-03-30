@@ -100,7 +100,7 @@
         class_alias($name, strtr($class, '.', '\\'));
       }
 
-      xp::$registry['class.'.$name]= $class;
+      xp::$cn[$name]= $class;
       method_exists($name, '__static') && xp::$cli[]= array($name, '__static');
       if (0 === xp::$cll) {
         $invocations= xp::$cli;

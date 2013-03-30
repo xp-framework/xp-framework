@@ -1188,7 +1188,7 @@
         method_exists($name, '__static') && call_user_func(array($name, '__static'));
         unset($meta['class'][DETAIL_ANNOTATIONS]['generic']);
         xp::$registry['details.'.$qname]= $meta;
-        xp::$registry['class.'.$name]= $qname;
+        xp::$cn[$name]= $qname;
       }
       
       return $name;
@@ -1312,7 +1312,7 @@
     public static function getClasses() {
       $ret= array();
       foreach (get_declared_classes() as $name) {
-        if (isset(xp::$registry['class.'.$name])) $ret[]= new self($name);
+        if (isset(xp::$cn[$name])) $ret[]= new self($name);
       }
       return $ret;
     }
