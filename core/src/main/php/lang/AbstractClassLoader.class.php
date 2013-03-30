@@ -48,11 +48,11 @@
       // Load class
       $package= NULL;
       xp::$registry['classloader.'.$class]= $this->getClassName().'://'.$this->path;
-      xp::$registry['cl.level']++;
+      xp::$cll++;
       try {
         $r= include($this->classUri($class));
       } catch (ClassLoadingException $e) {
-        xp::$registry['cl.level']--;
+        xp::$cll--;
 
         $decl= NULL;
         if (NULL === $package) {
@@ -73,7 +73,7 @@
         // be declared.
         raise('lang.ClassLinkageException', $class, array($this), $e);
       }
-      xp::$registry['cl.level']--;
+      xp::$cll--;
       if (FALSE === $r) {
         unset(xp::$registry['classloader.'.$class]);
         throw new ClassNotFoundException($class, array($this));
@@ -101,10 +101,10 @@
       }
 
       xp::$registry['class.'.$name]= $class;
-      method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
-      if (0 == xp::$registry['cl.level']) {
-        $invocations= xp::$registry['cl.inv'];
-        xp::$registry['cl.inv']= array();
+      method_exists($name, '__static') && xp::$cli[]= array($name, '__static');
+      if (0 === xp::$cll) {
+        $invocations= xp::$cli;
+        xp::$cli= array();
         foreach ($invocations as $inv) call_user_func($inv);
       }
       return $name;

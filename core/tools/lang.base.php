@@ -17,7 +17,7 @@
       $class= xp::$registry['loader']->loadClass0($str);
       $trace= debug_backtrace();
       $scope= $trace[2]['args'][0];
-      xp::$registry['cl.inv'][]= function() use ($class, $scope) {
+      xp::$cli[]= function() use ($class, $scope) {
         $class::__import(xp::reflect($scope));
       };
     }
@@ -29,13 +29,13 @@
     const CLASS_FILE_EXT= '.class.php';
     const ENCODING= 'iso-8859-1';
 
+    public static $cli= array();
+    public static $cll= 0;
     public static $registry = array(
       'errors'     => array(),
       'sapi'       => array(),
       'class.xp'   => '<xp>',
       'class.null' => '<null>',
-      'cl.level'   => 0,
-      'cl.inv'     => array()
     );
     
     // {{{ public string loadClass0(string name)
@@ -59,9 +59,9 @@
         // Load class        
         $package= NULL;
         xp::$registry['classloader.'.$class]= $cl.'://'.$path;
-        xp::$registry['cl.level']++;
+        xp::$cll++;
         $r= include($f);
-        xp::$registry['cl.level']--;
+        xp::$cll--;
         if (FALSE === $r) {
           unset(xp::$registry['classloader.'.$class]);
           continue;
@@ -84,10 +84,10 @@
           class_alias($name, strtr($class, '.', '\\'));
         }
         xp::$registry['class.'.$name]= $class;
-        method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
-        if (0 == xp::$registry['cl.level']) {
-          $invocations= xp::$registry['cl.inv'];
-          xp::$registry['cl.inv']= array();
+        method_exists($name, '__static') && xp::$cli[]= array($name, '__static');
+        if (0 === xp::$cll) {
+          $invocations= xp::$cli;
+          xp::$cli= array();
           foreach ($invocations as $inv) call_user_func($inv);
         }
 
