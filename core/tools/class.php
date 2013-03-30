@@ -1,47 +1,6 @@
 <?php 
   define('EPREPEND_IDENTIFIER', "\6100");
 
-  // {{{ string scanpath(string[] path, string home)
-  //     Scans a path file 
-  function scanpath($paths, $home) {
-    $inc= '';
-    foreach ($paths as $path) {
-      if (!($d= @opendir($path))) continue;
-      while ($e= readdir($d)) {
-        if ('.pth' !== substr($e, -4)) continue;
-
-        foreach (file($path.DIRECTORY_SEPARATOR.$e) as $line) {
-          if ('#' === $line{0}) {
-            continue;
-          } else if ('!' === $line{0}) {
-            $pre= TRUE;
-            $line= substr($line, 1);
-          } else {
-            $pre= FALSE;
-          }
-          
-          if ('~' === $line{0}) {
-            $base= $home.DIRECTORY_SEPARATOR; $line= substr($line, 1);
-          } else if ('/' === $line{0} || (':' === $line{1} && '\\' === $line{2})) {
-            $base= '';
-          } else {
-            $base= $path.DIRECTORY_SEPARATOR; 
-          }
-
-          $qn= $base.strtr(trim($line), '/', DIRECTORY_SEPARATOR).PATH_SEPARATOR;
-          if ('.php' === substr($qn, -5, 4)) {
-            require(substr($qn, 0, -1));
-          } else {
-            $pre ? $inc= $qn.$inc : $inc.= $qn;
-          }
-        }
-      }
-      closedir($d);
-    }
-    return $inc;
-  }
-  // }}}
-
   // {{{ internal string __output(string buf)
   //     Output handler. Checks for fatal errors
   function __output($buf) {
@@ -73,17 +32,17 @@
     exit(0x3d);
   }
   
-  $home= getenv('HOME');
-  list($use, $include)= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
-  set_include_path(
-    scanpath(explode(PATH_SEPARATOR, substr($use, 2).PATH_SEPARATOR.'.'), $home).
-    $include
-  );
-
   if (!include(__DIR__.DIRECTORY_SEPARATOR.'lang.base.php')) {
     trigger_error('[bootstrap] Cannot determine boot class path', E_USER_ERROR);
     exit(0x3d);
   }
+
+  $home= getenv('HOME');
+  list($use, $include)= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
+  bootstrap(
+    scanpath(explode(PATH_SEPARATOR, substr($use, 2).PATH_SEPARATOR.'.'), $home).
+    $include
+  );
   uses('util.cmd.ParamString', 'util.cmd.Console');
   
   ini_set('error_prepend_string', EPREPEND_IDENTIFIER);
