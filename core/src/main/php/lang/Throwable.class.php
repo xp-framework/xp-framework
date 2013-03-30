@@ -107,8 +107,8 @@
       while (!isset($t[$i]['class']) && $i++ < $s) { }
       $scope= isset($t[$i]['class']) ? $t[$i]['class'] : NULL;
 
-      if (NULL != $scope && isset(xp::$registry['ext'][$scope])) {
-        foreach (xp::$registry['ext'][$scope] as $type => $class) {
+      if (NULL != $scope && isset(xp::$ext[$scope])) {
+        foreach (xp::$ext[$scope] as $type => $class) {
           if (!$this instanceof $type || !method_exists($class, $name)) continue;
           array_unshift($args, $this);
           return call_user_func_array(array($class, $name), $args);

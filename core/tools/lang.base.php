@@ -29,6 +29,7 @@
     const CLASS_FILE_EXT= '.class.php';
     const ENCODING= 'iso-8859-1';
 
+    public static $ext= array();
     public static $cli= array();
     public static $cll= 0;
     public static $cl= array();
@@ -172,7 +173,7 @@
         if (MODIFIER_STATIC & $method->getModifiers() && $method->numParameters() > 0) {
           $param= $method->getParameter(0);
           if ('self' === $param->getName()) {
-            self::$registry['ext'][$scope][$param->getType()->literal()]= $class;
+            xp::$ext[$scope][$param->getType()->literal()]= $class;
           }
         }
       }
