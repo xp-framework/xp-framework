@@ -330,5 +330,32 @@
         $quoter->replaceWith('$1="$2"$3', '<a href=http://example.com title=Link>...</a>')
       );
     }
+
+    /**
+     * Tests __toString()
+     *
+     */
+    #[@test]
+    public function stringCast() {
+      $this->assertEquals('/^begin/', (string)new Pattern('^begin'));
+    }
+
+    /**
+     * Tests __toString()
+     *
+     */
+    #[@test]
+    public function stringCastWithFlag() {
+      $this->assertEquals('/end$/i', (string)new Pattern('end$', Pattern::CASE_INSENSITIVE));
+    }
+
+    /**
+     * Tests __toString()
+     *
+     */
+    #[@test]
+    public function stringCastWithFlags() {
+      $this->assertEquals('/end$/iU', (string)new Pattern('end$', Pattern::CASE_INSENSITIVE | Pattern::UNGREEDY));
+    }
   }
 ?>
