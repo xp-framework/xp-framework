@@ -205,7 +205,7 @@
     }
     // }}}
     
-    // {{{ proto static void sapi(string* sapis)
+    // {{{ proto deprecated void sapi(string* sapis)
     //     Sets an SAPI
     static function sapi() {
       foreach ($a= func_get_args() as $name) {
@@ -226,7 +226,7 @@
     }
     // }}}
     
-    // {{{ proto static var registry(var args*)
+    // {{{ proto var registry(var args*)
     //     Stores static data
     static function registry() {
       switch (func_num_args()) {
