@@ -14,7 +14,7 @@
   // {{{ final class import
   final class import {
     function __construct($str) {
-      $class= xp::$registry['loader']->loadClass0($str);
+      $class= xp::$loader->loadClass0($str);
       $trace= debug_backtrace();
       $scope= $trace[2]['args'][0];
       xp::$cli[]= function() use ($class, $scope) {
@@ -36,6 +36,7 @@
       'xp'    => '<xp>',
       'null'  => '<null>'
     );
+    public static $loader= NULL;
     public static $errors= array();
     public static $registry = array(
       'sapi'       => array()
@@ -486,7 +487,7 @@
   function uses() {
     $scope= NULL;
     foreach (func_get_args() as $str) {
-      $class= xp::$registry['loader']->loadClass0($str);
+      $class= xp::$loader->loadClass0($str);
 
       // Tricky: We can arrive at this point without the class actually existing:
       // A : uses("B")
@@ -734,7 +735,7 @@
   //     SPL Autoload callback
   function __load($class) {
     $name= strtr($class, '\\', '.');
-    $cl= xp::$registry['loader']->findClass($name);
+    $cl= xp::$loader->findClass($name);
     if ($cl instanceof null) return FALSE;
 
     $cl->loadClass0($name);
@@ -760,7 +761,7 @@
   
   // Registry initialization
   xp::$registry['null']= new null();
-  xp::$registry['loader']= new xp();
+  xp::$loader= new xp();
   xp::$registry['classpath']= explode(PATH_SEPARATOR, get_include_path());
 
   // Register stream wrapper for .xar class loading

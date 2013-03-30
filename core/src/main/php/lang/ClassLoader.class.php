@@ -52,7 +52,7 @@
       $delegates  = array();
 
     static function __static() {
-      xp::$registry['loader']= new self();
+      xp::$loader= new self();
       
       // Scan include-path, setting up classloaders for each element
       foreach (xp::$registry['classpath'] as $element) {
@@ -81,7 +81,7 @@
      * @return  lang.ClassLoader
      */
     public static function getDefault() {
-      return xp::$registry['loader'];
+      return xp::$loader;
     }
 
     /**
