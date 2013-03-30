@@ -293,7 +293,7 @@
   // }}}
 
   // {{{ final class null
-  class null {
+  final class null {
 
     // {{{ proto __construct(void)
     //     Constructor to avoid magic __call invokation
@@ -334,7 +334,7 @@
   // }}}
 
   // {{{ final class xarloader
-  class xarloader {
+  final class xarloader {
     public
       $position     = 0,
       $archive      = '',
