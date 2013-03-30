@@ -17,12 +17,8 @@
      * Constructor
      *
      * @param   string value
-     * @throws  lang.IllegalArgumentException
      */
     public function __construct($value) {
-      if (!is_numeric($value))
-        throw new IllegalArgumentException('Not a number: '.$value);
-
       $this->value= (string)$value;
     }
     
@@ -31,8 +27,12 @@
      *
      * @param   string $value
      * @return  self
+     * @throws  lang.IllegalArgumentException
      */
     public static function valueOf($value) {
+      if (!is_numeric($value)) {
+        throw new IllegalArgumentException('Not a number: '.$value);
+      }
       return new static($value);
     }
 
