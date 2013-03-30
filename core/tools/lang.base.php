@@ -38,7 +38,7 @@
       'cl.inv'     => array()
     );
     
-    // {{{ public string loadClass0(string name)
+    // {{{ proto string loadClass0(string name)
     //     Loads a class by its fully qualified name
     function loadClass0($class) {
       if (isset(xp::$registry['classloader.'.$class])) {
@@ -85,7 +85,7 @@
         }
         xp::$registry['class.'.$name]= $class;
         method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
-        if (0 == xp::$registry['cl.level']) {
+        if (0 === xp::$registry['cl.level']) {
           $invocations= xp::$registry['cl.inv'];
           xp::$registry['cl.inv']= array();
           foreach ($invocations as $inv) call_user_func($inv);
@@ -98,7 +98,7 @@
     }
     // }}}
 
-    // {{{ public string nameOf(string name)
+    // {{{ proto string nameOf(string name)
     //     Returns the fully qualified name
     static function nameOf($name) {
       $k= 'class.'.$name;
@@ -106,14 +106,14 @@
     }
     // }}}
 
-    // {{{ public string typeOf(var arg)
+    // {{{ proto string typeOf(var arg)
     //     Returns the fully qualified type name
     static function typeOf($arg) {
       return is_object($arg) ? xp::nameOf(get_class($arg)) : gettype($arg);
     }
     // }}}
 
-    // {{{ public string stringOf(var arg [, string indent default ''])
+    // {{{ proto string stringOf(var arg [, string indent default ''])
     //     Returns a string representation of the given argument
     static function stringOf($arg, $indent= '') {
       static $protect= array();
@@ -160,7 +160,7 @@
     }
     // }}}
 
-    // {{{ public static void extensions(string class, string scope)
+    // {{{ proto void extensions(string class, string scope)
     //     Registers extension methods for a certain scope
     static function extensions($class, $scope) {
       foreach (create(new XPClass($class))->getMethods() as $method) {
@@ -174,7 +174,7 @@
     }
     // }}}
 
-    // {{{ public void gc([string file default NULL])
+    // {{{ proto void gc([string file default NULL])
     //     Runs the garbage collector
     static function gc($file= NULL) {
       if ($file) {
@@ -185,14 +185,14 @@
     }
     // }}}
 
-    // {{{ public <null> null()
+    // {{{ proto <null> null()
     //     Runs a fatal-error safe version of NULL
     static function null() {
       return xp::$registry['null'];
     }
     // }}}
 
-    // {{{ public bool errorAt(string file [, int line)
+    // {{{ proto bool errorAt(string file [, int line)
     //     Returns whether an error occured at the specified position
     static function errorAt($file, $line= -1) {
       $errors= xp::$registry['errors'];
@@ -205,7 +205,7 @@
     }
     // }}}
     
-    // {{{ deprecated public var sapi(string* sapis)
+    // {{{ proto deprecated void sapi(string* sapis)
     //     Sets an SAPI
     static function sapi() {
       foreach ($a= func_get_args() as $name) {
@@ -226,7 +226,7 @@
     }
     // }}}
     
-    // {{{ internal var registry(var args*)
+    // {{{ proto var registry(var args*)
     //     Stores static data
     static function registry() {
       switch (func_num_args()) {
@@ -238,7 +238,7 @@
     }
     // }}}
     
-    // {{{ internal string reflect(string type)
+    // {{{ proto string reflect(string type)
     //     Retrieve type literal for a given type name
     static function reflect($type) {
       if ('string' === $type || 'int' === $type || 'double' === $type || 'bool' == $type) {
@@ -269,7 +269,7 @@
     }
     // }}}
 
-    // {{{ internal void error(string message)
+    // {{{ proto void error(string message)
     //     Throws a fatal error and exits with exitcode 61
     static function error($message) {
       restore_error_handler();
@@ -278,7 +278,7 @@
     }
     // }}}
 
-    // {{{ internal string version()
+    // {{{ proto string version()
     //     Retrieves current XP version
     static function version() {
       static $version= NULL;
@@ -293,9 +293,9 @@
   // }}}
 
   // {{{ final class null
-  class null {
+  final class null {
 
-    // {{{ public object __construct(void)
+    // {{{ proto __construct(void)
     //     Constructor to avoid magic __call invokation
     public function __construct() {
       if (isset(xp::$registry['null'])) {
@@ -303,28 +303,28 @@
       }
     }
     
-    // {{{ public void __clone(void)
+    // {{{ proto void __clone(void)
     //     Clone interceptor
     public function __clone() {
       throw new NullPointerException('Object cloning intercepted.');
     }
     // }}}
     
-    // {{{ magic var __call(string name, var[] args)
+    // {{{ proto var __call(string name, var[] args)
     //     Call proxy
     function __call($name, $args) {
       throw new NullPointerException('Method.invokation('.$name.')');
     }
     // }}}
 
-    // {{{ magic void __set(string name, var value)
+    // {{{ proto void __set(string name, var value)
     //     Set proxy
     function __set($name, $value) {
       throw new NullPointerException('Property.write('.$name.')');
     }
     // }}}
 
-    // {{{ magic var __get(string name)
+    // {{{ proto var __get(string name)
     //     Set proxy
     function __get($name) {
       throw new NullPointerException('Property.read('.$name.')');
@@ -332,14 +332,15 @@
     // }}}
   }
   // }}}
-  // {{{ final class xploader
-  class xarloader {
+
+  // {{{ final class xarloader
+  final class xarloader {
     public
       $position     = 0,
       $archive      = '',
       $filename     = '';
       
-    // {{{ static var[] acquire(string archive)
+    // {{{ proto [:var] acquire(string archive)
     //     Archive instance handling pool function, opens an archive and reads header only once
     static function acquire($archive) {
       static $archives= array();
@@ -371,7 +372,7 @@
     }
     // }}}
     
-    // {{{ function bool stream_open(string path, string mode, int options, string opened_path)
+    // {{{ proto bool stream_open(string path, string mode, int options, string opened_path)
     //     Open the given stream and check if file exists
     function stream_open($path, $mode, $options, $opened_path) {
       sscanf(strtr($path, ';', '?'), 'xar://%[^?]?%[^$]', $archive, $this->filename);
@@ -381,12 +382,12 @@
     }
     // }}}
     
-    // {{{ string stream_read(int count)
+    // {{{ proto string stream_read(int count)
     //     Read $count bytes up-to-length of file
     function stream_read($count) {
       $current= self::acquire($this->archive);
       if (!isset($current['index'][$this->filename])) return FALSE;
-      if ($current['index'][$this->filename][0] == $this->position || 0 == $count) return FALSE;
+      if ($current['index'][$this->filename][0] === $this->position || 0 === $count) return FALSE;
 
       fseek($current['handle'], 0x0100 + sizeof($current['index']) * 0x0100 + $current['index'][$this->filename][1] + $this->position, SEEK_SET);
       $bytes= fread($current['handle'], min($current['index'][$this->filename][0]- $this->position, $count));
@@ -395,7 +396,7 @@
     }
     // }}}
     
-    // {{{ bool stream_eof()
+    // {{{ proto bool stream_eof()
     //     Returns whether stream is at end of file
     function stream_eof() {
       $current= self::acquire($this->archive);
@@ -403,7 +404,7 @@
     }
     // }}}
     
-    // {{{ <string,int> stream_stat()
+    // {{{ proto [:int] stream_stat()
     //     Retrieve status of stream
     function stream_stat() {
       $current= self::acquire($this->archive);
@@ -415,7 +416,7 @@
     }
     // }}}
 
-    // {{{ bool stream_seek(int offset, int whence)
+    // {{{ proto bool stream_seek(int offset, int whence)
     //     Callback for fseek
     function stream_seek($offset, $whence) {
       switch ($whence) {
@@ -430,14 +431,14 @@
     }
     // }}}
     
-    // {{{ int stream_tell
+    // {{{ proto int stream_tell
     //     Callback for ftell
     function stream_tell() {
       return $this->position;
     }
     // }}}
     
-    // {{{ <string,int> url_stat(string path)
+    // {{{ proto [:int] url_stat(string path)
     //     Retrieve status of url
     function url_stat($path) {
       sscanf(strtr($path, ';', '?'), 'xar://%[^?]?%[^$]', $archive, $file);
@@ -455,12 +456,12 @@
   }
   // }}}
 
-  // {{{ internal void __error(int code, string msg, string file, int line)
+  // {{{ proto void __error(int code, string msg, string file, int line)
   //     Error callback
   function __error($code, $msg, $file, $line) {
-    if (0 == error_reporting() || is_null($file)) return;
+    if (0 === error_reporting() || is_null($file)) return;
 
-    if (E_RECOVERABLE_ERROR == $code) {
+    if (E_RECOVERABLE_ERROR === $code) {
       throw new IllegalArgumentException($msg.' @ '.$file.':'.$line);
     } else {
       $bt= debug_backtrace();
@@ -480,7 +481,7 @@
   }
   // }}}
 
-  // {{{ void uses (string* args)
+  // {{{ proto void uses (string* args)
   //     Uses one or more classes
   function uses() {
     $scope= NULL;
@@ -505,7 +506,7 @@
   }
   // }}}
 
-  // {{{ void raise (string classname, var* args)
+  // {{{ proto void raise (string classname, var* args)
   //     throws an exception by a given class name
   function raise($classname) {
     try {
@@ -519,14 +520,14 @@
   }
   // }}}
 
-  // {{{ void ensure ($t)
+  // {{{ proto void ensure ($t)
   //     Replacement for finally() which clashes with PHP 5.5.0's finally
   function ensure(&$t) {
     if (!isset($t)) $t= NULL;
   }
   // }}}
 
-  // {{{ Generic cast (Generic expression, string type)
+  // {{{ proto Generic cast (Generic expression, string type)
   //     Casts an expression.
   function cast(Generic $expression= NULL, $type) {
     if (NULL === $expression) {
@@ -574,7 +575,7 @@
   }
   // }}}
 
-  // {{{ proto void delete(&lang.Object object)
+  // {{{ proto void delete(&var object)
   //     Destroys an object
   function delete(&$object) {
     $object= NULL;
@@ -663,7 +664,7 @@
   }
   // }}}
 
-  // {{{ lang.Generic create(var spec)
+  // {{{ proto lang.Generic create(var spec)
   //     Creates a generic object
   function create($spec) {
     if ($spec instanceof Generic) return $spec;
@@ -680,7 +681,7 @@
     // so that the constructur can already use generic types.
     $class= XPClass::forName(strstr($base, '.') ? $base : xp::nameOf($base));
     if ($class->hasField('__generic')) {
-      $__id= microtime();
+      $__id= uniqid('', TRUE);
       $name= $class->literal();
       $instance= unserialize('O:'.strlen($name).':"'.$name.'":1:{s:4:"__id";s:'.strlen($__id).':"'.$__id.'";}');
       foreach ($typeargs as $type) {
@@ -714,7 +715,7 @@
   }
   // }}}
 
-  // {{{ lang.Type typeof(mixed arg)
+  // {{{ proto lang.Type typeof(mixed arg)
   //     Returns type
   function typeof($arg) {
     if ($arg instanceof Generic) {
@@ -729,7 +730,7 @@
   }
   // }}}
 
-  // {{{ bool __load(string class)
+  // {{{ proto bool __load(string class)
   //     SPL Autoload callback
   function __load($class) {
     $name= strtr($class, '\\', '.');
