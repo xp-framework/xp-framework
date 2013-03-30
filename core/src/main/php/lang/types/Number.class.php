@@ -8,13 +8,10 @@
    * The abstract class Number is the superclass of classes representing
    * numbers
    *
-   * @test     xp://net.xp_framework.unittest.core.types.NumberTest
-   * @purpose  Base class
+   * @test  xp://net.xp_framework.unittest.core.types.NumberTest
    */
   abstract class Number extends Object {
-    public
-      $value = '';
-
+    public $value = '';
     
     /**
      * Constructor

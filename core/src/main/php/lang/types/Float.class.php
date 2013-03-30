@@ -8,8 +8,6 @@
 
   /**
    * The Float class wraps a value of the type float
-   *
-   * @purpose  Wrapper
    */
   class Float extends Number {
   }
