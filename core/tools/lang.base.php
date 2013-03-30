@@ -85,7 +85,7 @@
         }
         xp::$registry['class.'.$name]= $class;
         method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
-        if (0 == xp::$registry['cl.level']) {
+        if (0 === xp::$registry['cl.level']) {
           $invocations= xp::$registry['cl.inv'];
           xp::$registry['cl.inv']= array();
           foreach ($invocations as $inv) call_user_func($inv);
@@ -387,7 +387,7 @@
     function stream_read($count) {
       $current= self::acquire($this->archive);
       if (!isset($current['index'][$this->filename])) return FALSE;
-      if ($current['index'][$this->filename][0] == $this->position || 0 == $count) return FALSE;
+      if ($current['index'][$this->filename][0] === $this->position || 0 === $count) return FALSE;
 
       fseek($current['handle'], 0x0100 + sizeof($current['index']) * 0x0100 + $current['index'][$this->filename][1] + $this->position, SEEK_SET);
       $bytes= fread($current['handle'], min($current['index'][$this->filename][0]- $this->position, $count));
@@ -459,9 +459,9 @@
   // {{{ proto void __error(int code, string msg, string file, int line)
   //     Error callback
   function __error($code, $msg, $file, $line) {
-    if (0 == error_reporting() || is_null($file)) return;
+    if (0 === error_reporting() || is_null($file)) return;
 
-    if (E_RECOVERABLE_ERROR == $code) {
+    if (E_RECOVERABLE_ERROR === $code) {
       throw new IllegalArgumentException($msg.' @ '.$file.':'.$line);
     } else {
       $bt= debug_backtrace();
