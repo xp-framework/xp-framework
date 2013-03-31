@@ -288,5 +288,33 @@
       ?>');
       $this->assertEquals('Creates a new question', $details[1]['newQuestion'][DETAIL_COMMENT]);
     }
+
+    /**
+     * Returns dummy details
+     *
+     * @return var details
+     */
+    protected function dummyDetails() {
+      return XPClass::parseDetails('<?php
+        class DummyDetails extends Object {
+          protected $test = TRUE;
+
+          #[@test]
+          public function test() { }
+        }
+      ?>');
+    }
+
+    /**
+     * Tests detailsForClass() caching via xp::$meta
+     */
+    #[@test]
+    public function canBeCached() {
+      with (xp::$meta[$fixture= 'DummyDetails']= $details= $this->dummyDetails()); {
+        $actual= XPClass::detailsForClass($fixture);
+        unset(xp::$meta[$fixture]);
+      }
+      $this->assertEquals($details, $actual);
+    }
   }
 ?>
