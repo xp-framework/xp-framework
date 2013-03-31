@@ -316,5 +316,19 @@
       }
       $this->assertEquals($details, $actual);
     }
+
+    /**
+     * Tests detailsForClass() caching via xp::registry
+     *
+     * @deprecated See https://github.com/xp-framework/xp-framework/issues/270
+     */
+    #[@test]
+    public function canBeCachedViaXpRegistry() {
+      with (xp::$registry['details.'.($fixture= 'DummyDetails')]= $details= $this->dummyDetails()); {
+        $actual= XPClass::detailsForClass($fixture);
+        unset(xp::$registry['details.'.$fixture]);
+      }
+      $this->assertEquals($details, $actual);
+    }
   }
 ?>

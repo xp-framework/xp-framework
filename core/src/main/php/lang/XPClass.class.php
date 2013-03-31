@@ -913,8 +913,13 @@
      * @return  array or NULL to indicate no details are available
      */
     public static function detailsForClass($class) {
-      if (!$class) return NULL;        // Border case
-      if (isset(xp::$meta[$class])) return xp::$meta[$class];
+      if (!$class) {                                             // Border case
+        return NULL;
+      } else if (isset(xp::$meta[$class])) {                     // Cached
+        return xp::$meta[$class];
+      } else if (isset(xp::$registry[$l= 'details.'.$class])) {  // BC: Cached in registry
+        return xp::$registry[$l];
+      }
 
       // Retrieve class' sourcecode
       $cl= self::_classLoaderFor($class);
