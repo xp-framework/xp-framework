@@ -27,7 +27,7 @@
      */
     #[@test]
     public function no_error_here() {
-      $this->assertFalse(xp::errorAt(__FILE__));
+      $this->assertNull(xp::errorAt(__FILE__));
     }
 
     /**
@@ -37,7 +37,10 @@
     #[@test]
     public function triggered_error_at_file() {
       trigger_error('Test');
-      $this->assertTrue(xp::errorAt(__FILE__));
+      $this->assertEquals(
+        array(__LINE__ - 2 => array('Test' => array('class' => NULL, 'method' => 'trigger_error', 'cnt' => 1))),
+        xp::errorAt(__FILE__)
+      );
       xp::gc();
     }
 
@@ -48,7 +51,10 @@
     #[@test]
     public function triggered_error_at_file_and_line() {
       trigger_error('Test');
-      $this->assertTrue(xp::errorAt(__FILE__, __LINE__ - 1));
+      $this->assertEquals(
+        array('Test' => array('class' => NULL, 'method' => 'trigger_error', 'cnt' => 1)),
+        xp::errorAt(__FILE__, __LINE__ - 3)
+      );
       xp::gc();
     }
 

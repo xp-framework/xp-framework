@@ -50,7 +50,7 @@
     #[@test]
     public function errorAtFile() {
       $a.= '';    // E_NOTICE: Undefined variable:  a
-      $this->assertTrue(xp::errorAt(__FILE__));
+      $this->assertTrue((bool)xp::errorAt(__FILE__));
     }
 
     /**
@@ -61,7 +61,7 @@
     #[@test]
     public function errorAtFileAndLine() {
       $a.= '';    // E_NOTICE: Undefined variable:  a
-      $this->assertTrue(xp::errorAt(__FILE__, __LINE__ - 1));
+      $this->assertTrue((bool)xp::errorAt(__FILE__, __LINE__ - 1));
     }
     
     /**

@@ -199,15 +199,14 @@
     }
     // }}}
 
-    // {{{ proto bool errorAt(string file [, int line)
-    //     Returns whether an error occured at the specified position
+    // {{{ proto var errorAt(string file [, int line])
+    //     Returns errors that occured at the specified position or NULL
     static function errorAt($file, $line= -1) {
-      
-      // If no line is given, check for an error in the file
-      if ($line < 0) return !empty(xp::$errors[$file]);
-      
-      // Otherwise, check for an error in the file on a certain line
-      return !empty(xp::$errors[$file][$line]);
+      if ($line < 0) {    // If no line is given, check for an error in the file
+        return isset(xp::$errors[$file]) ? xp::$errors[$file] : NULL;
+      } else {            // Otherwise, check for an error in the file on a certain line
+        return isset(xp::$errors[$file][$line]) ? xp::$errors[$file][$line] : NULL;
+      }
     }
     // }}}
     
