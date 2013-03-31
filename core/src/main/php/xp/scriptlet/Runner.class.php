@@ -250,7 +250,7 @@
       
       if (($flags & WebDebug::ERRORS)) {
         flush();
-        echo '<xmp>', $e ? $e->toString() : '', xp::stringOf(xp::registry('errors')), '</xmp>';
+        echo '<xmp>', $e ? $e->toString() : '', xp::stringOf(xp::$errors), '</xmp>';
       }
     }
 

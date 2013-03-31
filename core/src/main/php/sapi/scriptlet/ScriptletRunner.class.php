@@ -83,7 +83,7 @@
       }
       
       if (($this->flags & SCRIPTLET_SHOW_ERRORS)) {
-        echo '<xmp>', var_export(xp::registry('errors'), 1), '</xmp>';
+        echo '<xmp>', var_export(xp::$errors, 1), '</xmp>';
       } 
     }  
   }

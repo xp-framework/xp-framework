@@ -63,7 +63,7 @@
         // Convert the input to internal encoding
         $buffer= iconv($charset, STR_ENC, $arg);
         if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-          $message= key(xp::$registry['errors'][__FILE__][__LINE__ - 2]);
+          $message= key(xp::$errors[__FILE__][__LINE__ - 2]);
           xp::gc(__FILE__);
           throw new FormatException($message.($charset == STR_ENC  
             ? ' with charset '.$charset
@@ -336,7 +336,7 @@
       }
       $bytes= iconv(STR_ENC, $charset, $this->buffer);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-        $message= key(xp::$registry['errors'][__FILE__][__LINE__ - 2]);
+        $message= key(xp::$errors[__FILE__][__LINE__ - 2]);
         xp::gc(__FILE__);
         throw new FormatException($message.' while converting input from '.STR_ENC.' to '.$charset);
       }

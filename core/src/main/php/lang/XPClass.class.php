@@ -576,8 +576,8 @@
      * @return  lang.IClassLoader
      */
     protected static function _classLoaderFor($name) {
-      if (isset(xp::$registry[$l= 'classloader.'.$name])) {
-        sscanf(xp::$registry[$l], '%[^:]://%[^$]', $cl, $argument);
+      if (isset(xp::$cl[$name])) {
+        sscanf(xp::$cl[$name], '%[^:]://%[^$]', $cl, $argument);
         return call_user_func(array(xp::reflect($cl), 'instanceFor'), $argument);
       }
       return NULL;    // Internal class, e.g.
@@ -913,15 +913,20 @@
      * @return  array or NULL to indicate no details are available
      */
     public static function detailsForClass($class) {
-      if (!$class) return NULL;        // Border case
-      if (isset(xp::$registry['details.'.$class])) return xp::$registry['details.'.$class];
+      if (!$class) {                                             // Border case
+        return NULL;
+      } else if (isset(xp::$meta[$class])) {                     // Cached
+        return xp::$meta[$class];
+      } else if (isset(xp::$registry[$l= 'details.'.$class])) {  // BC: Cached in registry
+        return xp::$registry[$l];
+      }
 
       // Retrieve class' sourcecode
       $cl= self::_classLoaderFor($class);
       if (!$cl || !($bytes= $cl->loadClassBytes($class))) return NULL;
 
       // Return details for specified class
-      return xp::$registry['details.'.$class]= self::parseDetails($bytes, $class);
+      return xp::$meta[$class]= self::parseDetails($bytes, $class);
     }
 
     /**
@@ -990,7 +995,7 @@
 
       // Create class if it doesn't exist yet
       if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-        $meta= xp::$registry['details.'.$self->name];
+        $meta= xp::$meta[$self->name];
 
         // Parse placeholders into a lookup map
         $placeholders= array();
@@ -1187,8 +1192,8 @@
         eval($src);
         method_exists($name, '__static') && call_user_func(array($name, '__static'));
         unset($meta['class'][DETAIL_ANNOTATIONS]['generic']);
-        xp::$registry['details.'.$qname]= $meta;
-        xp::$registry['class.'.$name]= $qname;
+        xp::$meta[$qname]= $meta;
+        xp::$cn[$name]= $qname;
       }
       
       return $name;
@@ -1312,7 +1317,7 @@
     public static function getClasses() {
       $ret= array();
       foreach (get_declared_classes() as $name) {
-        if (isset(xp::$registry['class.'.$name])) $ret[]= new self($name);
+        if (isset(xp::$cn[$name])) $ret[]= new self($name);
       }
       return $ret;
     }

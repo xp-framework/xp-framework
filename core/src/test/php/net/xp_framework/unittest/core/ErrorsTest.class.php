@@ -21,8 +21,8 @@
      */
     public function setUp() {
       $this->assertEquals(E_ALL, error_reporting(), 'Error reporting level not E_ALL');
-      xp::registry('errors', array());
-      $this->assertEmpty(xp::registry('errors'), 'Error registry initially not empty');
+      xp::$errors= array();
+      $this->assertEmpty(xp::$errors, 'Error registry initially not empty');
     }
 
     /**
@@ -40,7 +40,7 @@
     #[@test]
     public function errorsGetAppendedToRegistry() {
       $a.= '';    // E_NOTICE: Undefined variable:  a
-      $this->assertEquals(1, sizeof(xp::registry('errors')));
+      $this->assertEquals(1, sizeof(xp::$errors));
     }
 
     /**
@@ -50,7 +50,7 @@
     #[@test]
     public function errorAtFile() {
       $a.= '';    // E_NOTICE: Undefined variable:  a
-      $this->assertTrue(xp::errorAt(__FILE__));
+      $this->assertTrue((bool)xp::errorAt(__FILE__));
     }
 
     /**
@@ -61,7 +61,7 @@
     #[@test]
     public function errorAtFileAndLine() {
       $a.= '';    // E_NOTICE: Undefined variable:  a
-      $this->assertTrue(xp::errorAt(__FILE__, __LINE__ - 1));
+      $this->assertTrue((bool)xp::errorAt(__FILE__, __LINE__ - 1));
     }
     
     /**
