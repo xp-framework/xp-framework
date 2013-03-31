@@ -229,7 +229,7 @@
      * @return  [:var] details or NULL
      */
     public static function detailsForPackage($package) {
-      if (!isset(xp::$registry['details.'.$package])) {
+      if (!isset(xp::$meta[$package])) {
         $cl= ClassLoader::getDefault();
         $info= strtr($package, '.', '/').'/package-info.xp';
         if (!$cl->providesResource($info)) return NULL;
@@ -254,9 +254,9 @@
               break;
           }
         }
-        xp::$registry['details.'.$package]= $details;
+        xp::$meta[$package]= $details;
       }
-      return xp::$registry['details.'.$package];
+      return xp::$meta[$package];
     }
 
     /**

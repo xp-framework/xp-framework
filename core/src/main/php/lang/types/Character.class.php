@@ -48,7 +48,7 @@
       // Convert the input to internal encoding
       $this->buffer= iconv($charset, 'utf-8', $arg);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-        $message= key(xp::$registry['errors'][__FILE__][__LINE__ - 2]);
+        $message= key(xp::$errors[__FILE__][__LINE__ - 2]);
         xp::gc(__FILE__);
         throw new FormatException($message.($charset == 'utf-8'
           ? ' with charset '.$charset

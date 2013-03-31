@@ -107,7 +107,7 @@
         $c= fread($this->in, $size- strlen($this->buf));
         if ('' === $c) {
           if (xp::errorAt(__FILE__, __LINE__ - 2)) {
-            $message= key(xp::$registry['errors'][__FILE__][__LINE__ - 3]);
+            $message= key(xp::$errors[__FILE__][__LINE__ - 3]);
             xp::gc(__FILE__);
             throw new FormatException($message);
           }

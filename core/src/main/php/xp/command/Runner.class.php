@@ -244,7 +244,7 @@
         }
         $uri= $file->getURI();
         $path= dirname($uri);
-        $paths= array_flip(array_map('realpath', xp::$registry['classpath']));
+        $paths= array_flip(array_map('realpath', xp::$classpath));
         $class= NULL;
         while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 
           if (isset($paths[$path])) {

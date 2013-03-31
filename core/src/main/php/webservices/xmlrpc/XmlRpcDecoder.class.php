@@ -59,7 +59,7 @@
           // Check whether this is a XP object. If so, load the class and
           // create an instance without invoking the constructor.
           $fields= XPClass::forName($ret['__xp_class'])->getFields();
-          $cname= substr(array_search($ret['__xp_class'], xp::$registry, TRUE), 6);
+          $cname= array_search($ret['__xp_class'], xp::$cn, TRUE);
           $s= ''; $n= 0;
           foreach ($fields as $field) {
             if (!isset($ret[$field->getName()])) continue;
@@ -71,7 +71,7 @@
             } else if ($m & MODIFIER_PROTECTED) {
               $name= "\0*\0".$field->getName();
             } else if ($m & MODIFIER_PRIVATE) {
-              $name= "\0".substr(array_search($field->getDeclaringClass()->getName(), xp::$registry, TRUE), 6)."\0".$field->getName();
+              $name= "\0".array_search($field->getDeclaringClass()->getName(), xp::$cn, TRUE)."\0".$field->getName();
             }
             $s.= 's:'.strlen($name).':"'.$name.'";'.serialize($ret[$field->getName()]);
             $n++;

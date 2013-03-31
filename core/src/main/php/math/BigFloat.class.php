@@ -62,7 +62,7 @@
      */
     public function divide($other) {
       if (NULL === ($r= bcdiv($this->num, $other instanceof self ? $other->num : $other))) {
-        $e= key(xp::$registry['errors'][__FILE__][__LINE__- 1]);
+        $e= key(xp::$errors[__FILE__][__LINE__- 1]);
         xp::gc(__FILE__);
         throw new IllegalArgumentException($e);
       }

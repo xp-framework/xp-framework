@@ -30,7 +30,7 @@
     
       // Workaround for missing detail information about return types in
       // builtin classes.
-      xp::$registry['details.php.Exception']= array(
+      xp::$meta['php.Exception']= array(
         'class' => array(4 => NULL, array()),
         0 => array(),
         1 => array(
@@ -107,8 +107,8 @@
       while (!isset($t[$i]['class']) && $i++ < $s) { }
       $scope= isset($t[$i]['class']) ? $t[$i]['class'] : NULL;
 
-      if (NULL != $scope && isset(xp::$registry['ext'][$scope])) {
-        foreach (xp::$registry['ext'][$scope] as $type => $class) {
+      if (NULL != $scope && isset(xp::$ext[$scope])) {
+        foreach (xp::$ext[$scope] as $type => $class) {
           if (!$this instanceof $type || !method_exists($class, $name)) continue;
           array_unshift($args, $this);
           return call_user_func_array(array($class, $name), $args);
@@ -147,7 +147,7 @@
       );
 
       // Error messages
-      foreach (xp::$registry['errors'] as $file => $list) {
+      foreach (xp::$errors as $file => $list) {
         $this->addStackTraceFor($file, NULL, NULL, NULL, array(), $list);
       }
 

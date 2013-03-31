@@ -82,8 +82,7 @@
      * @return  string error
      */  
     public function getLastError() {
-      $e= xp::$registry['errors'];
-      return isset($e[__FILE__]) ? key(end($e[__FILE__])) : 'unknown error';
+      return isset(xp::$errors[__FILE__]) ? key(end(xp::$errors[__FILE__])) : 'unknown error';
     }
     
     /**
@@ -218,8 +217,8 @@
       //   parameters detected" warning which is no error, see PHP bug #49948
       // * On Un*x OS flavors, when select() raises a warning, this *is* an 
       //   error (regardless of the return value)
-      if (isset(xp::$registry['errors'][__FILE__])) {
-        if (isset(xp::$registry['errors'][__FILE__][$l]['Invalid CRT parameters detected'])) {
+      if (isset(xp::$errors[__FILE__])) {
+        if (isset(xp::$errors[__FILE__][$l]['Invalid CRT parameters detected'])) {
           xp::gc(__FILE__);
         } else {
           $n= FALSE;
