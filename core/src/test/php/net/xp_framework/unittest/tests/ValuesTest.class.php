@@ -67,12 +67,59 @@
     }
 
     /**
+     * Tests local value source
+     *
+     */
+    #[@test]
+    public function local_value_source_with_args() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public $values= array();
+
+        public function range($lo= 1, $hi= 3) {
+          return range($lo, $hi);
+        }
+
+        #[@test, @values(source= "range", args= array(1, 4))]
+        public function fixture($value) {
+          $this->values[]= $value;
+        }
+      }');
+      $this->suite->runTest($test);
+      $this->assertEquals(array(1, 2, 3, 4), $test->values);
+    }
+
+    /**
+     * Tests local value source
+     *
+     */
+    #[@test]
+    public function local_value_source_without_args() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public $values= array();
+
+        public function range($lo= 1, $hi= 3) {
+          return range($lo, $hi);
+        }
+
+        #[@test, @values(source= "range")]
+        public function fixture($value) {
+          $this->values[]= $value;
+        }
+      }');
+      $this->suite->runTest($test);
+      $this->assertEquals(array(1, 2, 3), $test->values);
+    }
+
+
+    /**
      * Values for external_value_source tests
      *
+     * @param  int lo
+     * @param  int hi
      * @return var[]
      */
-    public static function values() {
-      return array(1, 2, 3);
+    public static function range($lo= 1, $hi= 3) {
+      return range($lo, $hi);
     }
 
     /**
@@ -84,7 +131,7 @@
       $test= newinstance('unittest.TestCase', array('fixture'), '{
         public $values= array();
 
-        #[@test, @values("net.xp_framework.unittest.tests.ValuesTest::values")]
+        #[@test, @values("net.xp_framework.unittest.tests.ValuesTest::range")]
         public function fixture($value) {
           $this->values[]= $value;
         }
@@ -102,13 +149,31 @@
       $test= newinstance('unittest.TestCase', array('fixture'), '{
         public $values= array();
 
-        #[@test, @values("ValuesTest::values")]
+        #[@test, @values("ValuesTest::range")]
         public function fixture($value) {
           $this->values[]= $value;
         }
       }');
       $this->suite->runTest($test);
       $this->assertEquals(array(1, 2, 3), $test->values);
+    }
+
+    /**
+     * Tests external value source
+     *
+     */
+    #[@test]
+    public function external_value_source_provider_and_args() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public $values= array();
+
+        #[@test, @values(source= "ValuesTest::range", args= array(1, 10))]
+        public function fixture($value) {
+          $this->values[]= $value;
+        }
+      }');
+      $this->suite->runTest($test);
+      $this->assertEquals(array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), $test->values);
     }
 
     /**

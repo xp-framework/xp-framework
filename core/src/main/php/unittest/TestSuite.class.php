@@ -189,6 +189,38 @@
     }
 
     /**
+     * Returns values
+     *
+     * @param  unittest.TestCase test
+     * @param  var annotation
+     * @return var values a traversable structure
+     */
+    protected function valuesFor($test, $annotation) {
+      if (is_int(key($annotation))) return $annotation;
+
+      // values(source= "src" [, args= ...]) vs. values("source")
+      if (isset($annotation['source'])) {
+        $source= $annotation['source'];
+        $args= isset($annotation['args']) ? $annotation['args'] : array();
+      } else {
+        $source= $annotation;
+        $args= array();
+      }
+
+      // Route "ClassName::methodName" -> static method of the given class,
+      // and "method" -> the run test's instance method
+      if (FALSE !== ($p= strpos($source, '::'))) {
+        $class= substr($source, 0, $p);
+        return XPClass::forName(strstr($class, '.') ? $class : xp::nameOf($class))
+          ->getMethod(substr($source, $p+ 2))
+          ->invoke(NULL, $args)
+        ;
+      } else {
+        return $test->getClass()->getMethod($source)->invoke($test, $args);
+      }
+    }
+
+    /**
      * Run a test case.
      *
      * @param   unittest.TestCase test
@@ -237,17 +269,7 @@
       if ($method->hasAnnotation('values')) {
         $annotation= $method->getAnnotation('values');
         $variation= TRUE;
-        if (is_array($annotation)) {
-          $values= $annotation;
-        } else if (FALSE !== ($p= strpos($annotation, '::'))) {
-          $class= substr($annotation, 0, $p);
-          $values= XPClass::forName(strstr($class, '.') ? $class : xp::nameOf($class))
-            ->getMethod(substr($annotation, $p+ 2))
-            ->invoke(NULL, array())
-          ;
-        } else {
-          $values= $test->getClass()->getMethod($annotation)->invoke($test, array());
-        }
+        $values= $this->valuesFor($test, $annotation);
       } else {
         $variation= FALSE;
         $values= array(array());
