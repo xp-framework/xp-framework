@@ -287,7 +287,7 @@
 
         // Run test
         try {
-          $method->invoke($test, $args);
+          $method->invoke($test, is_array($args) ? $args : array($args));
         } catch (TargetInvocationException $x) {
           $timer->stop();
           $test->tearDown();

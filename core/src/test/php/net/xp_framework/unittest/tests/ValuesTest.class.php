@@ -221,5 +221,26 @@
       $this->suite->runTest($test);
       $this->assertEquals(array(1, 2, 3), $test->values);
     }
+
+    /**
+     * Tests using this reference
+     */
+    #[@test]
+    public function using_this_in_value_provider() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public $values= array();
+
+        public function values() {
+          return array($this);
+        }
+
+        #[@test, @values("values")]
+        public function fixture($value) {
+          $this->values[]= $value;
+        }
+      }');
+      $this->suite->runTest($test);
+      $this->assertEquals(array($test), $test->values);
+    }
   }
 ?>
