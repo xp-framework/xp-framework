@@ -30,7 +30,7 @@
     public function fixtures() {
       return array(
         array($this, ''),
-        array(new TestVariation($this, array('v')), ' ("v")')
+        array(new TestVariation($this, array('v')), '("v")')
       );
     }
 
