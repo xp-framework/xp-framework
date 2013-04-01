@@ -6,7 +6,8 @@
  
   uses(
     'unittest.TestCase',
-    'unittest.TestSuite'
+    'unittest.TestSuite',
+    'lang.types.ArrayList'
   );
 
   /**
@@ -196,6 +197,29 @@
       }');
       $this->suite->runTest($test);
       $this->assertEquals(array(1, 2, 3, 4, 5, 6), $test->values);
+    }
+
+    /**
+     * Tests using a Traversable structure
+     *
+     * @see  xp://lang.types.ArrayList
+     */
+    #[@test]
+    public function using_traversable_in_values() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public $values= array();
+
+        public function values() {
+          return new ArrayList(1, 2, 3);
+        }
+
+        #[@test, @values("values")]
+        public function fixture($value) {
+          $this->values[]= $value;
+        }
+      }');
+      $this->suite->runTest($test);
+      $this->assertEquals(array(1, 2, 3), $test->values);
     }
   }
 ?>
