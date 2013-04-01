@@ -162,7 +162,6 @@
       $this->assertEquals(3, $r->skipCount());
     }
 
-
     /**
      * Tests results
      *
@@ -178,6 +177,25 @@
       $r= $this->suite->runTest($test);
       $this->assertEquals(1, $r->successCount());
       $this->assertEquals(2, $r->failureCount());
+    }
+
+    /**
+     * Tests supplying multiple parameters
+     *
+     */
+    #[@test]
+    public function multiple_parameters() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public $values= array();
+
+        #[@test, @values(array(array(1, 2), array(3, 4), array(5, 6)))]
+        public function fixture($a, $b) {
+          $this->values[]= $a;
+          $this->values[]= $b;
+        }
+      }');
+      $this->suite->runTest($test);
+      $this->assertEquals(array(1, 2, 3, 4, 5, 6), $test->values);
     }
   }
 ?>
