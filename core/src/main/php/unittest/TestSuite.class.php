@@ -237,6 +237,8 @@
         $annotation= $method->getAnnotation('values');
         if (is_array($annotation)) {
           $values= $annotation;
+        } else if (FALSE !== ($p= strpos($annotation, '::'))) {
+          $values= XPClass::forName(substr($annotation, 0, $p))->getMethod(substr($annotation, $p+ 2))->invoke(NULL, array());
         } else {
           $values= $test->getClass()->getMethod($annotation)->invoke($test, array());
         }

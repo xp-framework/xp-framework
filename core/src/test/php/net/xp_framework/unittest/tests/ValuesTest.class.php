@@ -63,6 +63,33 @@
       }');
       $this->suite->runTest($test);
       $this->assertEquals(array(1, 2, 3), $test->values);
-    }    
+    }
+
+    /**
+     * Values for external_value_source test
+     *
+     * @return var[]
+     */
+    public static function values() {
+      return array(1, 2, 3);
+    }
+
+    /**
+     * Tests external value source
+     *
+     */
+    #[@test]
+    public function external_value_source() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public $values= array();
+
+        #[@test, @values("net.xp_framework.unittest.tests.ValuesTest::values")]
+        public function fixture($value) {
+          $this->values[]= $value;
+        }
+      }');
+      $this->suite->runTest($test);
+      $this->assertEquals(array(1, 2, 3), $test->values);
+    }
   }
 ?>
