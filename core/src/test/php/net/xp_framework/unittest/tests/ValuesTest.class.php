@@ -109,5 +109,57 @@
       $this->suite->runTest($test);
       $this->assertEquals(array(1, 2, 3), $test->values);
     }
+
+    /**
+     * Tests counting successes
+     *
+     */
+    #[@test]
+    public function all_variants_succeed() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        #[@test, @values(array(1, 2, 3))]
+        public function fixture($value) {
+          $this->assertTrue(TRUE);
+        }
+      }');
+      $r= $this->suite->runTest($test);
+      $this->assertEquals(3, $r->successCount());
+    }
+
+    /**
+     * Tests counting failures
+     *
+     */
+    #[@test]
+    public function all_variants_fail() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        #[@test, @values(array(1, 2, 3))]
+        public function fixture($value) {
+          $this->assertTrue(FALSE);
+        }
+      }');
+      $r= $this->suite->runTest($test);
+      $this->assertEquals(3, $r->failureCount());
+    }
+
+    /**
+     * Tests counting skipped tests
+     *
+     */
+    #[@test]
+    public function all_variants_skipped() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public function setUp() {
+          throw new PrerequisitesNotMetError("Not ready yet");
+        }
+
+        #[@test, @values(array(1, 2, 3))]
+        public function fixture($value) {
+          throw new Error("Will never be reached");
+        }
+      }');
+      $r= $this->suite->runTest($test);
+      $this->assertEquals(3, $r->skipCount());
+    }
   }
 ?>

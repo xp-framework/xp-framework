@@ -7,6 +7,7 @@
   uses(
     'util.profiling.Timer',
     'unittest.TestCase',
+    'unittest.TestVariation',
     'unittest.TestResult',
     'unittest.TestListener',
     'unittest.TestNotRun',
@@ -235,6 +236,7 @@
       // Check for @values
       if ($method->hasAnnotation('values')) {
         $annotation= $method->getAnnotation('values');
+        $variation= TRUE;
         if (is_array($annotation)) {
           $values= $annotation;
         } else if (FALSE !== ($p= strpos($annotation, '::'))) {
@@ -247,11 +249,13 @@
           $values= $test->getClass()->getMethod($annotation)->invoke($test, array());
         }
       } else {
+        $variation= FALSE;
         $values= array(array());
       }
 
       $timer= new Timer();
       foreach ($values as $args) {
+        $t= $variation ? new TestVariation($test, $args) : $test;
         xp::gc();
         $timer->start();
 
@@ -261,40 +265,40 @@
         } catch (PrerequisitesNotMetError $e) {
           $timer->stop();
           $this->notifyListeners('testSkipped', array(
-            $result->setSkipped($test, $e, $timer->elapsedTime())
+            $result->setSkipped($t, $e, $timer->elapsedTime())
           ));
           xp::gc();
-          return;
+          continue;
         } catch (AssertionFailedError $e) {
           $timer->stop();
           $this->notifyListeners('testFailed', array(
-            $result->setFailed($test, $e, $timer->elapsedTime())
+            $result->setFailed($t, $e, $timer->elapsedTime())
           ));
           xp::gc();
-          return;
-        } catch (Throwable $t) {
+          continue;
+        } catch (Throwable $x) {
           $timer->stop();
           $this->notifyListeners('testFailed', array(
-            $result->set($test, new TestError($test, $t, $timer->elapsedTime()))
+            $result->set($t, new TestError($t, $x, $timer->elapsedTime()))
           ));
           xp::gc();
-          return;
+          continue;
         }
 
         // Run test
         try {
           $method->invoke($test, $args);
-        } catch (TargetInvocationException $t) {
+        } catch (TargetInvocationException $x) {
           $timer->stop();
           $test->tearDown();
-          $e= $t->getCause();
+          $e= $x->getCause();
 
           // Was that an expected exception?
           if ($expected && $expected[0]->isInstance($e)) {
             if ($eta && $timer->elapsedTime() > $eta) {
               $this->notifyListeners('testFailed', array(
                 $result->setFailed(
-                  $test, 
+                  $t,
                   new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), 
                   $timer->elapsedTime()
                 )
@@ -302,43 +306,43 @@
             } else if ($expected[1] && !preg_match($expected[1], $e->getMessage())) {
               $this->notifyListeners('testFailed', array(
                 $result->setFailed(
-                  $test, 
+                  $t,
                   new AssertionFailedError('Expected '.$e->getClassName().'\'s message differs', $e->getMessage(), $expected[1]),
                   $timer->elapsedTime()
                 )
               ));
             } else if (sizeof(xp::$errors) > 0) {
               $this->notifyListeners('testWarning', array(
-                $result->set($test, new TestWarning($test, $this->formatErrors(xp::$errors), $timer->elapsedTime()))
+                $result->set($t, new TestWarning($t, $this->formatErrors(xp::$errors), $timer->elapsedTime()))
               ));
             } else {
               $this->notifyListeners('testSucceeded', array(
-                $result->setSucceeded($test, $timer->elapsedTime())
+                $result->setSucceeded($t, $timer->elapsedTime())
               ));
             }
           } else if ($expected && !$expected[0]->isInstance($e)) {
             $this->notifyListeners('testFailed', array(
               $result->setFailed(
-                $test, 
+                $t,
                 new AssertionFailedError('Expected exception not caught', $e->getClassName(), $expected[0]->getName()),
                 $timer->elapsedTime()
               )
             ));
           } else if ($e instanceof AssertionFailedError) {
             $this->notifyListeners('testFailed', array(
-              $result->setFailed($test, $e, $timer->elapsedTime())
+              $result->setFailed($t, $e, $timer->elapsedTime())
             ));
           } else if ($e instanceof PrerequisitesNotMetError) {
             $this->notifyListeners('testSkipped', array(
-              $result->setSkipped($test, $e, $timer->elapsedTime())
+              $result->setSkipped($t, $e, $timer->elapsedTime())
             ));
           } else {
             $this->notifyListeners('testError', array(
-              $result->set($test, new TestError($test, $e, $timer->elapsedTime()))
+              $result->set($t, new TestError($t, $e, $timer->elapsedTime()))
             ));
           }
           xp::gc();
-          return;
+          continue;
         }
 
         $timer->stop();
@@ -348,26 +352,26 @@
         if ($expected) {
           $this->notifyListeners('testFailed', array(
             $result->setFailed(
-              $test, 
+              $t,
               new AssertionFailedError('Expected exception not caught', NULL, $expected[0]->getName()),
               $timer->elapsedTime()
             )
           ));
         } else if (sizeof(xp::$errors) > 0) {
           $this->notifyListeners('testWarning', array(
-            $result->set($test, new TestWarning($test, $this->formatErrors(xp::$errors), $timer->elapsedTime()))
+            $result->set($t, new TestWarning($t, $this->formatErrors(xp::$errors), $timer->elapsedTime()))
           ));
         } else if ($eta && $timer->elapsedTime() > $eta) {
           $this->notifyListeners('testFailed', array(
             $result->setFailed(
-              $test, 
+              $t,
               new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), 
               $timer->elapsedTime()
             )
           ));
         } else {
           $this->notifyListeners('testSucceeded', array(
-            $result->setSucceeded($test, $timer->elapsedTime())
+            $result->setSucceeded($t, $timer->elapsedTime())
           ));
         }
         xp::gc();
