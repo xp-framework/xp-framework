@@ -161,5 +161,23 @@
       $r= $this->suite->runTest($test);
       $this->assertEquals(3, $r->skipCount());
     }
+
+
+    /**
+     * Tests results
+     *
+     */
+    #[@test]
+    public function some_variants_succeed_some_fail() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        #[@test, @values(array(1, 2, 3))]
+        public function fixture($value) {
+          $this->assertEquals(0, $value % 2);
+        }
+      }');
+      $r= $this->suite->runTest($test);
+      $this->assertEquals(1, $r->successCount());
+      $this->assertEquals(2, $r->failureCount());
+    }
   }
 ?>
