@@ -238,7 +238,11 @@
         if (is_array($annotation)) {
           $values= $annotation;
         } else if (FALSE !== ($p= strpos($annotation, '::'))) {
-          $values= XPClass::forName(substr($annotation, 0, $p))->getMethod(substr($annotation, $p+ 2))->invoke(NULL, array());
+          $class= substr($annotation, 0, $p);
+          $values= XPClass::forName(strstr($class, '.') ? $class : xp::nameOf($class))
+            ->getMethod(substr($annotation, $p+ 2))
+            ->invoke(NULL, array())
+          ;
         } else {
           $values= $test->getClass()->getMethod($annotation)->invoke($test, array());
         }

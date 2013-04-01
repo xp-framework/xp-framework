@@ -66,7 +66,7 @@
     }
 
     /**
-     * Values for external_value_source test
+     * Values for external_value_source tests
      *
      * @return var[]
      */
@@ -79,11 +79,29 @@
      *
      */
     #[@test]
-    public function external_value_source() {
+    public function external_value_source_fully_qualified_class() {
       $test= newinstance('unittest.TestCase', array('fixture'), '{
         public $values= array();
 
         #[@test, @values("net.xp_framework.unittest.tests.ValuesTest::values")]
+        public function fixture($value) {
+          $this->values[]= $value;
+        }
+      }');
+      $this->suite->runTest($test);
+      $this->assertEquals(array(1, 2, 3), $test->values);
+    }
+
+    /**
+     * Tests external value source
+     *
+     */
+    #[@test]
+    public function external_value_source_unqualified_class() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public $values= array();
+
+        #[@test, @values("ValuesTest::values")]
         public function fixture($value) {
           $this->values[]= $value;
         }
