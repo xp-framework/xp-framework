@@ -26,15 +26,37 @@
     }
 
     /**
-     * Tests running the test that times out
+     * Tests inline value source
      *
-     */    
+     */
     #[@test]
     public function inline_value_source() {
       $test= newinstance('unittest.TestCase', array('fixture'), '{
         public $values= array();
 
         #[@test, @values(array(1, 2, 3))]
+        public function fixture($value) {
+          $this->values[]= $value;
+        }
+      }');
+      $this->suite->runTest($test);
+      $this->assertEquals(array(1, 2, 3), $test->values);
+    }
+
+    /**
+     * Tests local value source
+     *
+     */
+    #[@test]
+    public function local_value_source() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public $values= array();
+
+        public function values() {
+          return array(1, 2, 3);
+        }
+
+        #[@test, @values("values")]
         public function fixture($value) {
           $this->values[]= $value;
         }

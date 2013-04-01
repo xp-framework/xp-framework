@@ -234,7 +234,12 @@
 
       // Check for @values
       if ($method->hasAnnotation('values')) {
-        $values= $method->getAnnotation('values');
+        $annotation= $method->getAnnotation('values');
+        if (is_array($annotation)) {
+          $values= $annotation;
+        } else {
+          $values= $test->getClass()->getMethod($annotation)->invoke($test, array());
+        }
       } else {
         $values= array(array());
       }
