@@ -180,11 +180,11 @@
     }
 
     /**
-     * Tests supplying multiple parameters
+     * Tests supplying values for multiple parameters
      *
      */
     #[@test]
-    public function multiple_parameters() {
+    public function supplying_values_for_multiple_parameters() {
       $test= newinstance('unittest.TestCase', array('fixture'), '{
         public $values= array();
 
