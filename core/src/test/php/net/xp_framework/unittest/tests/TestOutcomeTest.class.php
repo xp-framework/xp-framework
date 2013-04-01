@@ -23,6 +23,17 @@
   class TestOutcomeTest extends TestCase {
 
     /**
+     * Creates fixtures
+     *
+     * @return unittest.TestCase[]
+     */
+    public function fixtures() {
+      return array(
+        array($this)
+      );
+    }
+
+    /**
      * Assertion helper
      *
      * @param  string expected format string, %s will be replaced by compound name
@@ -39,69 +50,69 @@
     /**
      * Tests TestExpectationMet
      */    
-    #[@test]
-    public function string_representation_of_TestExpectationMet() {
+    #[@test, @values('fixtures')]
+    public function string_representation_of_TestExpectationMet($test) {
       $this->assertStringRepresentation(
         'unittest.TestExpectationMet(test= %s, time= 0.000 seconds)',
-        new TestExpectationMet($this, 0.0)
+        new TestExpectationMet($test, 0.0)
       );
     }
 
     /**
      * Tests TestAssertionFailed
      */    
-    #[@test]
-    public function string_representation_of_TestAssertionFailed() {
+    #[@test, @values('fixtures')]
+    public function string_representation_of_TestAssertionFailed($test) {
       $assert= new AssertionFailedError('Not equal', 1, 2);
       $this->assertStringRepresentation(
         "unittest.TestAssertionFailed(test= %s, time= 0.000 seconds) {\n  ".xp::stringOf($assert, '  ')."\n }",
-        new TestAssertionFailed($this, $assert, 0.0)
+        new TestAssertionFailed($test, $assert, 0.0)
       );
     }
 
     /**
      * Tests TestError
      */    
-    #[@test]
-    public function string_representation_of_TestError() {
+    #[@test, @values('fixtures')]
+    public function string_representation_of_TestError($test) {
       $error= new Error('Out of memory');
       $this->assertStringRepresentation(
         "unittest.TestError(test= %s, time= 0.000 seconds) {\n  ".xp::stringOf($error, '  ')."\n }",
-        new TestError($this, $error, 0.0)
+        new TestError($test, $error, 0.0)
       );
     }
 
     /**
      * Tests TestPrerequisitesNotMet
      */    
-    #[@test]
-    public function string_representation_of_TestPrerequisitesNotMet() {
+    #[@test, @values('fixtures')]
+    public function string_representation_of_TestPrerequisitesNotMet($test) {
       $prerequisites= new PrerequisitesNotMetError('Initialization failed');
       $this->assertStringRepresentation(
         "unittest.TestPrerequisitesNotMet(test= %s, time= 0.000 seconds) {\n  ".xp::stringOf($prerequisites, '  ')."\n }",
-        new TestPrerequisitesNotMet($this, $prerequisites, 0.0)
+        new TestPrerequisitesNotMet($test, $prerequisites, 0.0)
       );
     }
 
     /**
      * Tests TestNotRun
      */    
-    #[@test]
-    public function string_representation_of_TestNotRun() {
+    #[@test, @values('fixtures')]
+    public function string_representation_of_TestNotRun($test) {
       $this->assertStringRepresentation(
         "unittest.TestNotRun(test= %s, time= 0.000 seconds) {\n  \"Ignored\"\n }",
-        new TestNotRun($this, 'Ignored', 0.0)
+        new TestNotRun($test, 'Ignored', 0.0)
       );
     }
 
     /**
      * Tests TestWarning
      */    
-    #[@test]
-    public function string_representation_of_TestWarning() {
+    #[@test, @values('fixtures')]
+    public function string_representation_of_TestWarning($test) {
       $this->assertStringRepresentation(
         "unittest.TestWarning(test= %s, time= 0.000 seconds) {\n  [\n    0 => \"Could not open file\"\n  ]\n }",
-        new TestWarning($this, array('Could not open file'), 0.0)
+        new TestWarning($test, array('Could not open file'), 0.0)
       );
     }
   }
