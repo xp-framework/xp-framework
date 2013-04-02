@@ -185,7 +185,7 @@
      */
     public function indexOf($arg, $start= 0) {
       if ('' === ($needle= $this->asIntern($arg))) return -1;
-      $r= __str::pos($this->buffer, $this->asIntern($arg), $start);
+      $r= __str::pos($this->buffer, $needle, $start);
       return FALSE === $r ? -1 : $r;
     }
 
