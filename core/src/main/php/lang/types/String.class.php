@@ -270,7 +270,7 @@
     }
 
     /**
-     * Returns whether this string starts with a given argument.
+     * Returns whether this string ends with a given argument.
      *
      * @param   var arg either a string or a String
      * @return  bool
