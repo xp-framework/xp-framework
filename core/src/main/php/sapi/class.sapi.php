@@ -17,7 +17,7 @@
       // Bails out
     }
 
-    xp::$registry['class.'.$class]= 'Runnable$'.$class;
+    xp::$cn[$class]= 'Runnable$'.$class;
     exit(call_user_func($target, $p));
   }
   // }}}

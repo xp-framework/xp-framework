@@ -52,10 +52,10 @@
       $delegates  = array();
 
     static function __static() {
-      xp::$registry['loader']= new self();
+      xp::$loader= new self();
       
       // Scan include-path, setting up classloaders for each element
-      foreach (xp::$registry['classpath'] as $element) {
+      foreach (xp::$classpath as $element) {
         if ('!' === $element{0}) {
           $before  = TRUE;
           $element = substr($element, 1);
@@ -81,7 +81,7 @@
      * @return  lang.ClassLoader
      */
     public static function getDefault() {
-      return xp::$registry['loader'];
+      return xp::$loader;
     }
 
     /**
@@ -159,7 +159,7 @@
      */
     public static function defineClass($class, $parent, $interfaces, $bytes= '{}') {
       $name= xp::reflect($class);
-      if (!isset(xp::$registry['classloader.'.$class])) {
+      if (!isset(xp::$cl[$class])) {
         $super= xp::reflect($parent);
 
         // Test for existance        
@@ -203,7 +203,7 @@
      */
     public static function defineInterface($class, $parents, $bytes= '{}') {
       $name= xp::reflect($class); $if= array();
-      if (!isset(xp::$registry['classloader.'.$class])) {
+      if (!isset(xp::$cl[$class])) {
         if (!empty($parents)) {
           $if= array_map(array('xp', 'reflect'), (array)$parents);
           foreach ($if as $i => $super) {
@@ -236,7 +236,7 @@
      * @throws  lang.ClassFormatException in case the class format is invalud
      */
     public function loadClass0($class) {
-      if (isset(xp::$registry['classloader.'.$class])) return xp::reflect($class);
+      if (isset(xp::$cl[$class])) return xp::reflect($class);
       
       // Ask delegates
       foreach (self::$delegates as $delegate) {

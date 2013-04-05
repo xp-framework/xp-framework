@@ -80,7 +80,7 @@
      * @param   string[] args
      */
     public static function main(array $args) {
-      $r= new self($args[0], $args[1]);
+      $r= new self($args[0], $args[2]);
       $r->configure(new Properties($args[1].DIRECTORY_SEPARATOR.'web.ini'));
       $r->run($args[3]);
     }
@@ -250,7 +250,7 @@
       
       if (($flags & WebDebug::ERRORS)) {
         flush();
-        echo '<xmp>', $e ? $e->toString() : '', xp::stringOf(xp::registry('errors')), '</xmp>';
+        echo '<xmp>', $e ? $e->toString() : '', xp::stringOf(xp::$errors), '</xmp>';
       }
     }
 

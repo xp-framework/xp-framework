@@ -43,16 +43,16 @@
      * @throws  lang.ClassFormatException in case the class format is invalud
      */
     public function loadClass0($class) {
-      if (isset(xp::$registry['classloader.'.$class])) return xp::reflect($class);
+      if (isset(xp::$cl[$class])) return xp::reflect($class);
 
       // Load class
       $package= NULL;
-      xp::$registry['classloader.'.$class]= $this->getClassName().'://'.$this->path;
-      xp::$registry['cl.level']++;
+      xp::$cl[$class]= $this->getClassName().'://'.$this->path;
+      xp::$cll++;
       try {
         $r= include($this->classUri($class));
       } catch (ClassLoadingException $e) {
-        xp::$registry['cl.level']--;
+        xp::$cll--;
 
         $decl= NULL;
         if (NULL === $package) {
@@ -73,9 +73,9 @@
         // be declared.
         raise('lang.ClassLinkageException', $class, array($this), $e);
       }
-      xp::$registry['cl.level']--;
+      xp::$cll--;
       if (FALSE === $r) {
-        unset(xp::$registry['classloader.'.$class]);
+        unset(xp::$cl[$class]);
         throw new ClassNotFoundException($class, array($this));
       }
       
@@ -88,7 +88,7 @@
           if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
             $name= strtr($class, '.', '\\');
             if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-              unset(xp::$registry['classloader.'.$class]);
+              unset(xp::$cl[$class]);
               raise('lang.ClassFormatException', 'Class "'.$name.'" not declared in loaded file');
             }
           } else {
@@ -100,11 +100,11 @@
         class_alias($name, strtr($class, '.', '\\'));
       }
 
-      xp::$registry['class.'.$name]= $class;
-      method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
-      if (0 == xp::$registry['cl.level']) {
-        $invocations= xp::$registry['cl.inv'];
-        xp::$registry['cl.inv']= array();
+      xp::$cn[$name]= $class;
+      method_exists($name, '__static') && xp::$cli[]= array($name, '__static');
+      if (0 === xp::$cll) {
+        $invocations= xp::$cli;
+        xp::$cli= array();
         foreach ($invocations as $inv) call_user_func($inv);
       }
       return $name;

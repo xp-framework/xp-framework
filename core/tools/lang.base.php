@@ -14,10 +14,10 @@
   // {{{ final class import
   final class import {
     function __construct($str) {
-      $class= xp::$registry['loader']->loadClass0($str);
+      $class= xp::$loader->loadClass0($str);
       $trace= debug_backtrace();
       $scope= $trace[2]['args'][0];
-      xp::$registry['cl.inv'][]= function() use ($class, $scope) {
+      xp::$cli[]= function() use ($class, $scope) {
         $class::__import(xp::reflect($scope));
       };
     }
@@ -29,23 +29,31 @@
     const CLASS_FILE_EXT= '.class.php';
     const ENCODING= 'iso-8859-1';
 
+    public static $ext= array();
+    public static $cli= array();
+    public static $cll= 0;
+    public static $cl= array();
+    public static $cn= array(
+      'xp'    => '<xp>',
+      'null'  => '<null>'
+    );
+    public static $null= NULL;
+    public static $loader= NULL;
+    public static $classpath= NULL;
+    public static $errors= array();
+    public static $meta= array();
     public static $registry = array(
-      'errors'     => array(),
-      'sapi'       => array(),
-      'class.xp'   => '<xp>',
-      'class.null' => '<null>',
-      'cl.level'   => 0,
-      'cl.inv'     => array()
+      'sapi'       => array()
     );
     
     // {{{ proto string loadClass0(string name)
     //     Loads a class by its fully qualified name
     function loadClass0($class) {
-      if (isset(xp::$registry['classloader.'.$class])) {
-        return substr(array_search($class, xp::$registry, TRUE), 6);
+      if (isset(xp::$cl[$class])) {
+        return substr(array_search($class, xp::$cn, TRUE), 6);
       }
 
-      foreach (xp::$registry['classpath'] as $path) {
+      foreach (xp::$classpath as $path) {
 
         // If path is a directory and the included file exists, load it
         if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT)) {
@@ -58,12 +66,12 @@
 
         // Load class        
         $package= NULL;
-        xp::$registry['classloader.'.$class]= $cl.'://'.$path;
-        xp::$registry['cl.level']++;
+        xp::$cl[$class]= $cl.'://'.$path;
+        xp::$cll++;
         $r= include($f);
-        xp::$registry['cl.level']--;
+        xp::$cll--;
         if (FALSE === $r) {
-          unset(xp::$registry['classloader.'.$class]);
+          unset(xp::$cl[$class]);
           continue;
         }
 
@@ -83,11 +91,11 @@
           $name= strtr($class, '.', '·');
           class_alias($name, strtr($class, '.', '\\'));
         }
-        xp::$registry['class.'.$name]= $class;
-        method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
-        if (0 === xp::$registry['cl.level']) {
-          $invocations= xp::$registry['cl.inv'];
-          xp::$registry['cl.inv']= array();
+        xp::$cn[$name]= $class;
+        method_exists($name, '__static') && xp::$cli[]= array($name, '__static');
+        if (0 === xp::$cll) {
+          $invocations= xp::$cli;
+          xp::$cli= array();
           foreach ($invocations as $inv) call_user_func($inv);
         }
 
@@ -101,8 +109,7 @@
     // {{{ proto string nameOf(string name)
     //     Returns the fully qualified name
     static function nameOf($name) {
-      $k= 'class.'.$name;
-      return isset(xp::$registry[$k]) ? xp::$registry[$k] : 'php.'.$name;
+      return isset(xp::$cn[$name]) ? xp::$cn[$name] : 'php.'.$name;
     }
     // }}}
 
@@ -167,7 +174,7 @@
         if (MODIFIER_STATIC & $method->getModifiers() && $method->numParameters() > 0) {
           $param= $method->getParameter(0);
           if ('self' === $param->getName()) {
-            self::$registry['ext'][$scope][$param->getType()->literal()]= $class;
+            xp::$ext[$scope][$param->getType()->literal()]= $class;
           }
         }
       }
@@ -178,9 +185,9 @@
     //     Runs the garbage collector
     static function gc($file= NULL) {
       if ($file) {
-        unset(xp::$registry['errors'][$file]);
+        unset(xp::$errors[$file]);
       } else {
-        xp::$registry['errors']= array();
+        xp::$errors= array();
       }
     }
     // }}}
@@ -188,20 +195,18 @@
     // {{{ proto <null> null()
     //     Runs a fatal-error safe version of NULL
     static function null() {
-      return xp::$registry['null'];
+      return xp::$null;
     }
     // }}}
 
-    // {{{ proto bool errorAt(string file [, int line)
-    //     Returns whether an error occured at the specified position
+    // {{{ proto var errorAt(string file [, int line])
+    //     Returns errors that occured at the specified position or NULL
     static function errorAt($file, $line= -1) {
-      $errors= xp::$registry['errors'];
-      
-      // If no line is given, check for an error in the file
-      if ($line < 0) return !empty($errors[$file]);
-      
-      // Otherwise, check for an error in the file on a certain line
-      return !empty($errors[$file][$line]);
+      if ($line < 0) {    // If no line is given, check for an error in the file
+        return isset(xp::$errors[$file]) ? xp::$errors[$file] : NULL;
+      } else {            // Otherwise, check for an error in the file on a certain line
+        return isset(xp::$errors[$file][$line]) ? xp::$errors[$file][$line] : NULL;
+      }
     }
     // }}}
     
@@ -209,7 +214,7 @@
     //     Sets an SAPI
     static function sapi() {
       foreach ($a= func_get_args() as $name) {
-        foreach (xp::$registry['classpath'] as $path) {
+        foreach (xp::$classpath as $path) {
           $filename= 'sapi'.DIRECTORY_SEPARATOR.strtr($name, '.', DIRECTORY_SEPARATOR).'.sapi.php';
           if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.$filename)) {
             require_once($f);
@@ -226,7 +231,7 @@
     }
     // }}}
     
-    // {{{ proto var registry(var args*)
+    // {{{ proto deprecated var registry(var args*)
     //     Stores static data
     static function registry() {
       switch (func_num_args()) {
@@ -262,9 +267,9 @@
           }
         }
         return substr($l, 0, -1);
-      } else {      
-        $l= array_search($type, xp::$registry, TRUE);
-        return $l ? substr($l, 6) : substr($type, (FALSE === $p= strrpos($type, '.')) ? 0 : $p+ 1);
+      } else {
+        $l= array_search($type, xp::$cn, TRUE);
+        return $l ?: substr($type, (FALSE === $p= strrpos($type, '.')) ? 0 : $p+ 1);
       }
     }
     // }}}
@@ -298,7 +303,7 @@
     // {{{ proto __construct(void)
     //     Constructor to avoid magic __call invokation
     public function __construct() {
-      if (isset(xp::$registry['null'])) {
+      if (isset(xp::$null)) {
         throw new IllegalAccessException('Cannot create new instances of xp::null()');
       }
     }
@@ -468,14 +473,14 @@
       $class= (isset($bt[1]['class']) ? $bt[1]['class'] : NULL);
       $method= (isset($bt[1]['function']) ? $bt[1]['function'] : NULL);
       
-      if (!isset(xp::$registry['errors'][$file][$line][$msg])) {
-        xp::$registry['errors'][$file][$line][$msg]= array(
+      if (!isset(xp::$errors[$file][$line][$msg])) {
+        xp::$errors[$file][$line][$msg]= array(
           'class'   => $class,
           'method'  => $method,
           'cnt'     => 1
         );
       } else {
-        xp::$registry['errors'][$file][$line][$msg]['cnt']++;
+        xp::$errors[$file][$line][$msg]['cnt']++;
       }
     }
   }
@@ -486,7 +491,7 @@
   function uses() {
     $scope= NULL;
     foreach (func_get_args() as $str) {
-      $class= xp::$registry['loader']->loadClass0($str);
+      $class= xp::$loader->loadClass0($str);
 
       // Tricky: We can arrive at this point without the class actually existing:
       // A : uses("B")
@@ -734,11 +739,74 @@
   //     SPL Autoload callback
   function __load($class) {
     $name= strtr($class, '\\', '.');
-    $cl= xp::$registry['loader']->findClass($name);
+    $cl= xp::$loader->findClass($name);
     if ($cl instanceof null) return FALSE;
 
     $cl->loadClass0($name);
     return TRUE;
+  }
+  // }}}
+
+  // {{{ string scanpath(string[] path, string home)
+  //     Scans a path file 
+  function scanpath($paths, $home) {
+    $inc= '';
+    foreach ($paths as $path) {
+      if (!($d= @opendir($path))) continue;
+      while ($e= readdir($d)) {
+        if ('.pth' !== substr($e, -4)) continue;
+
+        foreach (file($path.DIRECTORY_SEPARATOR.$e) as $line) {
+          if ('#' === $line{0}) {
+            continue;
+          } else if ('!' === $line{0}) {
+            $pre= TRUE;
+            $line= substr($line, 1);
+          } else {
+            $pre= FALSE;
+          }
+          
+          if ('~' === $line{0}) {
+            $base= $home.DIRECTORY_SEPARATOR; $line= substr($line, 1);
+          } else if ('/' === $line{0} || (':' === $line{1} && '\\' === $line{2})) {
+            $base= '';
+          } else {
+            $base= $path.DIRECTORY_SEPARATOR; 
+          }
+
+          $qn= $base.strtr(trim($line), '/', DIRECTORY_SEPARATOR).PATH_SEPARATOR;
+          if ('.php' === substr($qn, -5, 4)) {
+            require(substr($qn, 0, -1));
+          } else {
+            $pre ? $inc= $qn.$inc : $inc.= $qn;
+          }
+        }
+      }
+      closedir($d);
+    }
+    return $inc;
+  }
+  // }}}
+
+  // {{{ void boostrap(string classpath)
+  //     Loads omnipresent classes and installs class loading
+  function bootstrap($classpath) {
+    set_include_path($classpath);
+
+    xp::$classpath= explode(PATH_SEPARATOR, $classpath);
+    xp::$loader= new xp();
+    uses(
+      'lang.Object',
+      'lang.Error',
+      'lang.XPException',
+      'lang.XPClass',
+      'lang.NullPointerException',
+      'lang.IllegalAccessException',
+      'lang.IllegalArgumentException',
+      'lang.IllegalStateException',
+      'lang.FormatException',
+      'lang.ClassLoader'
+    );
   }
   // }}}
 
@@ -759,25 +827,9 @@
   ini_set('magic_quotes_runtime', FALSE);
   
   // Registry initialization
-  xp::$registry['null']= new null();
-  xp::$registry['loader']= new xp();
-  xp::$registry['classpath']= explode(PATH_SEPARATOR, get_include_path());
+  xp::$null= new null();
 
   // Register stream wrapper for .xar class loading
   stream_wrapper_register('xar', 'xarloader');
-
-  // Omnipresent classes
-  uses(
-    'lang.Object',
-    'lang.Error',
-    'lang.XPException',
-    'lang.XPClass',
-    'lang.NullPointerException',
-    'lang.IllegalAccessException',
-    'lang.IllegalArgumentException',
-    'lang.IllegalStateException',
-    'lang.FormatException',
-    'lang.ClassLoader'
-  );
   // }}}
 ?>

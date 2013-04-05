@@ -15,7 +15,8 @@
     'util.log.BufferedAppender',
     'scriptlet.HttpScriptlet',
     'scriptlet.xml.XMLScriptlet',
-    'lang.Runtime'
+    'lang.Runtime',
+    'lang.System'
   );
 
   /**
@@ -669,6 +670,44 @@
 
       $this->assertEquals('500', $error[1], 'error message');
       $this->assertEquals('Sorry', $compound[1], 'exception compound message');
+    }
+
+    /**
+     * Test main() method, which receives the following arguments:
+     *
+     * <ol>
+     *   <li>The web root</li>
+     *   <li>The configuration directory</li>
+     *   <li>The server profile</li>
+     *   <li>The script URL</li>
+     * </ol>
+     */
+    #[@test]
+    public function callingMain() {
+      $temp= System::tempDir();
+
+      // Create web.ini in system's temp dir
+      $ini= new File($temp, 'web.ini');
+      $ini->open(FILE_MODE_WRITE);
+      $ini->write(
+        "[app]\n".
+        "mappings=\"/:welcome\"\n".
+        "[app::welcome]\n".
+        "class=undefined\n".
+        "[app::welcome@dev]\n".
+        "class=\"".self::$welcomeScriptlet->getName()."\"\n"
+      );
+      $ini->close();
+
+      // Run
+      ob_start();
+      xp·scriptlet·Runner::main(array($temp, $temp, 'dev', '/'));
+      $content= ob_get_contents();
+      ob_end_clean();
+      $ini->unlink();
+
+      // Assert
+      $this->assertEquals('<h1>Welcome, we are open</h1>', $content);
     }
   }
 ?>

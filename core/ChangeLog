@@ -8,6 +8,14 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated xp::$registry in favor of dedicated functionality in the xp
+  class, while retaining BC for xp::$registry['details.'.$name] for the
+  XP Compiler. See pull request #270
+  (friebe)
+- Removed ability to run scripts using require('lang.base.php') as their
+  first line in order to boostrap the framework, deprecated since the
+  introduction of the XP Runners five years ago. Side effect of #269.
+  (friebe)
 - Changed reflection to use "var" instead of "void" as return type when
   no api documentation is available. See pull request #264
   (friebe)
