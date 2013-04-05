@@ -43,7 +43,7 @@
      */
     protected function isNumeric($value) {
       try {
-        new Long($value);
+        Long::valueOf($value);
       } catch (IllegalArgumentException $e) {
         return FALSE;
       }
@@ -233,7 +233,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringIsNotANumber() {
-      new Long('string');
+      Long::valueOf('string');
     }
 
     /**
@@ -242,7 +242,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function booleanIsNotANumber() {
-      new Long(TRUE);
+      Long::valueOf(TRUE);
     }
 
     /**
@@ -251,7 +251,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function nullIsNotANumber() {
-      new Long(NULL);
+      Long::valueOf(NULL);
     }
 
     /**
@@ -260,7 +260,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function writtenNumberIsNotANumber() {
-      new Long('one');
+      Long::valueOf('one');
     }
 
     /**
@@ -269,7 +269,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function commaNotationIsNotANumber() {
-      new Long('1,1');
+      Long::valueOf('1,1');
     }
 
     /**
@@ -305,7 +305,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function leadingLetterIsNotANumber() {
-      new Long('a123');
+      Long::valueOf('a123');
     }
 
     /**
@@ -314,7 +314,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function currencyValueIsNotANumber() {
-      new Long('$44.00');
+      Long::valueOf('$44.00');
     }
 
     /**
@@ -323,7 +323,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function whitespaceSeparatedNumbersAreNotNumeric() {
-      new Long('4 4');
+      Long::valueOf('4 4');
     }
   }
 ?>
