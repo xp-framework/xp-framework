@@ -8,7 +8,9 @@
     'unittest.TestCase',
     'lang.Runnable',
     'lang.Runtime',
-    'net.xp_framework.unittest.core.PackagedClass'
+    'net.xp_framework.unittest.core.PackagedClass',
+    'net.xp_framework.unittest.core.NamespacedClass',
+    'net.xp_framework.unittest.core.NamespacedInterface'
   );
 
   /**
@@ -146,6 +148,32 @@
     #[@test]
     public function packageOfNewInstancedFullyQualifiedClass() {
       $i= newinstance('net.xp_framework.unittest.core.PackagedClass', array(), '{}');
+      $this->assertEquals(
+        Package::forName('net.xp_framework.unittest.core'),
+        $i->getClass()->getPackage()
+      );
+    }
+
+    /**
+     * Tests package retrieval on newinstance() created namespaced class
+     *
+     */
+    #[@test]
+    public function packageOfNewInstancedNamespacedClass() {
+      $i= newinstance('net.xp_framework.unittest.core.NamespacedClass', array(), '{}');
+      $this->assertEquals(
+        Package::forName('net.xp_framework.unittest.core'),
+        $i->getClass()->getPackage()
+      );
+    }
+
+    /**
+     * Tests package retrieval on newinstance() created namespaced class
+     *
+     */
+    #[@test]
+    public function packageOfNewInstancedNamespacedInterface() {
+      $i= newinstance('net.xp_framework.unittest.core.NamespacedInterface', array(), '{}');
       $this->assertEquals(
         Package::forName('net.xp_framework.unittest.core'),
         $i->getClass()->getPackage()

@@ -79,6 +79,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed bug with newinstance inside namespaced classes. See bug #276
+  (friebe)
 - Fixed Reflection bugs for abstract methods in generic classes. See
   pull request #263
   (friebe)
