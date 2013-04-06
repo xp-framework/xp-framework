@@ -10,8 +10,6 @@
    * The Byte class wraps a value of the type byte 
    * 
    * Range: -2^7 - (2^7)- 1
-   *
-   * @purpose  Wrapper
    */
   class Byte extends Number {
   }

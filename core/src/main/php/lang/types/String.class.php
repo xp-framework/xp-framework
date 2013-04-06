@@ -266,7 +266,8 @@
      * @return  bool
      */
     public function startsWith($arg) {
-      return 0 == $this->indexOf($arg);
+      $bytes= $this->asIntern($arg);
+      return 0 === strncmp($this->buffer, $bytes, strlen($bytes));
     }
 
     /**
@@ -277,11 +278,8 @@
      */
     public function endsWith($arg) {
       $bytes= $this->asIntern($arg);
-
-      return (
-        $this->length - __str::len($bytes) ===
-        __str::rpos($this->buffer, $bytes)
-      );
+      $l= strlen($bytes);
+      return 0 === substr_compare($this->buffer, $bytes, -$l, $l);
     }
  
     /**
