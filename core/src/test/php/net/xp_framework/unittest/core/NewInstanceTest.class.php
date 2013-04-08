@@ -122,7 +122,26 @@
       ');
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
-        (bool)strstr($r[1].$r[2], 'Class "lang.NonExistantClass" does not exist'),
+        (bool)strstr($r[1].$r[2], 'Class "lang.NonExistantClass" could not be found'),
+        xp::stringOf(array('out' => $r[1], 'err' => $r[2]))
+      );
+    }
+
+    /**
+     * Test using a not previously defined class is loaded
+     *
+     */
+    #[@test]
+    public function notPreviouslyDefinedClassIsLoaded() {
+      $r= $this->runInNewRuntime(array(), '
+        if (isset(xp::$cl["lang.Runnable"])) {
+          xp::error("Class lang.Runnable may not have been previously loaded");
+        }
+        var_dump(newinstance("lang.Runnable", array(), "{ public function run() { } }"));
+      ');
+      $this->assertEquals(0, $r[0], 'exitcode');
+      $this->assertTrue(
+        (bool)strstr($r[1].$r[2], 'object(Runnable'),
         xp::stringOf(array('out' => $r[1], 'err' => $r[2]))
       );
     }

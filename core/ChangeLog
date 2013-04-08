@@ -8,6 +8,8 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed newinstance() to invoke autoloading mechanism, see issue #277
+  (friebe)
 - Deprecated xp::$registry in favor of dedicated functionality in the xp
   class, while retaining BC for xp::$registry['details.'.$name] for the
   XP Compiler. See pull request #270

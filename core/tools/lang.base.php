@@ -626,10 +626,10 @@
       $p= strrpos(substr($type, 0, strpos($type, '··')), '·');
     } else {
       FALSE === strrpos($spec, '.') && $spec= xp::nameOf($spec);
-      $type= xp::reflect($spec);
-      if (!class_exists($type, FALSE) && !interface_exists($type, FALSE)) {
-        xp::error(xp::stringOf(new Error('Class "'.$spec.'" does not exist')));
-        // Bails
+      try {
+        $type= 0 === strncmp($spec, 'php.', 4) ? substr($spec, 4) : xp::$loader->loadClass0($spec);
+      } catch (ClassLoadingException $e) {
+        xp::error($e->getMessage());
       }
       $p= strrpos($type, '·');
     }
