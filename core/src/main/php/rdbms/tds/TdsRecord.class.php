@@ -12,19 +12,9 @@
    */
   abstract class TdsRecord extends Object {
     protected static $precision;
-    public $fixed= FALSE;
 
     static function __static() {
       self::$precision= ini_get('precision');
-    }
-
-    /**
-     * Creates a new TDS record
-     *
-     * @param bool fixed default FALSE, whether this record has a fixed size
-     */
-    public function __construct($fixed= FALSE) {
-      $this->fixed= $fixed;
     }
 
     /**
