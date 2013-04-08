@@ -144,7 +144,7 @@
       }');
       self::$recordsFor[0][self::T_INT8]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
-          return$this->toNumber($stream->getInt64(), 0, 0);
+          return $this->toNumber($stream->getInt64(), 0, 0);
         }
       }');
       self::$recordsFor[0][self::T_FLTN]= newinstance('rdbms.tds.TdsRecord', array(), '{
