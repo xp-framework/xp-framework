@@ -22,8 +22,9 @@
      */
     protected function setupRecords() {
       $records[self::T_NUMERIC]= newinstance('rdbms.tds.TdsRecord', array(), '{
-        public function unmarshal($stream, $field) {
-          if (-1 === ($len= $stream->getByte()- 1)) return NULL;
+        public function unmarshal($stream, $field, $records) {
+          $len= isset($field["len"]) ? $field["len"] : $stream->getByte()- 1;
+          if (-1 === $len) return NULL;
           $pos= $stream->getByte();
           for ($j= 0, $n= 0, $m= $pos ? 1 : -1; $j < $len; $j+= 4, $m= bcmul($m, "4294967296", 0)) {
             $n= bcadd($n, bcmul(sprintf("%u", $stream->getLong()), $m, 0), 0);
@@ -33,53 +34,28 @@
       }');
       $records[self::T_DECIMAL]= $records[self::T_NUMERIC];
       $records[self::T_VARIANT]= newinstance('rdbms.tds.TdsRecord', array(), '{
-        public function unmarshal($stream, $field) {
+        public function unmarshal($stream, $field, $records) {
           if (0 === ($len= $stream->getLong())) return NULL;
 
           $base= $stream->getByte();
           $prop= $stream->getByte();
-          switch ($base) {
-            case TdsProtocol::T_INT4:
-              return $stream->getLong();
 
-            case TdsProtocol::T_MONEY:
-              return $this->toMoney($stream->getLong(), $stream->getLong());
-
-            case TdsProtocol::T_DATETIME:
-              return $this->toDate($stream->getLong(), $stream->getLong());
-
-            case TdsProtocol::XT_NVARCHAR: case TdsProtocol::XT_VARCHAR:
-              $stream->read(5);   // Collation
-              return $stream->read($stream->getShort());
-
-            case TdsProtocol::T_NUMERIC:
-              $prec= $stream->getByte();
-              $scale= $stream->getByte();
-              $pos= $stream->getByte();
-              for ($i= 0, $n= 0, $m= $pos ? 1 : -1; $i < 4; $i++, $m= bcmul($m, "4294967296", 0)) {
-                $n= bcadd($n, bcmul(sprintf("%u", $stream->getLong()), $m, 0), 0);
-              }
-              return $this->toNumber($n, $scale, $prec);
-
-            case TdsProtocol::T_UNIQUE:
-              $bytes= $stream->read($len);
-              return sprintf(
-                "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
-                ord($bytes{3}), ord($bytes{2}), ord($bytes{1}), ord($bytes{0}),
-                ord($bytes{5}), ord($bytes{4}),
-                ord($bytes{7}), ord($bytes{6}),
-                ord($bytes{8}), ord($bytes{9}),
-                ord($bytes{10}), ord($bytes{11}), ord($bytes{12}), ord($bytes{13}), ord($bytes{14}), ord($bytes{15})
-              );
-
-            default:
-              throw new ProtocolException("Unknown variant base type 0x".dechex($base));
+          if (isset($records[$base])) {
+            $field["len"]= $len;      // Set length so it is not read twice
+            if (TdsProtocol::T_NUMERIC === $base) {
+              $field["prec"]= $stream->getByte();
+              $field["scale"]= $stream->getByte();
+            }
+            return $records[$base]->unmarshal($stream, $field, $records);
+          } else {
+            throw new ProtocolException("Unknown variant base type 0x".dechex($base));
           }
         }
       }');
       $records[self::T_UNIQUE]= newinstance('rdbms.tds.TdsRecord', array(), '{
-        public function unmarshal($stream, $field) {
-          if (0 === ($len= $stream->getByte())) return NULL;
+        public function unmarshal($stream, $field, $records) {
+          $len= isset($field["len"]) ? $field["len"] : $stream->getByte();
+          if (0 === $len) return NULL;
 
           $bytes= $stream->read($len);
           return sprintf(
@@ -93,7 +69,7 @@
         }
       }');
       $records[self::T_IMAGE]= newinstance('rdbms.tds.TdsRecord', array(), '{
-        public function unmarshal($stream, $field) {
+        public function unmarshal($stream, $field, $records) {
           $has= $stream->getByte();
           if ($has !== 16) return NULL;
 
@@ -102,14 +78,14 @@
         }
       }');
       $records[self::XT_BINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
-        public function unmarshal($stream, $field) {
+        public function unmarshal($stream, $field, $records) {
           if (0xFFFF === ($len= $stream->getShort())) return NULL;
           $string= $stream->read($len);
           return substr($string, 0, strcspn($string, "\0"));
         }
       }');
       $records[self::XT_VARBINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
-        public function unmarshal($stream, $field) {
+        public function unmarshal($stream, $field, $records) {
           if (0xFFFF === ($len= $stream->getShort())) return NULL;
           return $stream->read($len);
         }

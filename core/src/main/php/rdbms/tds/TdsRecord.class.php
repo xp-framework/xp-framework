@@ -98,8 +98,9 @@
      *
      * @param   rdbms.tds.TdsDataStream stream
      * @param   [:var] field
+     * @param   [:self] records
      * @return  var
      */
-    public abstract function unmarshal($stream, $field);
+    public abstract function unmarshal($stream, $field, $records);
   }
 ?>
