@@ -112,8 +112,7 @@
     }
 
     /**
-     * Test constructing an interface instance without implementing all
-     * required methods raises a fatal
+     * Test using a non-existant class in newinstance() causes a fatal error.
      *
      */
     #[@test]
