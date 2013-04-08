@@ -39,13 +39,19 @@
 
           $base= $stream->getByte();
           $prop= $stream->getByte();
-
           if (isset($records[$base])) {
             $field["len"]= $len;      // Set length so it is not read twice
-            if (TdsProtocol::T_NUMERIC === $base) {
+
+            // Special case handling - read more info. See query() method.
+            // No need to handle text, ntext, image, timestamp, and sql_variant
+            if (TdsProtocol::T_NUMERIC === $base || TdsProtocol::T_DECIMAL === $base) {
               $field["prec"]= $stream->getByte();
               $field["scale"]= $stream->getByte();
+              $field["len"] /= 4;
+            } else if ($base > 128) {
+              $stream->read(5);
             }
+
             return $records[$base]->unmarshal($stream, $field, $records);
           } else {
             throw new ProtocolException("Unknown variant base type 0x".dechex($base));
