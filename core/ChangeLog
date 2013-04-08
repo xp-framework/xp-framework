@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Bugfixes
+~~~~~~~~
+- Fixed issue #278 - Missing TdsV7 T_VARIANT subtype implementations
+  (friebe)
+
 
 Version 5.8.12, released 2013-03-18
 -----------------------------------
