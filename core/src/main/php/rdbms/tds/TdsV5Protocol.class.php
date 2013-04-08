@@ -25,7 +25,7 @@
      */
     protected function setupRecords() {
       $records[self::T_NUMERIC]= newinstance('rdbms.tds.TdsRecord', array(), '{
-        public function unmarshal($stream, $field) {
+        public function unmarshal($stream, $field, $records) {
           if (-1 === ($len= $stream->getByte()- 1)) return NULL;
           $pos= $stream->getByte();
           $bytes= $stream->read($len);
@@ -41,14 +41,14 @@
       }');
       $records[self::T_DECIMAL]= $records[self::T_NUMERIC];
       $records[self::T_BINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
-        public function unmarshal($stream, $field) {
+        public function unmarshal($stream, $field, $records) {
           if (0 === ($len= $stream->getByte())) return NULL;
           $string= $stream->read($len);
           return iconv($field["conv"], "iso-8859-1", substr($string, 0, strcspn($string, "\0")));
         }
       }');
       $records[self::T_IMAGE]= newinstance('rdbms.tds.TdsRecord', array(), '{
-        public function unmarshal($stream, $field) {
+        public function unmarshal($stream, $field, $records) {
           $has= $stream->getByte();
           if ($has !== 16) return NULL; // Seems to always be 16 - obsolete?
 
@@ -68,14 +68,14 @@
         }
       }');
       $records[self::T_VARBINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
-        public function unmarshal($stream, $field) {
+        public function unmarshal($stream, $field, $records) {
           if (0 === ($len= $stream->getByte())) return NULL;
 
           return iconv($field["conv"], "iso-8859-1", $stream->read($len));
         }
       }');
       $records[self::T_LONGBINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
-        public function unmarshal($stream, $field) {
+        public function unmarshal($stream, $field, $records) {
           $len= $stream->getLong();
           return $stream->getString($len / 2);
         }
