@@ -61,6 +61,17 @@
               }
               return $this->toNumber($n, $scale, $prec);
 
+            case TdsProtocol::T_UNIQUE:
+              $bytes= $stream->read($len);
+              return sprintf(
+                "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
+                ord($bytes{3}), ord($bytes{2}), ord($bytes{1}), ord($bytes{0}),
+                ord($bytes{5}), ord($bytes{4}),
+                ord($bytes{7}), ord($bytes{6}),
+                ord($bytes{8}), ord($bytes{9}),
+                ord($bytes{10}), ord($bytes{11}), ord($bytes{12}), ord($bytes{13}), ord($bytes{14}), ord($bytes{15})
+              );
+
             default:
               throw new ProtocolException("Unknown variant base type 0x".dechex($base));
           }
