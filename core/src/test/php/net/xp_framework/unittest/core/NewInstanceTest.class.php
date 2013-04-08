@@ -119,11 +119,11 @@
     #[@test]
     public function missingClassFatals() {
       $r= $this->runInNewRuntime(array(), '
-        newinstance("lang.Runnable", array(), "{}");
+        newinstance("lang.NonExistantClass", array(), "{}");
       ');
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
-        (bool)strstr($r[1].$r[2], 'Class "lang.Runnable" does not exist'),
+        (bool)strstr($r[1].$r[2], 'Class "lang.NonExistantClass" does not exist'),
         xp::stringOf(array('out' => $r[1], 'err' => $r[2]))
       );
     }
