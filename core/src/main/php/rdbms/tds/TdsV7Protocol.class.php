@@ -23,7 +23,7 @@
     protected function setupRecords() {
       $records[self::T_NUMERIC]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field, $records) {
-          $len= isset($field["len"]) ? $field["len"] : $stream->getByte()- 1;
+          $len= isset($field["len"]) ? $field["len"]- 1 : $stream->getByte()- 1;
           if (-1 === $len) return NULL;
           $pos= $stream->getByte();
           for ($j= 0, $n= 0, $m= $pos ? 1 : -1; $j < $len; $j+= 4, $m= bcmul($m, "4294967296", 0)) {
@@ -40,14 +40,14 @@
           $base= $stream->getByte();
           $prop= $stream->getByte();
           if (isset($records[$base])) {
-            $field["len"]= $len;      // Set length so it is not read twice
+            $field["len"]= $len- 2;      // Set length minus the the two bytes already read so it is not read twice
 
             // Special case handling - read more info. See query() method.
             // No need to handle text, ntext, image, timestamp, and sql_variant
             if (TdsProtocol::T_NUMERIC === $base || TdsProtocol::T_DECIMAL === $base) {
               $field["prec"]= $stream->getByte();
               $field["scale"]= $stream->getByte();
-              $field["len"] /= 4;
+              $field["len"]-= 2;
             } else if ($base > 128) {
               $stream->read(5);
             }
@@ -140,7 +140,7 @@
         'servername' => array(TRUE, 'localhost'),
         'unused'     => array(FALSE, '', 0),
         'library'    => array(TRUE, $this->getClassName()),
-        'language'   => array(TRUE, ''),
+        'language'   => array(TRUE, 'us_english'),
         'database'   => array(TRUE, 'master')
       );
       
