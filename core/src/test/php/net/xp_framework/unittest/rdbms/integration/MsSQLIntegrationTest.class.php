@@ -106,6 +106,18 @@
     }
 
     /**
+     * Test SQL_VARIANT type. Ensure we don't read too many, and just enough bytes:)
+     *
+     */
+    #[@test]
+    public function selectNumericVariantWithFollowingVarchar() {
+      $this->assertEquals(
+        array('n' => 10, 'v' => 'Test'),
+        $this->db()->query('select cast(convert(numeric, 10) as sql_variant) as n, "Test" as v')->next()
+      );
+    }
+
+    /**
      * Test SQL_VARIANT type
      *
      */
