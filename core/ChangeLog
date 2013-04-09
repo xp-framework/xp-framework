@@ -8,7 +8,7 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
-- Fixed issue #280 - Variant read fixes
+- Fixed issues #280 and #281 - TDS variant, nvarchar and length fixes
   (friebe)
 - Fixed issue #278 - Missing TdsV7 T_VARIANT subtype implementations
   (friebe)
