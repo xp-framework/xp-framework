@@ -92,6 +92,18 @@
      *
      */
     #[@test]
+    public function selectVarcharVariants() {
+      $this->assertEquals(
+        array('one' => 'Test1', 'two' => 'Test2'),
+        $this->db()->query('select cast("Test1" as sql_variant) as one, cast("Test2" as sql_variant) as two')->next()
+      );
+    }
+
+    /**
+     * Test SQL_VARIANT type
+     *
+     */
+    #[@test]
     public function selectIntegerVariant() {
       $this->assertEquals(1, $this->db()->query('select cast(1 as sql_variant) as value')->next('value'));
     }
