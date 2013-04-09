@@ -79,6 +79,27 @@
     }
 
     /**
+     * Test nvarchar type
+     *
+     */
+    #[@test]
+    public function selectNVarchar() {
+      $this->assertEquals('Test', $this->db()->query('select cast("Test" as nvarchar) as value')->next('value'));
+    }
+
+    /**
+     * Test nvarchar type
+     *
+     */
+    #[@test]
+    public function selectNVarchars() {
+      $this->assertEquals(
+        array('one' => 'Test1', 'two' => 'Test2'),
+        $this->db()->query('select cast("Test1" as nvarchar) as one, cast("Test2" as nvarchar) as two')->next()
+      );
+    }
+
+    /**
      * Test SQL_VARIANT type
      *
      */

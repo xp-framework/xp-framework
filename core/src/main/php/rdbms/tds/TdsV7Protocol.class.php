@@ -96,6 +96,12 @@
           return $stream->read($len);
         }
       }');
+      $records[self::XT_NVARCHAR]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field, $records) {
+          $len= $stream->getShort();
+          return 0xFFFF === $len ? NULL : iconv("ucs-2le", "iso-8859-1", $stream->read($len));
+        }
+      }');
       return $records;
     }
 
