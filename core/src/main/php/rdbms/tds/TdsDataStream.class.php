@@ -199,7 +199,22 @@
       $this->read0(1);
       return $this->header['type'];
     }
-    
+
+    /**
+     * Read a specified number of bytes from a given stream
+     *
+     * @param   int length
+     * @return  string
+     */
+    protected function readFully($length) {
+      $return= '';
+      while (strlen($return) < $length) {
+        if (0 == strlen($buf= $this->sock->readBinary($length - strlen($return)))) return;
+        $return.= $buf;
+      }
+      return $return;
+    }
+
     /**
      * Check for buffer underrun and read as many packets as necessary
      *
@@ -211,7 +226,7 @@
       while (-1 === $length || strlen($this->buffer) < $length) {
         if (1 === $this->header['status']) return strlen($this->buffer);
 
-        $bytes= $this->sock->readBinary(8);
+        $bytes= $this->readFully(8);
         $this->header= unpack('Ctype/Cstatus/nlength/nspid/Cpacket/cwindow', $bytes);
         if (FALSE === $this->header) {
           $this->header['status']= 1;
@@ -226,7 +241,7 @@
           $this->header['status']= 0x01;
         }
 
-        $packet= $this->sock->readBinary($this->header['length'] - 8);
+        $packet= $this->readFully($this->header['length'] - 8);
 
         // DEBUG Console::$err->writeLine("R->\n".self::dump($bytes.$packet));
 
