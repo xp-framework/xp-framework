@@ -140,7 +140,7 @@
         'servername' => array(TRUE, 'localhost'),
         'unused'     => array(FALSE, '', 0),
         'library'    => array(TRUE, $this->getClassName()),
-        'language'   => array(TRUE, ''),
+        'language'   => array(TRUE, 'us_english'),
         'database'   => array(TRUE, 'master')
       );
       
