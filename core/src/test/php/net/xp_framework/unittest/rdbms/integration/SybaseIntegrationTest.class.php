@@ -250,5 +250,24 @@
       ');
       $this->assertEquals(1, $q->next('result'));
     }
+
+    /**
+     * Ensure an SQL exception is thrown for error 241
+     *
+     * @see  http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.dc00729_1500/html/errMessageAdvRes/BABIDFFD.htm
+     * @see  https://github.com/xp-framework/xp-framework/issues/274
+     */
+    #[@test, @expect(class= 'rdbms.SQLStatementFailedException', withMessage= '/241/')]
+    public function dataTruncationWarning() {
+      $conn= $this->db();
+      $conn->query('
+        create table %c (
+          id int primary key not null,
+          cost numeric(10,4) not null
+        )',
+        $this->tableName()
+      );
+      $conn->insert('into %c (cost) values (123.12345)', $this->tableName());
+    }
   }
 ?>
