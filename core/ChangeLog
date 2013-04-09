@@ -8,6 +8,8 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed newinstance() to invoke autoloading mechanism, see issue #277
+  (friebe)
 - Deprecated xp::$registry in favor of dedicated functionality in the xp
   class, while retaining BC for xp::$registry['details.'.$name] for the
   XP Compiler. See pull request #270
@@ -79,6 +81,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed bug with newinstance inside namespaced classes. See bug #276
+  (friebe)
 - Fixed Reflection bugs for abstract methods in generic classes. See
   pull request #263
   (friebe)
@@ -141,6 +145,11 @@ Features
 Version 5.8.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
+
+Bugfixes
+~~~~~~~~
+- Fixed issue #278 - Missing TdsV7 T_VARIANT subtype implementations
+  (friebe)
 
 Version 5.8.12, released 2013-03-18
 -----------------------------------

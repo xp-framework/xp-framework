@@ -8,24 +8,17 @@
    * The abstract class Number is the superclass of classes representing
    * numbers
    *
-   * @test     xp://net.xp_framework.unittest.core.types.NumberTest
-   * @purpose  Base class
+   * @test  xp://net.xp_framework.unittest.core.types.NumberTest
    */
   abstract class Number extends Object {
-    public
-      $value = '';
-
+    public $value = '';
     
     /**
      * Constructor
      *
      * @param   string value
-     * @throws  lang.IllegalArgumentException
      */
     public function __construct($value) {
-      if (!is_numeric($value))
-        throw new IllegalArgumentException('Not a number: '.$value);
-
       $this->value= (string)$value;
     }
     
@@ -34,8 +27,12 @@
      *
      * @param   string $value
      * @return  self
+     * @throws  lang.IllegalArgumentException
      */
     public static function valueOf($value) {
+      if (!is_numeric($value)) {
+        throw new IllegalArgumentException('Not a number: '.$value);
+      }
       return new static($value);
     }
 

@@ -185,7 +185,7 @@
      */
     public function indexOf($arg, $start= 0) {
       if ('' === ($needle= $this->asIntern($arg))) return -1;
-      $r= __str::pos($this->buffer, $this->asIntern($arg), $start);
+      $r= __str::pos($this->buffer, $needle, $start);
       return FALSE === $r ? -1 : $r;
     }
 
@@ -266,22 +266,20 @@
      * @return  bool
      */
     public function startsWith($arg) {
-      return 0 == $this->indexOf($arg);
+      $bytes= $this->asIntern($arg);
+      return 0 === strncmp($this->buffer, $bytes, strlen($bytes));
     }
 
     /**
-     * Returns whether this string starts with a given argument.
+     * Returns whether this string ends with a given argument.
      *
      * @param   var arg either a string or a String
      * @return  bool
      */
     public function endsWith($arg) {
       $bytes= $this->asIntern($arg);
-
-      return (
-        $this->length - __str::len($bytes) ===
-        __str::rpos($this->buffer, $bytes)
-      );
+      $l= strlen($bytes);
+      return 0 === substr_compare($this->buffer, $bytes, -$l, $l);
     }
  
     /**
