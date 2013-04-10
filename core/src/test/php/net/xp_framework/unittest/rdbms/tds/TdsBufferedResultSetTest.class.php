@@ -63,7 +63,7 @@
     }
   
     /**
-     * Test
+     * Test constructor
      */
     #[@test]
     public function can_create_with_empty() { 
@@ -71,7 +71,7 @@
     }
 
     /**
-     * Test
+     * Test constructor
      */
     #[@test]
     public function can_create() { 
@@ -84,7 +84,7 @@
     }
 
     /**
-     * Test
+     * Test next()
      */
     #[@test]
     public function next() { 
@@ -95,7 +95,7 @@
     }
 
     /**
-     * Test
+     * Test next()
      */
     #[@test]
     public function next_once() { 
@@ -110,7 +110,7 @@
     }
 
     /**
-     * Test
+     * Test next()
      */
     #[@test]
     public function next_twice() { 
