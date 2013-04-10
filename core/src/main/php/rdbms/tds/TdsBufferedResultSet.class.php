@@ -44,6 +44,9 @@
      * @throws  rdbms.SQLException
      */
     public function seek($offset) { 
+      if ($offset < 0 || $offset > $this->length) {
+        throw new SQLException('Cannot seek to offset '.$offset.', out of bounds');
+      }
       $this->offset= $offset;
     }
     

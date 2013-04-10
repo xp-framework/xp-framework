@@ -197,5 +197,29 @@
       $fixture->seek(1);
       $this->assertEquals($records[1], $fixture->next());
     }
+
+    /**
+     * Test seek()
+     */
+    #[@test, @expect(class= 'rdbms.SQLException', withMessage= 'Cannot seek to offset 1, out of bounds')]
+    public function seek_to_offset_exceeding_length() {
+      $fixture= $this->newResultSet(array())->seek(1);
+    }
+
+    /**
+     * Test seek()
+     */
+    #[@test, @expect(class= 'rdbms.SQLException', withMessage= 'Cannot seek to offset -1, out of bounds')]
+    public function seek_to_negative_offset() {
+      $fixture= $this->newResultSet(array())->seek(-1);
+    }
+
+    /**
+     * Test seek()
+     */
+    #[@test, @expect(class= 'rdbms.SQLException', withMessage= 'Cannot seek to offset 0, out of bounds')]
+    public function seek_to_zero_offset_on_empty() {
+      $fixture= $this->newResultSet(array())->seek(0);
+    }
   }
 ?>
