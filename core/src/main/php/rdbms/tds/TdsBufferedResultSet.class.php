@@ -13,6 +13,8 @@
    */
   class TdsBufferedResultSet extends AbstractTdsResultSet {
     protected $records= array();
+    protected $offset= 0;
+    protected $length= 0;
 
     /**
      * Constructor
@@ -31,7 +33,7 @@
           $this->records[]= new SQLException('Failed reading rows', $e);
         }
       } while (1);
-      reset($this->records);
+      $this->length= sizeof($this->records)- 1;
     }
       
     /**
@@ -42,7 +44,7 @@
      * @throws  rdbms.SQLException
      */
     public function seek($offset) { 
-      reset($this->records);
+      $this->offset= $offset;
     }
     
     /**
@@ -54,9 +56,9 @@
      * @return  var
      */
     public function next($field= NULL) {
-      if (FALSE === ($record= current($this->records))) return FALSE;
+      if ($this->offset > $this->length) return FALSE;
       
-      next($this->records);
+      $record= $this->records[$this->offset++];
       if ($record instanceof SQLException) {
         throw $record;
       } else {
