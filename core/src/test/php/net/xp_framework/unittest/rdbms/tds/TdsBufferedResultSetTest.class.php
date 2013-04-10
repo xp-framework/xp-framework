@@ -149,12 +149,12 @@
      * Test seek()
      */
     #[@test]
-    public function seek_before_start() {
+    public function seek_to_0_before_start() {
       $records= array(
         array(
           'id'   => 6100,
           'name' => 'Binford Lawnmower'
-        ),
+        )
       );
       $fixture= $this->newResultSet($records);
       $fixture->seek(0);
@@ -165,17 +165,37 @@
      * Test seek()
      */
     #[@test]
-    public function seek_after_start() {
+    public function seek_to_0_after_start() {
       $records= array(
         array(
           'id'   => 6100,
           'name' => 'Binford Lawnmower'
-        ),
+        )
       );
       $fixture= $this->newResultSet($records);
       $fixture->next();
       $fixture->seek(0);
       $this->assertEquals($records[0], $fixture->next());
+    }
+
+    /**
+     * Test seek()
+     */
+    #[@test]
+    public function seek_to_1() {
+      $records= array(
+        array(
+          'id'   => 6100,
+          'name' => 'Binford Lawnmower'
+        ),
+        array(
+          'id'   => 61000,
+          'name' => 'Binford Moonrocket'
+        )
+      );
+      $fixture= $this->newResultSet($records);
+      $fixture->seek(1);
+      $this->assertEquals($records[1], $fixture->next());
     }
   }
 ?>
