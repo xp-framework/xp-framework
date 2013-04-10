@@ -9,7 +9,7 @@
   /**
    * Result set
    *
-   * @purpose  Resultset wrapper
+   * @test xp://net.xp_framework.unittest.rdbms.tds.TdsBufferedResultSetTest
    */
   class TdsBufferedResultSet extends AbstractTdsResultSet {
     protected $records= array();
@@ -17,7 +17,9 @@
     /**
      * Constructor
      *
-     * @param   resource handle
+     * @param   var result
+     * @param   [:var] fields
+     * @param   util.TimeZone tz
      */
     public function __construct($result, $fields, TimeZone $tz= NULL) {
       parent::__construct($result, $fields, $tz);
