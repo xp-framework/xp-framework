@@ -42,7 +42,7 @@
      * @throws  rdbms.SQLException
      */
     public function seek($offset) { 
-      throw new SQLException('Cannot seek to offset '.$offset);
+      reset($this->records);
     }
     
     /**
