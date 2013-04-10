@@ -128,5 +128,21 @@
       $this->assertEquals($records[0], $fixture->next());
       $this->assertEquals($records[1], $fixture->next());
     }
+
+    /**
+     * Test next()
+     */
+    #[@test]
+    public function next_returns_false_at_end() { 
+      $records= array(
+        array(
+          'id'   => 6100,
+          'name' => 'Binford Lawnmower'
+        ),
+      );
+      $fixture= $this->newResultSet($records);
+      $fixture->next();
+      $this->assertFalse($fixture->next());
+    }
   }
 ?>
