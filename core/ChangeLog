@@ -13,6 +13,12 @@ Bugfixes
 - Fixed issue #278 - Missing TdsV7 T_VARIANT subtype implementations
   (friebe)
 
+Features
+~~~~~~~~
+- Implemented seeking in rdbms.tds.TdsBufferedResultSet (for mssql+x and
+  sybase+x drivers, motivated by issue #282).
+  (friebe)
+
 
 Version 5.8.12, released 2013-03-18
 -----------------------------------
