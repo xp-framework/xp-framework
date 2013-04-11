@@ -33,7 +33,7 @@
           $this->records[]= new SQLException('Failed reading rows', $e);
         }
       } while (1);
-      $this->length= sizeof($this->records)- 1;
+      $this->length= sizeof($this->records);
     }
       
     /**
@@ -44,7 +44,7 @@
      * @throws  rdbms.SQLException
      */
     public function seek($offset) { 
-      if ($offset < 0 || $offset > $this->length) {
+      if ($offset < 0 || $offset >= $this->length) {
         throw new SQLException('Cannot seek to offset '.$offset.', out of bounds');
       }
       $this->offset= $offset;
@@ -59,7 +59,7 @@
      * @return  var
      */
     public function next($field= NULL) {
-      if ($this->offset > $this->length) return FALSE;
+      if ($this->offset >= $this->length) return FALSE;
       
       $record= $this->records[$this->offset++];
       if ($record instanceof SQLException) {
