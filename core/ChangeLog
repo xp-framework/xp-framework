@@ -8,6 +8,8 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed connect() method for mysql+i driver
+  (friebe)
 - Fixed issues #280 and #281 - TDS variant, nvarchar and length fixes
   (friebe)
 - Fixed issue #278 - Missing TdsV7 T_VARIANT subtype implementations
