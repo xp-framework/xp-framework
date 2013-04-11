@@ -157,6 +157,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Implemented seeking in rdbms.mysqlx.MySqlxBufferedResultSet (for 
+  mysql+x driver, motivated by issue #282).
+  (friebe)
 - Implemented seeking in rdbms.tds.TdsBufferedResultSet (for mssql+x and
   sybase+x drivers, motivated by issue #282).
   (friebe)
