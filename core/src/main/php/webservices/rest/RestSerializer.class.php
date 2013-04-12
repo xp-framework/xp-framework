@@ -9,6 +9,7 @@
   /**
    * A serializer
    *
+   * @test  xp://net.xp_framework.unittest.webservices.rest.RestSerializerConversionTest
    * @see   xp://webservices.rest.RestRequest#setPayload
    */
   abstract class RestSerializer extends Object {
@@ -37,6 +38,16 @@
     public function convert($data) {
       if ($data instanceof Date) {
         return $data->toString('c');    // ISO 8601, e.g. "2004-02-12T15:19:21+00:00"
+      } else if ($data instanceof String || $data instanceof Character) {
+        return $data->toString();
+      } else if ($data instanceof Integer || $data instanceof Long || $data instanceof Short || $data instanceof Byte) {
+        return $data->intValue();
+      } else if ($data instanceof Float || $data instanceof Double) {
+        return $data->doubleValue();
+      } else if ($data instanceof Boolean) {
+        return (bool)$data->value;
+      } else if ($data instanceof ArrayList) {
+        return (array)$data->values;
       } else if ($data instanceof Generic) {
         $class= $data->getClass();
         $r= array();
