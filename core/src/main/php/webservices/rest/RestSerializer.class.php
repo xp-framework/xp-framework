@@ -38,7 +38,7 @@
     public function convert($data) {
       if ($data instanceof Date) {
         return $data->toString('c');    // ISO 8601, e.g. "2004-02-12T15:19:21+00:00"
-      } else if ($data instanceof String) {
+      } else if ($data instanceof String || $data instanceof Character) {
         return $data->toString();
       } else if ($data instanceof Integer || $data instanceof Long || $data instanceof Short || $data instanceof Byte) {
         return $data->intValue();

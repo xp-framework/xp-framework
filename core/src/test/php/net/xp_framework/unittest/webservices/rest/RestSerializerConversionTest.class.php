@@ -73,6 +73,15 @@
      *
      */
     #[@test]
+    public function char_wrapper_object() {
+      $this->assertEquals('A', $this->fixture->convert(new Character('A')));
+    }
+
+    /**
+     * Test a string
+     *
+     */
+    #[@test]
     public function string_wrapper_object_unicode() {
       $this->assertEquals("\334bercoder", $this->fixture->convert(new String("\303\234bercoder", 'utf-8')));
     }
