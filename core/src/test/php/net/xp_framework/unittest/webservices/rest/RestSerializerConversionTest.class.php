@@ -6,6 +6,11 @@
 
   uses(
     'unittest.TestCase',
+    'lang.types.String',
+    'lang.types.Long',
+    'lang.types.Integer',
+    'lang.types.Short',
+    'lang.types.Byte',
     'webservices.rest.RestSerializer',
     'net.xp_framework.unittest.webservices.rest.ConstructorFixture',
     'net.xp_framework.unittest.webservices.rest.IssueWithField',
@@ -76,6 +81,42 @@
     #[@test]
     public function int() {
       $this->assertEquals(6100, $this->fixture->convert(6100));
+    }
+
+    /**
+     * Test an integer
+     *
+     */
+    #[@test]
+    public function long_wrapper_object() {
+      $this->assertEquals(61000, $this->fixture->convert(new Long(61000)));
+    }
+
+    /**
+     * Test an integer
+     *
+     */
+    #[@test]
+    public function int_wrapper_object() {
+      $this->assertEquals(6100, $this->fixture->convert(new Integer(6100)));
+    }
+
+    /**
+     * Test a short
+     *
+     */
+    #[@test]
+    public function short_wrapper_object() {
+      $this->assertEquals(610, $this->fixture->convert(new Short(610)));
+    }
+
+    /**
+     * Test a byte
+     *
+     */
+    #[@test]
+    public function byte_wrapper_object() {
+      $this->assertEquals(61, $this->fixture->convert(new Byte(61)));
     }
 
     /**
