@@ -40,6 +40,8 @@
         return $data->toString('c');    // ISO 8601, e.g. "2004-02-12T15:19:21+00:00"
       } else if ($data instanceof String) {
         return $data->toString();
+      } else if ($data instanceof Integer || $data instanceof Long || $data instanceof Short || $data instanceof Byte) {
+        return $data->intValue();
       } else if ($data instanceof Generic) {
         $class= $data->getClass();
         $r= array();
