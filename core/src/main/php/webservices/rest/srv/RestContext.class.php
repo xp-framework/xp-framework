@@ -76,6 +76,7 @@
      *
      * @param  var type either a full qualified type name or a type instance
      * @param  webservices.rest.TypeMarshaller m
+     * @return webservices.rest.TypeMarshaller The added marshaller
      */
     public function addMarshaller($type, TypeMarshaller $m) {
       $keys= $this->marshallers->keys();
@@ -93,6 +94,7 @@
           $this->marshallers->put($type, $this->marshallers->remove($type));
         }
       }
+      return $m;
     }
 
     /**

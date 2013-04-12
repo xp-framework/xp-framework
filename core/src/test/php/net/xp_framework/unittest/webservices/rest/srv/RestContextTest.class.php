@@ -781,5 +781,20 @@
       $this->assertNull($this->fixture->getExceptionMapping('unittest.AssertionFailedError'));
     }
 
+    /**
+     * Test addMarshaller()
+     */
+    #[@test]
+    public function add_marshaller_returns_added_marshaller() {
+      $marshaller= newinstance('webservices.rest.TypeMarshaller', array(), '{
+        public function marshal($t) {
+          return $t->getName();
+        }
+        public function unmarshal(Type $target, $name) {
+          // Not needed
+        }
+      }');
+      $this->assertEquals($marshaller, $this->fixture->addMarshaller('unittest.TestCase', $marshaller));
+    }
   }
 ?>
