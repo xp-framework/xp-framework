@@ -42,6 +42,8 @@
         return $data->toString();
       } else if ($data instanceof Integer || $data instanceof Long || $data instanceof Short || $data instanceof Byte) {
         return $data->intValue();
+      } else if ($data instanceof Float || $data instanceof Double) {
+        return $data->doubleValue();
       } else if ($data instanceof Generic) {
         $class= $data->getClass();
         $r= array();
