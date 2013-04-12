@@ -44,6 +44,8 @@
         return $data->intValue();
       } else if ($data instanceof Float || $data instanceof Double) {
         return $data->doubleValue();
+      } else if ($data instanceof Boolean) {
+        return (bool)$data->value;
       } else if ($data instanceof Generic) {
         $class= $data->getClass();
         $r= array();
