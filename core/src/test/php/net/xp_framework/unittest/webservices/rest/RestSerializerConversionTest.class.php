@@ -17,7 +17,7 @@
   /**
    * TestCase
    *
-   * @see   xp://webservices.rest.RestDeserializer
+   * @see   xp://webservices.rest.RestSerializer
    */
   class RestSerializerConversionTest extends TestCase {
     protected $fixture= NULL;
@@ -49,6 +49,24 @@
     #[@test]
     public function string() {
       $this->assertEquals('Hello', $this->fixture->convert('Hello'));
+    }
+
+    /**
+     * Test a string
+     *
+     */
+    #[@test]
+    public function string_wrapper_object() {
+      $this->assertEquals('Hello', $this->fixture->convert(new String('Hello')));
+    }
+
+    /**
+     * Test a string
+     *
+     */
+    #[@test]
+    public function string_wrapper_object_unicode() {
+      $this->assertEquals("\334bercoder", $this->fixture->convert(new String("\303\234bercoder", 'utf-8')));
     }
 
     /**
