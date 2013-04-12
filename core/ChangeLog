@@ -17,6 +17,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added serialization for lang.types wrapper types to REST serializer
+  See pull request #285.
+  (friebe)
 - Added exception mapping / marshaller accessors to RestContext, see 
   pull request #284.
   (ilankin, friebe)
