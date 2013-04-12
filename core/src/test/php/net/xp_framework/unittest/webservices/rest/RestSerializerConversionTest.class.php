@@ -6,6 +6,14 @@
 
   uses(
     'unittest.TestCase',
+    'lang.types.String',
+    'lang.types.Long',
+    'lang.types.Integer',
+    'lang.types.Short',
+    'lang.types.Byte',
+    'lang.types.Double',
+    'lang.types.Float',
+    'lang.types.ArrayList',
     'webservices.rest.RestSerializer',
     'net.xp_framework.unittest.webservices.rest.ConstructorFixture',
     'net.xp_framework.unittest.webservices.rest.IssueWithField',
@@ -17,7 +25,7 @@
   /**
    * TestCase
    *
-   * @see   xp://webservices.rest.RestDeserializer
+   * @see   xp://webservices.rest.RestSerializer
    */
   class RestSerializerConversionTest extends TestCase {
     protected $fixture= NULL;
@@ -52,12 +60,75 @@
     }
 
     /**
+     * Test a string
+     *
+     */
+    #[@test]
+    public function string_wrapper_object() {
+      $this->assertEquals('Hello', $this->fixture->convert(new String('Hello')));
+    }
+
+    /**
+     * Test a string
+     *
+     */
+    #[@test]
+    public function char_wrapper_object() {
+      $this->assertEquals('A', $this->fixture->convert(new Character('A')));
+    }
+
+    /**
+     * Test a string
+     *
+     */
+    #[@test]
+    public function string_wrapper_object_unicode() {
+      $this->assertEquals("\334bercoder", $this->fixture->convert(new String("\303\234bercoder", 'utf-8')));
+    }
+
+    /**
      * Test an integer
      *
      */
     #[@test]
     public function int() {
       $this->assertEquals(6100, $this->fixture->convert(6100));
+    }
+
+    /**
+     * Test an integer
+     *
+     */
+    #[@test]
+    public function long_wrapper_object() {
+      $this->assertEquals(61000, $this->fixture->convert(new Long(61000)));
+    }
+
+    /**
+     * Test an integer
+     *
+     */
+    #[@test]
+    public function int_wrapper_object() {
+      $this->assertEquals(6100, $this->fixture->convert(new Integer(6100)));
+    }
+
+    /**
+     * Test a short
+     *
+     */
+    #[@test]
+    public function short_wrapper_object() {
+      $this->assertEquals(610, $this->fixture->convert(new Short(610)));
+    }
+
+    /**
+     * Test a byte
+     *
+     */
+    #[@test]
+    public function byte_wrapper_object() {
+      $this->assertEquals(61, $this->fixture->convert(new Byte(61)));
     }
 
     /**
@@ -70,6 +141,24 @@
     }
 
     /**
+     * Test a double
+     *
+     */
+    #[@test]
+    public function double_wrapper_object() {
+      $this->assertEquals(1.5, $this->fixture->convert(new Double(1.5)));
+    }
+
+    /**
+     * Test a float
+     *
+     */
+    #[@test]
+    public function float_wrapper_object() {
+      $this->assertEquals(1.5, $this->fixture->convert(new Float(1.5)));
+    }
+
+    /**
      * Test a boolean
      *
      */
@@ -79,12 +168,39 @@
     }
 
     /**
+     * Test a boolean
+     *
+     */
+    #[@test]
+    public function bool_wrapper_object_true() {
+      $this->assertEquals(TRUE, $this->fixture->convert(Boolean::$TRUE));
+    }
+
+    /**
+     * Test a boolean
+     *
+     */
+    #[@test]
+    public function bool_wrapper_object_false() {
+      $this->assertEquals(FALSE, $this->fixture->convert(Boolean::$FALSE));
+    }
+
+    /**
      * Test an array of strings
      *
      */
     #[@test]
     public function string_array() {
       $this->assertEquals(array('Hello', 'World'), $this->fixture->convert(array('Hello', 'World')));
+    }
+
+    /**
+     * Test an array of strings
+     *
+     */
+    #[@test]
+    public function string_arraylist() {
+      $this->assertEquals(array('Hello', 'World'), $this->fixture->convert(new ArrayList('Hello', 'World')));
     }
 
     /**
