@@ -158,6 +158,24 @@
     }
 
     /**
+     * Test a boolean
+     *
+     */
+    #[@test]
+    public function bool_wrapper_object_true() {
+      $this->assertEquals(TRUE, $this->fixture->convert(Boolean::$TRUE));
+    }
+
+    /**
+     * Test a boolean
+     *
+     */
+    #[@test]
+    public function bool_wrapper_object_false() {
+      $this->assertEquals(FALSE, $this->fixture->convert(Boolean::$FALSE));
+    }
+
+    /**
      * Test an array of strings
      *
      */
