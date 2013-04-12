@@ -60,6 +60,17 @@
     }
 
     /**
+     * Get exception mapper
+     *
+     * @param  var type either a full qualified class name or an XPClass instance
+     * @return  webservices.rest.srv.ExceptionMapper 
+     */
+    public function getExceptionMapping($type) {
+      return $this->mappers[$type instanceof XPClass ? $type : XPClass::forName($type)];
+    }
+
+
+    /**
      * Adds a type marshaller
      *
      * @param  var type either a full qualified type name or a type instance
