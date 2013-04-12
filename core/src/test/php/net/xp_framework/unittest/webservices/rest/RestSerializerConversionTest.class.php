@@ -13,6 +13,7 @@
     'lang.types.Byte',
     'lang.types.Double',
     'lang.types.Float',
+    'lang.types.ArrayList',
     'webservices.rest.RestSerializer',
     'net.xp_framework.unittest.webservices.rest.ConstructorFixture',
     'net.xp_framework.unittest.webservices.rest.IssueWithField',
@@ -182,6 +183,15 @@
     #[@test]
     public function string_array() {
       $this->assertEquals(array('Hello', 'World'), $this->fixture->convert(array('Hello', 'World')));
+    }
+
+    /**
+     * Test an array of strings
+     *
+     */
+    #[@test]
+    public function string_arraylist() {
+      $this->assertEquals(array('Hello', 'World'), $this->fixture->convert(new ArrayList('Hello', 'World')));
     }
 
     /**

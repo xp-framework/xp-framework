@@ -46,6 +46,8 @@
         return $data->doubleValue();
       } else if ($data instanceof Boolean) {
         return (bool)$data->value;
+      } else if ($data instanceof ArrayList) {
+        return (array)$data->values;
       } else if ($data instanceof Generic) {
         $class= $data->getClass();
         $r= array();
