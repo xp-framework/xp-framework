@@ -54,9 +54,11 @@
      *
      * @param  var type either a full qualified class name or an XPClass instance
      * @param  webservices.rest.srv.ExceptionMapper m
+     * @return webservices.rest.srv.ExceptionMapper The added mapper
      */
     public function addExceptionMapping($type, ExceptionMapper $m) {
       $this->mappers[$type instanceof XPClass ? $type : XPClass::forName($type)]= $m;
+      return $m;
     }
 
     /**

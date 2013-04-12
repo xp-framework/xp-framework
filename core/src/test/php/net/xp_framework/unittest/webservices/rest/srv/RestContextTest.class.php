@@ -745,5 +745,18 @@
         $route, $this->newRequest()
       );
     }
+
+    /**
+     * Test addExceptionMapping()
+     */
+    #[@test]
+    public function add_exception_mapping_returns_added_mapping() {
+      $mapping= newinstance('webservices.rest.srv.ExceptionMapper', array(), '{
+        public function asResponse($t, RestContext $ctx) {
+          return Response::error(500)->withPayload(array("message" => $t->getMessage()));
+        }
+      }');
+      $this->assertEquals($mapping, $this->fixture->addExceptionMapping('lang.Throwable', $mapping));
+    }
   }
 ?>
