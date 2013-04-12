@@ -157,6 +157,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added exception mapping / marshaller accessors to RestContext, see 
+  pull request #284.
+  (ilankin, friebe)
 - Implemented seeking in rdbms.mysqlx.MySqlxBufferedResultSet (for 
   mysql+x driver, motivated by issue #282).
   (friebe)
