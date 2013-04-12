@@ -58,9 +58,21 @@
      *
      * @param  var type either a full qualified class name or an XPClass instance
      * @param  webservices.rest.srv.ExceptionMapper m
+     * @return webservices.rest.srv.ExceptionMapper The added mapper
      */
     public function addExceptionMapping($type, ExceptionMapper $m) {
       $this->mappers[$type instanceof XPClass ? $type : XPClass::forName($type)]= $m;
+      return $m;
+    }
+
+    /**
+     * Gets an exception mapper
+     *
+     * @param  var type either a full qualified class name or an XPClass instance
+     * @return webservices.rest.srv.ExceptionMapper or NULL if no mapper exists
+     */
+    public function getExceptionMapping($type) {
+      return $this->mappers[$type instanceof XPClass ? $type : XPClass::forName($type)];
     }
 
     /**
@@ -68,6 +80,7 @@
      *
      * @param  var type either a full qualified type name or a type instance
      * @param  webservices.rest.TypeMarshaller m
+     * @return webservices.rest.TypeMarshaller The added marshaller
      */
     public function addMarshaller($type, TypeMarshaller $m) {
       $keys= $this->marshallers->keys();
@@ -85,6 +98,17 @@
           $this->marshallers->put($type, $this->marshallers->remove($type));
         }
       }
+      return $m;
+    }
+
+    /**
+     * Adds a type marshaller
+     *
+     * @param  var type either a full qualified type name or a type instance
+     * @return webservices.rest.TypeMarshaller The added marshaller
+     */
+    public function getMarshaller($type) {
+      return $this->marshallers[$type instanceof Type ? $type : Type::forName($type)];
     }
 
     /**

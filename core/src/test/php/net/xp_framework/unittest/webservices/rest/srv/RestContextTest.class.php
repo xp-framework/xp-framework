@@ -681,5 +681,81 @@
         $this->fixture->mapException(new AssertionFailedError('Test', 2, 1))
       );
     }
+
+    /**
+     * Test addExceptionMapping()
+     */
+    #[@test]
+    public function add_exception_mapping_returns_added_mapping() {
+      $mapping= newinstance('webservices.rest.srv.ExceptionMapper', array(), '{
+        public function asResponse($t, RestContext $ctx) {
+          return Response::error(500)->withPayload(array("message" => $t->getMessage()));
+        }
+      }');
+      $this->assertEquals($mapping, $this->fixture->addExceptionMapping('lang.Throwable', $mapping));
+    }
+
+    /**
+     * Test getExceptionMapping()
+     */
+    #[@test]
+    public function get_exception_mapping() {
+      $mapping= newinstance('webservices.rest.srv.ExceptionMapper', array(), '{
+        public function asResponse($t, RestContext $ctx) {
+          return Response::error(500)->withPayload(array("message" => $t->getMessage()));
+        }
+      }');
+      $this->fixture->addExceptionMapping('lang.Throwable', $mapping);
+      $this->assertEquals($mapping, $this->fixture->getExceptionMapping('lang.Throwable'));
+    }
+
+    /**
+     * Test getExceptionMapping()
+     */
+    #[@test]
+    public function get_non_existant_exception_mapping() {
+      $this->assertNull($this->fixture->getExceptionMapping('unittest.AssertionFailedError'));
+    }
+
+    /**
+     * Test addMarshaller()
+     */
+    #[@test]
+    public function add_marshaller_returns_added_marshaller() {
+      $marshaller= newinstance('webservices.rest.TypeMarshaller', array(), '{
+        public function marshal($t) {
+          return $t->getName();
+        }
+        public function unmarshal(Type $target, $name) {
+          // Not needed
+        }
+      }');
+      $this->assertEquals($marshaller, $this->fixture->addMarshaller('unittest.TestCase', $marshaller));
+    }
+
+    /**
+     * Test getMarshaller()
+     */
+    #[@test]
+    public function get_marshaller() {
+      $marshaller= newinstance('webservices.rest.TypeMarshaller', array(), '{
+        public function marshal($t) {
+          return $t->getName();
+        }
+        public function unmarshal(Type $target, $name) {
+          // Not needed
+        }
+      }');
+      $this->fixture->addMarshaller('unittest.TestCase', $marshaller);
+      $this->assertEquals($marshaller, $this->fixture->getMarshaller('unittest.TestCase'));
+    }
+
+    /**
+     * Test getMarshaller()
+     */
+    #[@test]
+    public function get_non_existant_marshaller() {
+      $this->assertNull($this->fixture->getMarshaller('unittest.TestCase'));
+    }
   }
 ?>
