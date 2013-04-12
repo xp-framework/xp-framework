@@ -796,5 +796,30 @@
       }');
       $this->assertEquals($marshaller, $this->fixture->addMarshaller('unittest.TestCase', $marshaller));
     }
+
+    /**
+     * Test getMarshaller()
+     */
+    #[@test]
+    public function get_marshaller() {
+      $marshaller= newinstance('webservices.rest.TypeMarshaller', array(), '{
+        public function marshal($t) {
+          return $t->getName();
+        }
+        public function unmarshal(Type $target, $name) {
+          // Not needed
+        }
+      }');
+      $this->fixture->addMarshaller('unittest.TestCase', $marshaller);
+      $this->assertEquals($marshaller, $this->fixture->getMarshaller('unittest.TestCase'));
+    }
+
+    /**
+     * Test getMarshaller()
+     */
+    #[@test]
+    public function get_non_existant_marshaller() {
+      $this->assertNull($this->fixture->getMarshaller('unittest.TestCase'));
+    }
   }
 ?>

@@ -98,6 +98,16 @@
     }
 
     /**
+     * Adds a type marshaller
+     *
+     * @param  var type either a full qualified type name or a type instance
+     * @return webservices.rest.TypeMarshaller The added marshaller
+     */
+    public function getMarshaller($type) {
+      return $this->marshallers[$type instanceof Type ? $type : Type::forName($type)];
+    }
+
+    /**
      * Maps an exception
      *
      * @param  lang.Throwable t
