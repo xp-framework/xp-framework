@@ -11,6 +11,8 @@
     'lang.types.Integer',
     'lang.types.Short',
     'lang.types.Byte',
+    'lang.types.Double',
+    'lang.types.Float',
     'webservices.rest.RestSerializer',
     'net.xp_framework.unittest.webservices.rest.ConstructorFixture',
     'net.xp_framework.unittest.webservices.rest.IssueWithField',
@@ -126,6 +128,24 @@
     #[@test]
     public function double() {
       $this->assertEquals(1.5, $this->fixture->convert(1.5));
+    }
+
+    /**
+     * Test a double
+     *
+     */
+    #[@test]
+    public function double_wrapper_object() {
+      $this->assertEquals(1.5, $this->fixture->convert(new Double(1.5)));
+    }
+
+    /**
+     * Test a float
+     *
+     */
+    #[@test]
+    public function float_wrapper_object() {
+      $this->assertEquals(1.5, $this->fixture->convert(new Float(1.5)));
     }
 
     /**
