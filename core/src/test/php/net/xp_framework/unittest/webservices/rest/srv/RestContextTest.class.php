@@ -758,5 +758,28 @@
       }');
       $this->assertEquals($mapping, $this->fixture->addExceptionMapping('lang.Throwable', $mapping));
     }
+
+    /**
+     * Test getExceptionMapping()
+     */
+    #[@test]
+    public function get_exception_mapping() {
+      $mapping= newinstance('webservices.rest.srv.ExceptionMapper', array(), '{
+        public function asResponse($t, RestContext $ctx) {
+          return Response::error(500)->withPayload(array("message" => $t->getMessage()));
+        }
+      }');
+      $this->fixture->addExceptionMapping('lang.Throwable', $mapping);
+      $this->assertEquals($mapping, $this->fixture->getExceptionMapping('lang.Throwable'));
+    }
+
+    /**
+     * Test getExceptionMapping()
+     */
+    #[@test]
+    public function get_non_existant_exception_mapping() {
+      $this->assertNull($this->fixture->getExceptionMapping('unittest.AssertionFailedError'));
+    }
+
   }
 ?>
