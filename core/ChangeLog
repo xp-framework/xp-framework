@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Heads up!
+~~~~~~~~~
+- Fixed issue #286: PHP 5.4.14 and PHP 5.3.24 support; a workaround for
+  https://bugs.php.net/bug.php?id=64370
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - Fixed connect() method for mysql+i driver
