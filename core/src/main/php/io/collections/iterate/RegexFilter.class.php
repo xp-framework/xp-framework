@@ -9,7 +9,7 @@
   /**
    * Regular expression iteration filter
    *
-   * @deprecated  Use NameMatchesFilter instead
+   * @deprecated  Use UriMatchesFilter instead
    * @see      php://preg_match
    * @purpose  Iteration Filter
    */
