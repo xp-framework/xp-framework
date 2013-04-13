@@ -146,6 +146,10 @@ Version 5.8.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Version 5.8.13, released 2013-04-13
+-----------------------------------
+Git commit: 528117f85242889ef7b588801aaa49e6df90043d
+
 Heads up!
 ~~~~~~~~~
 - Fixed issue #286: PHP 5.4.14 and PHP 5.3.24 support; a workaround for
