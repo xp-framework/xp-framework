@@ -21,8 +21,7 @@
      *
      */
     public function __clone() {
-      if (!$this->__id) $this->__id= microtime();
-      $this->__id= microtime();
+      $this->__id= uniqid('', TRUE);
     }
 
     /**
@@ -149,7 +148,7 @@
      * @return  string
      */
     public function hashCode() {
-      if (!$this->__id) $this->__id= microtime();
+      if (!$this->__id) $this->__id= uniqid('', TRUE);
       return $this->__id;
     }
     
@@ -161,8 +160,8 @@
      */
     public function equals($cmp) {
       if (!$cmp instanceof Generic) return FALSE;
-      if (!$this->__id) $this->__id= microtime();
-      if (!$cmp->__id) $cmp->__id= microtime();
+      if (!$this->__id) $this->__id= uniqid('', TRUE);
+      if (!$cmp->__id) $cmp->__id= uniqid('', TRUE);
       return $this === $cmp;
     }
     
@@ -207,7 +206,7 @@
      * @return  string
      */
     public function toString() {
-      if (!$this->__id) $this->__id= microtime();
+      if (!$this->__id) $this->__id= uniqid('', TRUE);
       return xp::stringOf($this);
     }
   }

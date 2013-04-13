@@ -62,7 +62,7 @@
     #[@test]
     public function hashCodeMethod() {
       $o= new Object();
-      $this->assertTrue((bool)preg_match('/^0\.[0-9]+ [0-9]+$/', $o->hashCode()));
+      $this->assertTrue((bool)preg_match('/^[0-9a-z\.]+\.[0-9a-z\.]+$/', $o->hashCode()));
     }
 
     /**
