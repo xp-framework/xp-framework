@@ -97,6 +97,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added webservices.rest.RestResponse::stream() method
+  (friebe)
 - Added string casting support to text.regex.Pattern
   (friebe)
 - Added pattern Argument Matcher for Mocking Framework - pull request #268
