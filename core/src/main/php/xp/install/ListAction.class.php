@@ -37,7 +37,7 @@
           Console::writeLine('+ ', $module, ' @', $version, ' {');
           $r= new StringReader($pth->getInputStream());
           while (NULL !== ($line= $r->readLine())) {
-            $resolved= $cwd->getURI().ltrim($line, '!');
+            $resolved= realpath($cwd->getURI().ltrim($line, '!'));
             if (is_dir($resolved)) {
               $cl= \lang\FileSystemClassLoader::instanceFor($resolved, FALSE);
             } else if (is_file($resolved)) {
