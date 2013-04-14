@@ -38,7 +38,7 @@
      * @return string
      */
     public function toString() {
-      return $this->getClassName().'<'.$this->vendor.'/'.$this->name.'>';
+      return 'Module<'.$this->vendor.'/'.$this->name.'>';
     }
   }
 ?>

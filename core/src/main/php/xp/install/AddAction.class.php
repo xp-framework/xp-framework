@@ -9,6 +9,7 @@
   use \io\collections\iterate\NameMatchesFilter;
   use \io\streams\StringReader;
   use \util\cmd\Console;
+  use \webservices\json\JsonFactory;
 
   /**
    * Adds a module
@@ -24,6 +25,7 @@
     public function perform($args) {
       $module= Module::valueOf($args[0]);
       $cwd= new Folder('.');
+      $json= JsonFactory::create();
 
       // Determine origin and target
       $base= new Folder($module->vendor);
@@ -42,6 +44,15 @@
       if ($target->exists()) {
         Console::writeLine($module, ' already exists in ', $target);
         return 1;
+      }
+
+      // Prepare vendor dir
+      if (!$base->exists()) {
+        $base->create(0755);
+        $json->encodeTo(
+          array('name' => $base->dirname),
+          create(new File($base, 'vendor.json'))->getOutputStream()
+        );
       }
 
       // Fetch
