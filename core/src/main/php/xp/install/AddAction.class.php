@@ -59,9 +59,15 @@
         }
 
         // Fetch
-        $target->create(0755);
         Console::writeLine($module, ' -> ', $target);
-        $origin->fetchInto($target);
+        try {
+          $target->create(0755);
+          $origin->fetchInto($target);
+        } catch (\lang\Throwable $e) {
+          Console::writeLine('*** ', $e->compoundMessage());
+          $target->unlink();
+          return 2;
+        }
       }
 
       // Deselect any previously selected version
