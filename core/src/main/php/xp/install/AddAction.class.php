@@ -10,6 +10,8 @@
   use \io\streams\StringReader;
   use \util\cmd\Console;
   use \webservices\json\JsonFactory;
+  use \webservices\rest\RestClient;
+  use \webservices\rest\RestRequest;
 
   /**
    * Adds a module
@@ -32,18 +34,30 @@
       $cwd= new Folder('.');
       $base= new Folder($cwd, $module->vendor);
 
+      // Check newest version
       if (!isset($args[1])) {
-        throw new \lang\MethodNotImplementedException('Retrieve newest release version', 'add');
+        $releases= create(new RestClient('http://builds.planet-xp.net/'))
+          ->execute(new RestRequest('/'.$module->vendor.'/'.$module->name))
+          ->data()
+        ;
+        usort($releases, function($a, $b) {
+          return version_compare($a['version']['number'], $b['version']['number'], '<');
+        });
+        $version= $releases[0]['version']['number'];
+        Console::writeLine('Using latest release ', $releases[0]);
+      } else {
+        $version= $args[1];
+        Console::writeLine('Using version ', $version);
       }
 
       // Determine origin and target
-      if (':' === $args[1]{0}) {
-        $branch= substr($args[1], 1);
+      if (':' === $version{0}) {
+        $branch= substr($version, 1);
         $target= new Folder($base, $module->name.'@'.$branch);
         $origin= new GitHubArchive($module->vendor, $module->name, $branch);
       } else {
-        $target= new Folder($base, $module->name.'@'.$args[1]);
-        $origin= new XarRelease($module->vendor, $module->name, $args[1]);
+        $target= new Folder($base, $module->name.'@'.$version);
+        $origin= new XarRelease($module->vendor, $module->name, $version);
       }
 
       if ($target->exists()) {
