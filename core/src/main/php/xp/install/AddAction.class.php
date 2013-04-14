@@ -44,7 +44,7 @@
           return version_compare($a['version']['number'], $b['version']['number'], '<');
         });
         $version= $releases[0]['version']['number'];
-        Console::writeLine('Using latest release ', $releases[0]);
+        Console::writeLine('Using latest release ', $version);
       } else {
         $version= $args[1];
         Console::writeLine('Using version ', $version);
