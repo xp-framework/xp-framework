@@ -42,27 +42,27 @@
         throw new \lang\MethodNotImplementedException($version, 'add');
       } else {
         $target= new Folder($base, $module->name.'@'.$version);
-        $branch= 'r'.$version;
+        $origin= new XarRelease($module->vendor, $module->name, $version);
       }
 
       if ($target->exists()) {
         Console::writeLine($module, ' already exists in ', $target);
-        return 1;
-      }
+      } else {
 
-      // Prepare vendor dir
-      if (!$base->exists()) {
-        $base->create(0755);
-        self::$json->encodeTo(
-          array('name' => $base->dirname),
-          create(new File($base, 'vendor.json'))->getOutputStream()
-        );
-      }
+        // Prepare vendor dir
+        if (!$base->exists()) {
+          $base->create(0755);
+          self::$json->encodeTo(
+            array('name' => $base->dirname),
+            create(new File($base, 'vendor.json'))->getOutputStream()
+          );
+        }
 
-      // Fetch
-      $target->create(0755);
-      Console::writeLine($module, ' -> ', $target);
-      $origin->fetchInto($target);
+        // Fetch
+        $target->create(0755);
+        Console::writeLine($module, ' -> ', $target);
+        $origin->fetchInto($target);
+      }
 
       // Deselect any previously selected version
       foreach (new FilteredIOCollectionIterator(new FileCollection($cwd), new NameMatchesFilter('#^\.'.$module->vendor.'\.'.$module->name.'.*\.pth#')) as $found) {
