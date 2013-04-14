@@ -90,7 +90,7 @@
             $tran->transferAll();
             $tran->close();
           }
-          $i++ % 100 || Console::write('.');
+          $i++ % 10 || Console::write('.');
         }
       }
       $zip->close();

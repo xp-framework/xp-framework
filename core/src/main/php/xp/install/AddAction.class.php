@@ -15,6 +15,11 @@
    * Adds a module
    */
   class AddAction extends \lang\Object {
+    protected static $json;
+
+    static function __static() {
+      self::$json= JsonFactory::create();
+    }
 
     /**
      * Execute this action
@@ -25,7 +30,6 @@
     public function perform($args) {
       $module= Module::valueOf($args[0]);
       $cwd= new Folder('.');
-      $json= JsonFactory::create();
 
       // Determine origin and target
       $base= new Folder($module->vendor);
@@ -49,7 +53,7 @@
       // Prepare vendor dir
       if (!$base->exists()) {
         $base->create(0755);
-        $json->encodeTo(
+        self::$json->encodeTo(
           array('name' => $base->dirname),
           create(new File($base, 'vendor.json'))->getOutputStream()
         );
