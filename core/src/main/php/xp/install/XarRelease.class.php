@@ -65,7 +65,7 @@
     public function fetchInto(Folder $target) {
       $r= $this->client->execute($this->release);
       if (200 !== $r->status()) {
-        throw new \lang\IllegalArgumentException($r->message().': '.$this->resource->toString());
+        throw new \lang\IllegalArgumentException($r->message().': '.$this->release->toString());
       }
       $release= $r->data();
       Console::writeLine('Release ', $release['version']['number'], ' published ', $release['published']);

@@ -30,19 +30,20 @@
     public function perform($args) {
       $module= Module::valueOf($args[0]);
       $cwd= new Folder('.');
+      $base= new Folder($cwd, $module->vendor);
+
+      if (!isset($args[1])) {
+        throw new \lang\MethodNotImplementedException('Retrieve newest release version', 'add');
+      }
 
       // Determine origin and target
-      $base= new Folder($module->vendor);
-      $version= isset($args[1]) ? $args[1] : '';
-      if ('' === $version) {
-        $target= new Folder($base, $module->name.'@master');
-        $origin= new GitHubArchive($module->vendor, $module->name, 'master');
-      } else if (':' === $version{0}) {
-        $target= new Folder($base, $module->name);
-        throw new \lang\MethodNotImplementedException($version, 'add');
+      if (':' === $args[1]{0}) {
+        $branch= substr($args[1], 1);
+        $target= new Folder($base, $module->name.'@'.$branch);
+        $origin= new GitHubArchive($module->vendor, $module->name, $branch);
       } else {
-        $target= new Folder($base, $module->name.'@'.$version);
-        $origin= new XarRelease($module->vendor, $module->name, $version);
+        $target= new Folder($base, $module->name.'@'.$args[1]);
+        $origin= new XarRelease($module->vendor, $module->name, $args[1]);
       }
 
       if ($target->exists()) {
