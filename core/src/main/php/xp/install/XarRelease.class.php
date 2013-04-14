@@ -4,6 +4,7 @@
   use \webservices\rest\RestClient;
   use \webservices\rest\RestRequest;
   use \util\cmd\Console;
+  use \io\streams\StreamTransfer;
   use \io\Folder;
   use \io\File;
 
@@ -39,6 +40,7 @@
         throw new \lang\IllegalArgumentException($r->message().': '.$this->resource->toString());
       }
       $release= $r->data();
+      Console::writeLine('Release ', $release['version']['number'], ' published ', $release['published']);
 
       // Download files
       $pth= create(new File($target, 'class.pth'))->getOutputStream();
@@ -46,11 +48,10 @@
         $d= $this->client->execute(new RestRequest($this->release->getResource().'/'.$file['name']));
         Console::writeLine('>> ', $file['name']);
 
-        $f= new File($target, $file['name']);
-        with ($out= $f->getOutputStream()); {
-          $out->write($d->content());
-          $out->close();
-        }
+        $tran= new StreamTransfer($d->stream(), create(new File($target, $file['name']))->getOutputStream());
+        $tran->transferAll();
+        $tran->close();
+
         $pth->write($file['name']."\n");
       }
       $pth->close();
