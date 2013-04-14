@@ -74,9 +74,10 @@
       $pth= create(new File($target, 'class.pth'))->getOutputStream();
       foreach ($release['files'] as $file) {
         $d= $this->client->execute(new RestRequest($this->release->getResource().'/'.$file['name']));
-        Console::writeLine('>> ', $file['name']);
+        $f= new File($target, $file['name']);
+        Console::writeLine('>> ', $file['name'], ' -> ', $f);
 
-        $tran= new StreamTransfer($d->stream(), create(new File($target, $file['name']))->getOutputStream());
+        $tran= new StreamTransfer($d->stream(), $f->getOutputStream());
         $tran->transferAll();
         $tran->close();
 

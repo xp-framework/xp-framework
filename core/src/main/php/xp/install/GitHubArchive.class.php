@@ -79,9 +79,9 @@
     public function fetchInto(Folder $target) {
       $zip= $this->zipBallOf($this->url);
       $i= 0;
-      Console::write('Extracting [');
       with ($iter= $zip->iterator()); {
         $base= rtrim($iter->next()->getName().'/', '/');
+        Console::write('Extracting (', $base, ') [');
         while ($iter->hasNext()) {
           $entry= $iter->next();
           $relative= str_replace($base, '', $entry->getName());
