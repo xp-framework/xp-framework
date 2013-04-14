@@ -1,0 +1,80 @@
+<?php
+  namespace xp\install;
+
+  use \io\Folder;
+  use \io\File;
+  use \io\collections\FileCollection;
+  use \io\collections\iterate\FilteredIOCollectionIterator;
+  use \io\collections\iterate\ExtensionEqualsFilter;
+  use \io\collections\iterate\NameMatchesFilter;
+  use \io\streams\StringReader;
+  use \util\cmd\Console;
+
+  /**
+   * Adds a module
+   */
+  class AddAction extends \lang\Object {
+
+    /**
+     * Execute this action
+     *
+     * @param  string[] $args command line args
+     * @return int exit code
+     */
+    public function perform($args) {
+      $module= Module::valueOf($args[0]);
+      $cwd= new Folder('.');
+
+      // Determine origin and target
+      $base= new Folder($module->vendor);
+      $version= isset($args[1]) ? $args[1] : '';
+      if ('' === $version) {
+        $target= new Folder($base, $module->name.'@master');
+        $origin= new GitHubArchive($module->vendor, $module->name, 'master');
+      } else if (':' === $version{0}) {
+        $target= new Folder($base, $module->name);
+        throw new \lang\MethodNotImplementedException($version, 'add');
+      } else {
+        $target= new Folder($base, $module->name.'@'.$version);
+        $branch= 'r'.$version;
+      }
+
+      if ($target->exists()) {
+        Console::writeLine($module, ' already exists in ', $target);
+        return 1;
+      }
+
+      // Fetch
+      $target->create(0755);
+      Console::writeLine($module, ' -> ', $target);
+      $origin->fetchInto($target);
+
+      // Deselect any previously selected version
+      foreach (new FilteredIOCollectionIterator(new FileCollection($cwd), new NameMatchesFilter('#^\.'.$module->vendor.'\.'.$module->name.'.*\.pth#')) as $found) {
+        Console::writeLine('Remove ', $found);
+        create(new File($found->getURI()))->unlink();
+      }
+
+      // Rebuild paths based on .pth files found in newly selected
+      $pth= create(new File('.'.strtr($target->dirname, DIRECTORY_SEPARATOR, '.').'.pth'))->getOutputStream();
+      $base= substr($target->getURI(), strlen($cwd->getURI()));
+      foreach (new FilteredIOCollectionIterator(new FileCollection($target), new ExtensionEqualsFilter('.pth')) as $found) {
+        Console::writeLine('Add ', $found);
+        $r= new StringReader($found->getInputStream());
+        while (NULL !== ($l= $r->readLine())) {
+          if ('' === $line || '#' === $line{0}) {
+            continue;
+          } else if ('!' === $line{0}) {
+            $pth->write('!'.$base.substr($line, 1)."\n");
+          } else {
+            $pth->write($base.$line."\n");
+          }
+        }
+      }
+      $pth->close();
+
+      Console::writeLine('Done');
+      return 0;
+    }
+  }
+?>
