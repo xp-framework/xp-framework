@@ -51,27 +51,30 @@
 
       // Deselect any previously selected version
       foreach (new FilteredIOCollectionIterator(new FileCollection($cwd), new NameMatchesFilter('#^\.'.$module->vendor.'\.'.$module->name.'.*\.pth#')) as $found) {
-        Console::writeLine('Remove ', $found);
-        create(new File($found->getURI()))->unlink();
+        $pth= new File($found->getURI());
+        Console::writeLine('Deselect ', $pth);
+        $pth->unlink();
       }
 
       // Rebuild paths based on .pth files found in newly selected
-      $pth= create(new File('.'.strtr($target->dirname, DIRECTORY_SEPARATOR, '.').'.pth'))->getOutputStream();
-      $base= substr($target->getURI(), strlen($cwd->getURI()));
+      $pth= new File('.'.$module->vendor.'.'.strtr($target->dirname, DIRECTORY_SEPARATOR, '.').'.pth');
+      $out= $pth->getOutputStream();
+      $base= strtr(substr($target->getURI(), strlen($cwd->getURI())), DIRECTORY_SEPARATOR, '/');
+      Console::writeLine('Select ', $pth);
       foreach (new FilteredIOCollectionIterator(new FileCollection($target), new ExtensionEqualsFilter('.pth')) as $found) {
-        Console::writeLine('Add ', $found);
         $r= new StringReader($found->getInputStream());
-        while (NULL !== ($l= $r->readLine())) {
-          if ('' === $line || '#' === $line{0}) {
-            continue;
-          } else if ('!' === $line{0}) {
-            $pth->write('!'.$base.substr($line, 1)."\n");
+        while (NULL !== ($line= $r->readLine())) {
+          if ('' === $line || '#' === $line{0}) continue;
+
+          Console::writeLine('+ ', $line, ' @ ', $base);
+          if ('!' === $line{0}) {
+            $out->write('!'.$base.substr($line, 1)."\n");
           } else {
-            $pth->write($base.$line."\n");
+            $out->write($base.$line."\n");
           }
         }
       }
-      $pth->close();
+      $out->close();
 
       Console::writeLine('Done');
       return 0;
