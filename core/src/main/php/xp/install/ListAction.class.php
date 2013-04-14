@@ -5,6 +5,7 @@
   use \io\collections\FileCollection;
   use \io\collections\iterate\FilteredIOCollectionIterator;
   use \io\collections\iterate\CollectionFilter;
+  use \io\streams\StringReader;
   use \util\cmd\Console;
   use \webservices\json\JsonFactory;
 
@@ -30,14 +31,24 @@
       $meta= self::$json->decodeFrom($vendor->getInputStream());
       foreach (new FilteredIOCollectionIterator($vendor->getOrigin(), new CollectionFilter()) as $dir) {
         sscanf(basename($dir->getURI()), '%[^@]@%s', $name, $version);
+        $module= new Module($meta['name'], $name); 
 
-        if ($cwd->findElement('.'.$meta['name'].'.'.$name.($version ? '@'.$version : '').'.pth')) {
-          Console::write('A ');
+        if ($pth= $cwd->findElement('.'.$module->vendor.'.'.$module->name.'@'.$version.'.pth')) {
+          Console::writeLine('+ ', $module, ' @', $version, ' {');
+          $r= new StringReader($pth->getInputStream());
+          while (NULL !== ($line= $r->readLine())) {
+            $resolved= $cwd->getURI().ltrim($line, '!');
+            if (is_dir($resolved)) {
+              $cl= \lang\FileSystemClassLoader::instanceFor($resolved, FALSE);
+            } else if (is_file($resolved)) {
+              $cl= \lang\archive\ArchiveClassLoader::instanceFor($resolved, FALSE);
+            }
+            Console::writeLine('  ', $cl);
+          }
+          Console::writeLine('}');
         } else {
-          Console::write('- ');
+          Console::writeLine('- ', $module, ' @', $version);
         }
-
-        Console::writeLine(new Module($meta['name'], $name), ' @', $version);
         $i++;
       }
       return $i;
