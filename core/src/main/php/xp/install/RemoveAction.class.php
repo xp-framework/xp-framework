@@ -17,22 +17,14 @@
      * @return int exit code
      */
     public function perform($args) {
-      $module= Module::valueOf($args[0]);
-      $cwd= new Folder('.');
+      sscanf($args[0], '%[^@]@%s', $name, $version);
+      $module= Module::valueOf($name);
 
-      // Determine origin and target
-      $base= new Folder($module->vendor);
-      $version= isset($args[1]) ? $args[1] : '';
-      if ('' === $version) {
-        $target= new Folder($base, $module->name.'@master');
-      } else if (':' === $version{0}) {
-        $target= new Folder($base, $module->name);
-      } else {
-        $target= new Folder($base, $module->name.'@'.$version);
-      }
+      $cwd= new Folder('.');
+      $target= new Folder($cwd, $module->vendor, $module->name.'@'.$version);
 
       if (!$target->exists()) {
-        Console::writeLine($module, ' not installed');
+        Console::writeLine($module, ' not installed in version ', $version);
         return 1;
       }
 
