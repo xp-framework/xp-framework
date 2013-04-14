@@ -8,6 +8,34 @@
   use \io\Folder;
   use \io\File;
 
+  /**
+   * XAR release origin - uses the REST webservices @ builds.planet-xp.net
+   *
+   * Example payload:
+   * <pre>
+   * [
+   *   vendor => "xp-forge"
+   *   module => "mustache"
+   *   version => [
+   *     number => "1.0.0"
+   *     series => "1.0"
+   *   ]
+   *   published => "2013-04-09T03:08:58+02:00"
+   *   files => [
+   *     0 => [
+   *       name => "xp-mustache-1.0.0.xar"
+   *       size => 29575
+   *       sha1 => "9aeb89ae22b1ef87df3034cafc85683f7c56b020"
+   *     ]
+   *     1 => [
+   *       name => "xp-mustache-test-1.0.0.xar"
+   *       size => 22436
+   *       sha1 => "ebe38e1594387fa752d103df5530b929fcc945e6"
+   *     ]
+   *   ]
+   * ]
+   * </pre>
+   */
   class XarRelease extends \lang\Object implements Origin {
     private $client;
     private $release;

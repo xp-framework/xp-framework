@@ -9,6 +9,10 @@
   use \io\File;
   use \util\cmd\Console;
 
+  /**
+   * GitHub Archive - uses https://github.com/vendor/repo/zipball/branch 
+   * for downloading. This URL redirects (possibly multiple times).
+   */
   class GitHubArchive extends \lang\Object implements Origin {
     private $url;
 
