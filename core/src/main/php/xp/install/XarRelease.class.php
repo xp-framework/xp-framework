@@ -75,7 +75,7 @@
       foreach ($release['files'] as $file) {
         $d= $this->client->execute(new RestRequest($this->release->getResource().'/'.$file['name']));
         $f= new File($target, $file['name']);
-        Console::writeLine('>> ', $file['name'], ' -> ', $f);
+        Console::writeLine('>> ', $file['name']);
 
         $tran= new StreamTransfer($d->stream(), $f->getOutputStream());
         $tran->transferAll();
