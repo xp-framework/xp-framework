@@ -10,28 +10,21 @@
 
   /**
    * XP Installer
-   * ~~~~~~~~~~~~
+   * ============
    *
-   * Basic usage:
-   * <pre>
-   * # This will install the newest release of the specified module
-   * $ xpi add vendor/module
+   * Basic usage
+   * -----------
+   * $ xpi [action] [option [option [...]]]
    *
-   * # This will install a specific version
-   * $ xpi add vendor/module 1.0.0
-   *
-   * # This will remove the module in the given version
-   * $ xpi remove vendor/module@1.0.0
-   *
-   * # This will list installed modules
-   * $ xpi list
-   * </pre>
-   *
-   * Using development versions
-   * <pre>
-   * # This will install the master branch of the specified module from GitHub
-   * $ xpi add vendor/module :master
-   * </pre>
+   * Actions:
+   * <ul>
+   *   <li>add - Adds a module</li>
+   *   <li>list - List installed modules</li>
+   *   <li>remove - Removes installed module</li>
+   * </ul>
+   * Options
+   * -------
+   * All commands support "-?" to show their usage.
    *
    * @see  https://github.com/xp-framework/xp-framework/pull/287
    */

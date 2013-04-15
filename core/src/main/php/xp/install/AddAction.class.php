@@ -15,7 +15,21 @@
   use \webservices\rest\RestException;
 
   /**
-   * Adds a module
+   * XPI Installer - add modules
+   * ===========================
+   *
+   * Basic usage
+   * -----------
+   * # This will install the newest release of the specified module
+   * $ xpi add vendor/module
+   *
+   * # This will install a specific version
+   * $ xpi add vendor/module 1.0.0
+   *
+   * Using development versions
+   * --------------------------
+   * # This will install the master branch of the specified module from GitHub
+   * $ xpi add vendor/module :master
    */
   class AddAction extends \lang\Object {
     protected static $json;
