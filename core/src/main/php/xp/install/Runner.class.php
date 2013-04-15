@@ -12,25 +12,28 @@
    * XP Installer
    * ~~~~~~~~~~~~
    *
-   * Usage:
+   * Basic usage:
    * <pre>
-   *   # Upgrade XP Framework release
-   *   $ xpi upgrade
-   *   
-   *   # Lists installed packages
-   *   $ xpi list [pattern]
+   * # This will install the newest release of the specified module
+   * $ xpi add vendor/module
    *
-   *   # Searches for available packages
-   *   $ xpi search [pattern]
+   * # This will install a specific version
+   * $ xpi add vendor/module 1.0.0
    *
-   *   # Installs Dialog 2.4.2
-   *   $ xpi install dialog-2.4.2
+   * # This will remove the module in the given version
+   * $ xpi remove vendor/module@1.0.0
    *
-   *   # Removes Dialog 2.4.2
-   *   $ xpi remove dialog-2.4.2
+   * # This will list installed modules
+   * $ xpi list
    * </pre>
    *
-   * @purpose  Tool
+   * Using development versions
+   * <pre>
+   * # This will install the master branch of the specified module from GitHub
+   * $ xpi add vendor/module :master
+   * </pre>
+   *
+   * @see  https://github.com/xp-framework/xp-framework/pull/287
    */
   class xp·install·Runner extends Object {
 
