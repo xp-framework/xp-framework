@@ -6,7 +6,13 @@
   use \util\cmd\Console;
 
   /**
-   * Removes a module
+   * XPI Installer - remove modules
+   * ==============================
+   *
+   * Basic usage
+   * -----------
+   * # This will remove the module in the given version
+   * $ xpi remove vendor/module@1.0.0
    */
   class RemoveAction extends \lang\Object {
 
