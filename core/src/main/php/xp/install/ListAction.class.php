@@ -10,7 +10,16 @@
   use \webservices\json\JsonFactory;
 
   /**
-   * List installed modules
+   * XPI Installer - list modules
+   * ============================
+   *
+   * Basic usage
+   * -----------
+   * # This will list all installed modules
+   * $ xpi list
+   *
+   * # This will list all installed modules from a given vendor
+   * $ xpi list vendor
    */
   class ListAction extends \lang\Object {
     protected static $json;
