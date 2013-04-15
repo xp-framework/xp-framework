@@ -46,41 +46,35 @@
     }
 
     /**
-     * Displays usage and exits
-     *
-     */
-    protected static function usage() {
-      Console::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
-      exit(1);
-    }
-
-    /**
      * Main runner method
      *
      * @param   string[] args
      */
     public static function main(array $args) {
-      if (!$args) self::usage();
-      
+      if (empty($args) || '-?' === $args[0] || '--help' === $args[0]) {
+        Console::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
+        return 1;
+      }
+
       try {
         $class= Package::forName('xp.install')->loadClass(ucfirst($args[0]).'Action');
       } catch (ClassNotFoundException $e) {
         Console::$err->writeLine('*** No such action '.$args[0].': ', $e);
-        exit(2);
+        return 2;
       }
       
       // Show help
-      if (in_array('-?', $args)) {
+      if (in_array('-?', $args) || in_array('--help', $args)) {
         Console::$out->writeLine(self::textOf($class->getComment()));
-        exit(3);
+        return 3;
       }
       
       // Perform action
       try {
-        $class->newInstance()->perform(array_slice($args, 1));
+        return $class->newInstance()->perform(array_slice($args, 1));
       } catch (Throwable $e) {
         Console::$err->writeLine('*** Error performing action ~ ', $e);
-        exit(1);
+        return 1;
       }
     }    
   }
