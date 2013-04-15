@@ -12,6 +12,7 @@
   use \webservices\json\JsonFactory;
   use \webservices\rest\RestClient;
   use \webservices\rest\RestRequest;
+  use \webservices\rest\RestException;
 
   /**
    * Adds a module
@@ -36,10 +37,15 @@
 
       // Check newest version
       if (!isset($args[1])) {
-        $releases= create(new RestClient('http://builds.planet-xp.net/'))
-          ->execute(new RestRequest('/'.$module->vendor.'/'.$module->name))
-          ->data()
-        ;
+        try {
+          $releases= create(new RestClient('http://builds.planet-xp.net/'))
+            ->execute(new RestRequest('/'.$module->vendor.'/'.$module->name))
+            ->data()
+          ;
+        } catch (RestException $e) {
+          Console::$err->writeLine('Cannot determine newest release:', $e);
+          return 3;
+        }
         usort($releases, function($a, $b) {
           return version_compare($a['version']['number'], $b['version']['number'], '<');
         });
@@ -100,10 +106,9 @@
       foreach (new FilteredIOCollectionIterator(new FileCollection($target), new ExtensionEqualsFilter('.pth')) as $found) {
         $r= new StringReader($found->getInputStream());
         while (NULL !== ($line= $r->readLine())) {
-          if ('' === $line || '#' === $line{0}) continue;
-
-          Console::writeLine('+ ', $line, ' @ ', $base);
-          if ('!' === $line{0}) {
+          if ('' === $line || '#' === $line{0}) {
+            continue;
+          } else if ('!' === $line{0}) {
             $out->write('!'.$base.substr($line, 1)."\n");
           } else {
             $out->write($base.$line."\n");
