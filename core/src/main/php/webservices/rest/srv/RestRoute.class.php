@@ -60,10 +60,7 @@
      * @return string
      */
     public function getPattern() {
-      static $search= '/\{([\w]*)\}/';
-      static $replace= '(?P<$1>[^/]+)';
-
-      return '#^'.preg_replace($search, $replace, $this->path).'$#';
+      return '#^'.preg_replace('/\{([\w]*)\}/', '(?P<$1>[^/]+)', $this->path).'$#';
     }
 
     /**
