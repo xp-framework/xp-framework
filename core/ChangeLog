@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Features
+~~~~~~~~
+- Changed REST routing mechanism to allow any character in path segments.
+  See pull request #288.
+  (friebe)
+
 
 Version 5.8.13, released 2013-04-13
 -----------------------------------
