@@ -24,12 +24,27 @@
      * @return  array value
      */
     public function castValue($value) {
-      return array(new FileData(
-        $value['name'],
-        $value['type'],
-        $value['size'],
-        $value['tmp_name']
-      ));
+      $files= array();
+      if (is_array($value['name'])) {
+        // multiple files
+        foreach ($value['name'] as $i => $name) {
+          $files[]= new FileData(
+            $name,
+            $value['type'][$i],
+            $value['size'][$i],
+            $value['tmp_name'][$i]
+          );
+        }
+      } else {
+        // single file
+        $files[]= new FileData(
+          $value['name'],
+          $value['type'],
+          $value['size'],
+          $value['tmp_name']
+        );
+      }
+      return $files;
     }
   }
 ?>

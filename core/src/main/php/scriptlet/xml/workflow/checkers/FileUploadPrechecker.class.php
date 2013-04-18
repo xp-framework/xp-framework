@@ -28,15 +28,34 @@
      * @return  string error or NULL on success
      */
     public function check($value) { 
-      switch ($value['error']) {
+      if (is_array($value['error'])) {
+        // multiple files
+        foreach ($value['error'] as $error) {
+          if ($result= $this->checkError($error)) {
+            return $result;
+          }
+        }
+      } else {
+        // single file
+        return $this->checkError($value['error']);
+      }
+    }
+    
+    /**
+     * Check given error code
+     *
+     * @param   int error
+     * @return  string error or NULL on success
+     */
+    protected function checkError($error) {
+      switch ($error) {
         case UPLOAD_ERR_OK: return;
         case UPLOAD_ERR_INI_SIZE:
         case UPLOAD_ERR_FORM_SIZE: return 'size_exceeded';
         case UPLOAD_ERR_PARTIAL: return 'partial';
         case UPLOAD_ERR_NO_FILE: return 'nofile';
         default: return 'unknown';
-
-      }    
+      }
     }
   }
 ?>
