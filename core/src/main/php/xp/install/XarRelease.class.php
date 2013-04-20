@@ -72,11 +72,7 @@
       // Download files
       $pth= create(new File($target, 'class.pth'))->getOutputStream();
       foreach ($release['files'] as $file) {
-        $d= $this->client->execute(create(new RestRequest($this->release->getResource().'/'.$file['name']))
-          ->withSegment('vendor', $release['vendor'])
-          ->withSegment('module', $release['module'])
-          ->withSegment('release', $release['version']['number'])
-        );
+        $d= $this->client->execute(new RestRequest($file['link']));
         $f= new File($target, $file['name']);
         Console::writeLine('>> ', $file['name']);
 
