@@ -24,7 +24,8 @@
     public function perform($args) {
       $request= create(new RestRequest('/search'))->withParameter('q', $args[0]);
 
-      $i= 0;
+      Console::writeLine('@', $this->api->getBase()->getURL());
+      $total= 0;
       $results= $this->api->execute($request)->data();
       foreach ($results as $result) {
         Console::writeLine(new Module($result['vendor'], $result['module']), ': ', $result['info']);
@@ -32,7 +33,7 @@
       }
 
       Console::writeLine();
-      Console::writeLine($i, ' result(s) found.');
+      Console::writeLine($i, ' modules(s) found.');
       return 0;
     }
   }

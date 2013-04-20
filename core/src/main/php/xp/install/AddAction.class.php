@@ -99,20 +99,16 @@
         Console::writeLine($module, ' already exists in ', $target);
       } else {
 
-        // Prepare vendor dir
-        if (!$base->exists()) {
-          $base->create(0755);
-          self::$json->encodeTo(
-            array('name' => $base->dirname),
-            create(new File($base, 'vendor.json'))->getOutputStream()
-          );
-        }
-
-        // Fetch
         Console::writeLine($module, ' -> ', $target);
         try {
+
+          // Create and fetch into
           $target->create(0755);
           $origin->fetchInto($target);
+
+          // Save module meta data
+          unset($info['releases']);
+          self::$json->encodeTo($info, create(new File($target, 'module.json'))->getOutputStream());
         } catch (\lang\Throwable $e) {
           Console::writeLine('*** ', $e);
           $target->unlink();
