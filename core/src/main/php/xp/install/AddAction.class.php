@@ -100,7 +100,7 @@
           $target->create(0755);
           $origin->fetchInto($target);
         } catch (\lang\Throwable $e) {
-          Console::writeLine('*** ', $e->compoundMessage());
+          Console::writeLine('*** ', $e);
           $target->unlink();
           return 2;
         }

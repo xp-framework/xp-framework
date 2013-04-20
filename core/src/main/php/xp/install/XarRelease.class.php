@@ -49,12 +49,11 @@
      */
     public function __construct($vendor, $module, $branch) {
       $this->client= new RestClient('http://builds.planet-xp.net/');
-      $this->release= new RestRequest(sprintf(
-        '%s/%s/%s',
-        $vendor,
-        $module,
-        $branch
-      ));
+      $this->release= create(new RestRequest('/vendors/{vendor}/modules/{module}/releases/{release}'))
+        ->withSegment('vendor', $vendor)
+        ->withSegment('module', $module)
+        ->withSegment('release', $branch)
+      ;
     }
 
     /**
@@ -73,7 +72,11 @@
       // Download files
       $pth= create(new File($target, 'class.pth'))->getOutputStream();
       foreach ($release['files'] as $file) {
-        $d= $this->client->execute(new RestRequest($this->release->getResource().'/'.$file['name']));
+        $d= $this->client->execute(create(new RestRequest($this->release->getResource().'/'.$file['name']))
+          ->withSegment('vendor', $release['vendor'])
+          ->withSegment('module', $release['module'])
+          ->withSegment('release', $release['version']['number'])
+        );
         $f= new File($target, $file['name']);
         Console::writeLine('>> ', $file['name']);
 
