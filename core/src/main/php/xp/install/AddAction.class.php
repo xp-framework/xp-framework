@@ -51,19 +51,20 @@
 
       // Check newest version
       if (!isset($args[1])) {
+        $request= create(new RestRequest('/vendors/{vendor}/modules/{module}'))
+          ->withSegment('vendor', $module->vendor)
+          ->withSegment('module', $module->name)
+        ;
         try {
-          $releases= create(new RestClient('http://builds.planet-xp.net/'))
-            ->execute(new RestRequest('/'.$module->vendor.'/'.$module->name))
-            ->data()
-          ;
+          $info= create(new RestClient('http://builds.planet-xp.net/'))->execute($request)->data();
         } catch (RestException $e) {
           Console::$err->writeLine('Cannot determine newest release:', $e);
           return 3;
         }
-        usort($releases, function($a, $b) {
-          return version_compare($a['version']['number'], $b['version']['number'], '<');
+        uksort($info['releases'], function($a, $b) {
+          return version_compare($a, $b, '<');
         });
-        $version= $releases[0]['version']['number'];
+        $version= key($info['releases']);
         Console::writeLine('Using latest release ', $version);
       } else {
         $version= $args[1];
