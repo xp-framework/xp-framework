@@ -49,31 +49,39 @@
       $cwd= new Folder('.');
       $base= new Folder($cwd, $module->vendor);
 
+      // Search for module
+      $request= create(new RestRequest('/vendors/{vendor}/modules/{module}'))
+        ->withSegment('vendor', $module->vendor)
+        ->withSegment('module', $module->name)
+      ;
+      try {
+        $info= $this->api->execute($request)->data();
+        uksort($info['releases'], function($a, $b) {
+          return version_compare($a, $b, '<');
+        });
+      } catch (RestException $e) {
+        Console::$err->writeLine('*** Cannot find module ', $module, ': ', $e->getMessage());
+        return 3;
+      }
+
       // Check newest version
       if (!isset($args[1])) {
-        $request= create(new RestRequest('/vendors/{vendor}/modules/{module}'))
-          ->withSegment('vendor', $module->vendor)
-          ->withSegment('module', $module->name)
-        ;
-        try {
-          $info= $this->api->execute($request)->data();
-        } catch (RestException $e) {
-          Console::$err->writeLine('*** Cannot determine newest release:', $e);
-          return 3;
-        }
-
         if (empty($info['releases'])) {
           Console::$err->writeLine('*** No releases yet for ', $module);
           return 1;
         }
-
-        uksort($info['releases'], function($a, $b) {
-          return version_compare($a, $b, '<');
-        });
         $version= key($info['releases']);
         $this->cat && $this->cat->info('Using latest release', $version);
+      } else if (':' === $args[1]{0}) {
+        $version= $args[1];
+        $this->cat && $this->cat->info('Using development version', $version);
       } else {
         $version= $args[1];
+        if (!isset($info['releases'][$version])) {
+          Console::$err->writeLine('*** No such release ', $version, ' for ', $module, ', have ', $info['releases']);
+          return 1;
+        }
+
         $this->cat && $this->cat->info('Using version', $version);
       }
 
@@ -84,7 +92,7 @@
         $origin= new GitHubArchive($module->vendor, $module->name, $branch);
       } else {
         $target= new Folder($base, $module->name.'@'.$version);
-        $origin= new XarRelease($module->vendor, $module->name, $version);
+        $origin= new XarRelease($this->api, $module->vendor, $module->name, $version);
       }
 
       if ($target->exists()) {
