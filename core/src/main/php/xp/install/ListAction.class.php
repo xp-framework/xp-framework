@@ -21,7 +21,7 @@
    * # This will list all installed modules from a given vendor
    * $ xpi list vendor
    */
-  class ListAction extends \lang\Object {
+  class ListAction extends Action {
     protected static $json;
 
     static function __static() {

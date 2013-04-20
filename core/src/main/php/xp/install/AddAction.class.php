@@ -31,7 +31,7 @@
    * # This will install the master branch of the specified module from GitHub
    * $ xpi add vendor/module :master
    */
-  class AddAction extends \lang\Object {
+  class AddAction extends Action {
     protected static $json;
 
     static function __static() {
@@ -56,7 +56,7 @@
           ->withSegment('module', $module->name)
         ;
         try {
-          $info= create(new RestClient('http://builds.planet-xp.net/'))->execute($request)->data();
+          $info= $this->api->execute($request)->data();
         } catch (RestException $e) {
           Console::$err->writeLine('*** Cannot determine newest release:', $e);
           return 3;
@@ -71,10 +71,10 @@
           return version_compare($a, $b, '<');
         });
         $version= key($info['releases']);
-        Console::writeLine('Using latest release ', $version);
+        $this->cat && $this->cat->info('Using latest release', $version);
       } else {
         $version= $args[1];
-        Console::writeLine('Using version ', $version);
+        $this->cat && $this->cat->info('Using version', $version);
       }
 
       // Determine origin and target

@@ -2,9 +2,7 @@
   namespace xp\install;
 
   use \util\cmd\Console;
-  use \webservices\rest\RestClient;
   use \webservices\rest\RestRequest;
-  use \webservices\rest\RestException;
 
   /**
    * XPI Installer - search modules
@@ -15,7 +13,7 @@
    * # This will search for modules
    * $ xpi search vendor
    */
-  class SearchAction extends \lang\Object {
+  class SearchAction extends Action {
 
     /**
      * Execute this action
@@ -24,11 +22,10 @@
      * @return int exit code
      */
     public function perform($args) {
-      $rest= new RestClient('http://builds.planet-xp.net/');
       $request= create(new RestRequest('/search'))->withParameter('q', $args[0]);
 
       $i= 0;
-      $results= $rest->execute($request)->data();
+      $results= $this->api->execute($request)->data();
       foreach ($results as $result) {
         Console::writeLine('+ ', new Module($result['vendor'], $result['module']), ': ', $result['info']);
         Console::writeLine('  ', $result['link']['url']);
