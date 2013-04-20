@@ -6,7 +6,12 @@
 
   $package= 'xp.install';
 
-  uses('util.cmd.Console');
+  uses(
+    'util.cmd.Console',
+    'util.log.LogCategory',
+    'util.log.ColoredConsoleAppender',
+    'webservices.rest.RestClient'
+  );
 
   /**
    * XP Installer
@@ -14,8 +19,13 @@
    *
    * Basic usage
    * -----------
-   * $ xpi [action] [option [option [...]]]
+   * $ xpi [options] [action] [arg [arg [...]]]
    *
+   * Options:
+   * <ul>
+   *   <li>-a: Set base for XP module registry API</li>
+   *   <li>-v: Show debugging information</li>
+   * </ul>
    * Actions:
    * <ul>
    *   <li>search - Search for modules</li>
@@ -52,15 +62,36 @@
      * @param   string[] args
      */
     public static function main(array $args) {
-      if (empty($args) || '-?' === $args[0] || '--help' === $args[0]) {
+
+      // Parse args
+      $api= new RestClient('http://builds.planet-xp.net/');
+      $action= NULL;
+      $cat= NULL;
+      for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
+        if ('-?' === $args[$i] || '--help' === $args[$i]) {
+          break;
+        } else if ('-a' === $args[$i]) {
+          $api->setBase($args[++$i]);
+        } else if ('-v' === $args[$i]) {
+          $cat= create(new LogCategory('console'))->withAppender(new ColoredConsoleAppender());
+        } else if ('-' === $args[$i]{0}) {
+          Console::$err->writeLine('*** Unknown argument ', $args[$i]);
+          return 128;
+        } else {
+          $action= $args[$i];   // First non-option is the action name
+          break;
+        }
+      }
+
+      if (NULL === $action) {
         Console::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
         return 1;
       }
 
       try {
-        $class= Package::forName('xp.install')->loadClass(ucfirst($args[0]).'Action');
+        $class= Package::forName('xp.install')->loadClass(ucfirst($action).'Action');
       } catch (ClassNotFoundException $e) {
-        Console::$err->writeLine('*** No such action '.$args[0].': ', $e);
+        Console::$err->writeLine('*** No such action "'.$action.'"');
         return 2;
       }
       
@@ -69,10 +100,12 @@
         Console::$out->writeLine(self::textOf($class->getComment()));
         return 3;
       }
-      
+
       // Perform action
+      $instance= $class->newInstance($api);
+      $instance->setTrace($cat);
       try {
-        return $class->newInstance()->perform(array_slice($args, 1));
+        return $instance->perform(array_slice($args, $i+ 1));
       } catch (Throwable $e) {
         Console::$err->writeLine('*** Error performing action ~ ', $e);
         return 1;
