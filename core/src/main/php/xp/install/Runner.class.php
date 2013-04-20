@@ -18,6 +18,7 @@
    *
    * Actions:
    * <ul>
+   *   <li>search - Search for modules</li>
    *   <li>add - Adds a module</li>
    *   <li>list - List installed modules</li>
    *   <li>remove - Removes installed module</li>
