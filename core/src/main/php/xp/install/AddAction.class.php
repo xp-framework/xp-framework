@@ -58,9 +58,15 @@
         try {
           $info= create(new RestClient('http://builds.planet-xp.net/'))->execute($request)->data();
         } catch (RestException $e) {
-          Console::$err->writeLine('Cannot determine newest release:', $e);
+          Console::$err->writeLine('*** Cannot determine newest release:', $e);
           return 3;
         }
+
+        if (empty($info['releases'])) {
+          Console::$err->writeLine('*** No releases yet for ', $module);
+          return 1;
+        }
+
         uksort($info['releases'], function($a, $b) {
           return version_compare($a, $b, '<');
         });
