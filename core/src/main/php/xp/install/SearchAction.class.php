@@ -30,7 +30,8 @@
       $i= 0;
       $results= $rest->execute($request)->data();
       foreach ($results as $result) {
-        Console::writeLine(new Module($result['vendor'], $result['module']), ': ', $result['info']);
+        Console::writeLine('+ ', new Module($result['vendor'], $result['module']), ': ', $result['info']);
+        Console::writeLine('  ', $result['link']['url']);
         $i++;
       }
 
