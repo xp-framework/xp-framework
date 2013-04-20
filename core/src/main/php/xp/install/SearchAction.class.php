@@ -27,8 +27,7 @@
       $i= 0;
       $results= $this->api->execute($request)->data();
       foreach ($results as $result) {
-        Console::writeLine('+ ', new Module($result['vendor'], $result['module']), ': ', $result['info']);
-        Console::writeLine('  ', $result['link']['url']);
+        Console::writeLine(new Module($result['vendor'], $result['module']), ': ', $result['info']);
         $i++;
       }
 
