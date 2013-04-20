@@ -40,14 +40,10 @@
       $vendor= $cwd->getCollection($module->vendor);
       $find= new NameMatchesFilter('/^'.$module->name.'@.+/');
       foreach (new FilteredIOCollectionIterator($vendor, $find) as $installed) {
-        $uri= basename($installed->getURI());
-        $pth= $cwd->findElement('.'.$module->vendor.'.'.$uri.'.pth');
-
-        // Parse version
-        sscanf($uri, '%[^@]@%[^/\\]', $name, $version);
+        sscanf(basename($installed->getURI()), '%[^@]@%[^/\\]', $name, $version);
         if (!($parts= sscanf($version, '%d.%d.%d%s'))) {
-          $version= ':'.$version;
           $release= array('dev' => $version);
+          $version= ':'.$version;
         } else {
           $rc= NULL;
           if (NULL === $parts[3]) {
@@ -63,19 +59,6 @@
           $release= array('series' => $parts[0].'.'.$parts[1], 'rc' => $rc > 0 ? TRUE : FALSE);
         }
 
-        if ($pth) {
-          $release['classpath']= array();
-          $r= new StringReader($pth->getInputStream());
-          while (NULL !== ($line= $r->readLine())) {
-            $resolved= realpath($cwd->getURI().ltrim($line, '!'));
-            if (is_dir($resolved)) {
-              $cl= \lang\FileSystemClassLoader::instanceFor($resolved, FALSE);
-            } else if (is_file($resolved)) {
-              $cl= \lang\archive\ArchiveClassLoader::instanceFor($resolved, FALSE);
-            }
-            $release['classpath'][]= $cl;
-          }
-        }
         $release['installed']= $installed->lastModified();
         $releases[$version]= $release;
       }
@@ -98,21 +81,19 @@
       } else if ('-i' === $args[0]) {
         $remote= FALSE;
         array_shift($args);
+        $installed= new File($args[0].'.json');
       } else {
-        $remote= NULL;
+        $installed= new File($args[0].'.json');
+        $remote= !$installed->exists();
       }
 
       sscanf(rtrim($args[0], '/'), '%[^@]@%s', $name, $version);
       $module= Module::valueOf($name);
 
-      if (!$remote) {
-        $releases= $this->installedReleases($cwd, $module);
-        $remote= empty($releases);
-      }
-
       // Search for module
       if ($remote) {
         Console::writeLine('@', $this->api->getBase()->getURL());
+
         $request= create(new RestRequest('/vendors/{vendor}/modules/{module}'))
           ->withSegment('vendor', $module->vendor)
           ->withSegment('module', $module->name)
@@ -125,29 +106,44 @@
         }
 
         $releases= $result['releases'];
-        uksort($releases, function($a, $b) {
-          return version_compare($a, $b, '<');
-        });
       } else {
         Console::writeLine('@', $cwd->getURI());
 
-        uksort($releases, function($a, $b) {
-          return version_compare($a, $b, '<');
-        });
         try {
-          $result= self::$json->decodeFrom(
-            create(new File(new Folder($module->vendor, $module->name.'@'.key($releases)), 'module.json'))->getInputStream()
-          );
+          $result= self::$json->decodeFrom($installed->getInputStream());
         } catch (IOException $e) {
           Console::$err->writeLine('*** Cannot find installed module ', $module, ': ', $e->getMessage());
           return 3;
         }
+
+        $releases= $this->installedReleases($cwd, $module);
       }
 
       Console::writeLine(new Module($result['vendor'], $result['module']), ': ', $result['info']);
       Console::writeLine($result['link']['url']);
+      uksort($releases, function($a, $b) {
+        return version_compare($a, $b, '<');
+      });
       Console::writeLine('Releases: ', $releases);
-      return 0;
+
+      // List active releases for local queries
+      if (!$remote) {
+        foreach (new FilteredIOCollectionIterator($cwd, new NameMatchesFilter('#^\.'.$module->vendor.'\.'.$module->name.'.*\.pth#')) as $found) {
+          $r= new StringReader($found->getInputStream());
+          Console::writeLine('Selected: ', basename($found->getURI()), ', class path {');
+          while (NULL !== ($line= $r->readLine())) {
+            $resolved= realpath($cwd->getURI().ltrim($line, '!'));
+            if (is_dir($resolved)) {
+              $cl= \lang\FileSystemClassLoader::instanceFor($resolved, FALSE);
+            } else if (is_file($resolved)) {
+              $cl= \lang\archive\ArchiveClassLoader::instanceFor($resolved, FALSE);
+            }
+            Console::writeLine('  ', $cl);
+          }
+          Console::writeLine('}');
+        }
+        return 0;
+      }
     }
   }
 ?>

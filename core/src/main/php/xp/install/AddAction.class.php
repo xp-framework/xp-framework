@@ -108,7 +108,7 @@
 
           // Save module meta data
           unset($info['releases']);
-          self::$json->encodeTo($info, create(new File($target, 'module.json'))->getOutputStream());
+          self::$json->encodeTo($info, create(new File($base, $module->name.'.json'))->getOutputStream());
         } catch (\lang\Throwable $e) {
           Console::writeLine('*** ', $e);
           $target->unlink();

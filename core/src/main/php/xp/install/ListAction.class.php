@@ -4,8 +4,7 @@
   use \io\Folder;
   use \io\collections\FileCollection;
   use \io\collections\iterate\FilteredIOCollectionIterator;
-  use \io\collections\iterate\UriMatchesFilter;
-  use \io\collections\iterate\NameEqualsFilter;
+  use \io\collections\iterate\ExtensionEqualsFilter;
   use \util\cmd\Console;
   use \webservices\json\JsonFactory;
 
@@ -36,7 +35,7 @@
      */
     public function perform($args) {
       $cwd= new FileCollection('.');
-      $isModule= new NameEqualsFilter('module.json');
+      $isModule= new ExtensionEqualsFilter('.json');
 
       // If an argument is given, search only that vendor
       if (isset($args[0])) {
@@ -48,9 +47,6 @@
       $total= 0;
       Console::writeLine('@', $cwd->getURI());
       foreach (new FilteredIOCollectionIterator($find, $isModule, TRUE) as $module) {
-        $origin= $module->getOrigin();
-        $uri= basename($origin->getURI());
-        if (!$cwd->findElement('.'.basename($origin->getOrigin()->getURI()).'.'.$uri.'.pth')) continue;
         $result= self::$json->decodeFrom($module->getInputStream());
         Console::writeLine(new Module($result['vendor'], $result['module']), ': ', $result['info']);
 
