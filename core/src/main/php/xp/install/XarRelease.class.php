@@ -43,12 +43,13 @@
     /**
      * Creates a new instance
      *
+     * @param webservices.rest.RestClient $api
      * @param string $vendor
      * @param string $module
      * @param string $branch
      */
-    public function __construct($vendor, $module, $branch) {
-      $this->client= new RestClient('http://builds.planet-xp.net/');
+    public function __construct($api, $vendor, $module, $branch) {
+      $this->client= $api;
       $this->release= create(new RestRequest('/vendors/{vendor}/modules/{module}/releases/{release}'))
         ->withSegment('vendor', $vendor)
         ->withSegment('module', $module)
