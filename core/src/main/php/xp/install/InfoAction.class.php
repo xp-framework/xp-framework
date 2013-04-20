@@ -23,7 +23,7 @@
      * @return int exit code
      */
     public function perform($args) {
-      sscanf($args[0], '%[^@]@%*s', $name);
+      sscanf($args[0], '%[^@]@%*s', $name);   // Be tab-completion friendly: remove after "@""
       $module= Module::valueOf($name);
 
       // Search for module online
