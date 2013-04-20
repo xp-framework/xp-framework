@@ -24,7 +24,7 @@
      * @return int exit code
      */
     public function perform($args) {
-      $rest= new RestClient('http://localhost:8080/');
+      $rest= new RestClient('http://builds.planet-xp.net/');
       $request= create(new RestRequest('/search'))->withParameter('q', $args[0]);
 
       $i= 0;
