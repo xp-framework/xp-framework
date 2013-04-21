@@ -121,7 +121,7 @@
           }
         } else {
           Console::writeLine('Removing module reference');
-          $base->removeElement($module->name.'.json');
+          $vendor->removeElement($module->name.'.json');
         }
       }
       Console::writeLine('Done');
