@@ -13,7 +13,16 @@
      *
      * @param  webservices.api.RestClient $api
      */
-    public function __construct($api) {
+    public function __construct($api= NULL) {
+      $this->api= $api;
+    }
+
+    /**
+     * Sets API
+     *
+     * @param  webservices.api.RestClient $api
+     */
+    public function useApi($api) {
       $this->api= $api;
     }
 
@@ -25,6 +34,18 @@
     public function setTrace($cat) {
       $this->cat= $cat;
       $this->api->setTrace($cat);
+    }
+
+    /**
+     * Spawns a new subaction
+     *
+     * @param  self new
+     * @return self
+     */
+    public function spawn(Action $new) {
+      $new->useApi($this->api);
+      $new->setTrace($this->cat);
+      return $new;
     }
   }
 ?>

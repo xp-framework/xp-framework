@@ -32,6 +32,7 @@
    *   <li>info - Display information about a module</li>
    *   <li>add - Adds a module</li>
    *   <li>list - List installed modules</li>
+   *   <li>upgrade - Upgrade an existing module</li>
    *   <li>remove - Removes installed module</li>
    * </ul>
    * Options
