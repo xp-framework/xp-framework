@@ -35,6 +35,13 @@
       self::$json= JsonFactory::create();
     }
 
+    /**
+     * Gets all installed releases for a given module
+     *
+     * @param  io.collections.IOCollection $cwd Working directory
+     * @param  xp.install.Module $module
+     * @return var[]
+     */
     protected function installedReleases($cwd, $module) {
       $releases= array();
       $vendor= $cwd->getCollection($module->vendor);
