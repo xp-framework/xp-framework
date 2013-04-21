@@ -124,7 +124,15 @@
       uksort($releases, function($a, $b) {
         return version_compare($a, $b, '<');
       });
-      Console::writeLine('Releases: ', $releases);
+      Console::writeLine('Releases: ', sizeof($releases), ', list {');
+      foreach ($releases as $version => $release) {
+        $s= '';
+        foreach ($release as $key => $value) {
+          $s.= ', '.$key.'= '.\xp::stringOf($value);
+        }
+        Console::writeLine('  ', $version, ' (', substr($s, 2), ')');
+      }
+      Console::writeLine('}');
 
       // List active releases for local queries
       if (!$remote) {
