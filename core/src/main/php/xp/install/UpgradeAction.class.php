@@ -16,13 +16,26 @@
   use \webservices\rest\RestException;
 
   /**
-   * XPI Installer - add modules
-   * ===========================
+   * XPI Installer - upgrade modules
+   * ===============================
    *
    * Basic usage
    * -----------
-   * # This will install the newest release of the specified module
+   * # Given there is a newer version available in the registry, this will
+   * # upgrade the local installation to that.
    * $ xpi upgrade vendor/module
+   *
+   * Using versions
+   * --------------
+   * # Given the installed version is 1.0.0, the following will reinstall 
+   * # the module (same as "remove" && "add" with the given version):
+   * $ xpi upgrade vendor/module 1.0.0
+   *
+   * # The following will upgrade the installed module to 1.2.3RC1:
+   * $ xpi upgrade vendor/module 1.2.3RC1
+   *
+   * # The following will downgrade the installed module to 0.9.1:
+   * $ xpi upgrade vendor/module 0.9.1
    */
   class UpgradeAction extends Action {
     protected static $json;
@@ -87,33 +100,59 @@
         Console::writeLine('Using specified version ', $version, ' -> ', $installed);
       }
 
-      // Check for module online
-      $request= create(new RestRequest('/vendors/{vendor}/modules/{module}/releases'))
-        ->withSegment('vendor', $module->vendor)
-        ->withSegment('module', $module->name)
-      ;
-      try {
-        $releases= $this->api->execute($request)->data();
-        usort($releases, function($a, $b) { 
-          return version_compare($a['version']['number'], $b['version']['number'], '<'); 
-        });
-      } catch (RestException $e) {
-        Console::$err->writeLine('*** Cannot find module ', $module, ': ', $e->getMessage());
-        return 3;
+      if (isset($args[1])) {
+
+        // Target version given, check it exists
+        $request= create(new RestRequest('/vendors/{vendor}/modules/{module}/releases/{release}'))
+          ->withSegment('vendor', $module->vendor)
+          ->withSegment('module', $module->name)
+          ->withSegment('release', $args[1])
+        ;
+        try {
+          $release= $this->api->execute($request)->data();
+        } catch (RestException $e) {
+          Console::$err->writeLine('*** Cannot find module ', $module, '@', $args[1], ': ', $e->getMessage());
+          return 3;
+        }
+
+        $target= $release['version']['number'];
+        if (version_compare($version, $target, '>')) {
+          Console::writeLine('>> Local ', $version, ' newer than ', $target, ', doing a downgrade');
+        } else if (version_compare($version, $target, '=')) {
+          Console::writeLine('>> Local ', $version, ' same as ', $target, ', performing reinstall');
+        } else {
+          Console::writeLine('>> Local ', $version, ' older than ', $target, ', upgrading');
+        }
+      } else {
+
+        // No target version given: Check for module online, and upgrade to newest
+        $request= create(new RestRequest('/vendors/{vendor}/modules/{module}/releases'))
+          ->withSegment('vendor', $module->vendor)
+          ->withSegment('module', $module->name)
+        ;
+        try {
+          $releases= $this->api->execute($request)->data();
+          usort($releases, function($a, $b) { 
+            return version_compare($a['version']['number'], $b['version']['number'], '<'); 
+          });
+        } catch (RestException $e) {
+          Console::$err->writeLine('*** Cannot find module ', $module, ': ', $e->getMessage());
+          return 3;
+        }
+
+        // Verify we actually need an upgrade
+        $target= $releases[0]['version']['number'];
+        if (version_compare($version, $target, '>=')) {
+          Console::writeLine('*** Already at newest version, no upgrade required: ', $releases[0]);
+          return 1;
+        }
+        Console::writeLine('>> Upgrading to ', $newest);
       }
 
-      // Verify we actually need an upgrade
-      $newest= $releases[0]['version']['number'];
-      if (version_compare($version, $newest, '>=')) {
-        Console::writeLine('*** Already at newest version, no upgrade required: ', $releases[0]);
-        return 1;
-      }
-
-      // Upgrade: Add new version, then remove old one
-      Console::writeLine('>> Upgrading to ', $newest);
-      $r= $this->spawn(new AddAction())->perform(array($module->vendor.'/'.$module->name, $newest));
+      // Remove old one first, then add newer version
+      $r= $this->spawn(new RemoveAction())->perform(array($module->vendor.'/'.$module->name.'@'.$version));
       if (0 !== $r) return $r;
-      $this->spawn(new RemoveAction())->perform(array($module->vendor.'/'.$module->name.'@'.$version));
+      $r= $this->spawn(new AddAction())->perform(array($module->vendor.'/'.$module->name, $target));
       if (0 !== $r) return $r;
       return 0;
     }
