@@ -24,7 +24,7 @@
    * $ xpi add vendor/module
    *
    * # This will install a specific version
-   * $ xpi add vendor/module 1.0.0
+   * $ xpi add vendor/module@1.0.0
    *
    * Using development versions
    * --------------------------
@@ -45,9 +45,21 @@
      * @return int exit code
      */
     public function perform($args) {
-      $module= Module::valueOf($args[0]);
+      sscanf($args[0], '%[^@]@%s', $name, $version);
+      $module= Module::valueOf($name);
       $cwd= new Folder('.');
       $base= new Folder($cwd, $module->vendor);
+
+      // No version supplied -> check installation. If the module is already
+      // installed, this is "xpi upgrade"'s job. If we have a version, the user
+      // wants to install in parallel, so pass.
+      if (NULL === $version) {
+        $f= new File($base, $module->name.'.json');
+        if ($f->exists()) {
+          Console::$err->writeLine('*** Not changing existing ', $module, '. Use "xpi upgrade"');
+          return 1;
+        }
+      }
 
       // Search for module
       $request= create(new RestRequest('/vendors/{vendor}/modules/{module}'))
@@ -65,18 +77,16 @@
       }
 
       // Check newest version
-      if (!isset($args[1])) {
+      if (NULL === $version) {
         if (empty($info['releases'])) {
           Console::$err->writeLine('*** No releases yet for ', $module);
           return 1;
         }
         $version= key($info['releases']);
         $this->cat && $this->cat->info('Using latest release', $version);
-      } else if (':' === $args[1]{0}) {
-        $version= $args[1];
+      } else if (':' === $version{0}) {
         $this->cat && $this->cat->info('Using development version', $version);
       } else {
-        $version= $args[1];
         if (!isset($info['releases'][$version])) {
           Console::$err->writeLine('*** No such release ', $version, ' for ', $module, ', have ', $info['releases']);
           return 1;

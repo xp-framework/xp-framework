@@ -146,13 +146,14 @@
           Console::writeLine('*** Already at newest version, no upgrade required: ', $releases[0]);
           return 1;
         }
-        Console::writeLine('>> Upgrading to ', $newest);
+        Console::writeLine('>> Upgrading to ', $target);
       }
 
       // Remove old one first, then add newer version
-      $r= $this->spawn(new RemoveAction())->perform(array($module->vendor.'/'.$module->name.'@'.$version));
+      $args= array($module->vendor.'/'.$module->name.'@'.$version);
+      $r= $this->spawn(new RemoveAction())->perform($args);
       if (0 !== $r) return $r;
-      $r= $this->spawn(new AddAction())->perform(array($module->vendor.'/'.$module->name, $target));
+      $r= $this->spawn(new AddAction())->perform($args);
       if (0 !== $r) return $r;
       return 0;
     }
