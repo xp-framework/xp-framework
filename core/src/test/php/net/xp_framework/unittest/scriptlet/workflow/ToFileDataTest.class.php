@@ -12,15 +12,14 @@
   /**
    * Test the ToFileData caster
    *
-   * @see       scriptlet.xml.workflow.casters.ToFileData
-   * @purpose   ToFileData test
+   * @see       xp://scriptlet.xml.workflow.casters.ToFileData
    */
   class ToFileDataTest extends TestCase {
 
     /**
      * Return the caster
      *
-     * @return  &scriptlet.xml.workflow.casters.ParamCaster
+     * @return  scriptlet.xml.workflow.casters.ParamCaster
      */
     protected function caster() {
       return new ToFileData();
@@ -43,11 +42,12 @@
       $casted= $this->caster()->castValue($data);
       $this->assertArray($casted);
       $this->assertEquals(1, count($casted));
-      $this->assertClass($casted[0], 'scriptlet.xml.workflow.FileData');
-      $this->assertClass($casted[0]->getFile(), 'io.File');
-      $this->assertEquals($casted[0]->getName(), 'test.jpg');
-      $this->assertEquals($casted[0]->getType(), 'image/jpeg');
-      $this->assertEquals($casted[0]->getSize(), 12345);
+      $this->assertInstanceOf('scriptlet.xml.workflow.FileData', $casted[0]);
+      $this->assertInstanceOf('io.File', $casted[0]->getFile());
+      $this->assertEquals(
+        array(new FileData('test.jpg', 'image/jpeg', 12345, '/tmp/php1234')),
+        $casted
+      );
     }
 
     /**
@@ -67,18 +67,19 @@
       $casted= $this->caster()->castValue($data);
       $this->assertArray($casted);
       $this->assertEquals(2, count($casted));
-
-      $this->assertClass($casted[0], 'scriptlet.xml.workflow.FileData');
-      $this->assertClass($casted[0]->getFile(), 'io.File');
-      $this->assertEquals($casted[0]->getName(), 'test.jpg');
-      $this->assertEquals($casted[0]->getType(), 'image/jpeg');
-      $this->assertEquals($casted[0]->getSize(), 12345);
-
-      $this->assertClass($casted[1], 'scriptlet.xml.workflow.FileData');
-      $this->assertClass($casted[1]->getFile(), 'io.File');
-      $this->assertEquals($casted[1]->getName(), 'test2.jpg');
-      $this->assertEquals($casted[1]->getType(), 'image/jpeg');
-      $this->assertEquals($casted[1]->getSize(), 67890);
+      
+      $this->assertInstanceOf('scriptlet.xml.workflow.FileData', $casted[0]);
+      $this->assertInstanceOf('io.File', $casted[0]->getFile());
+      $this->assertInstanceOf('scriptlet.xml.workflow.FileData', $casted[1]);
+      $this->assertInstanceOf('io.File', $casted[1]->getFile());
+      
+      $this->assertEquals(
+        array(
+          new FileData('test.jpg', 'image/jpeg', 12345, '/tmp/php1234'), 
+          new FileData('test2.jpg', 'image/jpeg', 67890, '/tmp/php5678')
+        ),
+        $casted
+      );
     }
   }
 ?>
