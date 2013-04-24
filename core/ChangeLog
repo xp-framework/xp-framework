@@ -97,6 +97,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added ability to handle multiple file uploads with ToFileData caster.
+  See pull request #289
+  (treuter)
 - Added webservices.rest.RestResponse::stream() method
   (friebe)
 - Added string casting support to text.regex.Pattern
