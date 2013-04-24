@@ -105,18 +105,18 @@
     }
     
     /**
-     * Indicates whether the file data object to compare equals this file data object.
+     * Indicates whether a given value is equal to this file data object.
      *
-     * @param   scriptlet.xml.workflow.FileData cmp
-     * @return  bool TRUE if file objects are equal
+     * @param   var cmp
+     * @return  bool
      */
     public function equals($cmp) {
       return 
         ($cmp instanceof self) && 
         ($this->getName() === $cmp->getName()) &&
         ($this->getType() === $cmp->getType()) &&
-        ($this->getSize() === $cmp->getSize());
+        ($this->getSize() === $cmp->getSize())
+      ;
     }
-
   }
 ?>
