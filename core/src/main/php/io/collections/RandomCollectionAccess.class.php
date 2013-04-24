@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.NoSuchElementException');
+
   /**
    * Random access to an I/O collection
    *

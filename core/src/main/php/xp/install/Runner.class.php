@@ -6,31 +6,40 @@
 
   $package= 'xp.install';
 
-  uses('util.cmd.Console');
+  uses(
+    'util.cmd.Console',
+    'util.log.LogCategory',
+    'util.log.ColoredConsoleAppender',
+    'webservices.rest.RestClient'
+  );
 
   /**
    * XP Installer
-   * ~~~~~~~~~~~~
+   * ============
    *
-   * Usage:
-   * <pre>
-   *   # Upgrade XP Framework release
-   *   $ xpi upgrade
-   *   
-   *   # Lists installed packages
-   *   $ xpi list [pattern]
+   * Basic usage
+   * -----------
+   * $ xpi [options] [action] [arg [arg [...]]]
    *
-   *   # Searches for available packages
-   *   $ xpi search [pattern]
+   * Options:
+   * <ul>
+   *   <li>-a: Set base for XP module registry API</li>
+   *   <li>-v: Show debugging information</li>
+   * </ul>
+   * Actions:
+   * <ul>
+   *   <li>search - Search for modules</li>
+   *   <li>info - Display information about a module</li>
+   *   <li>add - Adds a module</li>
+   *   <li>list - List installed modules</li>
+   *   <li>upgrade - Upgrade an existing module</li>
+   *   <li>remove - Removes installed module</li>
+   * </ul>
+   * Options
+   * -------
+   * All commands support "-?" to show their usage.
    *
-   *   # Installs Dialog 2.4.2
-   *   $ xpi install dialog-2.4.2
-   *
-   *   # Removes Dialog 2.4.2
-   *   $ xpi remove dialog-2.4.2
-   * </pre>
-   *
-   * @purpose  Tool
+   * @see  https://github.com/xp-framework/xp-framework/pull/287
    */
   class xp·install·Runner extends Object {
 
@@ -50,41 +59,58 @@
     }
 
     /**
-     * Displays usage and exits
-     *
-     */
-    protected static function usage() {
-      Console::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
-      exit(1);
-    }
-
-    /**
      * Main runner method
      *
      * @param   string[] args
      */
     public static function main(array $args) {
-      if (!$args) self::usage();
-      
+
+      // Parse args
+      $api= new RestClient('http://builds.planet-xp.net/');
+      $action= NULL;
+      $cat= NULL;
+      for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
+        if ('-?' === $args[$i] || '--help' === $args[$i]) {
+          break;
+        } else if ('-a' === $args[$i]) {
+          $api->setBase($args[++$i]);
+        } else if ('-v' === $args[$i]) {
+          $cat= create(new LogCategory('console'))->withAppender(new ColoredConsoleAppender());
+        } else if ('-' === $args[$i]{0}) {
+          Console::$err->writeLine('*** Unknown argument ', $args[$i]);
+          return 128;
+        } else {
+          $action= $args[$i];   // First non-option is the action name
+          break;
+        }
+      }
+
+      if (NULL === $action) {
+        Console::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
+        return 1;
+      }
+
       try {
-        $class= Package::forName('xp.install')->loadClass(ucfirst($args[0]).'Action');
+        $class= Package::forName('xp.install')->loadClass(ucfirst($action).'Action');
       } catch (ClassNotFoundException $e) {
-        Console::$err->writeLine('*** No such action '.$args[0].': ', $e);
-        exit(2);
+        Console::$err->writeLine('*** No such action "'.$action.'"');
+        return 2;
       }
       
       // Show help
-      if (in_array('-?', $args)) {
+      if (in_array('-?', $args) || in_array('--help', $args)) {
         Console::$out->writeLine(self::textOf($class->getComment()));
-        exit(3);
+        return 3;
       }
-      
+
       // Perform action
+      $instance= $class->newInstance($api);
+      $instance->setTrace($cat);
       try {
-        $class->newInstance()->perform(array_slice($args, 1));
+        return $instance->perform(array_slice($args, $i+ 1));
       } catch (Throwable $e) {
         Console::$err->writeLine('*** Error performing action ~ ', $e);
-        exit(1);
+        return 1;
       }
     }    
   }
