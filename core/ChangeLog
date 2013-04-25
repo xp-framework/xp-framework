@@ -60,6 +60,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0270: XPI - Install XP Modules (pull request #287)
+  (friebe)
 - Implemented RFC #0265: Bump PHP requirement to PHP 5.3.0 minimum
   (friebe)
 - Implemented RFC #0210: Separate contrib & framework versions
