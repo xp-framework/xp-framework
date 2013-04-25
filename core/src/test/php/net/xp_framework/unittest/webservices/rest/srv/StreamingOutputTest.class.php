@@ -105,5 +105,23 @@
         StreamingOutput::of($e)
       );
     }
+
+    /**
+     * Test constructor
+     *
+     */
+    #[@test]
+    public function default_status_code_is_200() {
+      $this->assertEquals(200, create(new StreamingOutput())->status);
+    }
+
+    /**
+     * Test withStatus()
+     *
+     */
+    #[@test]
+    public function status_code_can_be_changed() {
+      $this->assertEquals(304, create(new StreamingOutput())->withStatus(304)->status);
+    }
   }
 ?>

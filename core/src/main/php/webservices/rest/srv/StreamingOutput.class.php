@@ -25,6 +25,7 @@
      */
     public function __construct(InputStream $inputStream= NULL) {
       $this->inputStream= $inputStream;
+      $this->status= 200;
     }
 
     /**
