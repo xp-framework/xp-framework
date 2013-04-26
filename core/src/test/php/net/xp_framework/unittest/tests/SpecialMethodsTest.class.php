@@ -115,7 +115,7 @@
     protected function getNameCase() {
       return newinstance('unittest.TestCase', array('getName'), '{
         #[@test]
-        public function getName() { }
+        public function getName($compound= FALSE) { }
       }');
     }
  
