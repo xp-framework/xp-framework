@@ -83,6 +83,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed Process::getProcessById() not to yield PHP path for any PID 
+  given - move the code to lang.Runtime!
+  (friebe)
 - Fixed bug with newinstance inside namespaced classes. See bug #276
   (friebe)
 - Fixed Reflection bugs for abstract methods in generic classes. See
