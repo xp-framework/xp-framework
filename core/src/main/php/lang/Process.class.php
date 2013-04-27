@@ -176,9 +176,7 @@
         if (!file_exists($proc= '/proc/'.$pid)) {
           throw new IllegalStateException('Cannot find executable in /proc');
         }
-        if (defined('PHP_BINARY')) {
-          $self->status['exe']= PHP_BINARY;
-        } else do {
+        do {
           foreach (array('/exe', '/file') as $alt) {
             if (!file_exists($proc.$alt)) continue;
             $self->status['exe']= readlink($proc.$alt);
@@ -189,9 +187,7 @@
         $self->status['command']= strtr(file_get_contents($proc.'/cmdline'), "\0", ' ');
       } else {
         try {
-          if (defined('PHP_BINARY')) {
-            $self->status['exe']= PHP_BINARY;
-          } else if ($exe) {
+          if ($exe) {
             $self->status['exe']= self::resolve($exe);
           } else if ($_= getenv('_')) {
             $self->status['exe']= self::resolve($_);
