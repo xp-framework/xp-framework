@@ -83,6 +83,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #291 - Namespaced class doesn't support class aliasing
+  (friebe)
 - Fixed Process::getProcessById() not to yield PHP path for any PID 
   given - move the code to lang.Runtime!
   (friebe)

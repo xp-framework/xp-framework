@@ -79,25 +79,27 @@
         throw new ClassNotFoundException($class, array($this));
       }
       
-      // Register it
-      if (NULL === $package) {
-        if (FALSE === ($p= strrpos($class, '.'))) {
-          $name= $class;
-        } else {
-          $name= substr($class, $p+ 1);
-          if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-            $name= strtr($class, '.', '\\');
-            if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-              unset(xp::$cl[$class]);
-              raise('lang.ClassFormatException', 'Class "'.$name.'" not declared in loaded file');
-            }
-          } else {
-            class_alias($name, strtr($class, '.', '\\'));
-          }
-        }
-      } else {
+      // Register class name / literal mapping, which is one of the following:
+      //
+      // * No dot in the qualified class name -> ClassName
+      // * Dotted version declares $package -> com·example·ClassName
+      // * Dotted version resolves to a namespaced class -> com\example\ClassName
+      // * Dotted version resolves to class in the global namespace -> ClassName
+      //
+      // Create aliases for dotted versions not resolving to namespaces
+      if (FALSE === ($p= strrpos($class, '.'))) {
+        $name= $class;
+      } else if (NULL !== $package) {
         $name= strtr($class, '.', '·');
         class_alias($name, strtr($class, '.', '\\'));
+      } else if (($ns= strtr($class, '.', '\\')) && (class_exists($ns, FALSE) || interface_exists($ns, FALSE))) {
+        $name= $ns;
+      } else if (($cl= substr($class, $p+ 1)) && (class_exists($cl, FALSE) || interface_exists($cl, FALSE))) {
+        $name= $cl;
+        class_alias($name, strtr($class, '.', '\\'));
+      } else {
+        unset(xp::$cl[$class]);
+        raise('lang.ClassFormatException', 'Class "'.$class.'" not declared in loaded file');
       }
 
       xp::$cn[$name]= $class;

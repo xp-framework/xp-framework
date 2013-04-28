@@ -49,9 +49,7 @@
     // {{{ proto string loadClass0(string name)
     //     Loads a class by its fully qualified name
     function loadClass0($class) {
-      if (isset(xp::$cl[$class])) {
-        return substr(array_search($class, xp::$cn, TRUE), 6);
-      }
+      if (isset(xp::$cl[$class])) return array_search($class, xp::$cn, TRUE);
 
       foreach (xp::$classpath as $path) {
 
@@ -76,19 +74,15 @@
         }
 
         // Register class name and call static initializer if available
-        if (NULL === $package) {
-          if (FALSE === ($p= strrpos($class, '.'))) {
-            $name= $class;
-          } else {
-            $name= substr($class, $p+ 1);
-            if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-              $name= strtr($class, '.', '\\');
-            } else {
-              class_alias($name, strtr($class, '.', '\\'));
-            }
-          }
-        } else {
+        if (FALSE === ($p= strrpos($class, '.'))) {
+          $name= $class;
+        } else if (NULL !== $package) {
           $name= strtr($class, '.', '·');
+          class_alias($name, strtr($class, '.', '\\'));
+        } else if (($ns= strtr($class, '.', '\\')) && (class_exists($ns, FALSE) || interface_exists($ns, FALSE))) {
+          $name= $ns;
+        } else if (($cl= substr($class, $p+ 1)) && (class_exists($cl, FALSE) || interface_exists($cl, FALSE))) {
+          $name= $cl;
           class_alias($name, strtr($class, '.', '\\'));
         }
         xp::$cn[$name]= $class;
