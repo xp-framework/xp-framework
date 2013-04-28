@@ -221,5 +221,16 @@
         $string
       );
     }
+
+    /**
+     * Test toString()
+     */
+    #[@test]
+    public function to_string_with_function_arg() {
+      $this->assertEquals(
+        self::NEW_FIXTURE_METHOD."(php.Closure{}) [line 1 of Test.class.php] Test\n",
+        $this->newFixtureWith(array(function() { }))->toString()
+      );
+    }
   }
 ?>
