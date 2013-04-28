@@ -205,6 +205,18 @@
     }
     
     /**
+     * Tests proxies can not be created for classes, only for interfaces
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function cannotCreateProxiesForClassesAsSecondArg() {
+      $this->proxyInstanceFor(array(
+        XPClass::forName('util.XPIterator'),
+        XPClass::forName('lang.Object')
+      ));
+    }
+
+    /**
      * Check that implementing two interfaces that declare a common
      * method does not issue a fatal error.
      *
