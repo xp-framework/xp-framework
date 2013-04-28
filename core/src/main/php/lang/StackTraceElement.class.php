@@ -10,6 +10,7 @@
    *
    * @see      xp://lang.Throwable#getStackTrace
    * @test     xp://net.xp_framework.unittest.core.ExceptionsTest
+   * @test     xp://net.xp_framework.unittest.core.StackTraceElementTest
    */
   class StackTraceElement extends Object {
     public
