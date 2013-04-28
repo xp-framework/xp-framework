@@ -118,10 +118,21 @@
     public function classesEqualForSameInterfaceList() {
       $c1= $this->proxyClassFor(array($this->iteratorClass));
       $c2= $this->proxyClassFor(array($this->iteratorClass));
-      $c3= $this->proxyClassFor(array($this->iteratorClass, $this->observerClass));
 
       $this->assertEquals($c1, $c2);
-      $this->assertNotEquals($c1, $c3);
+    }
+
+    /**
+     * Tests calling getProxyClass() twice with the same interface list
+     * will result in the same proxy class
+     *
+     */
+    #[@test]
+    public function classesNotEqualForDifferingInterfaceList() {
+      $c1= $this->proxyClassFor(array($this->iteratorClass));
+      $c2= $this->proxyClassFor(array($this->iteratorClass, $this->observerClass));
+
+      $this->assertNotEquals($c1, $c2);
     }
 
     /**
