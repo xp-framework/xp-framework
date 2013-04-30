@@ -9,6 +9,7 @@
   /**
    * Lazy initializable InvokationHandler 
    *
+   * @test  xp://net.xp_framework.unittest.util.DeferredInvokationHandlerTest
    */
   abstract class AbstractDeferredInvokationHandler extends Object implements InvocationHandler {
     private $_instance= NULL;
