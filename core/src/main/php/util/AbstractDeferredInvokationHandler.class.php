@@ -9,18 +9,16 @@
   /**
    * Lazy initializable InvokationHandler 
    *
-   * @purpose  proxy
    */
-  class AbstractDeferredInvokationHandler extends Object implements InvocationHandler {
-    public
-      $_instance = NULL;
+  abstract class AbstractDeferredInvokationHandler extends Object implements InvocationHandler {
+    private $_instance= NULL;
 
     /**
      * Lazy initialization callback
      *
-     * @return  lang.Object
+     * @return  lang.Generic
      */
-    public function initialize() { }
+    public abstract function initialize();
 
     /**
      * Processes a method invocation on a proxy instance and returns
@@ -33,7 +31,7 @@
      * @throws  util.DeferredInitializationException
      */
     public function invoke($proxy, $method, $args) {
-      if (!isset($this->_instance)) {
+      if (NULL === $this->_instance) {
         try {
           $this->_instance= $this->initialize();
         } catch (Throwable $e) {
@@ -43,6 +41,5 @@
       }
       return call_user_func_array(array($this->_instance, $method), $args);
     }
-    
   } 
 ?>
