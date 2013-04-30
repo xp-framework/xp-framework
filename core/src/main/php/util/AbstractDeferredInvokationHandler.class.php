@@ -39,6 +39,14 @@
           $this->_instance= NULL;
           throw new DeferredInitializationException($method, $e);
         }
+        if (!$this->_instance instanceof Generic) {
+          throw new DeferredInitializationException(
+            $method,
+            XPClass::forName('lang.ClassCastException')->newInstance(
+              'Initializer returned '.xp::typeOf($this->_instance)
+            )
+          );
+        }
       }
       return call_user_func_array(array($this->_instance, $method), $args);
     }
