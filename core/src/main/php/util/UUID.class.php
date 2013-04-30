@@ -53,6 +53,7 @@
    *   $uuid->getBytes(); // new Bytes("k\xa7\xb8\x11\x9d\xad\x11\xd1\x80\xb4\x00\xc0O\xd40\xc8")
    * </code>
    *
+   * @test  xp://net.xp_framework.unittest.util.UUIDTest
    * @see   rfc://4122
    * @see   http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-00.txt
    */
