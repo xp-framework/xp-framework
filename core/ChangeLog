@@ -60,6 +60,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0208: Coding standards update: PHP 5.3 namespaces
+  (friebe)
 - Implemented RFC #0270: XPI - Install XP Modules (pull request #287)
   (friebe)
 - Implemented RFC #0265: Bump PHP requirement to PHP 5.3.0 minimum
