@@ -83,6 +83,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Ensure AbstractDeferredInvokationHandler::initialize() returns a 
+  lang.Generic instance
+  (friebe)
 - Fixed issue #291 - Namespaced class doesn't support class aliasing
   (friebe)
 - Fixed Process::getProcessById() not to yield PHP path for any PID 
