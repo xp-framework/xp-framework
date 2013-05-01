@@ -20,10 +20,10 @@
    *   HashProvider::getInstance()->setImplementation(new MyHashImplementation());
    * </code>
    * 
-   * @see      xp://util.collections.DJBX33AHashImplementation
-   * @see      xp://util.collections.MD5HashImplementation
-   * @see      xp://util.collections.Map
-   * @purpose  Hashing
+   * @see   xp://util.collections.DJBX33AHashImplementation
+   * @see   xp://util.collections.MD5HashImplementation
+   * @see   xp://util.collections.Map
+   * @test  xp://net.xp_framework.unittest.util.collections.HashProviderTest
    */
   class HashProvider extends Object {
     protected static
