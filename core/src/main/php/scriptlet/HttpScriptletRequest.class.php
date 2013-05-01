@@ -113,9 +113,6 @@
     /**
      * Initialize cookies if not done
      *
-     * @param   type name
-     * @return  type
-     * @throws  type description
      */
     protected function initCookies() {
       if (is_array($this->cookies)) return;
