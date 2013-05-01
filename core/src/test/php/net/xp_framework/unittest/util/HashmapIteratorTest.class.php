@@ -12,10 +12,9 @@
   );
 
   /**
-   * Test Hashmap class
+   * Test HashmapIterator class
    *
-   * @see      xp://util.Hashmap
-   * @purpose  Unit Test
+   * @see  xp://util.HashmapIterator
    */
   class HashmapIteratorTest extends TestCase {
     
@@ -69,7 +68,7 @@
      */
     #[@test]
     public function hasNextOnArray() {
-      $this->asserttrue(
+      $this->assertTrue(
         create(new HashmapIterator(array('k1' => 'v1')))->hasNext()
       );
     }
@@ -123,6 +122,5 @@
       $i->next();
       $this->assertFalse($i->hasNext());
     }
-
   }
 ?>
