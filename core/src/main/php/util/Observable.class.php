@@ -57,8 +57,8 @@
    * argument and - if existant - the argument passed to notifyObservers as 
    * its second.
    *
-   * @see      http://www.javaworld.com/javaworld/jw-10-1996/jw-10-howto.html
-   * @purpose  Base class
+   * @see   http://www.javaworld.com/javaworld/jw-10-1996/jw-10-howto.html
+   * @test  xp://net.xp_framework.unittest.util.ObservableTest
    */
   class Observable extends Object {
     public
