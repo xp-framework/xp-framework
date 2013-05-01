@@ -16,7 +16,7 @@
  * <code>
  *   $in= new CsvListReader(new TextReader(new FileInputStream('in.csv')));
  * 
- *   $header= $in->getHeader();
+ *   $header= $in->getHeaders();
  *   while ($record= $in->read()) {
  *     Console::writeLine('- ', $record);
  *   }
