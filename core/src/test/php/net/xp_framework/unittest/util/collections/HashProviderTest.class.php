@@ -14,12 +14,15 @@
   class HashProviderTest extends TestCase {
     protected $fixture;
 
+    /**
+     * Creates fixture
+     */
     public function setUp() {
       $this->fixture= HashProvider::getInstance();
     }
 
     /**
-     * Tests hashOf()
+     * Tests getImplementation() and setImplementation()
      */
     #[@test]
     public function implementation_accessors() {
