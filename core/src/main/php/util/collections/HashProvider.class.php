@@ -70,7 +70,7 @@
      * @return  int
      */
     public static function hashOf($str) {
-      return self::getInstance()->impl->hashOf($str);
+      return self::$instance->impl->hashOf($str);
     }
 
     /**
