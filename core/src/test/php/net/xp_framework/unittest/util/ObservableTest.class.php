@@ -75,5 +75,22 @@
       $o= self::$observable->newInstance();
       $this->assertEquals($observer, $o->addObserver($observer));
     }
+
+    /**
+     * Tests notifyObservers() method
+     */
+    #[@test]
+    public function observer_gets_called_with_observable() {
+      $observer= newinstance('util.Observer', array(), '{
+        public $calls= array();
+        public function update($obs, $arg= NULL) {
+          $this->calls[]= array($obs, $arg);
+        }
+      }');
+      $o= self::$observable->newInstance();
+      $o->addObserver($observer);
+      $o->setValue(5);
+      $this->assertEquals(array(array($o, NULL)), $observer->calls);
+    }
   }
 ?>
