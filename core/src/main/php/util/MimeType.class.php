@@ -92,7 +92,8 @@
   /**
    * MIME Type
    *
-   * @see http://www.stalkpire.de/mime-types-liste.aspx
+   * @see   http://www.stalkpire.de/mime-types-liste.aspx
+   * @test  xp://net.xp_framework.unittest.util.MimeTypeTest
    */
   class MimeType extends Object {
   
