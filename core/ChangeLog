@@ -85,6 +85,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed MimeType::getByFilename() returning incorrect mine type for
+  .tar.gz files
+  (friebe)
 - Ensure AbstractDeferredInvokationHandler::initialize() returns a 
   lang.Generic instance
   (friebe)

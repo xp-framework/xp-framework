@@ -36,5 +36,21 @@
     public function uppercase_extension() {
       $this->assertEquals('text/html', MimeType::getByFilename('test.HTML'));
     }
+
+    /**
+     * Tests getByFilename()
+     */
+    #[@test]
+    public function single_extension() {
+      $this->assertEquals('application/x-gunzip', MimeType::getByFilename('test.gz'));
+    }
+
+    /**
+     * Tests getByFilename()
+     */
+    #[@test]
+    public function double_extension() {
+      $this->assertEquals('application/x-tar-gz', MimeType::getByFilename('test.tar.gz'));
+    }
   }
 ?>
