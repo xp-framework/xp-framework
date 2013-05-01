@@ -37,8 +37,8 @@
    *
    * -- Ralf S. Engelschall
    *
-   * @see      xp://util.collections.HashProvider
-   * @purpose  Hashing
+   * @see  xp://util.collections.HashProvider
+   * @test xp://net.xp_framework.unittest.util.collections.DJBX33AHashImplementationTest:
    */
   class DJBX33AHashImplementation extends Object implements HashImplementation {
 
@@ -73,6 +73,5 @@
       }
       return $hash;
     }
-
   } 
 ?>
