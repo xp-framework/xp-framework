@@ -9,9 +9,9 @@
   /**
    * MD5
    *
-   * @see      php://md5
-   * @see      xp://util.collections.HashProvider
-   * @purpose  Hashing
+   * @see   php://md5
+   * @see   xp://util.collections.HashProvider
+   * @test  xp://net.xp_framework.unittest.util.collections.MD5HashImplementationTest:
    */
   class MD5HashImplementation extends Object implements HashImplementation {
 
