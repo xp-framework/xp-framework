@@ -16,6 +16,7 @@
    *
    * @see   xp://net.xp_framework.unittest.util.AbstractPropertiesTest
    * @see   xp://util.Properties#fromFile
+   * @test  xp://net.xp_framework.unittest.util.FilesystemPropertySourceTest
    */
   class FileBasedPropertiesTest extends AbstractPropertiesTest {
     protected static $fileStreamAdapter;
