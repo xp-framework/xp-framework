@@ -85,6 +85,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #292 - Binford::setPoweredBy() failing when given zero (0)
+  (friebe)
 - Fixed MimeType::getByFilename() returning incorrect mine type for
   .tar.gz files
   (friebe)
