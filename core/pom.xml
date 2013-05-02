@@ -56,7 +56,7 @@
       <plugin>
         <groupId>net.xp-forge.maven.plugins</groupId>
         <artifactId>xp-maven-plugin</artifactId>
-        <version>3.3.0-SNAPSHOT</version>
+        <version>3.3.1</version>
         <extensions>true</extensions>
         <configuration>
 
@@ -82,7 +82,6 @@
 
             <!-- Networking -->
             <extension>sockets</extension>
-            <extension>ftp</extension>
             <extension>openssl</extension>
             <extension>ldap</extension>
             <extension>soap</extension>
