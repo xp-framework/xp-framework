@@ -9,6 +9,7 @@
   /**
    * Filesystem-based property source
    *
+   * @test  xp://net.xp_framework.unittest.util.FilesystemPropertySourceTest
    */
   class FilesystemPropertySource extends Object implements PropertySource {
     protected $cache= array();
