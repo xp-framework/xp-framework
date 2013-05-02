@@ -34,7 +34,7 @@
      */
     public function setPoweredBy($p) {
       $x= log10($p / 61);
-      if (floor($x) != $x) {
+      if (floor($x) !== $x) {
         throw new IllegalArgumentException($p.' not allowed');
       }
       $this->poweredBy= $p;
