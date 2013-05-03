@@ -5,9 +5,8 @@
  */
 
   uses(
-    'unittest.TestCase',
+    'net.xp_framework.unittest.logging.AppenderTest',
     'util.log.SmtpAppender',
-    'util.log.LoggingEvent',
     'util.log.layout.PatternLayout'
   );
 
@@ -16,20 +15,8 @@
    *
    * @see   xp://util.log.SmtpAppender
    */
-  class SmtpAppenderTest extends TestCase {
-    protected $event;
+  class SmtpAppenderTest extends AppenderTest {
 
-    /**
-     * Creates new logging event
-     *
-     * @param   int level see util.log.LogLevel
-     * @param   string message
-     * @return  util.log.LoggingEvent
-     */
-    public function newEvent($level, $message) {
-      return new LoggingEvent(new LogCategory('test'), 0, 0, $level, array($message));
-    }
-  
     /**
      * Creates new SMTP appender fixture
      *
@@ -37,15 +24,14 @@
      * @param   bool sync
      * @return  util.log.SmtpAppender
      */
-    public function newFixture($prefix, $sync) {
+    protected function newFixture($prefix, $sync) {
       $appender= newinstance('util.log.SmtpAppender', array('test@example.com', $prefix, $sync), '{
         public $sent= array();
         protected function send($prefix, $content) {
           $this->sent[]= array($prefix, $content);
         }
       }');
-      $appender->setLayout(new PatternLayout('[%l] %m'));
-      return $appender;
+      return $appender->withLayout(new PatternLayout('[%l] %m'));
     }
 
     /**
