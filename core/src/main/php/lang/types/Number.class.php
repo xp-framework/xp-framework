@@ -21,19 +21,21 @@
     public function __construct($value) {
       $this->value= (string)$value;
     }
-    
+
     /**
      * ValueOf factory
      *
+     * NOTE: We don't use a base-class version with "new static" here because
+     * in PHP 5.3.3 there is a bug with the class resolution when this method
+     * is invoked via reflection.
+     *
+     * @see     https://github.com/xp-framework/xp-framework/issues/293
      * @param   string $value
      * @return  self
      * @throws  lang.IllegalArgumentException
      */
     public static function valueOf($value) {
-      if (!is_numeric($value)) {
-        throw new IllegalArgumentException('Not a number: '.$value);
-      }
-      return new static($value);
+      raise('lang.MethodNotImplementedException', 'Abstract base class', __METHOD__);
     }
 
     /**

@@ -85,6 +85,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #293 - RestDeserializerConversionTest fails with fatal 
+  error on PHP 5.3.3
+  (friebe, kiesel)
 - Fixed issue #292 - Binford::setPoweredBy() failing when given zero (0)
   (friebe)
 - Fixed MimeType::getByFilename() returning incorrect mine type for
