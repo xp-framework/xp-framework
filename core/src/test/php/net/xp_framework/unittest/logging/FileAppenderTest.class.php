@@ -143,6 +143,8 @@
      */
     #[@test]
     public function chmod_called_when_perms_given() {
+      if (!defined('STREAM_META_ACCESS')) return;
+
       $fixture= $this->newFixture();
       $fixture->perms= '0666';  // -rw-rw-rw
       $fixture->append($this->newEvent(LogLevel::WARN, 'Test'));
