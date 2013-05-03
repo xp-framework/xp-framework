@@ -11,7 +11,7 @@
   );
 
   /**
-   * TestCase for SmtpAppender
+   * TestCase for BufferedAppender
    *
    * @see   xp://util.log.BufferedAppender
    */
