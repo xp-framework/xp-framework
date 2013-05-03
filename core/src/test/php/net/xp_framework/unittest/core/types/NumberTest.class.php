@@ -325,5 +325,77 @@
     public function whitespaceSeparatedNumbersAreNotNumeric() {
       Long::valueOf('4 4');
     }
+
+    /**
+     * Tests doubles are not considered longs
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function floatingPointNumberIsNotLong() {
+      Long::valueOf(4.4);
+    }
+
+    /**
+     * Tests doubles are not considered longs
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function floatingPointInStringIsNotLong() {
+      Long::valueOf('4.4');
+    }
+
+    /**
+     * Tests doubles are not considered integers
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function floatingPointNumberIsNotInteger() {
+      Integer::valueOf(4.4);
+    }
+
+    /**
+     * Tests doubles are not considered integers
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function floatingPointInStringIsNotInteger() {
+      Integer::valueOf('4.4');
+    }
+
+    /**
+     * Tests doubles are not considered shorts
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function floatingPointNumberIsNotShort() {
+      Short::valueOf(4.4);
+    }
+
+    /**
+     * Tests doubles are not considered shorts
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function floatingPointInStringIsNotShort() {
+      Short::valueOf('4.4');
+    }
+
+    /**
+     * Tests doubles are not considered bytes
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function floatingPointNumberIsNotByte() {
+      Byte::valueOf(4.4);
+    }
+
+    /**
+     * Tests doubles are not considered bytes
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function floatingPointInStringIsNotByte() {
+      Byte::valueOf('4.4');
+    }
   }
 ?>
