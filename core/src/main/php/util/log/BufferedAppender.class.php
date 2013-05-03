@@ -9,8 +9,8 @@
   /**
    * Appender which appends all data to a buffer
    *
-   * @see      xp://util.log.Appender
-   * @purpose  Appender
+   * @see   xp://util.log.Appender
+   * @test  xp://net.xp_framework.unittest.logging.BufferedAppenderTest
    */  
   class BufferedAppender extends Appender {
     public $buffer= '';
