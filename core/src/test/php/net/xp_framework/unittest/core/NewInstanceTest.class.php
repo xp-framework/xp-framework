@@ -20,6 +20,16 @@
   class NewInstanceTest extends TestCase {
 
     /**
+     * Skips tests if process execution has been disabled.
+     */
+    #[@beforeClass]
+    public static function verifyProcessExecutionEnabled() {
+      if (Process::$DISABLED) {
+        throw new PrerequisitesNotMetError('Process execution disabled', NULL, array('enabled'));
+      }
+    }
+
+    /**
      * Issues a uses() command inside a new runtime for every class given
      * and returns a line indicating success or failure for each of them.
      *

@@ -16,6 +16,16 @@
    * @see   php://magic_quotes
    */
   class MagicQuotesTest extends TestCase {
+
+    /**
+     * Skips tests if process execution has been disabled.
+     */
+    #[@beforeClass]
+    public static function verifyProcessExecutionEnabled() {
+      if (Process::$DISABLED) {
+        throw new PrerequisitesNotMetError('Process execution disabled', NULL, array('enabled'));
+      }
+    }
   
     /**
      * Setup test. Verifies PHP version constraint
