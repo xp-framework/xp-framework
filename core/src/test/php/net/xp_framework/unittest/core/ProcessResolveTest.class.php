@@ -27,6 +27,13 @@
 
       $m= $this->getClass()->getMethod($this->name);
       if (!$m->hasAnnotation('platform')) return;
+
+      // Determine platform
+      if (getenv('ANDROID_ROOT')) {
+        $os= 'ANDROID';
+      } else {
+        $os= PHP_OS;
+      }
       
       // This testcase is platform-specific - the platform annotation may be 
       // written as "WIN" (meaning this works only on operating systems whose
@@ -34,9 +41,9 @@
       // test will not run on OSes with "BSD" in their names but on any other)
       $platform= $m->getAnnotation('platform');
       if ('!' === $platform{0}) {
-        $r= !preg_match('/'.substr($platform, 1).'/i', PHP_OS);
+        $r= !preg_match('/'.substr($platform, 1).'/i', $os);
       } else {
-        $r= preg_match('/'.$platform.'/i', PHP_OS);
+        $r= preg_match('/'.$platform.'/i', $os);
       }
       
       if (!$r) {
@@ -189,16 +196,27 @@
      * Test resolving a fully qualified name on Posix systems
      *
      */
-    #[@test, @platform('!^WIN')]
-    public function resolveFullyQualified() {
-      $this->assertEquals('/bin/ls', Process::resolve('/bin/ls'));
+    #[@test, @platform('!(^WIN|^ANDROID)')]
+    public function resolveFullyQualifiedOnPosix() {
+      $fq= '/bin/ls';
+      $this->assertEquals($fq, Process::resolve($fq));
     }
 
     /**
      * Test resolving a fully qualified name on Posix systems
      *
      */
-    #[@test, @platform('!^WIN')]
+    #[@test, @platform('ANDROID')]
+    public function resolveFullyQualifiedOnAndroid() {
+      $fq= getenv('ANDROID_ROOT').'/framework/core.jar';
+      $this->assertEquals($fq, Process::resolve($fq));
+    }
+
+    /**
+     * Test resolving a fully qualified name on Posix systems
+     *
+     */
+    #[@test, @platform('!(^WIN|^ANDROID)')]
     public function resolve() {
       $this->assertEquals('/bin/ls', Process::resolve('ls'));
     }
