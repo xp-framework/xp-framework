@@ -35,6 +35,12 @@
       $_proc  = NULL,
       $status = array();
 
+    public static $DISABLED;
+
+    static function __static() {
+      self::$DISABLED= (bool)strstr(ini_get('disable_functions'), 'proc_open');
+    }
+
     /**
      * Constructor
      *
@@ -50,9 +56,14 @@
         1 => array('pipe', 'w'),  // stdout
         2 => array('pipe', 'w')   // stderr
       );
-      
+
       // For `new self()` used in getProcessById()
       if (NULL === $command) return;
+
+      // Verify
+      if (self::$DISABLED) {
+        throw new IOException('Process execution has been disabled');
+      }
 
       // Check whether the given command is executable.
       $binary= self::resolve($command);
