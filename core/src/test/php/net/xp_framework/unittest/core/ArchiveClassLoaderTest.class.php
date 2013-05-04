@@ -7,7 +7,8 @@
   uses(
     'unittest.TestCase',
     'lang.archive.ArchiveClassLoader',
-    'lang.archive.Archive'
+    'lang.archive.Archive',
+    'io.FileUtil'
   );
 
   /**
@@ -87,7 +88,7 @@
      * Test loadClass() method
      */
     #[@test]
-    public function load_existing_class_from_package() {
+    public function load_existing_class_from_archive() {
       $this->assertInstanceOf('lang.XPClass', $this->fixture->loadClass('test.ClassLoadedFromArchive'));
     }
 
@@ -95,8 +96,42 @@
      * Test loadClass() method
      */
     #[@test, @expect('lang.ClassNotFoundException')]
-    public function loading_non_existant_class_from_package_raises_exception() {
+    public function loading_non_existant_class_raises_exception() {
       $this->fixture->loadClass('non.existant.Class');
+    }
+
+    /**
+     * Test getResource() method
+     */
+    #[@test]
+    public function load_existing_resource_from_archive() {
+      $contents= $this->fixture->getResource('test/package-info.xp');
+      $this->assertEquals('<?php', substr($contents, 0, strpos($contents, "\n")));
+    }
+
+    /**
+     * Test getResourceAsStream() method
+     */
+    #[@test]
+    public function load_existing_resource_stream_from_archive() {
+      $contents= FileUtil::getContents($this->fixture->getResourceAsStream('test/package-info.xp'));
+      $this->assertEquals('<?php', substr($contents, 0, strpos($contents, "\n")));
+    }
+
+    /**
+     * Test getResource() method
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function load_non_existant_resource_from_archive() {
+      $this->fixture->getResource('non/existant/resource.file');
+    }
+
+    /**
+     * Test getResourceAsStream() method
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function load_non_existant_resource_stream_from_archive() {
+      $this->fixture->getResourceAsStream('non/existant/resource.file');
     }
   }
 ?>

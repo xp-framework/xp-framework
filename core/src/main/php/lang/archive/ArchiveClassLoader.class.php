@@ -74,11 +74,9 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResource($string) {
-      if (FALSE !== ($r= file_get_contents($this->archive.$string))) {
-        return $r;
-      }
-
-      return raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
+      if (FALSE !== ($r= file_get_contents($this->archive.$string))) return $r;
+      xp::gc(__FILE__);
+      raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
     }
     
     /**
