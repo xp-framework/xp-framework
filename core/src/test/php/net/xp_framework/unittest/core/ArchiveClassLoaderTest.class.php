@@ -133,5 +133,38 @@
     public function load_non_existant_resource_stream_from_archive() {
       $this->fixture->getResourceAsStream('non/existant/resource.file');
     }
+
+    /**
+     * Test packageContents() method
+     */
+    #[@test]
+    public function test_package_contents() {
+      $this->assertEquals(
+        array('ClassLoadedFromArchive.class.php', 'package-info.xp'),
+        $this->fixture->packageContents('test')
+      );
+    }
+
+    /**
+     * Test packageContents() method
+     */
+    #[@test]
+    public function non_existant_package_contents() {
+      $this->assertEquals(
+        array(),
+        $this->fixture->packageContents('non.existant')
+      );
+    }
+
+    /**
+     * Test packageContents() method
+     */
+    #[@test]
+    public function root_package_contents() {
+      $this->assertEquals(
+        array('test/'),
+        $this->fixture->packageContents(NULL)
+      );
+    }
   }
 ?>
