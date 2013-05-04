@@ -90,5 +90,13 @@
     public function load_existing_class_from_package() {
       $this->assertInstanceOf('lang.XPClass', $this->fixture->loadClass('test.ClassLoadedFromArchive'));
     }
+
+    /**
+     * Test loadClass() method
+     */
+    #[@test, @expect('lang.ClassNotFoundException')]
+    public function loading_non_existant_class_from_package_raises_exception() {
+      $this->fixture->loadClass('non.existant.Class');
+    }
   }
 ?>

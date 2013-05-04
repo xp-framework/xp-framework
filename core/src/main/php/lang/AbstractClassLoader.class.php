@@ -76,7 +76,9 @@
       xp::$cll--;
       if (FALSE === $r) {
         unset(xp::$cl[$class]);
-        throw new ClassNotFoundException($class, array($this));
+        $e= new ClassNotFoundException($class, array($this));
+        xp::gc(__FILE__);
+        throw $e;
       }
       
       // Register class name / literal mapping, which is one of the following:
