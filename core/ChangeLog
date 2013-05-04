@@ -85,6 +85,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed warnings raised inside AbstractClassLoader::loadClass0() not
+  being properly attached to the CNFE raised inside.
+  (friebe)
 - Fixed issue #293 - RestDeserializerConversionTest fails with fatal 
   error on PHP 5.3.3
   (friebe, kiesel)
