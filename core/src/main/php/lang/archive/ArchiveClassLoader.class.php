@@ -22,11 +22,9 @@
    *   $obj= $class->newInstance();
    * </code>
    *
-   * @test     xp://net.xp_framework.unittest.core.ArchiveClassLoaderTest
-   * @purpose  Load classes from an archive
-   * @see      xp://lang.ClassLoader
-   * @see      xp://lang.archive.Archive
-   * @ext      tokenize
+   * @test  xp://net.xp_framework.unittest.core.ArchiveClassLoaderTest
+   * @see   xp://lang.ClassLoader
+   * @see   xp://lang.archive.Archive
    */
   class ArchiveClassLoader extends AbstractClassLoader {
     protected $archive= NULL;
