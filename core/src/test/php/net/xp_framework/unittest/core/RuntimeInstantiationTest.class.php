@@ -1,13 +1,10 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
-  uses(
-    'unittest.TestCase',
-    'lang.Runtime'
-  );
+  uses('unittest.TestCase', 'lang.Runtime');
 
   /**
    * TestCase
@@ -25,7 +22,7 @@
         throw new PrerequisitesNotMetError('Process execution disabled', NULL, array('enabled'));
       }
     }
-   
+
     /**
      * Runs sourcecode in a new runtime
      *
@@ -67,7 +64,7 @@
     #[@test]
     public function loadLoadedLibrary() {
       $this->assertEquals(
-        '+OK No exception thrown', 
+        '+OK No exception thrown',
         $this->runInNewRuntime(Runtime::getInstance()->startupOptions()->withSetting('enable_dl', 1), '
           try {
             Runtime::getInstance()->loadLibrary("standard");
@@ -78,7 +75,7 @@
         ')
       );
     }
-      
+
     /**
      * Test loadLibrary() method
      *
@@ -86,7 +83,7 @@
     #[@test]
     public function loadNonExistantLibrary() {
       $this->assertEquals(
-        '+OK lang.ElementNotFoundException', 
+        '+OK lang.ElementNotFoundException',
         $this->runInNewRuntime(Runtime::getInstance()->startupOptions()->withSetting('enable_dl', 1), '
           try {
             Runtime::getInstance()->loadLibrary(":DOES-NOT-EXIST");
@@ -105,7 +102,7 @@
     #[@test]
     public function loadLibraryWithoutEnableDl() {
       $this->assertEquals(
-        '+OK lang.IllegalAccessException', 
+        '+OK lang.IllegalAccessException',
         $this->runInNewRuntime(Runtime::getInstance()->startupOptions()->withSetting('enable_dl', 0), '
           try {
             Runtime::getInstance()->loadLibrary("irrelevant");
@@ -151,14 +148,14 @@
     #[@test]
     public function shutdownHookRunOnScriptEnd() {
       $this->assertEquals(
-        '+OK exiting, +OK Shutdown hook run', 
+        '+OK exiting, +OK Shutdown hook run',
         $this->runInNewRuntime(Runtime::getInstance()->startupOptions(), '
           Runtime::getInstance()->addShutdownHook(newinstance("lang.Runnable", array(), "{
             public function run() {
               echo \'+OK Shutdown hook run\';
             }
           }"));
-          
+
           echo "+OK exiting, ";
         ')
       );
@@ -171,14 +168,14 @@
     #[@test]
     public function shutdownHookRunOnNormalExit() {
       $this->assertEquals(
-        '+OK exiting, +OK Shutdown hook run', 
+        '+OK exiting, +OK Shutdown hook run',
         $this->runInNewRuntime(Runtime::getInstance()->startupOptions(), '
           Runtime::getInstance()->addShutdownHook(newinstance("lang.Runnable", array(), "{
             public function run() {
               echo \'+OK Shutdown hook run\';
             }
           }"));
-          
+
           echo "+OK exiting, ";
           exit();
         ')
@@ -202,7 +199,6 @@
         $fatal= NULL;
         $fatal->error();
       ', 255);
-
       $this->assertEquals('+OK exiting', substr($out, 0, 11), $out);
       $this->assertEquals('+OK Shutdown hook run', substr($out, -21), $out);
     }
@@ -223,45 +219,8 @@
         echo "+OK exiting";
         xp::null()->error();
       ', 255);
-
       $this->assertEquals('+OK exiting', substr($out, 0, 11), $out);
       $this->assertEquals('+OK Shutdown hook run', substr($out, -21), $out);
-    }
-
-    /**
-     * Test memoryUsage() method
-     *
-     */
-    #[@test]
-    public function memoryUsage() {
-      $this->assertEquals(
-        Primitive::$INT, 
-        Type::forName(gettype(Runtime::getInstance()->memoryUsage()))
-      );
-    }
-
-    /**
-     * Test peakMemoryUsage() method
-     *
-     */
-    #[@test]
-    public function peakMemoryUsage() {
-      $this->assertEquals(
-        Primitive::$INT, 
-        Type::forName(gettype(Runtime::getInstance()->peakMemoryUsage()))
-      );
-    }
-
-    /**
-     * Test memoryLimit() method
-     *
-     */
-    #[@test]
-    public function memoryLimit() {
-      $this->assertEquals(
-        Primitive::$INT,
-        Type::forName(gettype(Runtime::getInstance()->memoryLimit()))
-      );
     }
   }
 ?>
