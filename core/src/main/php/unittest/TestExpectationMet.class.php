@@ -42,11 +42,11 @@
      * @return  string
      */
     public function toString() {
-      return (
-        $this->getClassName().
-        '(test= '.$this->test->getClassName().'::'.$this->test->getName().
-        sprintf(', time= %.3f seconds', $this->elapsed).
-        ')'
+      return sprintf(
+        '%s(test= %s, time= %.3f seconds)',
+        $this->getClassName(),
+        $this->test->getName(TRUE),
+        $this->elapsed
       );
     }
   }
