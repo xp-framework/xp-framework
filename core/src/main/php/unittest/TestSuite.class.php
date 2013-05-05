@@ -196,28 +196,31 @@
      * @return var values a traversable structure
      */
     protected function valuesFor($test, $annotation) {
-      if (!is_array($annotation)) {
+      if (!is_array($annotation)) {               // values("source")
         $source= $annotation;
         $args= array();
-      } else if (isset($annotation['source'])) {
+      } else if (isset($annotation['source'])) {  // values(source= "src" [, args= ...])
         $source= $annotation['source'];
         $args= isset($annotation['args']) ? $annotation['args'] : array();
-      } else {
+      } else {                                    // values([1, 2, 3])
         return $annotation;
       }
-      // values(source= "src" [, args= ...]) vs. values("source")
 
       // Route "ClassName::methodName" -> static method of the given class,
-      // and "method" -> the run test's instance method
-      if (FALSE !== ($p= strpos($source, '::'))) {
-        $class= substr($source, 0, $p);
-        return XPClass::forName(strstr($class, '.') ? $class : xp::nameOf($class))
-          ->getMethod(substr($source, $p+ 2))
-          ->invoke(NULL, $args)
-        ;
-      } else {
+      // "self::method" -> static method of the test class, and "method" 
+      // -> the run test's instance method
+      if (FALSE === ($p= strpos($source, '::'))) {
         return $test->getClass()->getMethod($source)->invoke($test, $args);
       }
+      $ref= substr($source, 0, $p);
+      if ('self' === $ref) {
+        $class= $test->getClass();
+      } else if (strstr($ref, '.')) {
+        $class= XPClass::forName($ref);
+      } else {
+        $class= XPClass::forName(xp::nameOf($ref));
+      }
+      return $class->getMethod(substr($source, $p+ 2))->invoke(NULL, $args);
     }
 
     /**

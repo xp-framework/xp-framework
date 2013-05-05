@@ -177,6 +177,28 @@
     }
 
     /**
+     * Tests "self" reference source
+     *
+     */
+    #[@test]
+    public function local_value_source_with_self() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public $values= array();
+
+        public static function range() {
+          return array(1, 2, 3);
+        }
+
+        #[@test, @values("self::range")]
+        public function fixture($value) {
+          $this->values[]= $value;
+        }
+      }');
+      $this->suite->runTest($test);
+      $this->assertEquals(array(1, 2, 3), $test->values);
+    }
+
+    /**
      * Tests counting successes
      *
      */
