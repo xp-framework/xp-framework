@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+RFCs
+~~~~
+- Implemented RFC #0267: Unittest parameterization implementation
+  (friebe)
+
 
 Version 5.9.0, released 2013-05-05
 ----------------------------------
