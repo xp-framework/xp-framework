@@ -63,10 +63,17 @@
      * @return string
      */
     public function getPattern() {
-      static $search= '/\{([\w]*)\}/';
-      static $replace= '(?P<$1>[%\w:\+\-\.]*)';
+      return '#^'.preg_replace('/\{([\w]*)\}/', '(?P<$1>[^/]+)', $this->path).'$#';
+    }
 
-      return '#^'.preg_replace($search, $replace, $this->path).'$#';
+    /**
+     * Get segments
+     *
+     * @param  string path
+     * @return [:string] segments
+     */
+    public function appliesTo($path) {
+      return preg_match($this->getPattern(), $path, $segments) ? $segments : NULL;
     }
 
     /**

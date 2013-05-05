@@ -10,7 +10,8 @@
    * Currency enumeration. Currencies are identified by their ISO 4217 
    * currency codes.
    *
-   * @see      http://www.xe.com/iso4217.php ISO 4217 Currency Code List
+   * @test  xp://net.xp_framework.unittest.util.CurrencyTest
+   * @see   http://www.xe.com/iso4217.php ISO 4217 Currency Code List
    */
   class Currency extends Enum {
     public static

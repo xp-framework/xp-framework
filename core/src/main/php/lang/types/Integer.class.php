@@ -12,5 +12,19 @@
    * Range: -2^31 - (2^31)- 1
    */
   class Integer extends Number {
+
+    /**
+     * ValueOf factory
+     *
+     * @param   string $value
+     * @return  self
+     * @throws  lang.IllegalArgumentException
+     */
+    public static function valueOf($value) {
+      if (is_int($value) || is_string($value) && strspn($value, '0123456789') === strlen($value)) {
+        return new self($value);
+      }
+      throw new IllegalArgumentException('Not an integer: '.$value);
+    }
   }
 ?>

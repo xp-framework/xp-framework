@@ -20,10 +20,10 @@
    *   util·Locale::setDefault(new util·Locale('de_DE'));
    * </code>
    *
-   * @see      http://ftp.ics.uci.edu/pub/ietf/http/related/iso639.txt
-   * @see      http://userpage.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
-   * @see      http://groups.google.com/groups?threadm=DREPPER.96Aug8030605%40i44d2.ipd.info.uni-karlsruhe.de#link1
-   * @purpose  Represent a locale
+   * @see   http://ftp.ics.uci.edu/pub/ietf/http/related/iso639.txt
+   * @see   http://userpage.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
+   * @see   http://groups.google.com/groups?threadm=DREPPER.96Aug8030605%40i44d2.ipd.info.uni-karlsruhe.de#link1
+   * @test  xp://net.xp_framework.unittest.util.LocaleTest
    */
   class util·Locale extends Object {
     public
@@ -66,7 +66,7 @@
      * @return  util.Locale
      */
     public static function getDefault() {
-      return new self(('C' == ($locale= setlocale(LC_ALL, NULL)) 
+      return new self(('C' == ($locale= setlocale(LC_CTYPE, 0)) 
         ? 'en_US'
         : $locale
       ));

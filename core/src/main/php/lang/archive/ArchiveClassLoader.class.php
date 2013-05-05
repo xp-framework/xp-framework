@@ -22,11 +22,9 @@
    *   $obj= $class->newInstance();
    * </code>
    *
-   * @test     xp://net.xp_framework.unittest.core.ArchiveClassLoaderTest
-   * @purpose  Load classes from an archive
-   * @see      xp://lang.ClassLoader
-   * @see      xp://lang.archive.Archive
-   * @ext      tokenize
+   * @test  xp://net.xp_framework.unittest.core.ArchiveClassLoaderTest
+   * @see   xp://lang.ClassLoader
+   * @see   xp://lang.archive.Archive
    */
   class ArchiveClassLoader extends AbstractClassLoader {
     protected $archive= NULL;
@@ -74,11 +72,9 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResource($string) {
-      if (FALSE !== ($r= file_get_contents($this->archive.$string))) {
-        return $r;
-      }
-
-      return raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
+      if (FALSE !== ($r= file_get_contents($this->archive.$string))) return $r;
+      xp::gc(__FILE__);
+      raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
     }
     
     /**

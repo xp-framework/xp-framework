@@ -258,7 +258,10 @@
      */
     public function getExecutable() {
       if (NULL === $this->executable) {     // Lazy-init
-        $this->executable= Process::getProcessById(getmypid(), getenv('XP_RT'));        
+        $this->executable= Process::getProcessById(
+          getmypid(),
+          defined('PHP_BINARY') ? constant('PHP_BINARY') : NULL
+        );
       }
       return $this->executable;
     }

@@ -9,8 +9,8 @@
   /**
    * Appender which appends data to a file
    *
-   * @see      xp://util.log.Appender
-   * @purpose  Appender
+   * @see   xp://util.log.Appender
+   * @test  xp://net.xp_framework.unittest.logging.FileAppenderTest
    */  
   class FileAppender extends Appender {
     public 

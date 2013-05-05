@@ -19,8 +19,8 @@
    *   // ...
    * </code>
    *
-   * @see      xp://util.Hashmap
-   * @purpose  Iterator
+   * @see   xp://util.Hashmap
+   * @test  xp://net.xp_framework.unittest.util.HashmapIteratorTest
    */
   class HashmapIterator extends Object implements XPIterator {
     public

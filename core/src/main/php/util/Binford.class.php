@@ -7,10 +7,10 @@
   uses('peer.Header');
   
   /**
-   * This class has more power
+   * This class adds power to an application
    *
-   * @purpose  Add power to an application
-   * @see      http://www.binford.de/
+   * @test  xp://net.xp_framework.unittest.util.BinfordTest
+   * @see   http://www.binford.de/
    */
   class Binford extends Object { 
     public 
@@ -33,7 +33,8 @@
      * @throws  lang.IllegalArgumentException in case the parameter p contains an illegal value
      */
     public function setPoweredBy($p) {
-      if (!($x= log10($p / 6.1)) || (floor($x) != $x)) {
+      $x= log10($p / 61);
+      if (floor($x) !== $x) {
         throw new IllegalArgumentException($p.' not allowed');
       }
       $this->poweredBy= $p;

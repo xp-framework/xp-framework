@@ -60,12 +60,14 @@
     /**
      * Returns the number of key-value mappings in this map
      *
+     * @return int
      */
     public function size();
 
     /**
      * Returns true if this map contains no key-value mappings. 
      *
+     * @return  bool
      */
     public function isEmpty();
     

@@ -9,15 +9,19 @@
   /**
    * Result set
    *
-   * @purpose  Resultset wrapper
+   * @test xp://net.xp_framework.unittest.rdbms.tds.TdsBufferedResultSetTest
    */
   class TdsBufferedResultSet extends AbstractTdsResultSet {
     protected $records= array();
+    protected $offset= 0;
+    protected $length= 0;
 
     /**
      * Constructor
      *
-     * @param   resource handle
+     * @param   var result
+     * @param   [:var] fields
+     * @param   util.TimeZone tz
      */
     public function __construct($result, $fields, TimeZone $tz= NULL) {
       parent::__construct($result, $fields, $tz);
@@ -29,7 +33,7 @@
           $this->records[]= new SQLException('Failed reading rows', $e);
         }
       } while (1);
-      reset($this->records);
+      $this->length= sizeof($this->records);
     }
       
     /**
@@ -40,7 +44,10 @@
      * @throws  rdbms.SQLException
      */
     public function seek($offset) { 
-      throw new SQLException('Cannot seek to offset '.$offset);
+      if ($offset < 0 || $offset >= $this->length) {
+        throw new SQLException('Cannot seek to offset '.$offset.', out of bounds');
+      }
+      $this->offset= $offset;
     }
     
     /**
@@ -52,9 +59,9 @@
      * @return  var
      */
     public function next($field= NULL) {
-      if (FALSE === ($record= current($this->records))) return FALSE;
+      if ($this->offset >= $this->length) return FALSE;
       
-      next($this->records);
+      $record= $this->records[$this->offset++];
       if ($record instanceof SQLException) {
         throw $record;
       } else {

@@ -83,12 +83,16 @@
     /**
      * Reads from a stream
      *
-     * @param   int limit
+     * @param   int length
      * @return  string
      */
-    public function streamRead($limit) {
-      if (0 === $limit) return '';
-      $chunk= $this->stream->read($limit);
+    public function streamRead($length) {
+      if (0 === $length) return '';
+      $chunk= '';
+      while (strlen($chunk) < $length) {
+        if (0 == strlen($buf= $this->stream->read($length - strlen($chunk)))) break;
+        $chunk.= $buf;
+      }
       $this->position+= strlen($chunk);
       return $chunk;
     }

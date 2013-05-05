@@ -9,6 +9,7 @@
   /**
    * Interval enumeration
    *
+   * @test     xp://net.xp_framework.unittest.util.DateMathTest
    * @see      xp://util.DateMath
    * @purpose  Intervals
    */
@@ -20,7 +21,7 @@
       $HOURS,
       $MINUTES,
       $SECONDS;
-    
+
     static function __static() {
       self::$YEAR=    new self(0, 'year');
       self::$MONTH=   new self(1, 'month');

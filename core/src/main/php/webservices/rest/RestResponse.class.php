@@ -64,6 +64,15 @@
     }
 
     /**
+     * Get data as stream
+     *
+     * @return  io.streams.InputStream
+     */
+    public function stream() {
+      return $this->input;
+    }
+
+    /**
      * Get headers
      *
      * @return  [:var]

@@ -15,9 +15,8 @@
    * <code>
    *   class TextObserver extends Object implements Observer {
    *
-   *     function update($obs, $arg= NULL) {
-   *       echo __CLASS__, ' was notified of update in value, is now ';
-   *       var_dump($obs->getValue());
+   *     public function update($obs, $arg= NULL) {
+   *       Console::writeLine(__CLASS__, ' was notified of update in value, is now ', $obs->getValue());
    *     }
    *   }
    * </code>
@@ -27,20 +26,19 @@
    *   uses('util.Observable');
    *
    *   class ObservableValue extends Observable {
-   *     var
-   *       $n= 0;
+   *     private $n= 0;
    *     
-   *     function __construct($n) {
+   *     public function __construct($n) {
    *       $this->n= $n;
    *     }
    *     
-   *     function setValue($n) {
+   *     public function setValue($n) {
    *       $this->n= $n;
-   *       self::setChanged();
-   *       self::notifyObservers();
+   *       $this->setChanged();
+   *       $this->notifyObservers();
    *     }
    *     
-   *     function getValue() {
+   *     public function getValue() {
    *       return $this->n;
    *     }
    *   }
@@ -59,8 +57,8 @@
    * argument and - if existant - the argument passed to notifyObservers as 
    * its second.
    *
-   * @see      http://www.javaworld.com/javaworld/jw-10-1996/jw-10-howto.html
-   * @purpose  Base class
+   * @see   http://www.javaworld.com/javaworld/jw-10-1996/jw-10-howto.html
+   * @test  xp://net.xp_framework.unittest.util.ObservableTest
    */
   class Observable extends Object {
     public

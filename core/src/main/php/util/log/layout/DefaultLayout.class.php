@@ -9,6 +9,7 @@
   /**
    * Default layout
    *
+   * @test  xp://net.xp_framework.unittest.logging.DefaultLayoutTest
    */
   class DefaultLayout extends util·log·Layout {
   

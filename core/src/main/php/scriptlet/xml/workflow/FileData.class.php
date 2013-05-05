@@ -103,6 +103,20 @@
     public function getSize() {
       return $this->size;
     }
-
+    
+    /**
+     * Indicates whether a given value is equal to this file data object.
+     *
+     * @param   var cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return 
+        ($cmp instanceof self) && 
+        ($this->getName() === $cmp->getName()) &&
+        ($this->getType() === $cmp->getType()) &&
+        ($this->getSize() === $cmp->getSize())
+      ;
+    }
   }
 ?>

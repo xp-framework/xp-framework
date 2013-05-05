@@ -22,6 +22,15 @@
     }
 
     /**
+     * Tests lang.Generic
+     *
+     */
+    #[@test]
+    public function lang_generic_interface_exists() {
+      $this->assertTrue(interface_exists('lang\Generic', FALSE));
+    }
+
+    /**
      * Tests unittest.TestCase
      *
      */

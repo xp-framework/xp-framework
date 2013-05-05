@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+
+Version 5.9.0, released 2013-05-05
+----------------------------------
+Git commit: 29f823fdb1224bfe0c4fb288e904046bff1c0f42
+
 Heads up!
 ~~~~~~~~~
 - Changed newinstance() to invoke autoloading mechanism, see issue #277
@@ -60,6 +65,10 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0208: Coding standards update: PHP 5.3 namespaces
+  (friebe)
+- Implemented RFC #0270: XPI - Install XP Modules (pull request #287)
+  (friebe)
 - Implemented RFC #0265: Bump PHP requirement to PHP 5.3.0 minimum
   (friebe)
 - Implemented RFC #0210: Separate contrib & framework versions
@@ -81,6 +90,25 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed warnings raised inside AbstractClassLoader::loadClass0() not
+  being properly attached to the CNFE raised inside.
+  (friebe)
+- Fixed issue #293 - RestDeserializerConversionTest fails with fatal 
+  error on PHP 5.3.3
+  (friebe, kiesel)
+- Fixed issue #292 - Binford::setPoweredBy() failing when given zero (0)
+  (friebe)
+- Fixed MimeType::getByFilename() returning incorrect mine type for
+  .tar.gz files
+  (friebe)
+- Ensure AbstractDeferredInvokationHandler::initialize() returns a 
+  lang.Generic instance
+  (friebe)
+- Fixed issue #291 - Namespaced class doesn't support class aliasing
+  (friebe)
+- Fixed Process::getProcessById() not to yield PHP path for any PID 
+  given - move the code to lang.Runtime!
+  (friebe)
 - Fixed bug with newinstance inside namespaced classes. See bug #276
   (friebe)
 - Fixed Reflection bugs for abstract methods in generic classes. See
@@ -97,6 +125,11 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added ability to handle multiple file uploads with ToFileData caster.
+  See pull request #289
+  (treuter)
+- Added webservices.rest.RestResponse::stream() method
+  (friebe)
 - Added string casting support to text.regex.Pattern
   (friebe)
 - Added pattern Argument Matcher for Mocking Framework - pull request #268
@@ -146,10 +179,47 @@ Version 5.8.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Features
+~~~~~~~~
+- Changed REST routing mechanism to allow any character in path segments.
+  See pull request #288.
+  (friebe)
+
+
+Version 5.8.13, released 2013-04-13
+-----------------------------------
+Git commit: 528117f85242889ef7b588801aaa49e6df90043d
+
+Heads up!
+~~~~~~~~~
+- Fixed issue #286: PHP 5.4.14 and PHP 5.3.24 support; a workaround for
+  https://bugs.php.net/bug.php?id=64370
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
+- Fixed connect() method for mysql+i driver
+  (friebe)
+- Fixed issues #280 and #281 - TDS variant, nvarchar and length fixes
+  (friebe)
 - Fixed issue #278 - Missing TdsV7 T_VARIANT subtype implementations
   (friebe)
+
+Features
+~~~~~~~~
+- Added serialization for lang.types wrapper types to REST serializer
+  See pull request #285.
+  (friebe)
+- Added exception mapping / marshaller accessors to RestContext, see 
+  pull request #284.
+  (ilankin, friebe)
+- Implemented seeking in rdbms.mysqlx.MySqlxBufferedResultSet (for 
+  mysql+x driver, motivated by issue #282).
+  (friebe)
+- Implemented seeking in rdbms.tds.TdsBufferedResultSet (for mssql+x and
+  sybase+x drivers, motivated by issue #282).
+  (friebe)
+
 
 Version 5.8.12, released 2013-03-18
 -----------------------------------

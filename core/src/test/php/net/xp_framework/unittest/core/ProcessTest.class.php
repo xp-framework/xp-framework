@@ -14,12 +14,21 @@
   );
 
   /**
-   * TestCase
+   * TestCase for Process class
    *
-   * @see      xp://lang.Process
-   * @purpose  Unittest
+   * @see   xp://lang.Process
    */
   class ProcessTest extends TestCase {
+
+    /**
+     * Skips tests if process execution has been disabled.
+     */
+    #[@beforeClass]
+    public static function verifyProcessExecutionEnabled() {
+      if (Process::$DISABLED) {
+        throw new PrerequisitesNotMetError('Process execution disabled', NULL, array('enabled'));
+      }
+    }
   
     /**
      * Return executable name

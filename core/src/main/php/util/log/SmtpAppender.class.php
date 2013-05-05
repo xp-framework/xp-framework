@@ -9,8 +9,8 @@
   /**
    * Appender which sends log to an email address
    *
-   * @see      xp://util.log.Appender
-   * @purpose  Appender
+   * @see   xp://util.log.Appender
+   * @test  xp://net.xp_framework.unittest.logging.SmtpAppenderTest
    */  
   class SmtpAppender extends Appender {
     public 
@@ -41,6 +41,16 @@
     public function __destruct() {
       $this->finalize();
     }
+
+    /**
+     * Sends email
+     *
+     * @param  string $prefix
+     * @param  string $content
+     */
+    protected function send($prefix, $content) {
+      mail($this->email, $prefix, $content);
+    }
     
     /**
      * Append data
@@ -50,11 +60,10 @@
     public function append(LoggingEvent $event) {
       $body= $this->layout->format($event);
       if ($this->sync) {
-        mail($this->email, $this->prefix, $body);
+        $this->send($this->prefix, $body);
       } else {
         $this->_data[]= $body;
       }
-
     }
     
     /**
@@ -70,7 +79,7 @@
         $body.= $line."\n";
       }
 
-      mail($this->email, $this->prefix.' ['.(sizeof($this->_data)).' entries]', $body);
+      $this->send($this->prefix.' ['.(sizeof($this->_data)).' entries]', $body);
     }
   }
 ?>

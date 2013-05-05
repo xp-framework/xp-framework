@@ -79,12 +79,45 @@
     }
 
     /**
+     * Test nvarchar type
+     *
+     */
+    #[@test]
+    public function selectNVarchar() {
+      $this->assertEquals('Test', $this->db()->query('select cast("Test" as nvarchar) as value')->next('value'));
+    }
+
+    /**
+     * Test nvarchar type
+     *
+     */
+    #[@test]
+    public function selectNVarchars() {
+      $this->assertEquals(
+        array('one' => 'Test1', 'two' => 'Test2'),
+        $this->db()->query('select cast("Test1" as nvarchar) as one, cast("Test2" as nvarchar) as two')->next()
+      );
+    }
+
+    /**
      * Test SQL_VARIANT type
      *
      */
     #[@test]
     public function selectVarcharVariant() {
       $this->assertEquals('Test', $this->db()->query('select cast("Test" as sql_variant) as value')->next('value'));
+    }
+
+    /**
+     * Test SQL_VARIANT type
+     *
+     */
+    #[@test]
+    public function selectVarcharVariants() {
+      $this->assertEquals(
+        array('one' => 'Test1', 'two' => 'Test2'), 
+        $this->db()->query('select cast("Test1" as sql_variant) as one, cast("Test2" as sql_variant) as two')->next()
+      );
     }
 
     /**
@@ -103,6 +136,18 @@
     #[@test]
     public function selectDecimalVariant() {
       $this->assertEquals(1.2, $this->db()->query('select cast(1.2 as sql_variant) as value')->next('value'));
+    }
+
+    /**
+     * Test SQL_VARIANT type. Ensure we don't read too many, and just enough bytes:)
+     *
+     */
+    #[@test]
+    public function selectNumericVariantWithFollowingVarchar() {
+      $this->assertEquals(
+        array('n' => 10, 'v' => 'Test'),
+        $this->db()->query('select cast(convert(numeric, 10) as sql_variant) as n, "Test" as v')->next()
+      );
     }
 
     /**

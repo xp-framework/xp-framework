@@ -118,10 +118,21 @@
     public function classesEqualForSameInterfaceList() {
       $c1= $this->proxyClassFor(array($this->iteratorClass));
       $c2= $this->proxyClassFor(array($this->iteratorClass));
-      $c3= $this->proxyClassFor(array($this->iteratorClass, $this->observerClass));
 
       $this->assertEquals($c1, $c2);
-      $this->assertNotEquals($c1, $c3);
+    }
+
+    /**
+     * Tests calling getProxyClass() twice with the same interface list
+     * will result in the same proxy class
+     *
+     */
+    #[@test]
+    public function classesNotEqualForDifferingInterfaceList() {
+      $c1= $this->proxyClassFor(array($this->iteratorClass));
+      $c2= $this->proxyClassFor(array($this->iteratorClass, $this->observerClass));
+
+      $this->assertNotEquals($c1, $c2);
     }
 
     /**
@@ -193,6 +204,18 @@
       $this->proxyInstanceFor(array(XPClass::forName('lang.Object')));
     }
     
+    /**
+     * Tests proxies can not be created for classes, only for interfaces
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function cannotCreateProxiesForClassesAsSecondArg() {
+      $this->proxyInstanceFor(array(
+        XPClass::forName('util.XPIterator'),
+        XPClass::forName('lang.Object')
+      ));
+    }
+
     /**
      * Check that implementing two interfaces that declare a common
      * method does not issue a fatal error.

@@ -9,10 +9,12 @@
   /**
    * Result set
    *
-   * @purpose  Resultset wrapper
+   * @test  xp://net.xp_framework.unittest.rdbms.mysql.MySqlxBufferedResultSetTest
    */
   class MySqlxBufferedResultSet extends AbstractMysqlxResultSet {
     protected $records= array();
+    protected $offset= 0;
+    protected $length= 0;
 
     /**
      * Constructor
@@ -24,7 +26,7 @@
       while (NULL !== ($record= $this->handle->fetch($this->fields))) {
         $this->records[]= $record;
       }
-      reset($this->records);
+      $this->length= sizeof($this->records);
     }
       
     /**
@@ -35,7 +37,10 @@
      * @throws  rdbms.SQLException
      */
     public function seek($offset) { 
-      throw new SQLException('Cannot seek to offset '.$offset);
+      if ($offset < 0 || $offset >= $this->length) {
+        throw new SQLException('Cannot seek to offset '.$offset.', out of bounds');
+      }
+      $this->offset= $offset;
     }
     
     /**
@@ -47,10 +52,9 @@
      * @return  var
      */
     public function next($field= NULL) {
-      if (FALSE === ($record= current($this->records))) return FALSE;
+      if ($this->offset >= $this->length) return FALSE;
       
-      next($this->records);
-      return $this->record($record, $field);
+      return $this->record($this->records[$this->offset++], $field);
     }
     
     /**

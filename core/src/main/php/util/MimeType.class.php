@@ -92,7 +92,8 @@
   /**
    * MIME Type
    *
-   * @see http://www.stalkpire.de/mime-types-liste.aspx
+   * @see   http://www.stalkpire.de/mime-types-liste.aspx
+   * @test  xp://net.xp_framework.unittest.util.MimeTypeTest
    */
   class MimeType extends Object {
   
@@ -224,13 +225,12 @@
       $parts= explode('.', strtolower($name));
       $i= sizeof($parts)- 1;
       $idx= '';
-      
-      while ($i > 0 && $idx= $idx.'.'.$parts[$i]) {
-        if (isset($map[$idx])) return $map[$idx];
+      $candidate= $default;
+      while ($i > 0 && $idx= '.'.$parts[$i].$idx) {
+        if (isset($map[$idx])) $candidate= $map[$idx];
         $i--;
       }
-      
-      return $default;
+      return $candidate;
     }
   }
 ?>

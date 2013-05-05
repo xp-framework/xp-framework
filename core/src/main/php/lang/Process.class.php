@@ -35,6 +35,12 @@
       $_proc  = NULL,
       $status = array();
 
+    public static $DISABLED;
+
+    static function __static() {
+      self::$DISABLED= (bool)strstr(ini_get('disable_functions'), 'proc_open');
+    }
+
     /**
      * Constructor
      *
@@ -50,9 +56,14 @@
         1 => array('pipe', 'w'),  // stdout
         2 => array('pipe', 'w')   // stderr
       );
-      
+
       // For `new self()` used in getProcessById()
       if (NULL === $command) return;
+
+      // Verify
+      if (self::$DISABLED) {
+        throw new IOException('Process execution has been disabled');
+      }
 
       // Check whether the given command is executable.
       $binary= self::resolve($command);
@@ -176,9 +187,7 @@
         if (!file_exists($proc= '/proc/'.$pid)) {
           throw new IllegalStateException('Cannot find executable in /proc');
         }
-        if (defined('PHP_BINARY')) {
-          $self->status['exe']= PHP_BINARY;
-        } else do {
+        do {
           foreach (array('/exe', '/file') as $alt) {
             if (!file_exists($proc.$alt)) continue;
             $self->status['exe']= readlink($proc.$alt);
@@ -189,9 +198,7 @@
         $self->status['command']= strtr(file_get_contents($proc.'/cmdline'), "\0", ' ');
       } else {
         try {
-          if (defined('PHP_BINARY')) {
-            $self->status['exe']= PHP_BINARY;
-          } else if ($exe) {
+          if ($exe) {
             $self->status['exe']= self::resolve($exe);
           } else if ($_= getenv('_')) {
             $self->status['exe']= self::resolve($_);
