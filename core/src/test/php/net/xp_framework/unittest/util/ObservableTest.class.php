@@ -1,9 +1,9 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
- 
+
   uses('unittest.TestCase', 'util.Observable');
 
   /**
@@ -21,19 +21,19 @@
     public static function defineObservable() {
       self::$observable= ClassLoader::defineClass('net.xp_framework.unittest.util.ObservableFixture', 'util.Observable', array(), '{
         private $value= 0;
-        
+
         public function setValue($value) {
           $this->value= $value;
           $this->setChanged();
           $this->notifyObservers();
         }
-        
+
         public function getValue() {
           return $this->value;
         }
       }');
     }
-    
+
     /**
      * Tests hasChanged() method
      */
