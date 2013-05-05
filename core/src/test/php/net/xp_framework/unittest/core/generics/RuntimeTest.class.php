@@ -29,7 +29,29 @@
     public function setUp() {
       $this->fixture= create('new net.xp_framework.unittest.core.generics.Lookup<String, TestCase>()');
     }
-  
+
+    /**
+     * Test class name
+     */
+    #[@test]
+    public function name() {
+      $this->assertTrue(class_exists(
+        'net·xp_framework·unittest·core·generics·Lookup··String¸TestCase',
+        FALSE
+      ));
+    }
+
+    /**
+     * Test class alias
+     */
+    #[@test]
+    public function alias() {
+      $this->assertTrue(class_exists(
+        'net\\xp_framework\\unittest\\core\\generics\\Lookup··String¸TestCase',
+        FALSE
+      ));
+    }
+
     /**
      * Test put() method succeeds with correct types
      *

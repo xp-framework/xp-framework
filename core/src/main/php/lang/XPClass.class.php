@@ -1194,6 +1194,7 @@
         unset($meta['class'][DETAIL_ANNOTATIONS]['generic']);
         xp::$meta[$qname]= $meta;
         xp::$cn[$name]= $qname;
+        class_alias($name, strtr($self->getName(), '.', '\\').'··'.substr($cn, 1));
       }
       
       return $name;
