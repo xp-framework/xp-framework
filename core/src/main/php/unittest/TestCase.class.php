@@ -29,12 +29,13 @@
     }
 
     /**
-     * Get Name
+     * Get this test cases' name
      *
+     * @param   bool compound whether to use compound format
      * @return  string
      */
-    public function getName() {
-      return $this->name;
+    public function getName($compound= FALSE) {
+      return $compound ? $this->getClassName().'::'.$this->name : $this->name;
     }
 
     /**
