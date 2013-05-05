@@ -196,16 +196,16 @@
      * @return var values a traversable structure
      */
     protected function valuesFor($test, $annotation) {
-      if (is_int(key($annotation))) return $annotation;
-
-      // values(source= "src" [, args= ...]) vs. values("source")
-      if (isset($annotation['source'])) {
+      if (!is_array($annotation)) {
+        $source= $annotation;
+        $args= array();
+      } else if (isset($annotation['source'])) {
         $source= $annotation['source'];
         $args= isset($annotation['args']) ? $annotation['args'] : array();
       } else {
-        $source= $annotation;
-        $args= array();
+        return $annotation;
       }
+      // values(source= "src" [, args= ...]) vs. values("source")
 
       // Route "ClassName::methodName" -> static method of the given class,
       // and "method" -> the run test's instance method
