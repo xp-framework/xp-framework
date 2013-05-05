@@ -7,7 +7,8 @@
   uses(
     'unittest.TestCase',
     'net.xp_framework.unittest.core.generics.TypeDictionary',
-    'net.xp_framework.unittest.core.generics.TypeLookup'
+    'net.xp_framework.unittest.core.generics.TypeLookup',
+    'net.xp_framework.unittest.core.generics.NSTypeLookup'
   );
 
   /**
@@ -139,6 +140,28 @@
       $this->assertEquals(
         array(XPClass::forName('lang.Type'), Primitive::$STRING), 
         this($fixture->getInterfaces(), 1)->genericArguments()
+      );
+    }
+
+    /**
+     * Test partially closed generic
+     */
+    #[@test]
+    public function partiallyClosed() {
+      $this->assertEquals(
+        Type::forName('net.xp_framework.unittest.core.generics.Lookup<lang.Type, string>'),
+        Type::forName('net.xp_framework.unittest.core.generics.TypeLookup<string>')->getParentclass()
+      );
+    }
+
+    /**
+     * Test partially closed generic
+     */
+    #[@test]
+    public function partiallyClosedNS() {
+      $this->assertEquals(
+        Type::forName('net.xp_framework.unittest.core.generics.NSLookup<lang.Type, string>'),
+        Type::forName('net.xp_framework.unittest.core.generics.NSTypeLookup<string>')->getParentclass()
       );
     }
   }
