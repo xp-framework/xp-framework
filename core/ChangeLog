@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+
+Version 5.9.0, released 2013-05-05
+----------------------------------
+Git commit: 29f823fdb1224bfe0c4fb288e904046bff1c0f42
+
 Heads up!
 ~~~~~~~~~
 - Changed newinstance() to invoke autoloading mechanism, see issue #277
