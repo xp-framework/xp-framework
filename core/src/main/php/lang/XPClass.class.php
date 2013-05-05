@@ -1009,8 +1009,16 @@
           throw new IllegalStateException($self->name);
         }
 
+        // Namespaced class
+        if (FALSE !== ($ns= strrpos($name, '\\'))) {
+          $decl= substr($name, $ns + 1);
+          $src= 'namespace '.substr($name, 0, $ns).';';
+        } else {
+          $decl= $name;
+          $src= '';
+        }
+
         // Replace source
-        $src= '';
         $annotation= NULL;
         $matches= array();
         $state= array(0);
@@ -1024,7 +1032,7 @@
               $src.= $tokens[$i][1].' ';
             } else if (T_CLASS === $tokens[$i][0] || T_INTERFACE === $tokens[$i][0]) {
               $meta['class'][DETAIL_GENERIC]= array($self->name, $arguments);
-              $src.= $tokens[$i][1].' '.$name;
+              $src.= $tokens[$i][1].' '.$decl;
               array_unshift($state, $tokens[$i][0]);
             }
             continue;
@@ -1035,9 +1043,9 @@
                 foreach (explode(',', $annotations['generic']['parent']) as $j => $placeholder) {
                   $xargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
                 }
-                $src.= ' extends '.strtr(self::createGenericType($self->getParentClass(), $xargs), '\\', '¦');
+                $src.= ' extends \\'.strtr(self::createGenericType($self->getParentClass(), $xargs), '\\', '¦');
               } else {
-                $src.= ' extends '.$tokens[$i+ 2][1];
+                $src.= ' extends \\'.$tokens[$i+ 2][1];
               }
             } else if (T_IMPLEMENTS === $tokens[$i][0]) {
               $src.= ' implements';
@@ -1172,7 +1180,7 @@
                 foreach (explode(',', $annotation[$counter]) as $j => $placeholder) {
                   $iargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
                 }
-                $src.= strtr(self::createGenericType(new XPClass(new ReflectionClass($tokens[$i][1])), $iargs), '\\', '¦');
+                $src.= '\\'.strtr(self::createGenericType(new XPClass(new ReflectionClass($tokens[$i][1])), $iargs), '\\', '¦');
               } else {
                 $src.= $tokens[$i][1];
               }
@@ -1194,7 +1202,7 @@
         unset($meta['class'][DETAIL_ANNOTATIONS]['generic']);
         xp::$meta[$qname]= $meta;
         xp::$cn[$name]= $qname;
-        class_alias($name, strtr($self->getName(), '.', '\\').'··'.substr($cn, 1));
+        if (!$ns) class_alias($name, strtr($self->getName(), '.', '\\').'··'.substr($cn, 1));
       }
       
       return $name;

@@ -5,16 +5,16 @@
  */
 
   uses(
-    'net.xp_framework.unittest.core.generics.Lookup',
+    'net.xp_framework.unittest.core.generics.NSLookup',
     'net.xp_framework.unittest.core.generics.AbstractDefinitionReflectionTest'
   );
 
   /**
-   * TestCase for definition reflection
+   * TestCase for definition reflection using namespaces
    *
-   * @see   xp://net.xp_framework.unittest.core.generics.Lookup
+   * @see   xp://net.xp_framework.unittest.core.generics.NSLookup
    */
-  class DefinitionReflectionTest extends AbstractDefinitionReflectionTest {
+  class NSDefinitionReflectionTest extends AbstractDefinitionReflectionTest {
     
     /**
      * Creates fixture, a Lookup class
@@ -22,7 +22,7 @@
      * @return  lang.XPClass
      */  
     protected function fixtureClass() {
-      return XPClass::forName('net.xp_framework.unittest.core.generics.Lookup');
+      return XPClass::forName('net.xp_framework.unittest.core.generics.NSLookup');
     }
 
     /**
@@ -31,7 +31,7 @@
      * @return  net.xp_framework.unittest.core.generics.AbstractDictionary<String, TestCase>
      */  
     protected function fixtureInstance() {
-      return create('new net.xp_framework.unittest.core.generics.Lookup<String, TestCase>()');
+      return create('new net.xp_framework.unittest.core.generics.NSLookup<String, TestCase>()');
     }
   }
 ?>

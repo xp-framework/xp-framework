@@ -8,6 +8,8 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed namespaced generic classes not being declared correctly
+  (friebe)
 - Fixed generic classes not being available by their namespaced versions
   (friebe)
 - Fixed issue #294: xpi upgrade just reinstalls existing version
