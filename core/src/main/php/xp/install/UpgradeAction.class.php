@@ -152,6 +152,8 @@ class UpgradeAction extends Action {
     $args= array($module->vendor.'/'.$module->name.'@'.$version);
     $r= $this->spawn(new RemoveAction())->perform($args);
     if (0 !== $r) return $r;
+
+    $args= array($module->vendor.'/'.$module->name.'@'.$target);
     $r= $this->spawn(new AddAction())->perform($args);
     if (0 !== $r) return $r;
     return 0;

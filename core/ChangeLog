@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Bugfixes
+~~~~~~~~
+- Fixed issue #294: xpi upgrade just reinstalls existing version
+  (friebe)
+
 RFCs
 ~~~~
 - Implemented RFC #0267: Unittest parameterization implementation
