@@ -24,7 +24,14 @@
      * @return  lang.XPClass
      */  
     protected abstract function fixtureClass();
-    
+
+    /**
+     * Creates fixture instance
+     *
+     * @return  var
+     */
+    protected abstract function fixtureInstance();
+
     /**
      * Creates fixture, a Lookup class
      *

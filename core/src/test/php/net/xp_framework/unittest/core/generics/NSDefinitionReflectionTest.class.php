@@ -28,8 +28,8 @@
     /**
      * Creates fixture instance
      *
-     * @return  net.xp_framework.unittest.core.generics.AbstractDictionary<String, TestCase>
-     */  
+     * @return  var
+     */
     protected function fixtureInstance() {
       return create('new net.xp_framework.unittest.core.generics.NSLookup<String, TestCase>()');
     }
