@@ -1038,6 +1038,12 @@
             continue;
           } else if (T_CLASS === $state[0]) {
             if (T_EXTENDS === $tokens[$i][0]) {
+              $i+= 2;
+              $parent= '';
+              while (T_WHITESPACE !== $tokens[$i][0]) {
+                $parent.= $tokens[$i][1];
+                $i++;
+              }
               if (isset($annotations['generic']['parent'])) {
                 $xargs= array();
                 foreach (explode(',', $annotations['generic']['parent']) as $j => $placeholder) {
@@ -1045,7 +1051,7 @@
                 }
                 $src.= ' extends \\'.self::createGenericType($self->getParentClass(), $xargs);
               } else {
-                $src.= ' extends \\'.$tokens[$i+ 2][1];
+                $src.= ' extends '.$parent;
               }
             } else if (T_IMPLEMENTS === $tokens[$i][0]) {
               $src.= ' implements';

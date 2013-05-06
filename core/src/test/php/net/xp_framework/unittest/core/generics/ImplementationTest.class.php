@@ -144,6 +144,28 @@
     }
 
     /**
+     * Test closed generic
+     */
+    #[@test]
+    public function closed() {
+      $this->assertEquals(
+        XPClass::forName('lang.Object'),
+        Type::forName('net.xp_framework.unittest.core.generics.ListOf<string>')->getParentclass()
+      );
+    }
+
+    /**
+     * Test closed generic
+     */
+    #[@test]
+    public function closedNS() {
+      $this->assertEquals(
+        XPClass::forName('lang.Object'),
+        Type::forName('net.xp_framework.unittest.core.generics.NSListOf<string>')->getParentclass()
+      );
+    }
+
+    /**
      * Test partially closed generic
      */
     #[@test]
