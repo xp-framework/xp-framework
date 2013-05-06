@@ -1040,7 +1040,7 @@
             if (T_EXTENDS === $tokens[$i][0]) {
               $i+= 2;
               $parent= '';
-              while (T_WHITESPACE !== $tokens[$i][0]) {
+              while (T_WHITESPACE !== $tokens[$i][0] && $i < $s) {
                 $parent.= $tokens[$i][1];
                 $i++;
               }
