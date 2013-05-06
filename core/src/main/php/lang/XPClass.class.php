@@ -1219,7 +1219,11 @@
         unset($meta['class'][DETAIL_ANNOTATIONS]['generic']);
         xp::$meta[$qname]= $meta;
         xp::$cn[$name]= $qname;
-        if (!$ns) class_alias($name, strtr($self->getName(), '.', '\\').'··'.substr($cn, 1));
+
+        // Create alias if no PHP namespace is present and a qualified name exists
+        if (!$ns && strstr($qname, '.')) {
+          class_alias($name, strtr($self->getName(), '.', '\\').'··'.substr($cn, 1));
+        }
       }
       
       return $name;
