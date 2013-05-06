@@ -1012,9 +1012,11 @@
         // Namespaced class
         if (FALSE !== ($ns= strrpos($name, '\\'))) {
           $decl= substr($name, $ns + 1);
-          $src= 'namespace '.substr($name, 0, $ns).';';
+          $namespace= substr($name, 0, $ns);
+          $src= 'namespace '.$namespace.';';
         } else {
           $decl= $name;
+          $namespace= NULL;
           $src= '';
         }
 
@@ -1040,10 +1042,12 @@
             if (T_EXTENDS === $tokens[$i][0]) {
               $i+= 2;
               $parent= '';
-              while (T_WHITESPACE !== $tokens[$i][0] && $i < $s) {
+              while ((T_STRING === $tokens[$i][0] || T_NS_SEPARATOR === $tokens[$i][0]) && $i < $s) {
                 $parent.= $tokens[$i][1];
                 $i++;
               }
+              $i--;
+              '\\' === $parent{0} || $parent= $namespace.'\\'.$parent;
               if (isset($annotations['generic']['parent'])) {
                 $xargs= array();
                 foreach (explode(',', $annotations['generic']['parent']) as $j => $placeholder) {
@@ -1181,14 +1185,21 @@
             }
           } else if (5 === $state[0]) {             // Implements (class), Extends (interface)
             if (T_STRING === $tokens[$i][0]) {
+              $rel= '';
+              while ((T_STRING === $tokens[$i][0] || T_NS_SEPARATOR === $tokens[$i][0]) && $i < $s) {
+                $rel.= $tokens[$i][1];
+                $i++;
+              }
+              $i--;
+              '\\' === $rel{0} || $rel= $namespace.'\\'.$rel;
               if (isset($annotation[$counter])) {
                 $iargs= array();
                 foreach (explode(',', $annotation[$counter]) as $j => $placeholder) {
                   $iargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
                 }
-                $src.= '\\'.self::createGenericType(new XPClass(new ReflectionClass($tokens[$i][1])), $iargs);
+                $src.= '\\'.self::createGenericType(new XPClass(new ReflectionClass($rel)), $iargs);
               } else {
-                $src.= $tokens[$i][1];
+                $src.= $rel;
               }
               $counter++;
               continue;

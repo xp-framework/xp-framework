@@ -8,7 +8,7 @@ use lang\Generic;
  *
  */
 #[@generic(self= 'K, V', parent= 'K, V')]
-class NSLookup extends AbstractDictionary {
+class NSLookup extends NSAbstractDictionary {
   protected $elements= array();
   
   /**
