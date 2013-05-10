@@ -68,6 +68,11 @@ class UpgradeAction extends Action {
    * @return int exit code
    */
   public function perform($args) {
+    if (empty($args)) {
+      Console::$err->writeLine('*** Missing argument #1: Module name');
+      return 2;
+    }
+
     sscanf($args[0], '%[^@]@%s', $name, $version);
     $module= Module::valueOf($name);
 

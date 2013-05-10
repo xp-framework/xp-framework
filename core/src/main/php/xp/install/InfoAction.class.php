@@ -81,16 +81,24 @@ class InfoAction extends Action {
     $cwd= new FileCollection('.');
 
     // Parse args
+    $i= 1;
     if ('-r' === $args[0]) {
       $remote= true;
       array_shift($args);
+      $i++;
     } else if ('-i' === $args[0]) {
       $remote= false;
       array_shift($args);
+      $i++;
       $installed= new File($args[0].'.json');
     } else {
       $installed= new File($args[0].'.json');
       $remote= !$installed->exists();
+    }
+
+    if (empty($args)) {
+      Console::$err->writeLine('*** Missing argument #', $i, ': Module name');
+      return 2;
     }
 
     sscanf(rtrim($args[0], '/'), '%[^@]@%s', $name, $version);
