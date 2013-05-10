@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses('unittest.TestCase');
@@ -13,7 +13,7 @@
    */
   class TestVariation extends TestCase {
     protected $base= NULL;
-      
+
     /**
      * Constructor
      *
