@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+
+Version 5.9.1, released 2013-05-10
+----------------------------------
+Git commit: 37564449c361349deae8bd1027f502d0252c606f
+
 Bugfixes
 ~~~~~~~~
 - Fixed namespaced generic classes not being declared correctly
