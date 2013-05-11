@@ -396,8 +396,8 @@
      * Test assertInstanceOf()
      *
      */    
-    #[@test]
-    public function hashIsInstanceOfArray() {
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function hashIsNotInstanceOfArray() {
       $this->assertInstanceOf('array', array('color' => 'green'));
     }
 

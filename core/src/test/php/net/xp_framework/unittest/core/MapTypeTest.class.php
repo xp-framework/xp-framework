@@ -143,6 +143,15 @@
     }
 
     /**
+     * Test isInstance() method
+     *
+     */
+    #[@test]
+    public function arrayIsNotAnInstanceOfVarMap() {
+      $this->assertFalse(MapType::forName('[:var]')->isInstance(array(1, 2, 3)));
+    }
+
+    /**
      * Test isAssignableFrom() method on strings
      *
      */
