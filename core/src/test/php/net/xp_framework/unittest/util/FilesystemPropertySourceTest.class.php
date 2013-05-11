@@ -22,7 +22,7 @@
     protected $fixture;
 
     public function setUp() {
-      $tempDir= System::tempDir();
+      $tempDir= realpath(System::tempDir());
       $this->fixture= new FilesystemPropertySource($tempDir);
 
       // Create a temporary ini file
