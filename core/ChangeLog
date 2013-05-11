@@ -6,6 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Bugfixes
+~~~~~~~~
+- Fixed issue #297: ArrayType and MapType's isInstance() methods
+  (friebe)
 
 Version 5.9.1, released 2013-05-10
 ----------------------------------
