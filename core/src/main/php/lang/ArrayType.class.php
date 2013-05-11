@@ -71,8 +71,8 @@
       if (!is_array($obj)) return FALSE;
 
       $c= $this->componentType();
-      foreach ($obj as $element) {
-        if (!$c->isInstance($element)) return FALSE;
+      foreach ($obj as $k => $element) {
+        if (!is_int($k) || !$c->isInstance($element)) return FALSE;
       }
       return TRUE;
     }

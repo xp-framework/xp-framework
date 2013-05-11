@@ -107,6 +107,15 @@
     }
 
     /**
+     * Test isInstance() method
+     *
+     */
+    #[@test]
+    public function mapIsNotAnInstanceOfArray() {
+      $this->assertFalse(ArrayType::forName('var[]')->isInstance(array('Hello' => 'World')));
+    }
+
+    /**
      * Test isAssignableFrom() method on strings
      *
      */
