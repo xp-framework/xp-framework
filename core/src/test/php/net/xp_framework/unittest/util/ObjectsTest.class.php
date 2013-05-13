@@ -34,7 +34,7 @@
      */
     public function arrays() {
       return array(
-        array(array()), array(array(1, 2, 3))
+        array(array()), array(array(1, 2, 3)), array(array(NULL, NULL))
       );
     }
 

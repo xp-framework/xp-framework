@@ -24,7 +24,7 @@
       } else if (is_array($a)) {
         if (!is_array($b) || sizeof($a) !== sizeof($b)) return FALSE;
         foreach ($a as $key => $val) {
-          if (!isset($b[$key]) || !self::equal($val, $b[$key])) return FALSE;
+          if (!array_key_exists($key, $b) || !self::equal($val, $b[$key])) return FALSE;
         }
         return TRUE;
       } else {
