@@ -11,6 +11,12 @@ Bugfixes
 - Fixed issue #297: ArrayType and MapType's isInstance() methods
   (friebe)
 
+Features
+~~~~~~~~
+- Started rewriting tests using foreach with fixtures to use `@values`
+  (friebe)
+
+
 Version 5.9.1, released 2013-05-10
 ----------------------------------
 Git commit: 37564449c361349deae8bd1027f502d0252c606f
