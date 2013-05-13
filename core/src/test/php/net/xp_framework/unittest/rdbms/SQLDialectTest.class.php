@@ -27,7 +27,6 @@
     const MYSQL= 'mysql';
   
     protected $conn= array();
-    protected $dialectClass= array();
       
     /**
      * Fill conn and dialectClass members
@@ -35,9 +34,7 @@
     public function __construct($name) {
       parent::__construct($name);
       $this->conn[self::MYSQL]= new MySQLConnection(new DSN('mysql://localhost:3306/'));
-      $this->dialectClass[self::MYSQL]= 'rdbms.mysql.MysqlDialect';
       $this->conn[self::SYBASE]= new SybaseConnection(new DSN('sybase://localhost:1999/'));
-      $this->dialectClass[self::SYBASE]= 'rdbms.sybase.SybaseDialect';
     }
 
     /**
