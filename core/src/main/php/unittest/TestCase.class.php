@@ -6,18 +6,17 @@
 
   uses(
     'unittest.AssertionFailedError',
-    'unittest.PrerequisitesNotMetError'
+    'unittest.PrerequisitesNotMetError',
+    'util.Objects'
   );
 
   /**
-   * Test case
+   * Test case is the base class for all unittests
    *
-   * @see      php://assert
-   * @purpose  Base class
+   * @see  php://assert
    */
   class TestCase extends Object {
-    public
-      $name     = '';
+    public $name= '';
       
     /**
      * Constructor
@@ -148,27 +147,6 @@
       }
     }
     
-    
-    /**
-     * Compare two values
-     *
-     * @param   var a
-     * @param   var b
-     * @return  bool TRUE if the two values are equal, FALSE otherwise
-     */
-    protected function _compare($a, $b) {
-      if (is_array($a)) {
-        if (!is_array($b) || sizeof($a) != sizeof($b)) return FALSE;
-
-        foreach (array_keys($a) as $key) {
-          if (!$this->_compare($a[$key], $b[$key])) return FALSE;
-        }
-        return TRUE;
-      }
-      
-      return $a instanceof Generic ? $a->equals($b) : $a === $b;
-    }
-
     /**
      * Assert that two values are equal
      *
@@ -177,7 +155,7 @@
      * @param   string error default 'notequal'
      */
     public function assertEquals($expected, $actual, $error= 'equals') {
-      if (!$this->_compare($expected, $actual)) {
+      if (!Objects::equal($expected, $actual)) {
         $this->fail($error, $actual, $expected);
       }
     }
@@ -190,7 +168,7 @@
      * @param   string error default 'equal'
      */
     public function assertNotEquals($expected, $actual, $error= '!equals') {
-      if ($this->_compare($expected, $actual)) {
+      if (Objects::equal($expected, $actual)) {
         $this->fail($error, $actual, $expected);
       }
     }
