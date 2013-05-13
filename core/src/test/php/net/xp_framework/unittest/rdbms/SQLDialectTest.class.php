@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: DBXmlGeneratorTest.class.php 9200 2007-01-08 21:55:03Z friebe $ 
+ * $Id$
  */
 
   uses(
@@ -20,39 +20,34 @@
   /**
    * TestCase
    *
-   * @see      rdbms.criterion.Projections
-   * @purpose  Unit Tests
+   * @see  xp://rdbms.SQLDialect
    */
   class SQLDialectTest extends TestCase {
     const SYBASE= 'sybase';
     const MYSQL=  'mysql';
   
-    public
-      $conn=         array(),
-      $dialectClass= array(),
-      $peer=         NULL;
+    protected $conn= array();
+    protected $dialectClass= array();
       
     /**
      * Sets up a Database Object for the test
      *
      */
     public function setUp() {
-      $this->conn[self::MYSQL]=  new MySQLConnection(new DSN('mysql://localhost:3306/'));
-      $this->dialectClass[self::MYSQL]=  'rdbms.mysql.MysqlDialect';
-
+      $this->conn[self::MYSQL]= new MySQLConnection(new DSN('mysql://localhost:3306/'));
+      $this->dialectClass[self::MYSQL]= 'rdbms.mysql.MysqlDialect';
       $this->conn[self::SYBASE]= new SybaseConnection(new DSN('sybase://localhost:1999/'));
       $this->dialectClass[self::SYBASE]= 'rdbms.sybase.SybaseDialect';
-
-      $this->peer= Job::getPeer();
     }
     
     /**
      * helper function to test input to makeJoinBy
      *
-     * @param util.collections.HashTable[] conditions
-     * @param string[] asserts
+     * @param  var[] conditions
+     * @param  var[] asserts
+     * @throws unittest.AssertionFailedError
      */
-    private function assertJoin(Array $conditions, Array $asserts) {
+    private function assertJoin(array $conditions, array $asserts) {
       foreach (array_keys($this->conn) as $connName) {
         $dialect= $this->conn[$connName]->getFormatter()->dialect;
         if (!array_key_exists($connName, $asserts)) throw new AssertionFailedError('test for '.$connName.' does not exist in test');
@@ -62,10 +57,9 @@
     
     /**
      * test formatter for connection
-     *
      */
     #[@test]
-    function getFormatterTest() {
+    public function getFormatterTest() {
       foreach (array_keys($this->conn) as $connName) {
         $this->assertClass(
           $this->conn[$connName]->getFormatter(),
@@ -76,10 +70,9 @@
 
     /**
      * test dialect interface for formatter
-     *
      */
     #[@test]
-    function dialectInterfaceTest() {
+    public function dialectInterfaceTest() {
       foreach (array_keys($this->conn) as $connName) {
         $this->assertTrue($this->conn[$connName]->getFormatter()->dialect instanceof SQLDialect);
       }
@@ -87,10 +80,9 @@
 
     /**
      * test dialect for formatter
-     *
      */
     #[@test]
-    function dialectTest() {
+    public function dialectTest() {
       foreach (array_keys($this->conn) as $connName) {
         $this->assertClass($this->conn[$connName]->getFormatter()->dialect, $this->dialectClass[$connName]);
       }
@@ -98,10 +90,9 @@
 
     /**
      * test function formatter
-     *
      */
     #[@test]
-    function functionTest() {
+    public function functionTest() {
       foreach (array_keys($this->conn) as $connName) {
         $dialect= $this->conn[$connName]->getFormatter()->dialect;
         $this->assertEquals('pi()', $dialect->formatFunction(new SQLFunction('pi', '%s')));
@@ -115,11 +106,10 @@
     }
 
     /**
-     * test function formatter
-     *
+     * test date formatter
      */
     #[@test]
-    function datepartTest() {
+    public function datepartTest() {
       foreach (array_keys($this->conn) as $connName) {
         $dialect= $this->conn[$connName]->getFormatter()->dialect;
         $this->assertEquals('month', $dialect->datepart('month'));
@@ -137,7 +127,7 @@
      *
      */
     #[@test]
-    function datatypeTest() {
+    public function datatypeTest() {
       foreach (array_keys($this->conn) as $connName) {
         $dialect= $this->conn[$connName]->getFormatter()->dialect;
         $this->assertEquals('int', $dialect->datatype('int'));
@@ -152,10 +142,9 @@
 
     /**
      * test join formatter
-     *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    function joinMinimumTest() {
+    public function joinMinimumTest() {
       $asserts= array(
         self::MYSQL  => '',
         self::SYBASE => '',
@@ -172,7 +161,7 @@
      *
      */
     #[@test]
-    function joinTwoTablesTest() {
+    public function joinTwoTablesTest() {
       $asserts= array(
         self::MYSQL  => 'table0 as t0 LEFT OUTER JOIN table1 as t1 on (t0.id1_1 = t0.id1_1 and t0.id1_2 = t0.id1_2) where ',
         self::SYBASE => 'table0 as t0, table1 as t1 where t0.id1_1 *= t0.id1_1 and t0.id1_2 *= t0.id1_2 and ',
@@ -193,10 +182,9 @@
 
     /**
      * test join formatter
-     *
      */
     #[@test]
-    function joinThreeTablesTest() {
+    public function joinThreeTablesTest() {
       $asserts= array(
         self::MYSQL  => 'table0 as t0 LEFT OUTER JOIN table1 as t1 on (t0.id1_1 = t0.id1_1 and t0.id1_2 = t0.id1_2) LEFT JOIN table2 as t2 on (t1.id2_1 = t2.id2_1) where ',
         self::SYBASE => 'table0 as t0, table1 as t1, table2 as t2 where t0.id1_1 *= t0.id1_1 and t0.id1_2 *= t0.id1_2 and t1.id2_1 *= t2.id2_1 and ',
@@ -216,6 +204,5 @@
         $asserts
       );
     }
-
   }
 ?>
