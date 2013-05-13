@@ -6,17 +6,16 @@
 
   uses(
     'net.xp_framework.unittest.scriptlet.workflow.AbstractCasterTest',
-    'scriptlet.xml.workflow.casters.ToFloat'
+    'scriptlet.xml.workflow.casters.ToDouble'
   );
   
   /**
-   * Test the ToFloat caster
+   * Test the ToDouble caster
    *
-   * @deprecated The ToFloat caster is deprecated
    * @see  xp://net.xp_framework.unittest.scriptlet.workflow.AbstractCasterTest
-   * @see  xp://scriptlet.xml.workflow.casters.ToFloat
+   * @see  xp://scriptlet.xml.workflow.casters.ToDouble
    */
-  class ToFloatTest extends AbstractCasterTest {
+  class ToDoubleTest extends AbstractCasterTest {
 
     /**
      * Return the caster
@@ -24,7 +23,7 @@
      * @return  scriptlet.xml.workflow.casters.ParamCaster
      */
     protected function caster() {
-      return new ToFloat();
+      return new ToDouble();
     }
 
     /**
@@ -40,6 +39,14 @@
      */
     #[@test, @values(array(array('0.5', 0.5), array('-0.5', -0.5), array('.5', 0.5))]
     public function fractionalNumbers($input, $expect) {
+      $this->assertEquals($expect, $this->castValue($input), $input);
+    }
+
+    /**
+     * Test fractional numbers
+     */
+    #[@test, @values(array(array('0,5', 0.5), array('-0,5', -0.5), array(',5', 0.5))]
+    public function fractionalNumbersWithCommas($input, $expect) {
       $this->assertEquals($expect, $this->castValue($input), $input);
     }
 

@@ -9,7 +9,8 @@
   /**
    * Casts given values to floating point numbers
    *
-   * @purpose  Caster
+   * @deprecated Use ToDouble caster instead
+   * @test xp://net.xp_framework.unittest.scriptlet.workflow.ToFloatTest
    */
   class ToFloat extends ParamCaster {
   
@@ -18,8 +19,8 @@
      *
      * @see     php://intval
      * @see     xp://scriptlet.xml.workflow.casters.ParamCaster
-     * @param   array value
-     * @return  array value
+     * @param   string[] value
+     * @return  double[] value
      */
     public function castValue($value) {
       $return= array();
@@ -30,7 +31,6 @@
           $return[$k]= floatval(strtr($v, ',', '.'));
         }
       }
-
       return $return;
     }
   }

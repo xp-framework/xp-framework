@@ -12,16 +12,15 @@
   /**
    * Test the ToInteger caster
    *
-   * @see       xp://net.xp_framework.unittest.scriptlet.workflow.AbstractCasterTest
-   * @see       scriptlet.xml.workflow.casters.ToInteger
-   * @purpose   ToInteger test
+   * @see  xp://net.xp_framework.unittest.scriptlet.workflow.AbstractCasterTest
+   * @see  xp://scriptlet.xml.workflow.casters.ToInteger
    */
   class ToIntegerTest extends AbstractCasterTest {
 
     /**
      * Return the caster
      *
-     * @return  &scriptlet.xml.workflow.casters.ParamCaster
+     * @return  scriptlet.xml.workflow.casters.ParamCaster
      */
     protected function caster() {
       return new ToInteger();
@@ -29,18 +28,14 @@
 
     /**
      * Test positive and negative numbers
-     *
      */
-    #[@test]
-    public function wholeNumbers() {
-      foreach (array('1' => 1, '-1' => -1, '0' => 0) as $input => $expect) {
-        $this->assertEquals($expect, $this->castValue($input), $input);
-      }
+    #[@test, @values(array(array('1', 1), array('-1', -1), array('0', 0)))]
+    public function wholeNumbers($input, $expect) {
+      $this->assertEquals($expect, $this->castValue($input), $input);
     }
 
     /**
      * Test empty input
-     *
      */
     #[@test]
     public function emptyInput() {

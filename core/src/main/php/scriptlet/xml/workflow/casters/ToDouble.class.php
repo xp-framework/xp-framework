@@ -7,11 +7,11 @@
   uses('scriptlet.xml.workflow.casters.ParamCaster');
   
   /**
-   * Casts given values to integers
+   * Casts given values to floating point numbers
    *
-   * @test xp://net.xp_framework.unittest.scriptlet.workflow.ToIntegerTest
+   * @test xp://net.xp_framework.unittest.scriptlet.workflow.ToDoubleTest
    */
-  class ToInteger extends ParamCaster {
+  class ToDouble extends ParamCaster {
   
     /**
      * Cast a given value.
@@ -19,15 +19,15 @@
      * @see     php://intval
      * @see     xp://scriptlet.xml.workflow.casters.ParamCaster
      * @param   string[] value
-     * @return  int[] value
+     * @return  double[] value
      */
     public function castValue($value) {
       $return= array();
       foreach ($value as $k => $v) {
         if ('' == ltrim($v, ' +-0')) {
-          $return[$k]= 0;
+          $return[$k]= 0.0;
         } else {
-          if (0 == ($return[$k]= intval($v))) return NULL;
+          $return[$k]= floatval(strtr($v, ',', '.'));
         }
       }
       return $return;

@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Heads up!
+~~~~~~~~~
+- Deprecated scriptlet.xml.workflow.casters.ToFloat in favor of ToDouble
+  for the sake of consistency
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - Fixed issue #298: Cannot use protected methods as @values provider

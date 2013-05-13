@@ -12,17 +12,16 @@
   /**
    * Test the ToEmailAddress caster
    *
-   * @see       xp://peer.mail.InternetAddress
-   * @see       xp://net.xp_framework.unittest.scriptlet.workflow.AbstractCasterTest
-   * @see       scriptlet.xml.workflow.casters.ToEmailAddress
-   * @purpose   ToEmailAddress test
+   * @see  xp://peer.mail.InternetAddress
+   * @see  xp://net.xp_framework.unittest.scriptlet.workflow.AbstractCasterTest
+   * @see  xp://scriptlet.xml.workflow.casters.ToEmailAddress
    */
   class ToEmailAddressTest extends AbstractCasterTest {
 
     /**
      * Return the caster
      *
-     * @return  &scriptlet.xml.workflow.casters.ParamCaster
+     * @return  scriptlet.xml.workflow.casters.ParamCaster
      */
     protected function caster() {
       return new ToEmailAddress();
@@ -30,18 +29,14 @@
 
     /**
      * Test numerous valid email addresses
-     *
      */
-    #[@test]
-    public function validEmailAdresses() {
-      foreach (array('xp@php3.de', 'xp-cvs@php3.de') as $email) {
-        $this->assertEquals(new InternetAddress($email), $this->castValue($email));
-      }
+    #[@test, @values(array('xp@example.com', 'xp-cvs@example.com'))]
+    public function validEmailAdresses($email) {
+      $this->assertEquals(new InternetAddress($email), $this->castValue($email));
     }
 
     /**
      * Test input without an @ sign
-     *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringWithoutAt() {
@@ -50,11 +45,18 @@
 
     /**
      * Test empty input
-     *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function emptyInput() {
       $this->castValue('');
+    }
+
+    /**
+     * Test "@" by itself
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function onlyAtSign() {
+      $this->castValue('@');
     }
   }
 ?>
