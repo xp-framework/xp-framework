@@ -65,11 +65,26 @@
       $this->assertTrue($strategy->necessary("\r\n", ';', '"'));
     }
 
+    #[@test, @values('quotingStrategies')]
+    public function single_word_and_newline_is_not_quoted($strategy) {
+      $this->assertTrue($strategy->necessary("Test\n", ';', '"'));
+    }
+
+    #[@test, @values('quotingStrategies')]
+    public function single_word_is_not_quoted($strategy) {
+      $this->assertFalse($strategy->necessary('Test', ';', '"'));
+    }
+
+    #[@test, @values('quotingStrategies')]
+    public function two_words_separated_by_space_are_not_quoted($strategy) {
+      $this->assertFalse($strategy->necessary('Hello World', ';', '"'));
+    }
+
     /**
      * Test empty values are not quoted in the default strategy
      */
     #[@test]
-    public function emptyIsNotQuotedInDefault() {
+    public function emtpy_string_not_quoted_with_default() {
       $this->assertFalse(text·csv·Quoting::$DEFAULT->necessary('', ';', '"'));
     }
 
@@ -77,7 +92,7 @@
      * Test empty values are quoted in the empty strategy
      */
     #[@test]
-    public function emptyIsQuotedInQuoteEmpty() {
+    public function emtpy_string_quoted_with_empty() {
       $this->assertTrue(text·csv·Quoting::$EMPTY->necessary('', ';', '"'));
     }
 
