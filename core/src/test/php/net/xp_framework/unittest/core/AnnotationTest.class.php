@@ -9,41 +9,17 @@
   /**
    * Tests the XP Framework's annotations
    *
-   * @see      rfc://0016
-   * @purpose  Testcase
+   * @see   rfc://0016
    */
   class AnnotationTest extends TestCase {
-    public
-      $class = NULL;
+    protected $class = NULL;
 
     /**
-     * Setup method. .
+     * Setup method
      *
      */
     public function setUp() {
       $this->class= XPClass::forName('net.xp_framework.unittest.core.AnnotatedClass');
-    }
-
-    /**
-     * Helper method to return whether a specified annotation exists
-     *
-     * @param   string method
-     * @param   string annotation
-     * @return  bool
-     */
-    protected function annotationExists($method, $annotation) {
-      return $this->class->getMethod($method)->hasAnnotation($annotation);
-    }
-
-    /**
-     * Helper method to get an annotation of a specified method
-     *
-     * @param   string method
-     * @param   string annotation
-     * @return  mixed annotation value
-     */
-    protected function methodAnnotation($method, $annotation) {
-      return $this->class->getMethod($method)->getAnnotation($annotation);
     }
 
     /**
@@ -52,8 +28,8 @@
      * @see     xp://lang.reflect.Routine#hasAnnotations
      */
     #[@test]
-    public function methodAnnotationHasNoAnnotations() {
-      $this->assertFalse($this->getClass()->getMethod('methodAnnotation')->hasAnnotations());
+    public function setUpMethodHasNoAnnotations() {
+      $this->assertFalse($this->getClass()->getMethod('setUp')->hasAnnotations());
     }
 
     /**
@@ -73,7 +49,7 @@
      */
     #[@test]
     public function simpleAnnotationExists() {
-      $this->assertTrue($this->annotationExists('simple', 'simple'));
+      $this->assertTrue($this->class->getMethod('simple')->hasAnnotation('simple'));
     }
 
     /**
@@ -84,7 +60,7 @@
      */
     #[@test]
     public function simpleAnnotationValue() {
-      $this->assertEquals(NULL, $this->methodAnnotation('simple', 'simple'));
+      $this->assertEquals(NULL, $this->class->getMethod('simple')->getAnnotation('simple'));
     }
 
     /**
@@ -112,7 +88,7 @@
      */
     #[@test, @expect('lang.ElementNotFoundException')]
     public function getNonExistantAnnotation() {
-      $this->methodAnnotation('simple', 'doesnotexist');
+      $this->class->getMethod('simple')->getAnnotation('doesnotexist');
     }
 
     /**
@@ -122,7 +98,7 @@
      */
     #[@test]
     public function hasNonExistantAnnotation() {
-      $this->assertFalse($this->annotationExists('simple', 'doesnotexist'));
+      $this->assertFalse($this->class->getMethod('simple')->hasAnnotation('doesnotexist'));
     }
 
     /**
@@ -130,11 +106,9 @@
      *
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#multiple
      */
-    #[@test]
-    public function multipleAnnotationsExist() {
-      foreach (array('one', 'two', 'three') as $annotation) {
-        $this->assertTrue($this->annotationExists('multiple', $annotation), $annotation);
-      }
+    #[@test, @values(array('one', 'two', 'three'))]
+    public function multipleAnnotationsExist($annotation) {
+      $this->assertTrue($this->class->getMethod('multiple')->hasAnnotation($annotation));
     }
 
     /**
@@ -158,7 +132,10 @@
      */
     #[@test]
     public function stringAnnotationValue() {
-      $this->assertEquals('String value', $this->methodAnnotation('stringValue', 'strval'));
+      $this->assertEquals(
+        'String value',
+        $this->class->getMethod('stringValue')->getAnnotation('strval')
+      );
     }
 
     /**
@@ -169,7 +146,10 @@
      */
     #[@test]
     public function keyValuePairAnnotationValue() {
-      $this->assertEquals(array('key' => 'value'), $this->methodAnnotation('keyValuePair', 'config'));
+      $this->assertEquals(
+        array('key' => 'value'),
+        $this->class->getMethod('keyValuePair')->getAnnotation('config')
+      );
     }
 
     /**
@@ -178,11 +158,31 @@
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#testMethod
      */
     #[@test]
-    public function testMethod() {
-      $m= $this->class->getMethod('testMethod');
-      $this->assertTrue($m->hasAnnotation('test'));
-      $this->assertTrue($m->hasAnnotation('ignore'));
-      $this->assertEquals(array('time' => 0.1, 'memory' => 100), $m->getAnnotation('limit'));
+    public function testMethodHasTestAnnotation() {
+      $this->assertTrue($this->class->getMethod('testMethod')->hasAnnotation('test'));
+    }
+
+    /**
+     * Tests unittest annotations
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#testMethod
+     */
+    #[@test]
+    public function testMethodHasIgnoreAnnotation() {
+      $this->assertTrue($this->class->getMethod('testMethod')->hasAnnotation('ignore'));
+    }
+
+    /**
+     * Tests unittest annotations
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#testMethod
+     */
+    #[@test]
+    public function testMethodsLimitAnnotation() {
+      $this->assertEquals(
+        array('time' => 0.1, 'memory' => 100),
+        $this->class->getMethod('testMethod')->getAnnotation('limit')
+      );
     }
   }
 ?>
