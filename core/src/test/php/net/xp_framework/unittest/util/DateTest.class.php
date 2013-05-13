@@ -290,42 +290,47 @@
       $this->assertEquals('Europe/Athens', $date->getTimeZone()->getName());
       $this->assertEquals(3 * 3600, $date->getTimeZone()->getOffsetInSeconds($date));
     }
-    
+
+    /**
+     * Provides values for supportedFormatTokens() test
+     *
+     * @return var[]
+     */
+    public function formatTokens() {
+      return array(
+        //    input   , expect
+        array('%Y'    , '1977'),
+        array('%D %T' , '12/14/1977 11:55:00'),
+        array('%C'    , '77'),
+        array('%e'    , '14'),
+        array('%G'    , '1977'),
+        array('%H'    , '11'),
+        array('%I'    , '11'),
+        array('%j'    , '347'),
+        array('%m'    , '12'),
+        array('%M'    , '55'),
+        array('%n'    , "\n"),
+        array('%r'    , '11:55:00am'),
+        array('%R'    , '11:55:00'),
+        array('%S'    , '00'),
+        array('%t'    , "\t"),
+        array('%u'    , '3'),
+        array('%V'    , '50'),
+        array('%W'    , '50'),
+        array('%w'    , '3'),
+        array('%y'    , '77'),
+        array('%Z'    , '+0000'),
+        array('%z'    , '+0000'),
+        array('%%'    , '%')
+      );
+    }
+
     /**
      * Test format() tokens
-     *
      */
-    #[@test]
-    public function supportedFormatTokens() {
-      $tests= array(
-        '%Y' => '1977',
-        '%D %T' => '12/14/1977 11:55:00',
-        '%C'    => '77',
-        '%e'    => '14',
-        '%G'    => '1977',
-        '%H'    => '11',
-        '%I'    => '11',
-        '%j'    => '347',
-        '%m'    => '12',
-        '%M'    => '55',
-        '%n'    => "\n",
-        '%r'    => '11:55:00am',
-        '%R'    => '11:55:00',
-        '%S'    => '00',
-        '%t'    => "\t",
-        '%u'    => '3',
-        '%V'    => '50',
-        '%W'    => '50',
-        '%w'    => '3',
-        '%y'    => '77',
-        '%Z'    => '+0000',
-        '%z'    => '+0000',
-        '%%'    => '%'
-      );
-      
-      foreach ($tests as $input => $expect) {
-        $this->assertEquals($expect, $this->refDate->format($input));
-      }
+    #[@test, @values('formatTokens')]
+    public function supportedFormatTokens($input, $expect) {
+      $this->assertEquals($expect, $this->refDate->format($input));
     }
     
     /**
