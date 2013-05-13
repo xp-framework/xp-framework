@@ -15,6 +15,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added util.Objects utility class simplifying equals(), toString() and
+  hashCode() for any type
+  (friebe)
 - Started rewriting tests using foreach with fixtures to use `@values`
   (friebe)
 
