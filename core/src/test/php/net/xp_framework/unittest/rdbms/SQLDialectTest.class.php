@@ -24,16 +24,16 @@
    */
   class SQLDialectTest extends TestCase {
     const SYBASE= 'sybase';
-    const MYSQL=  'mysql';
+    const MYSQL= 'mysql';
   
     protected $conn= array();
     protected $dialectClass= array();
       
     /**
-     * Sets up a Database Object for the test
-     *
+     * Fill conn and dialectClass members
      */
-    public function setUp() {
+    public function __construct($name) {
+      parent::__construct($name);
       $this->conn[self::MYSQL]= new MySQLConnection(new DSN('mysql://localhost:3306/'));
       $this->dialectClass[self::MYSQL]= 'rdbms.mysql.MysqlDialect';
       $this->conn[self::SYBASE]= new SybaseConnection(new DSN('sybase://localhost:1999/'));
@@ -54,38 +54,28 @@
         $this->assertEquals($asserts[$connName], $dialect->makeJoinBy($conditions));
       }
     }
-    
-    /**
-     * test formatter for connection
-     */
-    #[@test]
-    public function getFormatterTest() {
-      foreach (array_keys($this->conn) as $connName) {
-        $this->assertClass(
-          $this->conn[$connName]->getFormatter(),
-          'rdbms.StatementFormatter'
-        );
-      }
-    }
 
     /**
-     * test dialect interface for formatter
+     * Provides values for next two tests
+     *
+     * @return  var[]
      */
-    #[@test]
-    public function dialectInterfaceTest() {
-      foreach (array_keys($this->conn) as $connName) {
-        $this->assertTrue($this->conn[$connName]->getFormatter()->dialect instanceof SQLDialect);
+    public function connections() {
+      $r= array();
+      foreach ($this->conn as $name => $conn) {
+        $r[]= array($name, $conn);
       }
+      return $r;
     }
 
-    /**
-     * test dialect for formatter
-     */
-    #[@test]
-    public function dialectTest() {
-      foreach (array_keys($this->conn) as $connName) {
-        $this->assertClass($this->conn[$connName]->getFormatter()->dialect, $this->dialectClass[$connName]);
-      }
+    #[@test, @values('connections')]
+    public function get_formatter_method($name, $conn) {
+      $this->assertInstanceOf('rdbms.StatementFormatter', $conn->getFormatter());
+    }
+
+    #[@test, @values('connections')]
+    public function dialect_member($name, $conn) {
+      $this->assertInstanceOf($this->dialectClass[$name], $conn->getFormatter()->dialect);
     }
 
     /**
