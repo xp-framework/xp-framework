@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.URL');
+  uses('peer.URL', 'util.Objects');
 
   define('DB_STORE_RESULT',     0x0001);
   define('DB_UNBUFFERED',       0x0002);
@@ -184,29 +184,6 @@
     }
 
     /**
-     * Helper method to compare two array maps recursively
-     *
-     * @param   [:var] a1
-     * @param   [:var] a2
-     * @return  bool
-     */
-    protected function arrayequals($a1, $a2) {
-      if (sizeof($a1) !== sizeof($a2)) return FALSE;
-      foreach ($a1 as $k => $v) {
-        if (!array_key_exists($k, $a2)) {
-          return FALSE;
-        } else if (is_array($v)) {
-          if (!$this->arrayequals($v, $a2[$k])) return FALSE;
-        } else if ($v instanceof Generic) {
-          if (!$v->equals($a2[$k])) return FALSE;
-        } else {
-          if ($v !== $a2[$k]) return FALSE;
-        }
-      }
-      return TRUE;
-    }
-    
-    /**
      * Checks whether an object is equal to this DSN
      *
      * @param   lang.Generic cmp
@@ -222,7 +199,7 @@
         $cmp->getPort() === $this->getPort() &&
         $cmp->getDatabase() === $this->getDatabase() &&
         $cmp->flags === $this->flags &&
-        $this->arrayequals($cmp->prop, $this->prop)
+        Objects::equal($cmp->prop, $this->prop)
       );
     }
   }
