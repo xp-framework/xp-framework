@@ -48,49 +48,49 @@
     public function connections() {
       $r= array();
       foreach ($this->conn as $name => $conn) {
-        $r[]= array($name, $conn);
+        $r[]= array($conn->getFormatter()->dialect);
       }
       return $r;
     }
 
     #[@test, @values('connections')]
-    public function get_formatter_method($name, $conn) {
-      $this->assertInstanceOf('rdbms.StatementFormatter', $conn->getFormatter());
+    public function dialect_member($dialect) {
+      $this->assertInstanceOf('rdbms.SQLDialect', $dialect);
     }
 
     #[@test, @values('connections')]
-    public function dialect_member($name, $conn) {
-      $this->assertInstanceOf($this->dialectClass[$name], $conn->getFormatter()->dialect);
-    }
-
-    #[@test, @values('connections')]
-    public function pi_function($name, $conn) {
-      $this->assertEquals('pi()', $conn->getFormatter()->dialect->formatFunction(new SQLFunction('pi', '%s')));
+    public function pi_function($dialect) {
+      $this->assertEquals('pi()', $dialect->formatFunction(new SQLFunction('pi', '%s')));
     }
 
     #[@test, @values('connections'), @expect('lang.IllegalArgumentException')]
-    public function unknown_function($name, $conn) {
-      $conn->getFormatter()->dialect->formatFunction(new SQLFunction('foo', 1, 2, 3, 4, 5));
+    public function unknown_function($dialect) {
+      $dialect->formatFunction(new SQLFunction('foo', 1, 2, 3, 4, 5));
     }
 
     #[@test, @values('connections')]
-    public function month_datepart($name, $conn) {
-      $this->assertEquals('month', $conn->getFormatter()->dialect->datepart('month'));
+    public function month_datepart($dialect) {
+      $this->assertEquals('month', $dialect->datepart('month'));
     }
 
     #[@test, @values('connections'), @expect('lang.IllegalArgumentException')]
-    public function unknown_datepart($name, $conn) {
-      $conn->getFormatter()->dialect->datepart('month_foo_bar_buz');
+    public function unknown_datepart($dialect) {
+      $dialect->datepart('month_foo_bar_buz');
     }
 
     #[@test, @values('connections')]
-    public function int_datatype($name, $conn) {
-      $this->assertEquals('int', $conn->getFormatter()->dialect->datatype('int'));
+    public function int_datatype($dialect) {
+      $this->assertEquals('int', $dialect->datatype('int'));
     }
 
     #[@test, @values('connections'), @expect('lang.IllegalArgumentException')]
-    public function unknown_datatype($name, $conn) {
-      $conn->getFormatter()->dialect->datatype('int_foo_bar_buz');
+    public function unknown_datatype($dialect) {
+      $dialect->datatype('int_foo_bar_buz');
+    }
+
+    #[@test, @values('connections'), @expect('lang.IllegalArgumentException')]
+    public function join_by_empty($dialect) {
+      $dialect->makeJoinBy(array());
     }
 
     /**
@@ -106,22 +106,6 @@
         if (!array_key_exists($connName, $asserts)) throw new AssertionFailedError('test for '.$connName.' does not exist in test');
         $this->assertEquals($asserts[$connName], $dialect->makeJoinBy($conditions));
       }
-    }
-
-    /**
-     * test join formatter
-     */
-    #[@test, @expect('lang.IllegalArgumentException')]
-    public function joinMinimumTest() {
-      $asserts= array(
-        self::MYSQL  => '',
-        self::SYBASE => '',
-      );
-
-      $this->assertJoin(
-        array(),
-        $asserts
-      );
     }
 
     /**
