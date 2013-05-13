@@ -210,7 +210,7 @@
       // "self::method" -> static method of the test class, and "method" 
       // -> the run test's instance method
       if (FALSE === ($p= strpos($source, '::'))) {
-        return $test->getClass()->getMethod($source)->invoke($test, $args);
+        return $test->getClass()->getMethod($source)->setAccessible(TRUE)->invoke($test, $args);
       }
       $ref= substr($source, 0, $p);
       if ('self' === $ref) {

@@ -8,6 +8,8 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #298: Cannot use protected methods as @values provider
+  (friebe)
 - Fixed issue #297: ArrayType and MapType's isInstance() methods
   (friebe)
 

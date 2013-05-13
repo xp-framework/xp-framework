@@ -329,5 +329,51 @@
       $this->suite->runTest($test);
       $this->assertEquals(array($test), $test->values);
     }
+
+    /**
+     * Tests local value source
+     *
+     * @see  https://github.com/xp-framework/xp-framework/issues/298
+     */
+    #[@test]
+    public function protected_local_values_method() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public $values= array();
+
+        protected function values() {
+          return array(1, 2, 3);
+        }
+
+        #[@test, @values("values")]
+        public function fixture($value) {
+          $this->values[]= $value;
+        }
+      }');
+      $this->suite->runTest($test);
+      $this->assertEquals(array(1, 2, 3), $test->values);
+    }
+
+    /**
+     * Tests local value source
+     *
+     * @see  https://github.com/xp-framework/xp-framework/issues/298
+     */
+    #[@test]
+    public function private_local_values_method() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public $values= array();
+
+        private function values() {
+          return array(1, 2, 3);
+        }
+
+        #[@test, @values("values")]
+        public function fixture($value) {
+          $this->values[]= $value;
+        }
+      }');
+      $this->suite->runTest($test);
+      $this->assertEquals(array(1, 2, 3), $test->values);
+    }
   }
 ?>
