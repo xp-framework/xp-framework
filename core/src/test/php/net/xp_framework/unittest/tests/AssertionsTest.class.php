@@ -117,54 +117,42 @@
 
     /**
      * Test assertEquals() for integers
-     *
      */    
-    #[@test]
-    public function integersAreEqual() {
-      foreach (array(0, 1, -1) as $int) {
-        $this->assertEquals($int, $int, $int);
-      }
+    #[@test, @values(array(0, 1, -1, LONG_MAX, LONG_MIN))]
+    public function integersAreEqual($int) {
+      $this->assertEquals($int, $int);
     }    
 
     /**
      * Test assertEquals() for strings
-     *
      */    
-    #[@test]
-    public function stringsAreEqual() {
-      foreach (array('', 'Hello', 'äöüß') as $str) {
-        $this->assertEquals($str, $str, $str);
-      }
+    #[@test, @values(array('', 'Hello', 'äöüß'))]
+    public function stringsAreEqual($str) {
+      $this->assertEquals($str, $str);
     }    
 
     /**
      * Test assertEquals() for arrays
-     *
      */    
-    #[@test]
-    public function arraysAreEqual() {
-      foreach (array(
-        array(), 
-        array(1, 2, 3),
-        array(array(1), array(), array(-1, 4), array(new String('baz')))
-      ) as $array) {
-        $this->assertEquals($array, $array, xp::stringOf($array));
-      }
+    #[@test, @values(array(
+    #  array(array()),
+    #  array(array(1, 2, 3)),
+    #  array(array(array(1), array(), array(-1, 4), array(new String('baz')))
+    #))]
+    public function arraysAreEqual($array) {
+      $this->assertEquals($array, $array);
     }    
 
     /**
      * Test assertEquals() for hashes
-     *
      */    
-    #[@test]
-    public function hashesAreEqual() {
-      foreach (array(
-        array(), 
-        array('foo' => 2), 
-        array(array('bar' => 'baz'), array(), array('bool' => TRUE, 'bar' => new String('baz')))
-      ) as $hash) {
-        $this->assertEquals($hash, $hash, xp::stringOf($hash));
-      }
+    #[@test, @values(array(
+    #  array(array()),
+    #  array(array('foo' => 2)),
+    #  array(array(array('bar' => 'baz'), array(), array('bool' => TRUE, 'bar' => new String('baz'))))
+    #))]
+    public function hashesAreEqual($hash) {
+      $this->assertEquals($hash, $hash);
     }    
 
     /**
@@ -179,13 +167,10 @@
 
     /**
      * Test assertEquals() for lang.types.String objects
-     *
      */    
-    #[@test]
-    public function stringObjectsAreEqual() {
-      foreach (array(new String(''), new String('Hello'), new String('äöüß', 'iso-8859-1')) as $str) {
-        $this->assertEquals($str, $str, xp::stringOf($str));
-      }
+    #[@test, @values(array(new String(''), new String('Hello'), new String('äöüß', 'iso-8859-1')))]
+    public function stringObjectsAreEqual($str) {
+      $this->assertEquals($str, $str);
     }
 
     /**
@@ -199,35 +184,26 @@
 
     /**
      * Test assertNotEquals() for integers
-     *
      */    
-    #[@test]
-    public function integersAreNotEqual() {
-      foreach (array(-1, 1.0, NULL, FALSE, TRUE, '', array(), new String('1')) as $cmp) {
-        $this->assertNotEquals(1, $cmp);
-      }
+    #[@test, @values(array(-1, 1.0, NULL, FALSE, TRUE, '', array(array()), new String('1'))]
+    public function integersAreNotEqual($cmp) {
+      $this->assertNotEquals(1, $cmp);
     }    
 
     /**
      * Test assertNotEquals() for strings
-     *
      */    
-    #[@test]
-    public function stringsAreNotEqual() {
-      foreach (array(-1, 1.0, NULL, FALSE, TRUE, 1, array(), new String('1')) as $cmp) {
-        $this->assertNotEquals('', $cmp);
-      }
-    }    
+    #[@test, @values(array(-1, 1.0, NULL, FALSE, TRUE, 1, array(array()), new String('1')))]
+    public function stringsAreNotEqual($cmp) {
+      $this->assertNotEquals('', $cmp);
+    }
 
     /**
      * Test assertNotEquals() for arrays
-     *
      */    
-    #[@test]
-    public function arraysAreNotEqual() {
-      foreach (array(-1, 1.0, NULL, FALSE, TRUE, 1, array(1), new String('1')) as $cmp) {
-        $this->assertNotEquals(array(), $cmp);
-      }
+    #[@test, @values(array(-1, 1.0, NULL, FALSE, TRUE, 1, array(1), new String('1')))]
+    public function arraysAreNotEqual($cmp) {
+      $this->assertNotEquals(array(), $cmp);
     }    
 
     /**
