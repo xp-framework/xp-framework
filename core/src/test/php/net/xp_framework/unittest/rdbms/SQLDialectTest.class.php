@@ -39,24 +39,9 @@
       $this->conn[self::SYBASE]= new SybaseConnection(new DSN('sybase://localhost:1999/'));
       $this->dialectClass[self::SYBASE]= 'rdbms.sybase.SybaseDialect';
     }
-    
-    /**
-     * helper function to test input to makeJoinBy
-     *
-     * @param  var[] conditions
-     * @param  var[] asserts
-     * @throws unittest.AssertionFailedError
-     */
-    private function assertJoin(array $conditions, array $asserts) {
-      foreach (array_keys($this->conn) as $connName) {
-        $dialect= $this->conn[$connName]->getFormatter()->dialect;
-        if (!array_key_exists($connName, $asserts)) throw new AssertionFailedError('test for '.$connName.' does not exist in test');
-        $this->assertEquals($asserts[$connName], $dialect->makeJoinBy($conditions));
-      }
-    }
 
     /**
-     * Provides values for next two tests
+     * Provides values for next tests
      *
      * @return  var[]
      */
@@ -78,55 +63,48 @@
       $this->assertInstanceOf($this->dialectClass[$name], $conn->getFormatter()->dialect);
     }
 
-    /**
-     * test function formatter
-     */
-    #[@test]
-    public function functionTest() {
-      foreach (array_keys($this->conn) as $connName) {
-        $dialect= $this->conn[$connName]->getFormatter()->dialect;
-        $this->assertEquals('pi()', $dialect->formatFunction(new SQLFunction('pi', '%s')));
-        try {
-          $dialect->formatFunction(new SQLFunction('foo', 1,2,3,4,5));
-          throw new AssertionFailedError('formatFunction should throw an IllegalArgumentException when calling $dialect->formatFunction(new SQLFunction("foo", 1,2,3,4,5))');
-        } catch (IllegalArgumentException $e) {
-          $this->assertClass($e, 'lang.IllegalArgumentException');
-        }
-      }
+    #[@test, @values('connections')]
+    public function pi_function($name, $conn) {
+      $this->assertEquals('pi()', $conn->getFormatter()->dialect->formatFunction(new SQLFunction('pi', '%s')));
+    }
+
+    #[@test, @values('connections'), @expect('lang.IllegalArgumentException')]
+    public function unknown_function($name, $conn) {
+      $conn->getFormatter()->dialect->formatFunction(new SQLFunction('foo', 1, 2, 3, 4, 5));
+    }
+
+    #[@test, @values('connections')]
+    public function month_datepart($name, $conn) {
+      $this->assertEquals('month', $conn->getFormatter()->dialect->datepart('month'));
+    }
+
+    #[@test, @values('connections'), @expect('lang.IllegalArgumentException')]
+    public function unknown_datepart($name, $conn) {
+      $conn->getFormatter()->dialect->datepart('month_foo_bar_buz');
+    }
+
+    #[@test, @values('connections')]
+    public function int_datatype($name, $conn) {
+      $this->assertEquals('int', $conn->getFormatter()->dialect->datatype('int'));
+    }
+
+    #[@test, @values('connections'), @expect('lang.IllegalArgumentException')]
+    public function unknown_datatype($name, $conn) {
+      $conn->getFormatter()->dialect->datatype('int_foo_bar_buz');
     }
 
     /**
-     * test date formatter
-     */
-    #[@test]
-    public function datepartTest() {
-      foreach (array_keys($this->conn) as $connName) {
-        $dialect= $this->conn[$connName]->getFormatter()->dialect;
-        $this->assertEquals('month', $dialect->datepart('month'));
-        try {
-          $dialect->datepart('month_foo_bar_buz');
-          throw new AssertionFailedError('datepart should throw an IllegalArgumentException when calling $dialect->datepart("month_foo_bar_buz")');
-        } catch (IllegalArgumentException $e) {
-          $this->assertClass($e, 'lang.IllegalArgumentException');
-        }
-      }
-    }
-
-    /**
-     * test datatype formatter
+     * helper function to test input to makeJoinBy
      *
+     * @param  var[] conditions
+     * @param  var[] asserts
+     * @throws unittest.AssertionFailedError
      */
-    #[@test]
-    public function datatypeTest() {
+    private function assertJoin(array $conditions, array $asserts) {
       foreach (array_keys($this->conn) as $connName) {
         $dialect= $this->conn[$connName]->getFormatter()->dialect;
-        $this->assertEquals('int', $dialect->datatype('int'));
-        try {
-          $dialect->datatype('int_foo_bar_buz');
-          throw new AssertionFailedError('datatype should throw an IllegalArgumentException when calling $dialect->datatype("int_foo_bar_buz")');
-        } catch (IllegalArgumentException $e) {
-          $this->assertClass($e, 'lang.IllegalArgumentException');
-        }
+        if (!array_key_exists($connName, $asserts)) throw new AssertionFailedError('test for '.$connName.' does not exist in test');
+        $this->assertEquals($asserts[$connName], $dialect->makeJoinBy($conditions));
       }
     }
 
