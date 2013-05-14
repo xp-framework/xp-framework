@@ -102,23 +102,29 @@
         $ref
       );
     }
-    
+
+    /**
+     * Provides values for compactDate() test
+     *
+     * @return  var[]
+     */
+    public function compactDates() {
+      return array(
+        array('Jul 23 20:16', '23.07.2009 20:16'),   // 182 days in the future
+        array('Apr 4 20:16' , '04.04.2009 20:16'),
+        array('Jan 22 20:16', '22.01.2009 20:16'),   // exactly "today"
+        array('Dec 1 20:16' , '01.12.2008 20:16'),
+        array('Jul 24 20:16', '24.07.2008 20:16'),   // 182 days in the past
+      );
+    }
+
     /**
      * Test compact date format
-     *
      */
-    #[@test]
-    public function compactDate() {
+    #[@test, @values('compactDates')]
+    public function compactDate($listed, $meaning) {
       $ref= new Date('2009-01-22 20:16');
-      foreach (array(
-        'Jul 23 20:16' => '23.07.2009 20:16',   // 182 days in the future
-        'Apr 4 20:16'  => '04.04.2009 20:16',
-        'Jan 22 20:16' => '22.01.2009 20:16',   // exactly "today"
-        'Dec 1 20:16'  => '01.12.2008 20:16',
-        'Jul 24 20:16' => '24.07.2008 20:16',   // 182 days in the past
-      ) as $listed => $meaning) {
-        $this->assertEquals(new Date($meaning), $this->entryWithDate($listed, $ref)->getDate(), $listed);
-      }
+      $this->assertEquals(new Date($meaning), $this->entryWithDate($listed, $ref)->getDate());
     }
   }
 ?>
