@@ -296,18 +296,13 @@
       $consumed= 0;
       $nfields= $this->length($data, $consumed);
       
-      if (NULL === $nfields) {          // LOAD DATA LOCAL INFILE
-      
-        // TODO: Implement
+      if (NULL === $nfields) {
         $this->pkt= 0;
-        
-        return NULL;
+        throw new ProtocolException('LOAD DATA LOCAL INFILE not implemented');
       } else if (0 === $nfields) {      // Results from an insert / update / delete query
         $affected= $this->length($data, $consumed, TRUE);
         $identity= $this->length($data, $consumed, TRUE);
         $this->pkt= 0;
-        
-        // TODO: What do we return here?
         return $affected;
       } else {                          // Result sets, process fields and EOF record
         $extra= $this->length($data, $consumed, TRUE);
