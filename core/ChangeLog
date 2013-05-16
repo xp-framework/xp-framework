@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Bugfixes
+~~~~~~~~
+- Fixed issue #301: xprt-update fails
+  (friebe)
+
 Features
 ~~~~~~~~
 - Changed ClassLoader::defineClass() and ClassLoader::defineInterface()

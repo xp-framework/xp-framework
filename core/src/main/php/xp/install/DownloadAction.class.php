@@ -23,7 +23,16 @@
   class DownloadAction extends Object {
     const BASE_URL = 'http://releases.xp-framework.net/download/';
     const PROGRESS_INDICATOR_WIDTH= 10;
-  
+
+    /**
+     * Set trace
+     *
+     * @param   util.log.LogCategory cat
+     */
+    public function setTrace($cat) {
+      // Not implemented
+    }
+
     /**
      * Read a line
      *
