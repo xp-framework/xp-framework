@@ -246,28 +246,17 @@
     }
 
     /**
-     * Test var type mis-spelled as "mixed"
+     * Test var type mis-spelled as "mixed" or "*"
      *
      * @deprecated
      */
-    #[@test]
-    public function varTypeMixedVariant() {
-      $this->assertEquals(Type::$VAR, Type::forName('mixed'));
-    }
-
-    /**
-     * Test var type mis-spelled as "*"
-     *
-     * @deprecated
-     */
-    #[@test]
-    public function varTypeStarVariant() {
-      $this->assertEquals(Type::$VAR, Type::forName('*'));
+    #[@test, @values('mixed', '*')]
+    public function varTypeVariant($name) {
+      $this->assertEquals(Type::$VAR, Type::forName($name));
     }
 
     /**
      * Test "resource" as type name
-     *
      */
     #[@test]
     public function resourceType() {
@@ -275,129 +264,59 @@
     }
 
     /**
-     * Test isInstance() method on Type::$VAR
+     * Returns instances of all types
      *
+     * @return  var[]
      */
-    #[@test]
-    public function thisIsInstanceOfVar() {
-      $this->assertTrue(Type::$VAR->isInstance($this));
+    public function instances() {
+      return array($this, NULL, FALSE, TRUE, '', 0, 0.0, array(array()), array('one' => 'two'));
     }
 
     /**
      * Test isInstance() method on Type::$VAR
-     *
      */
-    #[@test]
-    public function nullIsInstanceOfVar() {
-      $this->assertTrue(Type::$VAR->isInstance(NULL));
+    #[@test, @values('instances')]
+    public function anythingIsAnInstanceOfVar($value) {
+      $this->assertTrue(Type::$VAR->isInstance($value));
+    }
+
+    /**
+     * Test isInstance() method on Type::$VOID
+     */
+    #[@test, @values('instances')]
+    public function nothingIsAnInstanceOfVoid($value) {
+      $this->assertFalse(Type::$VOID->isInstance($value));
+    }
+
+    /**
+     * Returns all types
+     *
+     * @return  var[]
+     */
+    public function types() {
+      return array(
+        $this->getClass(),
+        Type::$VAR, Type::$VOID,
+        Primitive::$BOOLEAN, Primitive::$STRING, Primitive::$INT, Primitive::$DOUBLE,
+        ArrayType::forName('var[]'),
+        MapType::forName('[:var]')
+      );
     }
 
     /**
      * Test isInstance() method on Type::$VAR
-     *
      */
-    #[@test]
-    public function stringIsInstanceOfVar() {
-      $this->assertTrue(Type::$VAR->isInstance(''));
-    }
-
-    /**
-     * Test isInstance() method on Type::$VAR
-     *
-     */
-    #[@test]
-    public function intIsInstanceOfVar() {
-      $this->assertTrue(Type::$VAR->isInstance(0));
+    #[@test, @values('instances')]
+    public function varIsAssignableFromAnything($type) {
+      $this->assertTrue(Type::$VAR->isAssignableFrom($type));
     }
 
     /**
      * Test isInstance() method on Type::$VOID
-     *
      */
-    #[@test]
-    public function thisIsNotInstanceOfVoid() {
-      $this->assertFalse(Type::$VOID->isInstance($this));
-    }
-
-    /**
-     * Test isInstance() method on Type::$VOID
-     *
-     */
-    #[@test]
-    public function nullIsNotInstanceOfVoid() {
-      $this->assertFalse(Type::$VOID->isInstance(NULL));
-    }
-
-    /**
-     * Test isInstance() method on Type::$VOID
-     *
-     */
-    #[@test]
-    public function stringIsNotInstanceOfVoid() {
-      $this->assertFalse(Type::$VOID->isInstance(''));
-    }
-
-    /**
-     * Test isInstance() method on Type::$VOID
-     *
-     */
-    #[@test]
-    public function intIsNotInstanceOfVoid() {
-      $this->assertFalse(Type::$VOID->isInstance(0));
-    }
-
-    /**
-     * Test isAssignableFrom() method on Type::$VOID
-     *
-     */
-    #[@test]
-    public function voidIsNotAssignableFromInt() {
-      $this->assertFalse(Type::$VOID->isAssignableFrom('int'));
-    }
-
-    /**
-     * Test isAssignableFrom() method on Type::$VOID
-     *
-     */
-    #[@test]
-    public function voidIsNotAssignableFromVoidType() {
-      $this->assertFalse(Type::$VOID->isAssignableFrom(Type::$VOID));
-    }
-
-    /**
-     * Test isAssignableFrom() method on Type::$VOID
-     *
-     */
-    #[@test]
-    public function voidIsNotAssignableFromVoid() {
-      $this->assertFalse(Type::$VOID->isAssignableFrom('void'));
-    }
-
-    /**
-     * Test isAssignableFrom() method on Type::$VAR
-     *
-     */
-    #[@test]
-    public function varIsAssignableFromInt() {
-      $this->assertTrue(Type::$VAR->isAssignableFrom('int'));
-    }
-
-    /**
-     * Test isAssignableFrom() method on Type::$VAR
-     *
-     */
-    #[@test]
-    public function varIsAssignableFromVarType() {
-      $this->assertTrue(Type::$VAR->isAssignableFrom(Type::$VAR));
-    }
-
-    /**
-     * Test isAssignableFrom() method on Type::$VAR
-     *
-     */
-    #[@test]
-    public function varIsAssignableFromVar() {
-      $this->assertTrue(Type::$VAR->isAssignableFrom('var'));
+    #[@test, @values('instances')]
+    public function voidIsAssignableFromNothing($type) {
+      $this->assertFalse(Type::$VOID->isAssignableFrom($type));
     }
   }
 ?>
