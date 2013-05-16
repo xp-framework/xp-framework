@@ -17,12 +17,14 @@
    *
    * Both of these static methods simply return the value passed to 
    * them.
-   *
-   * @purpose  Testcase
    */
   class TypeHintsTest extends TestCase {
   
-    static function __static() {
+    /**
+     * Defines fixture
+     */
+    #[@beforeClass]
+    public static function defineTypeHintedClass() {
       ClassLoader::defineClass('net.xp_framework.unittest.core.TypeHintedClass', 'lang.Object', array(), '{
         public static function passObject(Generic $o) { return $o; }
         public static function passNullable(Generic $o= NULL) { return $o; }
