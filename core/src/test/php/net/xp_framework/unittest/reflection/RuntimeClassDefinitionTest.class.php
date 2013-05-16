@@ -9,14 +9,12 @@
   /**
    * TestCase
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see   xp://lang.CLassLoader
    */
   class RuntimeClassDefinitionTest extends TestCase {
 
     /**
      * Helper method
-     *
      * @param   string name
      * @param   lang.XPClass class
      * @throws  unittest.AssertionFailedError
@@ -28,7 +26,6 @@
 
     /**
      * Helper method
-     *
      * @param   string name
      * @param   string parent
      * @param   string[] interfaces
@@ -44,7 +41,6 @@
 
     /**
      * Helper method
-     *
      * @param   string name
      * @param   lang.XPClass class
      * @throws  unittest.AssertionFailedError
@@ -58,7 +54,6 @@
 
     /**
      * Test defineClass() method
-     *
      */
     #[@test]
     public function defineClassWithInitializer() {
@@ -77,7 +72,6 @@
     
     /**
      * Tests defineClass() with a given interface
-     *
      */
     #[@test]
     public function defineTraceableClass() {
@@ -91,8 +85,56 @@
     }
 
     /**
+     * Tests defineClass()
+     */
+    #[@test]
+    public function defineClassWithXPClassParent() {
+      $parent= XPClass::forName('lang.Object');
+      $class= $this->defineClass('_'.$this->name, $parent, array(), '{ }');
+      $this->assertEquals($parent, $class->getParentclass());
+    }
+
+    /**
+     * Tests defineClass()
+     */
+    #[@test]
+    public function defineClassWithXPClassInterface() {
+      $interface= XPClass::forName('lang.Runnable');
+      $class= $this->defineClass('_'.$this->name, 'lang.Object', array($interface), '{
+        public function run() { }
+      }');
+      $this->assertEquals($interface, this($class->getDeclaredInterfaces(), 0));
+    }
+
+    /**
+     * Test defineClass() method
+     */
+    #[@test, @expect('lang.ClassNotFoundException')]
+    public function defineClassWithNonExistantParent() {
+      $name= 'net.xp_framework.unittest.reflection.ErroneousClass';
+      $this->defineClass($name, '@@nonexistant@@', array(), '{ }');
+    }
+
+    /**
+     * Test defineClass() method
+     */
+    #[@test, @expect('lang.ClassNotFoundException')]
+    public function defineClassWithOneNonExistantInterface() {
+      $name= 'net.xp_framework.unittest.reflection.ErroneousClass';
+      $this->defineClass($name, 'lang.Object', array('@@nonexistant@@'), '{ }');
+    }
+
+    /**
+     * Test defineClass() method
+     */
+    #[@test, @expect('lang.ClassNotFoundException')]
+    public function defineClassWithOneExistantAndOneNonExistantInterface() {
+      $name= 'net.xp_framework.unittest.reflection.ErroneousClass';
+      $this->defineClass($name, 'lang.Object', array('lang.Runnable', '@@nonexistant@@'), '{ }');
+    }
+
+    /**
      * Tests newinstance()
-     *
      */
     #[@test]
     public function newInstance() {
@@ -102,7 +144,6 @@
 
     /**
      * Tests Proxy
-     *
      */
     #[@test]
     public function proxyInstance() {
@@ -115,7 +156,6 @@
 
     /**
      * Test defineInterface() method
-     *
      */
     #[@test]
     public function defineSimpleInterface() {
@@ -131,7 +171,6 @@
 
     /**
      * Test defineInterface() method
-     *
      */
     #[@test]
     public function defineInterfaceWithParent() {
@@ -147,19 +186,24 @@
 
     /**
      * Test defineInterface() method
-     *
      */
     #[@test, @expect('lang.ClassNotFoundException')]
     public function defineInterfaceWithNonExistantParent() {
       $name= 'net.xp_framework.unittest.reflection.ErroneousInterface';
-      $this->defineInterface($name, array('@@nonexistant@@'), '{
-        public function setDebug($cat);
-      }');
+      $this->defineInterface($name, array('@@nonexistant@@'), '{ }');
+    }
+
+    /**
+     * Test defineInterface() method
+     */
+    #[@test, @expect('lang.ClassNotFoundException')]
+    public function defineInterfaceWithOneExistantAndOneNonExistantParent() {
+      $name= 'net.xp_framework.unittest.reflection.ErroneousInterface';
+      $this->defineInterface($name, array('lang.Runnable', '@@nonexistant@@'), '{ }');
     }
 
     /**
      * Test default class loader
-     *
      * @see   https://github.com/xp-framework/xp-framework/issues/94
      */
     #[@test]
@@ -172,7 +216,6 @@
 
     /**
      * Test default class loader
-     *
      * @see   https://github.com/xp-framework/xp-framework/issues/94
      */
     #[@test]
@@ -185,7 +228,6 @@
 
     /**
      * Test default class loader
-     *
      * @see   https://github.com/xp-framework/xp-framework/issues/94
      */
     #[@test]

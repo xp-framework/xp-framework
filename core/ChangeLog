@@ -6,6 +6,13 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Features
+~~~~~~~~
+- Changed ClassLoader::defineClass() and ClassLoader::defineInterface()
+  to load parent classes and implemented interfaces if necessary instead
+  of raising an exception. See feature request in issue #300
+  (friebe)
+
 
 Version 5.9.2, released 2013-05-16
 ----------------------------------
