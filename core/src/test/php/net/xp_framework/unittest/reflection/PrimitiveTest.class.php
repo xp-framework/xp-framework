@@ -252,75 +252,64 @@
     }
 
     /**
-     * Test isInstance() method for strings
+     * Returns instances of all types
      *
+     * @param   var[] except
+     * @return  var[]
      */
-    #[@test]
-    public function emptyStringInstance() {
-      $this->assertTrue(Primitive::$STRING->isInstance(''));
+    public function instances($except) {
+      $values= array(
+        array($this), array(new String('Hello')), array(NULL),
+        array(FALSE), array(TRUE),
+        array(''), array('Hello'),
+        array(0), array(-1),
+        array(0.0), array(-1.5),
+        array(array()),
+        array(array('one' => 'two'))
+      );
+      return array_filter($values, function($value) use ($except) {
+        return !in_array($value[0], $except, TRUE);
+      });
+    }
+
+    #[@test, @values(array('', 'Hello'))]
+    public function isAnInstanceOfStringPrimitive($value) {
+      $this->assertTrue(Primitive::$STRING->isInstance($value));
     }
     
-    /**
-     * Test isInstance() method for strings
-     *
-     */
-    #[@test]
-    public function stringInstance() {
-      $this->assertTrue(Primitive::$STRING->isInstance('Hello'));
-    }
-    
-    /**
-     * Test isInstance() method for strings
-     *
-     */
-    #[@test]
-    public function stringObjectIsNotInstanceOfStringPrimitive() {
-      $this->assertFalse(Primitive::$STRING->isInstance(new String('Hello')));
+    #[@test, @values(source= 'instances', args= array(array('', 'Hello')))]
+    public function notInstanceOfStringPrimitive($value) {
+      $this->assertFalse(Primitive::$STRING->isInstance($value));
     }
 
-    /**
-     * Test isInstance() method for strings
-     *
-     */
-    #[@test]
-    public function thisIsNotInstanceOfStringPrimitive() {
-      $this->assertFalse(Primitive::$STRING->isInstance($this));
+    #[@test, @values(array(0, -1))]
+    public function isAnInstanceOfIntegerPrimitive($value) {
+      $this->assertTrue(Primitive::$INTEGER->isInstance($value));
     }
 
-    /**
-     * Test isInstance() method for strings
-     *
-     */
-    #[@test]
-    public function nullIsNotInstanceOfStringPrimitive() {
-      $this->assertFalse(Primitive::$STRING->isInstance(NULL));
+    #[@test, @values(source= 'instances', args= array(array(0, -1)))]
+    public function notInstanceOfIntegerPrimitive($value) {
+      $this->assertFalse(Primitive::$INTEGER->isInstance($value));
     }
 
-    /**
-     * Test isInstance() method for integers
-     *
-     */
-    #[@test]
-    public function intInstance() {
-      $this->assertTrue(Primitive::$INTEGER->isInstance(0));
+    #[@test, @values(array(0.0, -1.5))]
+    public function isAnInstanceOfDoublePrimitive($value) {
+      $this->assertTrue(Primitive::$DOUBLE->isInstance($value));
     }
 
-    /**
-     * Test isInstance() method for integers
-     *
-     */
-    #[@test]
-    public function doubleIsNotAnInstanceOfInt() {
-      $this->assertFalse(Primitive::$INTEGER->isInstance(0.0));
+    #[@test, @values(source= 'instances', args= array(array(0.0, -1.5)))]
+    public function notInstanceOfDoublePrimitive($value) {
+      $this->assertFalse(Primitive::$DOUBLE->isInstance($value));
     }
 
-    /**
-     * Test isInstance() method for integers
-     *
-     */
-    #[@test]
-    public function falseIsNotAnInstanceOfInt() {
-      $this->assertFalse(Primitive::$INTEGER->isInstance(FALSE));
+    #[@test, @values(array(FALSE, TRUE))]
+    public function isAnInstanceOfBooleanPrimitive($value) {
+      $this->assertTrue(Primitive::$BOOLEAN->isInstance($value));
+    }
+
+    #[@test, @values(source= 'instances', args= array(array(FALSE, TRUE)))]
+    public function notInstanceOfBooleanPrimitive($value) {
+      $this->assertFalse(Primitive::$BOOLEAN->isInstance($value));
     }
 
     /**
