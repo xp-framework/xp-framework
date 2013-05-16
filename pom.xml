@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Sonatype OSS parent -->
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <!-- The basics -->
+  <groupId>net.xp-framework</groupId>
+  <artifactId>pom</artifactId>
+  <version>5.9.3-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <!-- More project information -->
+  <name>XP-Framework</name>
+  <description>The XP framework is an all-purpose, object oriented PHP framework</description>
+  <url>https://github.com/xp-framework/xp-framework</url>
+  <inceptionYear>2001</inceptionYear>
+  <organization>
+    <name>XP-Framework Team</name>
+    <url>http://xp-framework.net/</url>
+  </organization>
+  <developers>
+    <developer>
+      <id>xp-framework</id>
+      <name>XP-Framework Team</name>
+      <email>devs@xp-framework.net</email>
+      <url>http://xp-framework.net</url>
+    </developer>
+  </developers>
+  <licenses>
+    <license>
+      <name>BSD</name>
+      <url>http://www.opensource.org/licenses/BSD-3-Clause</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <!-- Project modules -->
+  <modules>
+    <module>./core</module>
+  </modules>
+
+  <!-- Source code management -->
+  <scm>
+    <connection>scm:git:git://github.com/xp-framework/xp-framework.git</connection>
+    <developerConnection>scm:git:git@github.com:1and1/xp-framework.git</developerConnection>
+    <url>https://github.com/xp-framework/xp-framework</url>
+  </scm>
+</project>
