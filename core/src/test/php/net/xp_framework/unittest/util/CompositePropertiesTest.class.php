@@ -356,7 +356,16 @@ anotherkey="is there, too"
      */
     #[@test]
     public function readFloatUsesDefaultOnNoOccurrance() {
-      $this->assertEquals('Hello.', $this->fixture()->readFloat('section', 'float3', 'Hello.'));
+      $this->assertEquals(-1.0, $this->fixture()->readFloat('section', 'non-existant-key', -1.0));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readFloatUsesZeroDefaultOnNoOccurrance() {
+      $this->assertEquals(0.0, $this->fixture()->readFloat('section', 'non-existant-key'));
     }
 
     /**
@@ -383,7 +392,16 @@ anotherkey="is there, too"
      */
     #[@test]
     public function readRangeUsesDefaultOnNoOccurrance() {
-      $this->assertEquals('Hello.', $this->fixture()->readRange('section', 'range3', 'Hello.'));
+      $this->assertEquals(array(1, 2, 3), $this->fixture()->readRange('section', 'non-existant-key', array(1, 2, 3)));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readRangeUsesEmptyArrayForDefaultOnNoOccurrance() {
+      $this->assertEquals(array(), $this->fixture()->readRange('section', 'non-existant-key'));
     }
 
     /**
