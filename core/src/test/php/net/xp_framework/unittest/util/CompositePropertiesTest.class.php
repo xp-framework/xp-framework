@@ -430,6 +430,15 @@ anotherkey="is there, too"
      *
      */
     #[@test]
+    public function readSectionThatDoesNotExistReturnsEmptyArrayPerDefault() {
+      $this->assertEquals(array(), $this->fixture()->readSection('doesnotexist'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function readEmptySectionOverridesDefault() {
       $this->assertEquals(array(), $this->fixture()->readSection('empty', array('default' => 'value')));
     }
