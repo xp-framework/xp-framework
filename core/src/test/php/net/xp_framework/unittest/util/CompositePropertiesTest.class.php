@@ -212,7 +212,16 @@ anotherkey="is there, too"
      */
     #[@test]
     public function readBooleanUsesDefaultOnNoOccurrance() {
-      $this->assertEquals('Hello.', $this->fixture()->readBool('section', 'b3', 'Hello.'));
+      $this->assertEquals(TRUE, $this->fixture()->readBool('section', 'non-existant-key', TRUE));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readBooleanUsesFalseForDefaultOnNoOccurrance() {
+      $this->assertEquals(FALSE, $this->fixture()->readBool('section', 'b3'));
     }
 
     /**
