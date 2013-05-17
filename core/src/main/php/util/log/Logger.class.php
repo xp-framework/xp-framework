@@ -183,7 +183,7 @@
           }
 
           // Set context
-          if ('' !== ($contextFQN= $prop->readString($section, 'context'))) {
+          if ('' !== ($contextFQN= $prop->readString($section, 'context', ''))) {
             $this->category[$section]->setContext(
               XPClass::forName($contextFQN)->newInstance()
             );
