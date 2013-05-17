@@ -239,7 +239,16 @@ anotherkey="is there, too"
      */
     #[@test]
     public function readArrayUsesDefaultOnNoOccurrance() {
-      $this->assertEquals('Hello.', $this->fixture()->readArray('section', 'arr4', 'Hello.'));
+      $this->assertEquals(array(1, 2, 3), $this->fixture()->readArray('section', 'non-existant-key', array(1, 2, 3)));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readArrayUsesEmptyArrayDefaultOnNoOccurrance() {
+      $this->assertEquals(array(), $this->fixture()->readArray('section', 'non-existant-key'));
     }
 
     /**
