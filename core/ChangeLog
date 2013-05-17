@@ -8,6 +8,8 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #302: Exception when not specifying a context class
+  (friebe)
 - Fixed issue #301: xprt-update fails
   (friebe)
 

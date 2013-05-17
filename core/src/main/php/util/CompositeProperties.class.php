@@ -79,10 +79,10 @@
      *
      * @param   string section
      * @param   string key
-     * @param   mixed default default NULL
+     * @param   mixed default default ''
      * @return  string
      */
-    public function readString($section, $key, $default= NULL) {
+    public function readString($section, $key, $default= '') {
       return $this->_read(__FUNCTION__, $section, $key, $default);
     }
 

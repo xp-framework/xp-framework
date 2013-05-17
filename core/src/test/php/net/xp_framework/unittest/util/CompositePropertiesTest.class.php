@@ -175,7 +175,17 @@ anotherkey="is there, too"
      */
     #[@test]
     public function readStringReturnsDefaultOnNoOccurrance() {
-      $this->assertEquals('Hello World', $this->fixture()->readString('section', 'str3', 'Hello World'));
+      $this->assertEquals('Hello World', $this->fixture()->readString('section', 'non-existant-key', 'Hello World'));
+    }
+
+    /**
+     * Test
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/302
+     */
+    #[@test]
+    public function readStringDefaultForDefault() {
+      $this->assertEquals('', $this->fixture()->readString('section', 'non-existant-key'));
     }
 
     /**
