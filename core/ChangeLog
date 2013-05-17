@@ -8,6 +8,10 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed CompositeProperties::readString(), readFloat() and readRange()'s
+  default values being inconsistent with the corresponding methods from
+  util.Properties.
+  (friebe)
 - Fixed issue #302: Exception when not specifying a context class
   (friebe)
 - Fixed issue #301: xprt-update fails
