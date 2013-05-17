@@ -239,9 +239,14 @@ Features
   (friebe, kiesel)
 
 
-Version 5.8.?, released ????-??-??
-----------------------------------
-Git commit: ?????
+Version 5.8.14, released 2013-05-17
+-----------------------------------
+Git commit: 58939a61dabeb9981735d30d7d0fbc45c0181798
+
+Heads up!
+~~~~~~~~~
+- This is the last planned release on the xp5_8 branch!
+  (friebe, kiesel)
 
 Bugfixes
 ~~~~~~~~
