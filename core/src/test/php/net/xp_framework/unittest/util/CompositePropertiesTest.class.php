@@ -292,6 +292,15 @@ anotherkey="is there, too"
      *
      */
     #[@test]
+    public function readHashUsesNullForDefaultOnNoOccurrance() {
+      $this->assertEquals(NULL, $this->fixture()->readHash('section', 'hash3'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function readIntegerUsesFirst() {
       $this->assertEquals(5, $this->fixture()->readInteger('section', 'int1'));
     }
