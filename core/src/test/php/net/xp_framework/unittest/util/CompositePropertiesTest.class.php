@@ -320,7 +320,16 @@ anotherkey="is there, too"
      */
     #[@test]
     public function readIntegerUsesDefaultOnNoOccurrance() {
-      $this->assertEquals('Hello.', $this->fixture()->readInteger('section', 'int3', 'Hello.'));
+      $this->assertEquals(-1, $this->fixture()->readInteger('section', 'non-existant-key', -1));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readIntegerUsesZeroForDefaultOnNoOccurrance() {
+      $this->assertEquals(0, $this->fixture()->readInteger('section', 'non-existant-key'));
     }
 
     /**
