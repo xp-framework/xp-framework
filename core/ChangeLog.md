@@ -9,6 +9,7 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Only add .xar and .php files to class path in XP installer - (@thekid)
 * Fixed CompositeProperties::readString(), readFloat() and readRange()'s
   default values being inconsistent with the corresponding methods from
   util.Properties. - (@thekid)
