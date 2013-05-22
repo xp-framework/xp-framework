@@ -3,6 +3,8 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 5.9.3 / 2013-05-22
+
 ### RFCs
 
 * Implemented RFC 273: ChangeLog formatting - (@thekid)
