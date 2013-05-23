@@ -12,7 +12,7 @@
   <!-- The basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>pom</artifactId>
-  <version>5.9.3-SNAPSHOT</version>
+  <version>5.9.4-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- More project information -->
@@ -45,10 +45,26 @@
     <module>./core</module>
   </modules>
 
+  <!-- Plugin configuration -->
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.4.1</version>
+        <configuration>
+          <pushChanges>false</pushChanges>
+          <tagNameFormat>maven-@{project.version}</tagNameFormat>
+          <localCheckout>true</localCheckout>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <!-- Source code management -->
   <scm>
     <connection>scm:git:git://github.com/xp-framework/xp-framework.git</connection>
-    <developerConnection>scm:git:git@github.com:1and1/xp-framework.git</developerConnection>
+    <developerConnection>scm:git:git@github.com:xp-framework/xp-framework.git</developerConnection>
     <url>https://github.com/xp-framework/xp-framework</url>
   </scm>
 </project>

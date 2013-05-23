@@ -12,7 +12,7 @@
   <!-- The basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>core</artifactId>
-  <version>5.9.3-SNAPSHOT</version>
+  <version>5.9.4-SNAPSHOT</version>
   <packaging>xar</packaging>
 
   <!-- More project information -->
@@ -212,7 +212,7 @@
   <!-- Source code management -->
   <scm>
     <connection>scm:git:git://github.com/xp-framework/xp-framework.git</connection>
-    <developerConnection>scm:git:git@github.com:1and1/xp-framework.git</developerConnection>
+    <developerConnection>scm:git:git@github.com:xp-framework/xp-framework.git</developerConnection>
     <url>https://github.com/xp-framework/xp-framework</url>
   </scm>
 
