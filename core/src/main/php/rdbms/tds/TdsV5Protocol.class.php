@@ -181,7 +181,16 @@
 
       // Skip over DONEPROC & DONEINPROC results
       do {
-        if ("\x00" === $token) {                 // ??? 04 01 00 0A 00 00 00 00 00 00
+        if ("\x00" === $token || "\x02" === $token) {
+
+          // Tokens encountered in some situations, seem to be inserted after a certain number
+          // of rows, we need to continue reading in these cases (if we don't, we experience
+          // issues like https://github.com/xp-framework/xp-framework/issues/305). Examples:
+          //
+          // packet header           * token * data
+          // ----------------------- * ----- * -----------
+          // 04 01 00 0A 00 00 00 00 * 00 00 *
+          // 04 01 00 0E 00 00 00 00 * 02 00 * 19 00 00 00
           $token= $this->read();
           continue;
         } else if ("\xEE" === $token) {          // TDS_ROWFMT
