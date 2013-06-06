@@ -128,5 +128,14 @@
     public function getCalled() {
       return $this->called;
     }
+
+    /**
+     * Cerates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      return $this->getClassName().'@'.xp::stringOf($this->list->elements());
+    }
   }
 ?>
