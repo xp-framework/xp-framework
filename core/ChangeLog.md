@@ -8,6 +8,12 @@ XP Framework ChangeLog
 * Fixed issue #305: rdbms.SQLStatementFailedException (errorcode 0: Unexpected 
   token 0x02 (number 0) - (@thekid)
 
+### Features
+
+* Added toString() implementations to unittest.mock.Expectation and 
+  ExpectationList classes - (@thekid)
+
+
 ## 5.9.3 / 2013-05-22
 
 ### RFCs
