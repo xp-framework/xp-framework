@@ -69,6 +69,9 @@
         } else if (is_file($resolved)) {
           $cl= ArchiveClassLoader::instanceFor($resolved, FALSE);
         } else {
+          if ('/' !== $element{0} && ':' !== $element{1}) {   // If not fully qualified
+            $element.= ' (in '.getcwd().')';
+          }
           xp::error('[bootstrap] Classpath element ['.$element.'] not found');
         }
         isset(self::$delegates[$cl->instanceId()]) || self::registerLoader($cl, $before);
