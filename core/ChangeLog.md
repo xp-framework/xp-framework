@@ -5,6 +5,7 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed issue #304: Classpath element not found error not very helpful - (@thekid)
 * Fixed issue #305: rdbms.SQLStatementFailedException (errorcode 0: Unexpected 
   token 0x02 (number 0) - (@thekid)
 
