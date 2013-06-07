@@ -16,9 +16,9 @@
    */
   class ExpectationList extends Object {
     private
-      $list      = NULL,
-      $called    = NULL,
-      $unexpected= NULL;
+      $list       = NULL,
+      $called     = NULL,
+      $unexpected = NULL;
     
     /**
      * Constructor      
@@ -34,11 +34,7 @@
      * 
      * @param   unittest.mock.Expectation expectation    
      */
-    public function add($expectation) {
-      if (!($expectation instanceof Expectation)) {
-        throw new IllegalArgumentException('Expectation expected.');
-      }
-      
+    public function add(Expectation $expectation) {
       $this->list->add($expectation);
     }
 
@@ -50,19 +46,17 @@
      */
     public function getNext($args) {
       $expectation= $this->getMatching($args);
-      if (!$expectation) {
-        return NULL;
-      }
+      if (NULL === $expectation) return NULL;
       
-      $expectation->incActualCalls(); //increase call counter
+      $expectation->incActualCalls();     // increase call counter
 
-      if(!$this->called->contains($expectation)) {
-          $this->called->add($expectation);
+      if (!$this->called->contains($expectation)) {
+        $this->called->add($expectation);
       }
       
-      if (!$expectation->canRepeat()) { // no more repetitions left
-          $idx= $this->list->indexOf($expectation); //find it
-          $this->list->remove($idx); //remove it
+      if (!$expectation->canRepeat()) {   // no more repetitions left
+        $idx= $this->list->indexOf($expectation);
+        $this->list->remove($idx);
       }
 
       return $expectation;
@@ -127,6 +121,15 @@
      */
     public function getCalled() {
       return $this->called;
+    }
+
+    /**
+     * Cerates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      return $this->getClassName().'@'.xp::stringOf($this->list->elements());
     }
   }
 ?>

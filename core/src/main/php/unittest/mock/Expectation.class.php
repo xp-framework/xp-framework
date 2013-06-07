@@ -188,5 +188,31 @@
         return Objects::equal($argVal, $value);
       }
     }
+
+    /**
+     * Cerates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      return sprintf(
+        "%s(Calling %s(%d arg(s)) %s)@{\n".
+        "  [args                ] %s\n".
+        "  [return              ] %s\n".
+        "  [exception           ] %s\n".
+        "  [isInPropertyBehavior] %s\n".
+        "  [actualCalls         ] %d\n".
+        "}",
+        $this->getClassName(),
+        $this->methodName,
+        sizeof($this->args),
+        $this->repeat === -1 ? '**' : '* '.$this->repeat,
+        xp::stringOf($this->args, '  '),
+        xp::stringOf($this->return, '  '),
+        xp::stringOf($this->exception, '  '),
+        xp::stringOf($this->isInPropertyBehavior),
+        $this->actualCalls
+      );
+    }
   }
 ?>
