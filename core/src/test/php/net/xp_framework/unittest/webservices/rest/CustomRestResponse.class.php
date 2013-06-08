@@ -26,7 +26,7 @@
       if ($code > 399) {
         // TODO: $type= this($this->response->header('Content-Type'), 0);
 
-        $e= $this->deserializer->deserialize($this->input, Type::forName('[:var]'));
+        $e= $this->reader->read(Type::$VAR, $this->input);
         throw new CustomRestException($e, new RestException($code.': '.$this->response->message()));
       }
     }

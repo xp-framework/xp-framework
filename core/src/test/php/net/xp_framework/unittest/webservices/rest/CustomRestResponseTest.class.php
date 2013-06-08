@@ -32,7 +32,7 @@
           strlen($body),
           $body
         ))),
-        new RestJsonDeserializer(),
+        new ResponseReader(new RestJsonDeserializer(), new RestMarshalling()),
         Type::forName('[:var]')
       );
     }
