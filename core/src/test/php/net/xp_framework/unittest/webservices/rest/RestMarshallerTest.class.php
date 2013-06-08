@@ -25,9 +25,9 @@
   /**
    * TestCase
    *
-   * @see   xp://webservices.rest.RestSerializer
+   * @see   xp://webservices.rest.RestMarshaller
    */
-  class RestSerializerConversionTest extends TestCase {
+  class RestMarshallerTest extends TestCase {
     protected $fixture= NULL;
   
     /**

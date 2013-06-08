@@ -17,9 +17,9 @@
   /**
    * TestCase
    *
-   * @see   xp://webservices.rest.RestDeserializer
+   * @see   xp://webservices.rest.Unmarshaller
    */
-  class RestDeserializerConversionTest extends TestCase {
+  class RestUnmarshallerTest extends TestCase {
     protected $fixture= NULL;
   
     /**

@@ -7,6 +7,8 @@
   /**
    * The marshaller takes care of converting the data to a simple
    * output format consisting solely of primitives, arrays and maps.
+   *
+   * @test  xp://net.xp_framework.unittest.webservices.rest.RestMarshallerTest
    */
   class RestMarshaller extends Object {
 

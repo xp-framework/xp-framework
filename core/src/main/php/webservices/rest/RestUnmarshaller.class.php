@@ -8,6 +8,8 @@
    * The unmarshaller takes care of converting the data from a simple
    * input consisting solely of primitives, arrays and maps to the 
    * complex target types.
+   *
+   * @test  xp://net.xp_framework.unittest.webservices.rest.RestUnmarshallerTest
    */
   class RestUnmarshaller extends Object {
 
