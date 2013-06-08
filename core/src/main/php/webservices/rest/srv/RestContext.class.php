@@ -269,14 +269,14 @@
           $src= new RestParamSource(NULL, ParamReader::$BODY);
         }
 
-        if (NULL === ($arg= $src->reader->read($src->name, $parameter->getType(), $target, $request))) {
+        if (NULL === ($arg= $src->reader->read($src->name, $target, $request))) {
           if ($parameter->isOptional()) {
-            $arg= $src->reader->convert($parameter->getType(), $parameter->getDefaultValue());
+            $arg= $parameter->getDefaultValue();
           } else {
             throw new IllegalArgumentException('Parameter "'.$param.'" required but found in '.$src->toString());
           }
         }
-        $args[]= $arg;
+        $args[]= $this->unmarshal($parameter->getType(), $arg);
       }
       return $args;
     }
