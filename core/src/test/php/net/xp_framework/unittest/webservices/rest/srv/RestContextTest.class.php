@@ -67,7 +67,7 @@
     #[@test]
     public function marshal_this_generically() {
       $this->assertEquals(
-        new Payload($this),
+        new Payload(array('name' => $this->name)),
         $this->fixture->marshal(new Payload($this))
       );
     }

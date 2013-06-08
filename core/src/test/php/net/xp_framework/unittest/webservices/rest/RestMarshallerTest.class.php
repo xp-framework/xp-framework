@@ -19,6 +19,7 @@
     'net.xp_framework.unittest.webservices.rest.IssueWithField',
     'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreField',
     'net.xp_framework.unittest.webservices.rest.IssueWithSetter',
+    'net.xp_framework.unittest.webservices.rest.IssueWithGetter',
     'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreSetter'
   );
 

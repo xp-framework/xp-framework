@@ -4,12 +4,58 @@
  * $Id$ 
  */
 
+  uses('webservices.rest.TypeMarshaller', 'util.collections.HashTable');
+
   /**
    * Marshalling takes care of converting the data to a simple output 
    * format consisting solely of primitives, arrays and maps; and vice
    * versa.
    */
   class RestMarshalling extends Object {
+    protected $marshallers;
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+      $this->marshallers= create('new HashTable<Type, TypeMarshaller>');
+    }
+
+    /**
+     * Adds a type marshaller
+     *
+     * @param  var type either a full qualified type name or a type instance
+     * @param  webservices.rest.TypeMarshaller m
+     * @return webservices.rest.TypeMarshaller The added marshaller
+     */
+    public function addMarshaller($type, TypeMarshaller $m) {
+      $keys= $this->marshallers->keys();
+
+      // Add marshaller
+      $t= $type instanceof Type ? $type : Type::forName($type);
+      $this->marshallers[$t]= $m;
+
+      // Iterate over map keys before having altered the map, checking for
+      // any marshallers less specific than the added marshaller, and move
+      // them to the end. E.g. if a marshaller for Dates is added, it needs 
+      // to be in the map *before* the one for for Objects!
+      foreach ($keys as $type) {
+        if ($type->isAssignableFrom($t)) {
+          $this->marshallers->put($type, $this->marshallers->remove($type));
+        }
+      }
+      return $m;
+    }
+
+    /**
+     * Adds a type marshaller
+     *
+     * @param  var type either a full qualified type name or a type instance
+     * @return webservices.rest.TypeMarshaller The added marshaller
+     */
+    public function getMarshaller($type) {
+      return $this->marshallers[$type instanceof Type ? $type : Type::forName($type)];
+    }
 
     /**
      * Calculate variants of a given name
@@ -46,6 +92,10 @@
       } else if ($data instanceof ArrayList) {
         return (array)$data->values;
       } else if ($data instanceof Generic) {
+        foreach ($this->marshallers->keys() as $t) {      // Specific class marshalling
+          if ($t->isInstance($data)) return $this->marshallers[$t]->marshal($data);
+        }
+
         $class= $data->getClass();
         $r= array();
         foreach ($class->getFields() as $field) {
@@ -130,6 +180,9 @@
       } else if ($type->equals(XPClass::forName('util.Date'))) {
         return $type->newInstance($data);
       } else if ($type instanceof XPClass) {
+        foreach ($this->marshallers->keys() as $t) {
+          if ($t->isAssignableFrom($type)) return $this->marshallers[$t]->unmarshal($type, $data);
+        }
 
         // Check if a public static one-arg valueOf() method exists
         // E.g.: Assuming the target type has a valueOf(string $id) and the
