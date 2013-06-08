@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'webservices.rest.RestDeserializer',
+    'webservices.rest.RestUnmarshaller',
     'net.xp_framework.unittest.webservices.rest.ConstructorFixture',
     'net.xp_framework.unittest.webservices.rest.IssueWithField',
     'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreField',
@@ -27,9 +27,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= newinstance('RestDeserializer', array(), '{
-        public function deserialize($in) { /* Intentionally empty */ }
-      }');
+      $this->fixture= new RestUnmarshaller();
     }
     
     /**

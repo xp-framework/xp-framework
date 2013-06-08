@@ -14,7 +14,7 @@
     'lang.types.Double',
     'lang.types.Float',
     'lang.types.ArrayList',
-    'webservices.rest.RestSerializer',
+    'webservices.rest.RestMarshaller',
     'net.xp_framework.unittest.webservices.rest.ConstructorFixture',
     'net.xp_framework.unittest.webservices.rest.IssueWithField',
     'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreField',
@@ -35,10 +35,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= newinstance('RestSerializer', array(), '{
-        public function contentType() { /* Intentionally empty */ }
-        public function serialize($payload) { /* Intentionally empty */ }
-      }');
+      $this->fixture= new RestMarshaller();
     }
     
     /**
