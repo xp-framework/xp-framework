@@ -141,7 +141,6 @@
 
       foreach ($this->marshallers->keys() as $type) {
         if (!$type->isInstance($payload->value)) continue;
-
         $payload->value= $this->marshallers[$type]->marshal($payload->value);
         break;
       }

@@ -67,7 +67,6 @@
       return $this->currency;
     }
 
-    
     /**
      * Add another money value to this money and return a new money 
      * instance.
