@@ -131,10 +131,10 @@
      *
      */
     #[@test]
-    public function hasBodyWithJsonPayload() {
+    public function hasPayloadWithJsonPayload() {
       $fixture= new RestRequest();
       $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
-      $this->assertTrue($fixture->hasBody());
+      $this->assertTrue($fixture->hasPayload());
     }
 
     /**
@@ -153,10 +153,10 @@
      *
      */
     #[@test]
-    public function getBodyWithJsonPayload() {
+    public function getPayloadWithJsonPayload() {
       $fixture= new RestRequest();
       $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
-      $this->assertEquals('{ "title" : "New issue" }', $fixture->getBody()->data);
+      $this->assertEquals(array('title' => 'New issue'), $fixture->getPayload());
     }
 
     /**
@@ -167,7 +167,7 @@
     public function getBodyWithJsonPayloadUsingRestFormat() {
       $fixture= new RestRequest();
       $fixture->setPayload(array('title' => 'New issue'), RestFormat::$JSON);
-      $this->assertEquals('{ "title" : "New issue" }', $fixture->getBody()->data);
+      $this->assertEquals(array('title' => 'New issue'), $fixture->getPayload());
     }
 
     /**
@@ -213,10 +213,10 @@
      *
      */
     #[@test]
-    public function hasBodyWithXmlPayload() {
+    public function hasPayloadWithXmlPayload() {
       $fixture= new RestRequest();
       $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
-      $this->assertTrue($fixture->hasBody());
+      $this->assertTrue($fixture->hasPayload());
     }
 
     /**
@@ -235,14 +235,10 @@
      *
      */
     #[@test]
-    public function getBodyWithXmlPayload() {
+    public function getPayloadWithXmlPayload() {
       $fixture= new RestRequest();
       $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
-      $this->assertEquals(
-        '<?xml version="1.0" encoding="UTF-8"?>'."\n".
-        '<root><title>New issue</title></root>', 
-        $fixture->getBody()->data
-      );
+      $this->assertEquals(array('title' => 'New issue'), $fixture->getPayload());
     }
 
     /**
@@ -250,14 +246,10 @@
      *
      */
     #[@test]
-    public function getBodyWithXmlPayloadAndRootNode() {
+    public function getPayloadWithXmlPayloadAndRootNode() {
       $fixture= new RestRequest();
       $fixture->setPayload(new Payload(array('title' => 'New issue'), array('name' => 'issue')), new RestXmlSerializer());
-      $this->assertEquals(
-        '<?xml version="1.0" encoding="UTF-8"?>'."\n".
-        '<issue><title>New issue</title></issue>', 
-        $fixture->getBody()->data
-      );
+      $this->assertEquals(new Payload(array('title' => 'New issue'), array('name' => 'issue')), $fixture->getPayload());
     }
 
     /**
