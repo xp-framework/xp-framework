@@ -32,9 +32,9 @@
     public function serialize($payload) {
       $encoder= JsonFactory::create();
       if ($payload instanceof Payload) {
-        return $encoder->encode($this->convert($payload->value));
+        return $encoder->encode($payload->value);
       } else {
-        return $encoder->encode($this->convert($payload));
+        return $encoder->encode($payload);
       }
     }
   }

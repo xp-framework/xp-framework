@@ -28,7 +28,7 @@
      */
     public function setUp() {
       $this->fixture= newinstance('RestDeserializer', array(), '{
-        public function deserialize($in, $type) { /* Intentionally empty */ }
+        public function deserialize($in) { /* Intentionally empty */ }
       }');
     }
     

@@ -17,11 +17,10 @@
      * Serialize
      *
      * @param   io.streams.InputStream in
-     * @param   lang.Type target
      * @return  var
      * @throws  lang.FormatException
      */
-    public function deserialize($in, $target) {
+    public function deserialize($in) {
       $st= new StreamTokenizer($in, '&');
       $map= array();
       while ($st->hasMoreTokens()) {
@@ -53,7 +52,7 @@
           $map[$key]= urldecode($value);
         }
       }
-      return $this->convert($target, $map);
+      return $map;
     }
   }
 ?>

@@ -11,7 +11,6 @@
 
   /**
    * A JSON deserializer
-   *
    */
   class RestJsonDeserializer extends RestDeserializer {
 
@@ -19,13 +18,12 @@
      * Serialize
      *
      * @param   io.streams.InputStream in
-     * @param   lang.Type target
-     * @return  var
+     * @return  [:var]
      * @throws  lang.FormatException
      */
-    public function deserialize($in, $target) {
+    public function deserialize($in) {
       try {
-        return $this->convert($target, JsonFactory::create()->decodeFrom($in));
+        return JsonFactory::create()->decodeFrom($in);
       } catch (JsonException $e) {
         throw new FormatException('Malformed JSON', $e);
       }

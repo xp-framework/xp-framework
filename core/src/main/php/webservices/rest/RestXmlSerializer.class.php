@@ -41,9 +41,9 @@
       }
 
       if ($payload instanceof Generic || is_array($payload)) {
-        $t->root= Node::fromArray($this->convert($payload), $root);
+        $t->root= Node::fromArray($payload, $root);
       } else {
-        $t->root= new Node($root, $this->convert($payload));
+        $t->root= new Node($root, $payload);
       }
       return $t->getDeclaration()."\n".$t->getSource(INDENT_NONE);
     }

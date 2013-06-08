@@ -22,13 +22,12 @@
      * Deserialize
      *
      * @param   io.streams.InputStream in
-     * @param   lang.Type target
      * @return  var
      */
-    public function deserialize($in, $target) {
+    public function deserialize($in) {
       $tree= new Tree();
       create(new XMLParser())->withCallback($tree)->parse(new StreamInputSource($in));
-      return $this->convert($target, new RestXmlMap($tree->root));
+      return new RestXmlMap($tree->root);
     }
   }
 ?>

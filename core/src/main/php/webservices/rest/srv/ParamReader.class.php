@@ -66,7 +66,7 @@
     public function __construct($ordinal, $name) {
       parent::__construct($ordinal, $name);
       $this->convert= newinstance('webservices.rest.RestDeserializer', array(), '{
-        public function deserialize($in, $target) {
+        public function deserialize($in) {
           throw new IllegalStateException("Unused");
         }
       }');
