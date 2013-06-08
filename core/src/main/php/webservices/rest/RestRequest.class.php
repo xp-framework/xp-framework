@@ -18,10 +18,12 @@
   class RestRequest extends Object {
     protected $resource= '/';
     protected $method= '';
+    protected $contentType= NULL;
     protected $parameters= array();
     protected $segments= array();
     protected $headers= array();
     protected $accept= array();
+    protected $payload= NULL;
     protected $body= NULL;
 
     /**
@@ -140,26 +142,19 @@
     /**
      * Sets payload
      *
-     * @param   var payload either a RestFormat or a RestSerializer instance
-     * @param   var format
+     * @param   var payload
+     * @param   var format either a RestFormat or a RestSerializer instance
      */
     public function setPayload($payload, $format) {
+      $this->payload= $payload;
       if ($format instanceof RestFormat) {
-        $serializer= $format->serializer();
+        $this->contentType= $format->serializer()->contentType();
       } else if ($format instanceof RestSerializer) {
-        $serializer= $format;
+        $this->contentType= $format->contentType();
       } else {
+        // TBD: Maybe just use the format as content type?
         throw new IllegalArgumentException('Expected either a RestFormat or a RestSerializer instance, '.xp::typeOf($format).' given');
       }
-      $this->body= new RequestData($serializer->serialize($payload));  
-
-      // Update content type header
-      foreach ($this->headers as $i => $header) {
-        if ('Content-Type' !== $header->getName()) continue;
-        $this->headers[$i]->value= $serializer->contentType();
-        return;
-      }
-      $this->headers[]= new Header('Content-Type', $serializer->contentType());
     }
 
     /**
@@ -172,6 +167,24 @@
     public function withPayload($payload, $format) {
       $this->setPayload($payload, $format);
       return $this;
+    }
+
+    /**
+     * Gets payload
+     *
+     * @return  var
+     */
+    public function hasPayload() {
+      return NULL !== $this->payload;
+    }
+
+    /**
+     * Gets payload
+     *
+     * @return  var
+     */
+    public function getPayload() {
+      return $this->payload;
     }
 
     /**
@@ -319,7 +332,11 @@
      * @throws  lang.ElementNotFoundException
      */
     public function getHeader($name) {
-      foreach ($this->headers as $header) {
+      if ('Content-Type' === $name) {
+        return $this->contentType;
+      } else if ('Accept' === $name) {
+        return $this->accept;
+      } else foreach ($this->headers as $header) {
         if ($name === $header->getName()) return $header->getValue();
       }
       raise('lang.ElementNotFoundException', 'No such header "'.$name.'"');
@@ -335,9 +352,8 @@
       foreach ($this->headers as $header) {
         $headers[$header->getName()]= $header->getValue();
       }
-      if ($this->accept) {
-        $headers['Accept']= implode(', ', $this->accept);
-      }
+      $this->contentType && $headers['Content-Type']= $this->contentType;
+      $this->accept && $headers['Accept']= implode(', ', $this->accept);
       return $headers;
     }
 
@@ -347,9 +363,10 @@
      * @return  peer.Header[]
      */
     public function headerList() {
-      return array_merge($this->headers, $this->accept
-        ? array(new Header('Accept', implode(', ', $this->accept)))
-        : array()
+      return array_merge(
+        $this->headers,
+        $this->contentType ? array(new Header('Content-Type', $this->contentType)) : array(),
+        $this->accept ? array(new Header('Accept', implode(', ', $this->accept))) : array()
       );
     }
 

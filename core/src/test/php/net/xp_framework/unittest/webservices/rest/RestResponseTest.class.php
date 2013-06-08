@@ -48,7 +48,7 @@
           strlen($body),
           $body
         ))),
-        self::$deserializers[$content],
+        new ResponseReader(self::$deserializers[$content], new RestMarshalling()),
         Type::forName('[:var]')
       );
     }

@@ -7,6 +7,7 @@
   uses(
     'io.streams.Streams', 
     'io.streams.MemoryInputStream',
+    'webservices.rest.ResponseReader',
     'peer.http.HttpResponse'
   );
 
@@ -17,20 +18,20 @@
    */
   class RestResponse extends Object {
     protected $response= NULL;
-    protected $deserializer= NULL;
-    protected $type= NULL;
+    protected $reader= NULL;
     protected $input= NULL;
+    protected $type= NULL;
 
     /**
      * Creates a new response
      *
      * @param   peer.http.HttpResponse response
-     * @param   webservices.rest.RestDeserializer deserializer
-     * @param   lang.Type type
+     * @param   webservices.rest.ResponseReader reader
+     * @param   var type (Deprecated)
      */
-    public function __construct(HttpResponse $response, RestDeserializer $deserializer= NULL, Type $type= NULL) {
+    public function __construct(HttpResponse $response, ResponseReader $reader= NULL, $type= NULL) {
       $this->response= $response;
-      $this->deserializer= $deserializer;
+      $this->reader= $reader;
       $this->type= $type;
       $this->input= $response->getInputStream();
     }
@@ -133,7 +134,7 @@
      * @return  var
      */
     protected function handlePayloadOf($target) {
-      return $this->deserializer->deserialize($this->input, $target);
+      return $this->reader->read($target, $this->input);
     }
 
     /**
@@ -147,14 +148,14 @@
       $this->handleStatus($this->response->statusCode());
  
       if (NULL === $type) {
-        $target= $this->type;  // BC
+        $target= $this->type ?: Type::$VAR;  // BC
       } else if ($type instanceof Type) {
         $target= $type;
       } else {
         $target= Type::forName($type);
       }
 
-      if (NULL === $this->deserializer) {
+      if (NULL === $this->reader) {
         throw new IllegalArgumentException('Unknown content type "'.$this->headers['Content-Type'][0].'"');
       }
 
