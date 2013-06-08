@@ -24,20 +24,20 @@
         static function __static() { }
         public function read($name, $type, $target, $request) {
           if (NULL === ($cookie= $request->getCookie($name, NULL))) return NULL;
-          return $this->convert->convert($type, $cookie->getValue());
+          return $this->convert->unmarshal($type, $cookie->getValue());
         }
       }');
       self::$sources['header']= self::$HEADER= newinstance(__CLASS__, array(2, 'header'), '{
         static function __static() { }
         public function read($name, $type, $target, $request) {
-          return $this->convert->convert($type, $request->getHeader($name, NULL));
+          return $this->convert->unmarshal($type, $request->getHeader($name, NULL));
         }
       }');
       self::$sources['param']= self::$PARAM= newinstance(__CLASS__, array(3, 'param'), '{
         static function __static() { }
         public function read($name, $type, $target, $request) {
           return $request->hasParam($name)
-            ? $this->convert->convert($type, $request->getParam($name))
+            ? $this->convert->unmarshal($type, $request->getParam($name))
             : NULL
           ;
         }
@@ -46,7 +46,7 @@
         static function __static() { }
         public function read($name, $type, $target, $request) {
           return isset($target["segments"][$name])
-            ? $this->convert->convert($type, rawurldecode($target["segments"][$name]))
+            ? $this->convert->unmarshal($type, rawurldecode($target["segments"][$name]))
             : NULL
           ;
         }
@@ -65,11 +65,7 @@
      */
     public function __construct($ordinal, $name) {
       parent::__construct($ordinal, $name);
-      $this->convert= newinstance('webservices.rest.RestDeserializer', array(), '{
-        public function deserialize($in) {
-          throw new IllegalStateException("Unused");
-        }
-      }');
+      $this->convert= new RestMarshalling();
     }
 
     /**
@@ -93,7 +89,7 @@
      * @return var
      */
     public function convert($target, $value) {
-      return $this->convert->convert($target, $value);
+      return $this->convert->unmarshal($target, $value);
     }
 
     /**
