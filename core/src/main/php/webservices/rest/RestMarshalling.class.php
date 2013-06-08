@@ -5,13 +5,11 @@
  */
 
   /**
-   * The unmarshaller takes care of converting the data from a simple
-   * input consisting solely of primitives, arrays and maps to the 
-   * complex target types.
-   *
-   * @test  xp://net.xp_framework.unittest.webservices.rest.RestUnmarshallerTest
+   * Marshalling takes care of converting the data to a simple output 
+   * format consisting solely of primitives, arrays and maps; and vice
+   * versa.
    */
-  class RestUnmarshaller extends Object {
+  class RestMarshalling extends Object {
 
     /**
      * Calculate variants of a given name
@@ -26,6 +24,54 @@
         $variants[]= array_shift($chunks).implode(array_map('ucfirst', $chunks));
       }
       return $variants;
+    }
+
+    /**
+     * Convert data
+     *
+     * @param   var data
+     * @return  var
+     */
+    public function marshal($data) {
+      if ($data instanceof Date) {
+        return $data->toString('c');    // ISO 8601, e.g. "2004-02-12T15:19:21+00:00"
+      } else if ($data instanceof String || $data instanceof Character) {
+        return $data->toString();
+      } else if ($data instanceof Integer || $data instanceof Long || $data instanceof Short || $data instanceof Byte) {
+        return $data->intValue();
+      } else if ($data instanceof Float || $data instanceof Double) {
+        return $data->doubleValue();
+      } else if ($data instanceof Boolean) {
+        return (bool)$data->value;
+      } else if ($data instanceof ArrayList) {
+        return (array)$data->values;
+      } else if ($data instanceof Generic) {
+        $class= $data->getClass();
+        $r= array();
+        foreach ($class->getFields() as $field) {
+          $m= $field->getModifiers();
+          if ($m & MODIFIER_STATIC) {
+            continue;
+          } else if ($field->getModifiers() & MODIFIER_PUBLIC) {
+            $r[$field->getName()]= $this->marshal($field->get($data));
+          } else {
+            foreach ($this->variantsOf($field->getName()) as $name) {
+              if ($class->hasMethod($m= 'get'.$name)) {
+                $r[$field->getName()]= $this->marshal($class->getMethod($m)->invoke($data));
+                continue 2;
+              }
+            }
+          }
+        }
+        return $r;
+      } else if (is_array($data)) {
+        $r= array();
+        foreach ($data as $key => $val) {
+          $r[$key]= $this->marshal($val);
+        }
+        return $r;
+      }
+      return $data;
     }
 
     /**
@@ -74,7 +120,7 @@
      * @param   [:var] data
      * @return  var
      */
-    public function convert($type, $data) {
+    public function unmarshal($type, $data) {
       if (NULL === $type || $type->equals(Type::$VAR)) {  // No conversion
         return $data;
       } else if (NULL === $data) {                        // Valid for any type
@@ -94,7 +140,7 @@
           $m= $type->getMethod('valueOf');
           if (Modifiers::isStatic($m->getModifiers()) && Modifiers::isPublic($m->getModifiers()) && 1 === $m->numParameters()) {
             if (NULL !== ($arg= $this->keyOf($data))) {
-              return $m->invoke(NULL, array($this->convert($m->getParameter(0)->getType(), $arg[0])));
+              return $m->invoke(NULL, array($this->unmarshal($m->getParameter(0)->getType(), $arg[0])));
             }
           }
         }
@@ -117,7 +163,7 @@
                 continue;
               } else if ($m & MODIFIER_PUBLIC) {
                 if (NULL !== ($fType= $field->getType())) {
-                  $field->set($return, $this->convert($fType, $value));
+                  $field->set($return, $this->unmarshal($fType, $value));
                 } else {
                   $field->set($return, $value);
                 }
@@ -128,7 +174,7 @@
               $method= $type->getMethod('set'.$variant);
               if ($method->getModifiers() & MODIFIER_PUBLIC) {
                 if (NULL !== ($param= $method->getParameter(0))) {
-                  $method->invoke($return, array($this->convert($param->getType(), $value)));
+                  $method->invoke($return, array($this->unmarshal($param->getType(), $value)));
                 } else {
                   $method->invoke($return, array($value));
                 }
@@ -141,13 +187,13 @@
       } else if ($type instanceof ArrayType) {
         $return= array();
         foreach ($data as $element) {
-          $return[]= $this->convert($type->componentType(), $element);
+          $return[]= $this->unmarshal($type->componentType(), $element);
         }
         return $return;
       } else if ($type instanceof MapType) {
         $return= array();
         foreach ($data as $key => $element) {
-          $return[$key]= $this->convert($type->componentType(), $element);
+          $return[$key]= $this->unmarshal($type->componentType(), $element);
         }
         return $return;
       } else if ($type->equals(Primitive::$STRING)) {

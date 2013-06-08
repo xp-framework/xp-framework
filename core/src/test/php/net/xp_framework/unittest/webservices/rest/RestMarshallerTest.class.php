@@ -14,7 +14,7 @@
     'lang.types.Double',
     'lang.types.Float',
     'lang.types.ArrayList',
-    'webservices.rest.RestMarshaller',
+    'webservices.rest.RestMarshalling',
     'net.xp_framework.unittest.webservices.rest.ConstructorFixture',
     'net.xp_framework.unittest.webservices.rest.IssueWithField',
     'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreField',
@@ -25,7 +25,7 @@
   /**
    * TestCase
    *
-   * @see   xp://webservices.rest.RestMarshaller
+   * @see   xp://webservices.rest.RestMarshalling
    */
   class RestMarshallerTest extends TestCase {
     protected $fixture= NULL;
@@ -35,7 +35,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= new RestMarshaller();
+      $this->fixture= new RestMarshalling();
     }
     
     /**
@@ -44,7 +44,7 @@
      */
     #[@test]
     public function null() {
-      $this->assertEquals(NULL, $this->fixture->convert(NULL));
+      $this->assertEquals(NULL, $this->fixture->marshal(NULL));
     }
 
     /**
@@ -53,7 +53,7 @@
      */
     #[@test]
     public function string() {
-      $this->assertEquals('Hello', $this->fixture->convert('Hello'));
+      $this->assertEquals('Hello', $this->fixture->marshal('Hello'));
     }
 
     /**
@@ -62,7 +62,7 @@
      */
     #[@test]
     public function string_wrapper_object() {
-      $this->assertEquals('Hello', $this->fixture->convert(new String('Hello')));
+      $this->assertEquals('Hello', $this->fixture->marshal(new String('Hello')));
     }
 
     /**
@@ -71,7 +71,7 @@
      */
     #[@test]
     public function char_wrapper_object() {
-      $this->assertEquals('A', $this->fixture->convert(new Character('A')));
+      $this->assertEquals('A', $this->fixture->marshal(new Character('A')));
     }
 
     /**
@@ -80,7 +80,7 @@
      */
     #[@test]
     public function string_wrapper_object_unicode() {
-      $this->assertEquals("\334bercoder", $this->fixture->convert(new String("\303\234bercoder", 'utf-8')));
+      $this->assertEquals("\334bercoder", $this->fixture->marshal(new String("\303\234bercoder", 'utf-8')));
     }
 
     /**
@@ -89,7 +89,7 @@
      */
     #[@test]
     public function int() {
-      $this->assertEquals(6100, $this->fixture->convert(6100));
+      $this->assertEquals(6100, $this->fixture->marshal(6100));
     }
 
     /**
@@ -98,7 +98,7 @@
      */
     #[@test]
     public function long_wrapper_object() {
-      $this->assertEquals(61000, $this->fixture->convert(new Long(61000)));
+      $this->assertEquals(61000, $this->fixture->marshal(new Long(61000)));
     }
 
     /**
@@ -107,7 +107,7 @@
      */
     #[@test]
     public function int_wrapper_object() {
-      $this->assertEquals(6100, $this->fixture->convert(new Integer(6100)));
+      $this->assertEquals(6100, $this->fixture->marshal(new Integer(6100)));
     }
 
     /**
@@ -116,7 +116,7 @@
      */
     #[@test]
     public function short_wrapper_object() {
-      $this->assertEquals(610, $this->fixture->convert(new Short(610)));
+      $this->assertEquals(610, $this->fixture->marshal(new Short(610)));
     }
 
     /**
@@ -125,7 +125,7 @@
      */
     #[@test]
     public function byte_wrapper_object() {
-      $this->assertEquals(61, $this->fixture->convert(new Byte(61)));
+      $this->assertEquals(61, $this->fixture->marshal(new Byte(61)));
     }
 
     /**
@@ -134,7 +134,7 @@
      */
     #[@test]
     public function double() {
-      $this->assertEquals(1.5, $this->fixture->convert(1.5));
+      $this->assertEquals(1.5, $this->fixture->marshal(1.5));
     }
 
     /**
@@ -143,7 +143,7 @@
      */
     #[@test]
     public function double_wrapper_object() {
-      $this->assertEquals(1.5, $this->fixture->convert(new Double(1.5)));
+      $this->assertEquals(1.5, $this->fixture->marshal(new Double(1.5)));
     }
 
     /**
@@ -152,7 +152,7 @@
      */
     #[@test]
     public function float_wrapper_object() {
-      $this->assertEquals(1.5, $this->fixture->convert(new Float(1.5)));
+      $this->assertEquals(1.5, $this->fixture->marshal(new Float(1.5)));
     }
 
     /**
@@ -161,7 +161,7 @@
      */
     #[@test]
     public function bool() {
-      $this->assertEquals(TRUE, $this->fixture->convert(TRUE));
+      $this->assertEquals(TRUE, $this->fixture->marshal(TRUE));
     }
 
     /**
@@ -170,7 +170,7 @@
      */
     #[@test]
     public function bool_wrapper_object_true() {
-      $this->assertEquals(TRUE, $this->fixture->convert(Boolean::$TRUE));
+      $this->assertEquals(TRUE, $this->fixture->marshal(Boolean::$TRUE));
     }
 
     /**
@@ -179,7 +179,7 @@
      */
     #[@test]
     public function bool_wrapper_object_false() {
-      $this->assertEquals(FALSE, $this->fixture->convert(Boolean::$FALSE));
+      $this->assertEquals(FALSE, $this->fixture->marshal(Boolean::$FALSE));
     }
 
     /**
@@ -188,7 +188,7 @@
      */
     #[@test]
     public function string_array() {
-      $this->assertEquals(array('Hello', 'World'), $this->fixture->convert(array('Hello', 'World')));
+      $this->assertEquals(array('Hello', 'World'), $this->fixture->marshal(array('Hello', 'World')));
     }
 
     /**
@@ -197,7 +197,7 @@
      */
     #[@test]
     public function string_arraylist() {
-      $this->assertEquals(array('Hello', 'World'), $this->fixture->convert(new ArrayList('Hello', 'World')));
+      $this->assertEquals(array('Hello', 'World'), $this->fixture->marshal(new ArrayList('Hello', 'World')));
     }
 
     /**
@@ -208,7 +208,7 @@
     public function string_map() {
       $this->assertEquals(
         array('greeting' => 'Hello', 'name' => 'World'),
-        $this->fixture->convert(array('greeting' => 'Hello', 'name' => 'World'))
+        $this->fixture->marshal(array('greeting' => 'Hello', 'name' => 'World'))
       );
     }
 
@@ -220,7 +220,7 @@
     public function date_instance() {
       $this->assertEquals(
         '2012-12-31T18:00:00+01:00',
-        $this->fixture->convert(new Date('2012-12-31 18:00:00', new TimeZone('Europe/Berlin')))
+        $this->fixture->marshal(new Date('2012-12-31 18:00:00', new TimeZone('Europe/Berlin')))
       );
     }
 
@@ -232,7 +232,7 @@
     public function date_array() {
       $this->assertEquals(
         array('2012-12-31T18:00:00+01:00'),
-        $this->fixture->convert(array(new Date('2012-12-31 18:00:00', new TimeZone('Europe/Berlin'))))
+        $this->fixture->marshal(array(new Date('2012-12-31 18:00:00', new TimeZone('Europe/Berlin'))))
       );
     }
 
@@ -245,7 +245,7 @@
       $issue= new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'test');
       $this->assertEquals(
         array('issueId' => 1, 'title' => 'test'), 
-        $this->fixture->convert($issue)
+        $this->fixture->marshal($issue)
       );
     }
 
@@ -258,7 +258,7 @@
       $issue= new net·xp_framework·unittest·webservices·rest·IssueWithGetter(1, 'test');
       $this->assertEquals(
         array('issueId' => 1, 'title' => 'test', 'createdAt' => NULL), 
-        $this->fixture->convert($issue)
+        $this->fixture->marshal($issue)
       );
     }
 
@@ -274,7 +274,7 @@
       );
       $this->assertEquals(
         array(array('issueId' => 1, 'title' => 'test1'), array('issueId' => 2, 'title' => 'test2')),
-        $this->fixture->convert($issues)
+        $this->fixture->marshal($issues)
       );
     }
 
@@ -290,7 +290,7 @@
       );
       $this->assertEquals(
         array('one' => array('issueId' => 1, 'title' => 'test1'), 'two' => array('issueId' => 2, 'title' => 'test2')),
-        $this->fixture->convert($issues)
+        $this->fixture->marshal($issues)
       );
     }
 
@@ -304,7 +304,7 @@
         public $name= "Test";
         public static $instance;
       }');
-      $this->assertEquals(array('name' => 'Test'), $this->fixture->convert($o));
+      $this->assertEquals(array('name' => 'Test'), $this->fixture->marshal($o));
     }
   }
 ?>

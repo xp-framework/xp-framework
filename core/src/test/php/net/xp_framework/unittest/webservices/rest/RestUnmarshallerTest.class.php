@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'webservices.rest.RestUnmarshaller',
+    'webservices.rest.RestMarshalling',
     'net.xp_framework.unittest.webservices.rest.ConstructorFixture',
     'net.xp_framework.unittest.webservices.rest.IssueWithField',
     'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreField',
@@ -17,7 +17,7 @@
   /**
    * TestCase
    *
-   * @see   xp://webservices.rest.Unmarshaller
+   * @see   xp://webservices.rest.RestMarshalling
    */
   class RestUnmarshallerTest extends TestCase {
     protected $fixture= NULL;
@@ -27,7 +27,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= new RestUnmarshaller();
+      $this->fixture= new RestMarshalling();
     }
     
     /**
@@ -36,7 +36,7 @@
      */
     #[@test]
     public function null() {
-      $this->assertEquals(NULL, $this->fixture->convert(Type::$VAR, NULL));
+      $this->assertEquals(NULL, $this->fixture->unmarshal(Type::$VAR, NULL));
     }
 
     /**
@@ -45,7 +45,7 @@
      */
     #[@test]
     public function null_as_string() {
-      $this->assertEquals(NULL, $this->fixture->convert(Primitive::$STRING, NULL));
+      $this->assertEquals(NULL, $this->fixture->unmarshal(Primitive::$STRING, NULL));
     }
 
     /**
@@ -54,7 +54,7 @@
      */
     #[@test]
     public function null_as_int() {
-      $this->assertEquals(NULL, $this->fixture->convert(Primitive::$INT, NULL));
+      $this->assertEquals(NULL, $this->fixture->unmarshal(Primitive::$INT, NULL));
     }
 
     /**
@@ -63,7 +63,7 @@
      */
     #[@test]
     public function null_as_double() {
-      $this->assertEquals(NULL, $this->fixture->convert(Primitive::$DOUBLE, NULL));
+      $this->assertEquals(NULL, $this->fixture->unmarshal(Primitive::$DOUBLE, NULL));
     }
 
     /**
@@ -72,7 +72,7 @@
      */
     #[@test]
     public function null_as_bool() {
-      $this->assertEquals(NULL, $this->fixture->convert(Primitive::$BOOL, NULL));
+      $this->assertEquals(NULL, $this->fixture->unmarshal(Primitive::$BOOL, NULL));
     }
 
     /**
@@ -81,7 +81,7 @@
      */
     #[@test]
     public function string() {
-      $this->assertEquals('Test', $this->fixture->convert(Primitive::$STRING, 'Test'));
+      $this->assertEquals('Test', $this->fixture->unmarshal(Primitive::$STRING, 'Test'));
     }
 
     /**
@@ -90,7 +90,7 @@
      */
     #[@test]
     public function int_as_string() {
-      $this->assertEquals('1', $this->fixture->convert(Primitive::$STRING, 1));
+      $this->assertEquals('1', $this->fixture->unmarshal(Primitive::$STRING, 1));
     }
 
     /**
@@ -99,7 +99,7 @@
      */
     #[@test]
     public function double_as_string() {
-      $this->assertEquals('1', $this->fixture->convert(Primitive::$STRING, 1.0));
+      $this->assertEquals('1', $this->fixture->unmarshal(Primitive::$STRING, 1.0));
     }
 
     /**
@@ -108,8 +108,8 @@
      */
     #[@test]
     public function bool_as_string() {
-      $this->assertEquals('1', $this->fixture->convert(Primitive::$STRING, TRUE));
-      $this->assertEquals('', $this->fixture->convert(Primitive::$STRING, FALSE));
+      $this->assertEquals('1', $this->fixture->unmarshal(Primitive::$STRING, TRUE));
+      $this->assertEquals('', $this->fixture->unmarshal(Primitive::$STRING, FALSE));
     }
 
     /**
@@ -118,7 +118,7 @@
      */
     #[@test]
     public function array_as_string() {
-      $this->assertEquals('Test', $this->fixture->convert(Primitive::$STRING, array('Test')));
+      $this->assertEquals('Test', $this->fixture->unmarshal(Primitive::$STRING, array('Test')));
     }
 
     /**
@@ -127,7 +127,7 @@
      */
     #[@test]
     public function map_as_string() {
-      $this->assertEquals('Test', $this->fixture->convert(Primitive::$STRING, array('name' => 'Test')));
+      $this->assertEquals('Test', $this->fixture->unmarshal(Primitive::$STRING, array('name' => 'Test')));
     }
 
     /**
@@ -136,7 +136,7 @@
      */
     #[@test]
     public function int() {
-      $this->assertEquals(1, $this->fixture->convert(Primitive::$INT, 1));
+      $this->assertEquals(1, $this->fixture->unmarshal(Primitive::$INT, 1));
     }
 
     /**
@@ -145,7 +145,7 @@
      */
     #[@test]
     public function string_as_int() {
-      $this->assertEquals(1, $this->fixture->convert(Primitive::$INT, '1'));
+      $this->assertEquals(1, $this->fixture->unmarshal(Primitive::$INT, '1'));
     }
 
     /**
@@ -154,7 +154,7 @@
      */
     #[@test]
     public function double_as_int() {
-      $this->assertEquals(1, $this->fixture->convert(Primitive::$INT, 1.0));
+      $this->assertEquals(1, $this->fixture->unmarshal(Primitive::$INT, 1.0));
     }
 
     /**
@@ -163,8 +163,8 @@
      */
     #[@test]
     public function bool_as_int() {
-      $this->assertEquals(1, $this->fixture->convert(Primitive::$INT, TRUE));
-      $this->assertEquals(0, $this->fixture->convert(Primitive::$INT, FALSE));
+      $this->assertEquals(1, $this->fixture->unmarshal(Primitive::$INT, TRUE));
+      $this->assertEquals(0, $this->fixture->unmarshal(Primitive::$INT, FALSE));
     }
 
     /**
@@ -173,7 +173,7 @@
      */
     #[@test]
     public function array_as_int() {
-      $this->assertEquals(1, $this->fixture->convert(Primitive::$INT, array(1)));
+      $this->assertEquals(1, $this->fixture->unmarshal(Primitive::$INT, array(1)));
     }
 
     /**
@@ -182,7 +182,7 @@
      */
     #[@test]
     public function map_as_int() {
-      $this->assertEquals(1, $this->fixture->convert(Primitive::$INT, array('one' => 1)));
+      $this->assertEquals(1, $this->fixture->unmarshal(Primitive::$INT, array('one' => 1)));
     }
 
     /**
@@ -191,7 +191,7 @@
      */
     #[@test]
     public function double() {
-      $this->assertEquals(1.0, $this->fixture->convert(Primitive::$DOUBLE, 1.0));
+      $this->assertEquals(1.0, $this->fixture->unmarshal(Primitive::$DOUBLE, 1.0));
     }
 
     /**
@@ -200,7 +200,7 @@
      */
     #[@test]
     public function string_as_double() {
-      $this->assertEquals(1.0, $this->fixture->convert(Primitive::$DOUBLE, '1.0'));
+      $this->assertEquals(1.0, $this->fixture->unmarshal(Primitive::$DOUBLE, '1.0'));
     }
 
     /**
@@ -209,7 +209,7 @@
      */
     #[@test]
     public function int_as_double() {
-      $this->assertEquals(1.0, $this->fixture->convert(Primitive::$DOUBLE, 1));
+      $this->assertEquals(1.0, $this->fixture->unmarshal(Primitive::$DOUBLE, 1));
     }
 
     /**
@@ -218,8 +218,8 @@
      */
     #[@test]
     public function bool_as_double() {
-      $this->assertEquals(1.0, $this->fixture->convert(Primitive::$DOUBLE, TRUE));
-      $this->assertEquals(0.0, $this->fixture->convert(Primitive::$DOUBLE, FALSE));
+      $this->assertEquals(1.0, $this->fixture->unmarshal(Primitive::$DOUBLE, TRUE));
+      $this->assertEquals(0.0, $this->fixture->unmarshal(Primitive::$DOUBLE, FALSE));
     }
 
     /**
@@ -228,7 +228,7 @@
      */
     #[@test]
     public function array_as_double() {
-      $this->assertEquals(1.0, $this->fixture->convert(Primitive::$DOUBLE, array(1.0)));
+      $this->assertEquals(1.0, $this->fixture->unmarshal(Primitive::$DOUBLE, array(1.0)));
     }
 
     /**
@@ -237,7 +237,7 @@
      */
     #[@test]
     public function map_as_double() {
-      $this->assertEquals(1.0, $this->fixture->convert(Primitive::$DOUBLE, array('one' => 1.0)));
+      $this->assertEquals(1.0, $this->fixture->unmarshal(Primitive::$DOUBLE, array('one' => 1.0)));
     }
 
     /**
@@ -246,8 +246,8 @@
      */
     #[@test]
     public function bool() {
-      $this->assertEquals(TRUE, $this->fixture->convert(Primitive::$BOOL, TRUE));
-      $this->assertEquals(FALSE, $this->fixture->convert(Primitive::$BOOL, FALSE));
+      $this->assertEquals(TRUE, $this->fixture->unmarshal(Primitive::$BOOL, TRUE));
+      $this->assertEquals(FALSE, $this->fixture->unmarshal(Primitive::$BOOL, FALSE));
     }
 
     /**
@@ -256,8 +256,8 @@
      */
     #[@test]
     public function int_as_bool() {
-      $this->assertEquals(TRUE, $this->fixture->convert(Primitive::$BOOL, 1));
-      $this->assertEquals(FALSE, $this->fixture->convert(Primitive::$BOOL, 0));
+      $this->assertEquals(TRUE, $this->fixture->unmarshal(Primitive::$BOOL, 1));
+      $this->assertEquals(FALSE, $this->fixture->unmarshal(Primitive::$BOOL, 0));
     }
 
     /**
@@ -266,8 +266,8 @@
      */
     #[@test]
     public function double_as_bool() {
-      $this->assertEquals(TRUE, $this->fixture->convert(Primitive::$BOOL, 1.0));
-      $this->assertEquals(FALSE, $this->fixture->convert(Primitive::$BOOL, 0.0));
+      $this->assertEquals(TRUE, $this->fixture->unmarshal(Primitive::$BOOL, 1.0));
+      $this->assertEquals(FALSE, $this->fixture->unmarshal(Primitive::$BOOL, 0.0));
     }
 
     /**
@@ -276,8 +276,8 @@
      */
     #[@test]
     public function string_as_bool() {
-      $this->assertEquals(TRUE, $this->fixture->convert(Primitive::$BOOL, 'non-empty'));
-      $this->assertEquals(FALSE, $this->fixture->convert(Primitive::$BOOL, ''));
+      $this->assertEquals(TRUE, $this->fixture->unmarshal(Primitive::$BOOL, 'non-empty'));
+      $this->assertEquals(FALSE, $this->fixture->unmarshal(Primitive::$BOOL, ''));
     }
 
     /**
@@ -286,8 +286,8 @@
      */
     #[@test]
     public function array_as_bool() {
-      $this->assertEquals(TRUE, $this->fixture->convert(Primitive::$BOOL, array(TRUE)));
-      $this->assertEquals(FALSE, $this->fixture->convert(Primitive::$BOOL, array(FALSE)));
+      $this->assertEquals(TRUE, $this->fixture->unmarshal(Primitive::$BOOL, array(TRUE)));
+      $this->assertEquals(FALSE, $this->fixture->unmarshal(Primitive::$BOOL, array(FALSE)));
     }
 
     /**
@@ -296,8 +296,8 @@
      */
     #[@test]
     public function map_as_bool() {
-      $this->assertEquals(TRUE, $this->fixture->convert(Primitive::$BOOL, array('one' => TRUE)));
-      $this->assertEquals(FALSE, $this->fixture->convert(Primitive::$BOOL, array('one' => FALSE)));
+      $this->assertEquals(TRUE, $this->fixture->unmarshal(Primitive::$BOOL, array('one' => TRUE)));
+      $this->assertEquals(FALSE, $this->fixture->unmarshal(Primitive::$BOOL, array('one' => FALSE)));
     }
 
     /**
@@ -308,7 +308,7 @@
     public function var_array() {
       $this->assertEquals(
         array(1, 2, 3), 
-        $this->fixture->convert(ArrayType::forName('var[]'), array(1, 2, 3))
+        $this->fixture->unmarshal(ArrayType::forName('var[]'), array(1, 2, 3))
       );
     }
 
@@ -320,7 +320,7 @@
     public function int_array() {
       $this->assertEquals(
         array(1, 2, 3), 
-        $this->fixture->convert(ArrayType::forName('int[]'), array(1, '2', 3.0))
+        $this->fixture->unmarshal(ArrayType::forName('int[]'), array(1, '2', 3.0))
       );
     }
 
@@ -332,7 +332,7 @@
     public function var_map() {
       $this->assertEquals(
         array('one' => 1, 'two' => 2, 'three' => 3),
-        $this->fixture->convert(MapType::forName('[:var]'), array('one' => 1, 'two' => 2, 'three' => 3))
+        $this->fixture->unmarshal(MapType::forName('[:var]'), array('one' => 1, 'two' => 2, 'three' => 3))
       );
     }
 
@@ -344,7 +344,7 @@
     public function int_map() {
       $this->assertEquals(
         array('one' => 1, 'two' => 2, 'three' => 3),
-        $this->fixture->convert(MapType::forName('[:int]'), array('one' => 1, 'two' => '2', 'three' => 3.0))
+        $this->fixture->unmarshal(MapType::forName('[:int]'), array('one' => 1, 'two' => '2', 'three' => 3.0))
       );
     }
 
@@ -357,7 +357,7 @@
       $issue= new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'test');
       $this->assertEquals(
         $issue, 
-        $this->fixture->convert($issue->getClass(), array('issue_id' => 1, 'title' => 'test'))
+        $this->fixture->unmarshal($issue->getClass(), array('issue_id' => 1, 'title' => 'test'))
       );
     }
 
@@ -370,7 +370,7 @@
       $issue= new net·xp_framework·unittest·webservices·rest·IssueWithUnderscoreField(1, 'test');
       $this->assertEquals(
         $issue, 
-        $this->fixture->convert($issue->getClass(), array('issue_id' => 1, 'title' => 'test'))
+        $this->fixture->unmarshal($issue->getClass(), array('issue_id' => 1, 'title' => 'test'))
       );
     }
 
@@ -383,7 +383,7 @@
       $issue= new net·xp_framework·unittest·webservices·rest·IssueWithSetter(1, 'test');
       $this->assertEquals(
         $issue, 
-        $this->fixture->convert($issue->getClass(), array('issue_id' => 1, 'title' => 'test'))
+        $this->fixture->unmarshal($issue->getClass(), array('issue_id' => 1, 'title' => 'test'))
       );
     }
 
@@ -396,7 +396,7 @@
       $issue= new net·xp_framework·unittest·webservices·rest·IssueWithUnderscoreSetter(1, 'test');
       $this->assertEquals(
         $issue, 
-        $this->fixture->convert($issue->getClass(), array('issue_id' => 1, 'title' => 'test'))
+        $this->fixture->unmarshal($issue->getClass(), array('issue_id' => 1, 'title' => 'test'))
       );
     }
 
@@ -408,7 +408,7 @@
     public function array_of_issues() {
       $issue1= new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'test1');
       $issue2= new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'test2');
-      $this->assertEquals(array($issue1, $issue2), $this->fixture->convert(
+      $this->assertEquals(array($issue1, $issue2), $this->fixture->unmarshal(
         ArrayType::forName($issue1->getClassName().'[]'), 
         array(array('issue_id' => 1, 'title' => 'test1'), array('issue_id' => 2, 'title' => 'test2')))
       );
@@ -422,7 +422,7 @@
     public function map_of_issues() {
       $issue1= new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'test1');
       $issue2= new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'test2');
-      $this->assertEquals(array('one' => $issue1, 'two' => $issue2), $this->fixture->convert(
+      $this->assertEquals(array('one' => $issue1, 'two' => $issue2), $this->fixture->unmarshal(
         MapType::forName('[:'.$issue1->getClassName().']'), 
         array('one' => array('issue_id' => 1, 'title' => 'test1'), 'two' => array('issue_id' => 2, 'title' => 'test2')))
       );
@@ -440,7 +440,7 @@
       $c->id= 4711;
       $this->assertEquals(
         $c,
-        $this->fixture->convert($class, array('id' => 4711))
+        $this->fixture->unmarshal($class, array('id' => 4711))
       );
     }
 
@@ -456,7 +456,7 @@
       }');
       $this->assertEquals(
         $class->getMethod('valueOf')->invoke(NULL, array(4711)),
-        $this->fixture->convert($class, array('id' => 4711))
+        $this->fixture->unmarshal($class, array('id' => 4711))
       );
     }
 
@@ -471,7 +471,7 @@
       }');
       $c= $class->newInstance();
       $c->id= 4711;
-      $this->assertEquals($c, $this->fixture->convert($class, array('id' => 4711)));
+      $this->assertEquals($c, $this->fixture->unmarshal($class, array('id' => 4711)));
     }
 
     /**
@@ -485,7 +485,7 @@
       }');
       $c= $class->newInstance();
       $c->id= 4711;
-      $this->assertEquals($c, $this->fixture->convert($class, array('id' => 4711)));
+      $this->assertEquals($c, $this->fixture->unmarshal($class, array('id' => 4711)));
     }
 
     /**
@@ -499,7 +499,7 @@
       }');
       $c= $class->newInstance();
       $c->id= 4711;
-      $this->assertEquals($c, $this->fixture->convert($class, array('id' => 4711)));
+      $this->assertEquals($c, $this->fixture->unmarshal($class, array('id' => 4711)));
     }
 
     /**
@@ -510,7 +510,7 @@
     public function date_iso_formatted() {
       $this->assertEquals(
         new Date('2009-04-12T20:44:55'), 
-        $this->fixture->convert(XPClass::forName('util.Date'), '2009-04-12T20:44:55')
+        $this->fixture->unmarshal(XPClass::forName('util.Date'), '2009-04-12T20:44:55')
       );
     }
 
@@ -543,7 +543,7 @@
       }');
       $this->assertEquals(
         $class->newInstance()->withId(4711)->withName('Test'),
-        $this->fixture->convert($class, array('id' => 4711, 'name' => 'Test'))
+        $this->fixture->unmarshal($class, array('id' => 4711, 'name' => 'Test'))
       );
     }
 
@@ -576,7 +576,7 @@
       }');
       $this->assertEquals(
         $class->newInstance()->withId(4711)->withName('Test'),
-        $this->fixture->convert($class, array('id' => 4711, 'name' => 'Test'))
+        $this->fixture->unmarshal($class, array('id' => 4711, 'name' => 'Test'))
       );
     }
 
@@ -590,7 +590,7 @@
         public $name;
         public static $instance= NULL;
       }');
-      $this->assertNull($this->fixture->convert($class, array('name' => 'Test', 'instance' => 'Value'))
+      $this->assertNull($this->fixture->unmarshal($class, array('name' => 'Test', 'instance' => 'Value'))
         ->getClass()
         ->getField('instance')
         ->get(NULL)
@@ -605,7 +605,7 @@
     public function string_wrapper() {
       $this->assertEquals(
         new String('Hello'),
-        $this->fixture->convert(Primitive::$STRING->wrapperClass(), 'Hello')
+        $this->fixture->unmarshal(Primitive::$STRING->wrapperClass(), 'Hello')
       );
     }
 
@@ -617,7 +617,7 @@
     public function integer_wrapper() {
       $this->assertEquals(
         new Integer(5),
-        $this->fixture->convert(Primitive::$INT->wrapperClass(), 5)
+        $this->fixture->unmarshal(Primitive::$INT->wrapperClass(), 5)
       );
     }
 
@@ -629,7 +629,7 @@
     public function double_wrapper() {
       $this->assertEquals(
         new Double(5.0),
-        $this->fixture->convert(Primitive::$DOUBLE->wrapperClass(), 5.0)
+        $this->fixture->unmarshal(Primitive::$DOUBLE->wrapperClass(), 5.0)
       );
     }
 
@@ -641,7 +641,7 @@
     public function bool_wrapper() {
       $this->assertEquals(
         new Boolean(TRUE),
-        $this->fixture->convert(Primitive::$BOOL->wrapperClass(), TRUE)
+        $this->fixture->unmarshal(Primitive::$BOOL->wrapperClass(), TRUE)
       );
     }
   }
