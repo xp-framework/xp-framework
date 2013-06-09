@@ -7,23 +7,14 @@
   uses('webservices.rest.Payload');
 
   /**
-   * A serializer
+   * Abstract base class for serialization. Serializers are responsible for
+   * creating the output format representation such as XML or JSON from a 
+   * given payload.
    *
-   * @test  xp://net.xp_framework.unittest.webservices.rest.RestSerializerConversionTest
-   * @see   xp://webservices.rest.RestRequest#setPayload
+   * @see   xp://webservices.rest.RestJsonSerializer
+   * @see   xp://webservices.rest.RestXmlSerializer
    */
   abstract class RestSerializer extends Object {
-
-    /**
-     * Convert data
-     *
-     * @param  var $data
-     * @throws lang.IllegalStateException
-     * @deprecated This has been moved to the new marshaller API
-     */
-    public function convert($data) {
-      throw new IllegalStateException('RestSerializer::convert() is deprecated');
-    }
 
     /**
      * Return the Content-Type header's value

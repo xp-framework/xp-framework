@@ -7,8 +7,9 @@
   uses('webservices.rest.RestDeserializer', 'text.StreamTokenizer');
 
   /**
-   * A deserializer
+   * A deserializer for form data
    *
+   * @see   xp://webservices.rest.RestDeserializer
    * @test  xp://net.xp_framework.unittest.webservices.rest.RestFormDeserializerTest
    */
   class RestFormDeserializer extends RestDeserializer {

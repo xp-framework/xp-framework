@@ -7,20 +7,15 @@
   uses('webservices.rest.Payload');
 
   /**
-   * Deserializer abstract base class
+   * Abstract base class for deserialization. Deserializers are responsible 
+   * for reading the input format representation such as XML or JSON from a 
+   * given stream and creating a payload from it.
+   *
+   * @see   xp://webservices.rest.RestJsonDeserializer
+   * @see   xp://webservices.rest.RestXmlDeserializer
+   * @see   xp://webservices.rest.RestFormDeserializer
    */
   abstract class RestDeserializer extends Object {
-
-    /**
-     * Convert data
-     *
-     * @param  var $data
-     * @throws lang.IllegalStateException
-     * @deprecated This has been moved to the new marshaller API
-     */
-    public function convert($data) {
-      throw new IllegalStateException('RestDeserializer::convert() is deprecated');
-    }
 
     /**
      * Deserialize

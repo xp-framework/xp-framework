@@ -9,8 +9,8 @@
   /**
    * A JSON serializer
    *
+   * @see   xp://webservices.rest.RestSerializer
    * @test  xp://net.xp_framework.unittest.webservices.rest.RestJsonSerializerTest
-   * @see   xp://webservices.rest.RestRequest#setPayload
    */
   class RestJsonSerializer extends RestSerializer {
 

@@ -4,13 +4,13 @@
  * $Id$ 
  */
 
-  uses(
-    'webservices.rest.RestDeserializer',
-    'webservices.json.JsonFactory'
-  );
+  uses('webservices.rest.RestDeserializer',  'webservices.json.JsonFactory');
 
   /**
    * A JSON deserializer
+   *
+   * @see   xp://webservices.rest.RestDeserializer
+   * @test  xp://net.xp_framework.unittest.webservices.rest.RestJsonDeserializerTest
    */
   class RestJsonDeserializer extends RestDeserializer {
 

@@ -7,10 +7,10 @@
   uses('webservices.rest.RestSerializer', 'xml.Tree');
 
   /**
-   * A serializer
+   * An XML serializer
    *
+   * @see   xp://webservices.rest.RestSerializer
    * @test  xp://net.xp_framework.unittest.webservices.rest.RestXmlSerializerTest
-   * @see   xp://webservices.rest.RestRequest#setPayload
    */
   class RestXmlSerializer extends RestSerializer {
 
