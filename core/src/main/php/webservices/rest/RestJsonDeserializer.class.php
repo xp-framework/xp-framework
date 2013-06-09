@@ -13,6 +13,14 @@
    * @test  xp://net.xp_framework.unittest.webservices.rest.RestJsonDeserializerTest
    */
   class RestJsonDeserializer extends RestDeserializer {
+    protected $json;
+
+    /**
+     * Constructor. Initializes decoder member
+     */
+    public function __construct() {
+      $this->json= JsonFactory::create();
+    }
 
     /**
      * Serialize
@@ -23,7 +31,7 @@
      */
     public function deserialize($in) {
       try {
-        return JsonFactory::create()->decodeFrom($in);
+        return $this->json->decodeFrom($in);
       } catch (JsonException $e) {
         throw new FormatException('Malformed JSON', $e);
       }

@@ -13,6 +13,14 @@
    * @test  xp://net.xp_framework.unittest.webservices.rest.RestJsonSerializerTest
    */
   class RestJsonSerializer extends RestSerializer {
+    protected $json;
+
+    /**
+     * Constructor. Initializes decoder member
+     */
+    public function __construct() {
+      $this->json= JsonFactory::create();
+    }
 
     /**
      * Return the Content-Type header's value
@@ -30,11 +38,10 @@
      * @return  string
      */
     public function serialize($payload) {
-      $encoder= JsonFactory::create();
       if ($payload instanceof Payload) {
-        return $encoder->encode($payload->value);
+        return $this->json->encode($payload->value);
       } else {
-        return $encoder->encode($payload);
+        return $this->json->encode($payload);
       }
     }
   }
