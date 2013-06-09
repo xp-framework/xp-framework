@@ -55,25 +55,39 @@
     }
 
     /**
-     * Test XML
-     * 
+     * Flattens a RestXmlMap into a map
+     *
+     * @param  webservices.rest.RestXmlMap $in
+     * @return [:var]
      */
-    #[@test, @ignore('Returns RestXMLMap, which should be removed')]
-    public function xml_deserialize() {
-      $req= new MemoryInputStream('<?xml version="1.0" encoding="UTF-8"?>'."\n".'<root><name>Timm</name></root>');
-      $v= RestFormat::$XML->read($req, MapType::forName('[:string]'));
-      $this->assertEquals(array('name' => 'Timm'), $v); 
+    protected function flatten(RestXmlMap $in) {
+      $result= array();
+      foreach ($in as $key => $value) {
+        $result[$key]= $value;
+      }
+      return $result;
     }
 
     /**
      * Test XML
      * 
      */
-    #[@test, @ignore('Returns RestXMLMap, which should be removed')]
+    #[@test]
+    public function xml_deserialize() {
+      $req= new MemoryInputStream('<?xml version="1.0" encoding="UTF-8"?>'."\n".'<root><name>Timm</name></root>');
+      $v= RestFormat::$XML->read($req, MapType::forName('[:string]'));
+      $this->assertEquals(array('name' => 'Timm'), $this->flatten($v));
+    }
+
+    /**
+     * Test XML
+     * 
+     */
+    #[@test]
     public function xml_deserialize_without_xml_declaration() {
       $req= new MemoryInputStream('<root><name>Timm</name></root>');
       $v= RestFormat::$XML->read($req, MapType::forName('[:string]'));
-      $this->assertEquals(array('name' => 'Timm'), $v); 
+      $this->assertEquals(array('name' => 'Timm'), $this->flatten($v)); 
     }
 
     /**

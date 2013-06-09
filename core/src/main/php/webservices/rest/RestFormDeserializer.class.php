@@ -15,7 +15,7 @@
   class RestFormDeserializer extends RestDeserializer {
 
     /**
-     * Serialize
+     * Deserialize
      *
      * @param   io.streams.InputStream in
      * @return  var

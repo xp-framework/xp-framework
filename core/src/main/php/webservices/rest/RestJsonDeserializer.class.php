@@ -23,10 +23,10 @@
     }
 
     /**
-     * Serialize
+     * Deserialize
      *
      * @param   io.streams.InputStream in
-     * @return  [:var]
+     * @return  var
      * @throws  lang.FormatException
      */
     public function deserialize($in) {

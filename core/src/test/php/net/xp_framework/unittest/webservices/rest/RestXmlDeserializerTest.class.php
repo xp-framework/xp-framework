@@ -23,6 +23,20 @@
     }
 
     /**
+     * Flattens a RestXmlMap into a map
+     *
+     * @param  webservices.rest.RestXmlMap $in
+     * @return [:var]
+     */
+    protected function flatten(RestXmlMap $in) {
+      $result= array();
+      foreach ($in as $key => $value) {
+        $result[$key]= $value;
+      }
+      return $result;
+    }
+
+    /**
      * Test
      *
      */
@@ -30,7 +44,7 @@
     public function one_keyvalue_pair() {
       $this->assertEquals(
         array('name' => 'Timm'), 
-        $this->fixture->deserialize($this->input('<root><name>Timm</name></root>'), Type::forName('[:string]'))
+        $this->flatten($this->fixture->deserialize($this->input('<root><name>Timm</name></root>')))
       );
     }
 
@@ -42,7 +56,7 @@
     public function two_keyvalue_pairs() {
       $this->assertEquals(
         array('name' => 'Timm', 'id' => '1549'), 
-        $this->fixture->deserialize($this->input('<root><name>Timm</name><id>1549</id></root>'), Type::forName('[:string]'))
+        $this->flatten($this->fixture->deserialize($this->input('<root><name>Timm</name><id>1549</id></root>')))
       );
     }
   }
