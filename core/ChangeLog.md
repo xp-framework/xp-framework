@@ -3,6 +3,8 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 5.9.4 / 2013-06-11
+
 ### Bugfixes
 
 * Fixed issue #304: Classpath element not found error not very helpful - (@thekid)
