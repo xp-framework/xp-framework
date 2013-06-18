@@ -3,6 +3,10 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+### Bugfixes
+
+* Fixed issue #309: Warning for empty class path elements - (@thekid)
+
 ## 5.9.4 / 2013-06-11
 
 ### Bugfixes
