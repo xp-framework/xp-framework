@@ -22,7 +22,7 @@
 
     static function __static() {
       self::$GD_USERSTREAMS_BUG= (
-        version_compare(PHP_VERSION, '5.5.0RC1', '>=') &&
+        version_compare(PHP_VERSION, '5.5.0RC1', '>=') && version_compare(PHP_VERSION, '5.5.1', '<') &&
         0 !== strncmp('WIN', PHP_OS, 3)
       );
     }
