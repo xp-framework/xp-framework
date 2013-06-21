@@ -27,7 +27,7 @@
       if (!Runtime::getInstance()->extensionAvailable('gd')) {
         throw new PrerequisitesNotMetError('GD extension not available');
       }
-      if (!(imagetypes() & IMG_Gif)) {
+      if (!(imagetypes() & IMG_GIF)) {
         throw new PrerequisitesNotMetError('GIF support not enabled');
       }
     }

@@ -9,9 +9,10 @@
   /**
    * Reads JPEG from an image
    *
-   * @ext  gd
-   * @see  php://imagecreatefromjpeg
-   * @see  xp://img.io.StreamReader
+   * @ext   gd
+   * @see   php://imagecreatefromjpeg
+   * @see   xp://img.io.StreamReader
+   * @test  xp://net.xp_framework.unittest.img.JpegImageReaderTest
    */
   class JpegStreamReader extends StreamReader implements img·io·UriReader {
 

@@ -9,9 +9,10 @@
   /**
    * Reads PNG from an image
    *
-   * @ext  gd
-   * @see  php://imagecreatefrompng
-   * @see  xp://img.io.StreamReader
+   * @ext   gd
+   * @see   php://imagecreatefrompng
+   * @see   xp://img.io.StreamReader
+   * @test  xp://net.xp_framework.unittest.img.PngImageReaderTest
    */
   class PngStreamReader extends StreamReader implements img·io·UriReader {
 

@@ -9,9 +9,10 @@
   /**
    * Reads GIF from an image
    *
-   * @ext  gd
-   * @see  php://imagecreatefromgif
-   * @see  xp://img.io.StreamReader
+   * @ext   gd
+   * @see   php://imagecreatefromgif
+   * @see   xp://img.io.StreamReader
+   * @test  xp://net.xp_framework.unittest.img.GifImageReaderTest
    */
   class GifStreamReader extends StreamReader implements img·io·UriReader {
 
