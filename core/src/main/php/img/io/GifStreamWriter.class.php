@@ -12,6 +12,7 @@
    * @ext   gd
    * @see   php://imagegif
    * @see   xp://img.io.StreamWriter
+   * @test  xp://net.xp_framework.unittest.img.GifImageWriterTest
    */
   class GifStreamWriter extends StreamWriter {
     public

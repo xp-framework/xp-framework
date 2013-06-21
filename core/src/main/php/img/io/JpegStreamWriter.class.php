@@ -9,10 +9,10 @@
   /**
    * Writes JPEG to a stream
    *
-   * @ext      gd
-   * @see      php://imagejpeg
-   * @see      xp://img.io.StreamWriter
-   * @purpose  Writer
+   * @ext   gd
+   * @see   php://imagejpeg
+   * @see   xp://img.io.StreamWriter
+   * @test  xp://net.xp_framework.unittest.img.JpegImageWriterTest
    */
   class JpegStreamWriter extends StreamWriter {
     public $quality  = 0;

@@ -12,6 +12,7 @@
    * @ext   gd
    * @see   php://imagepng
    * @see   xp://img.io.StreamWriter
+   * @test  xp://net.xp_framework.unittest.img.PngImageWriterTest
    */
   class PngStreamWriter extends StreamWriter {
 
