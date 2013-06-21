@@ -15,8 +15,7 @@
    * @purpose  Writer
    */
   class JpegStreamWriter extends StreamWriter {
-    public
-      $quality  = 0;
+    public $quality  = 0;
     
     /**
      * Constructor
@@ -35,7 +34,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    protected function output($handle) {
+    public function output($handle) {
       return imagejpeg($handle, NULL, $this->quality);
     }
   }

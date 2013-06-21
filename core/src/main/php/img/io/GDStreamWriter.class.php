@@ -9,10 +9,9 @@
   /**
    * Writes GD to a stream
    *
-   * @ext      gd
-   * @see      php://imagegd
-   * @see      xp://img.io.StreamWriter
-   * @purpose  Writer
+   * @ext   gd
+   * @see   php://imagegd
+   * @see   xp://img.io.StreamWriter
    */
   class GDStreamWriter extends StreamWriter {
     
@@ -22,7 +21,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    protected function output($handle) {
+    public function output($handle) {
       return imagegd($handle);
     }
   }

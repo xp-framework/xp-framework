@@ -23,17 +23,13 @@
    * @purpose  Test case
    */
   class ImageWriterTest extends TestCase {
-    public
-      $image= NULL;
+    public $image= NULL;
 
     /**
      * Setup this test. Creates a 1x1 pixel image filled with white.
      *
      */
     public function setUp() {
-      if (0 === version_compare(PHP_VERSION, '5.5.0RC3')) {
-        throw new PrerequisitesNotMetError('PHP Bug #65060 prevents the tests from running');
-      }
       if (!Runtime::getInstance()->extensionAvailable('gd')) {
         throw new PrerequisitesNotMetError('GD extension not available');
       }

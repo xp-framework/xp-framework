@@ -9,10 +9,9 @@
   /**
    * Writes PNG to a stream
    *
-   * @ext      gd
-   * @see      php://imagepng
-   * @see      xp://img.io.StreamWriter
-   * @purpose  Writer
+   * @ext   gd
+   * @see   php://imagepng
+   * @see   xp://img.io.StreamWriter
    */
   class PngStreamWriter extends StreamWriter {
 
@@ -22,7 +21,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    protected function output($handle) {
+    public function output($handle) {
       return imagepng($handle);
     }
   }

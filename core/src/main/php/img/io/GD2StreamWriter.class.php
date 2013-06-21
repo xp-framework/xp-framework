@@ -9,15 +9,13 @@
   /**
    * Writes GD2 to a stream
    *
-   * @ext      gd
-   * @see      php://imagegd2
-   * @see      http://www.boutell.com/gd/manual2.0.11.html#gdImageGd2 
-   * @see      xp://img.io.StreamWriter
-   * @purpose  Writer
+   * @ext   gd
+   * @see   php://imagegd2
+   * @see   http://www.boutell.com/gd/manual2.0.11.html#gdImageGd2 
+   * @see   xp://img.io.StreamWriter
    */
   class GD2StreamWriter extends StreamWriter {
-    public
-      $format  = IMG_GD2_RAW;
+    public $format  = IMG_GD2_RAW;
     
     /**
      * Constructor
@@ -36,7 +34,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    protected function output($handle) {
+    public function output($handle) {
       return imagegd2($handle, NULL, 0, $this->format);
     }
   }

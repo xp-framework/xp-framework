@@ -9,10 +9,9 @@
   /**
    * Writes GIF to a stream
    *
-   * @ext      gd
-   * @see      php://imagegif
-   * @see      xp://img.io.StreamWriter
-   * @purpose  Writer
+   * @ext   gd
+   * @see   php://imagegif
+   * @see   xp://img.io.StreamWriter
    */
   class GifStreamWriter extends StreamWriter {
     public
@@ -40,7 +39,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    protected function output($handle) {
+    public function output($handle) {
       if (imageistruecolor($handle)) {
         imagetruecolortopalette($handle, $this->dither, $this->ncolors);
       }

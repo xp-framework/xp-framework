@@ -9,14 +9,12 @@
   /**
    * Writes WBMP to a stream
    *
-   * @ext      gd
-   * @see      php://imagewbmp
-   * @see      xp://img.io.StreamWriter
-   * @purpose  Writer
+   * @ext   gd
+   * @see   php://imagewbmp
+   * @see   xp://img.io.StreamWriter
    */
   class WBmpStreamWriter extends StreamWriter {
-    public
-      $foreground  = 0;
+    public $foreground  = 0;
     
     /**
      * Constructor
@@ -35,7 +33,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    protected function output($handle) {
+    public function output($handle) {
       return imagewbmp($handle, '', $this->foreground);
     }
   }
