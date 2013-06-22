@@ -37,13 +37,21 @@
      * @throws  lang.FormatException
      */
     public static function valueOf($in) {
-      if (FALSE === ($p= strrpos($in, ':'))) {
-        throw new FormatException('Malformed address "'.$in.'": Missing colon');
+      if ('' === $in) {
+        throw new FormatException('Malformed empty address');
       }
-      if (!is_numeric($port= substr($in, $p+ 1))) {
-        throw new FormatException('Malformed address "'.$in.'": Non-numeric port');
+
+      // Parse string: "[fe80::1]:80" (v6) vs. "127.0.0.1:80" (v4)
+      if ('[' === $in{0}) {
+        $r= sscanf($in, '[%[0-9a-fA-F:]]:%d', $host, $port);
+      } else {
+        $r= sscanf($in, '%[^:]:%d', $host, $port);
       }
-      return new self(substr($in, 0, $p), (int)$port);
+      if (2 !== $r) {
+        throw new FormatException('Malformed address "'.$in.'"');
+      }
+
+      return new self($host, $port);
     }
 
     /**
@@ -70,7 +78,7 @@
      * @return  string
      */
     public function getAddress() {
-      return $this->host.':'.$this->port;
+      return (strstr($this->host, ':') ? '['.$this->host.']:' : $this->host.':').$this->port;
     }
 
     /**

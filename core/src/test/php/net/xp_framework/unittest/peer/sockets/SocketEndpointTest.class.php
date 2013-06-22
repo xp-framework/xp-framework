@@ -69,8 +69,13 @@
     }
 
     #[@test]
-    public function address() {
+    public function v4_address() {
       $this->assertEquals('127.0.0.1:6100', create(new SocketEndpoint('127.0.0.1', 6100))->getAddress());
+    }
+
+    #[@test]
+    public function v6_address() {
+      $this->assertEquals('[fe80::1]:6100', create(new SocketEndpoint('fe80::1', 6100))->getAddress());
     }
 
     #[@test]
@@ -85,7 +90,7 @@
 
     #[@test]
     public function value_of_parses_v6_address() {
-      $this->assertEquals(new SocketEndpoint('[fe80::1]', 6100), SocketEndpoint::valueOf('[fe80::1]:6100'));
+      $this->assertEquals(new SocketEndpoint('fe80::1', 6100), SocketEndpoint::valueOf('[fe80::1]:6100'));
     }
 
     #[@test, @expect('lang.FormatException')]
