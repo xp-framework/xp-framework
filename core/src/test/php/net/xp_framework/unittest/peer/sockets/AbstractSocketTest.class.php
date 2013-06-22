@@ -512,5 +512,17 @@
       $this->assertTrue($si->available() > 0, 'available() > 0');
       $this->assertEquals('+ECHO '.$expect, $si->read(strlen($expect)+ strlen('+ECHO ')));
     }
+
+    /**
+     * Test remoteEndPoint() method
+     *
+     */
+    #[@test]
+    public function remoteEndPoint() {
+      $this->assertEquals(
+        new SocketEndpoint(self::$bindAddress[0], self::$bindAddress[1]),
+        $this->fixture->remoteEndPoint()
+      );
+    }
   }
 ?>
