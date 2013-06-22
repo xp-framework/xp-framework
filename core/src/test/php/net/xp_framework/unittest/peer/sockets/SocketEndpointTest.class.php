@@ -14,7 +14,7 @@
   class SocketEndpointTest extends TestCase {
   
     #[@test]
-    public function host_passed_to_constructor() {
+    public function v4_string_passed_to_constructor() {
       $this->assertEquals('127.0.0.1', create(new SocketEndpoint('127.0.0.1', 6100))->getHost());
     }
 
@@ -24,6 +24,11 @@
         '127.0.0.1',
         create(new SocketEndpoint(new Inet4Address('127.0.0.1'), 6100))->getHost()
       );
+    }
+
+    #[@test]
+    public function v6_string_passed_to_constructor() {
+      $this->assertEquals('fe80::1', create(new SocketEndpoint('fe80::1', 6100))->getHost());
     }
 
     #[@test]
