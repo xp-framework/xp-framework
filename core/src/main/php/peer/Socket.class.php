@@ -62,6 +62,22 @@
     }
 
     /**
+     * Returns local endpoint
+     *
+     * @return  peer.SocketEndpoint
+     * @throws  peer.SocketException
+     */
+    public function localEndpoint() {
+      if (is_resource($this->_sock)) {
+        if (FALSE === ($addr= stream_socket_get_name($this->_sock, FALSE))) {
+          throw new SocketException('Cannot get socket name on '.$this->_sock);
+        }
+        return SocketEndpoint::valueOf($addr);
+      }
+      return NULL;    // Not connected
+    }
+
+    /**
      * Set option on socket context
      *
      * @param   string wrapper 'ssl', 'tcp', 'ftp'

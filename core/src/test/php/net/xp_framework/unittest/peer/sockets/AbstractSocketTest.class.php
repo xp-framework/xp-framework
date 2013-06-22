@@ -514,15 +514,31 @@
     }
 
     /**
-     * Test remoteEndPoint() method
-     *
+     * Test remoteEndpoint() method
      */
     #[@test]
-    public function remoteEndPoint() {
+    public function remoteEndpoint() {
       $this->assertEquals(
         new SocketEndpoint(self::$bindAddress[0], self::$bindAddress[1]),
-        $this->fixture->remoteEndPoint()
+        $this->fixture->remoteEndpoint()
       );
+    }
+
+    /**
+     * Test localEndpoint() method
+     */
+    #[@test]
+    public function localEndpointForUnconnectedSocket() {
+      $this->assertNull($this->fixture->localEndpoint());
+    }
+
+    /**
+     * Test localEndpoint() method
+     */
+    #[@test]
+    public function localEndpointForConnectedSocket() {
+      $this->fixture->connect();
+      $this->assertInstanceOf('peer.SocketEndpoint', $this->fixture->localEndpoint());
     }
   }
 ?>

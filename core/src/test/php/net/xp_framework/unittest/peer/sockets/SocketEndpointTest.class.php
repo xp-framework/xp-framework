@@ -68,6 +68,11 @@
     }
 
     #[@test, @expect('lang.FormatException')]
+    public function value_of_empty_string() {
+      SocketEndpoint::valueOf('');
+    }
+
+    #[@test, @expect('lang.FormatException')]
     public function value_of_without_colon() {
       SocketEndpoint::valueOf('127.0.0.1');
     }
