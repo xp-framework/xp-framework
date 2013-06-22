@@ -751,7 +751,8 @@
         if ('.pth' !== substr($e, -4)) continue;
 
         foreach (file($path.DIRECTORY_SEPARATOR.$e) as $line) {
-          if ('#' === $line{0}) {
+          $line= trim($line);
+          if ('' === $line || '#' === $line{0}) {
             continue;
           } else if ('!' === $line{0}) {
             $pre= TRUE;
@@ -762,13 +763,13 @@
           
           if ('~' === $line{0}) {
             $base= $home.DIRECTORY_SEPARATOR; $line= substr($line, 1);
-          } else if ('/' === $line{0} || (':' === $line{1} && '\\' === $line{2})) {
+          } else if ('/' === $line{0} || strlen($line) > 2 && (':' === $line{1} && '\\' === $line{2})) {
             $base= '';
           } else {
             $base= $path.DIRECTORY_SEPARATOR; 
           }
 
-          $qn= $base.strtr(trim($line), '/', DIRECTORY_SEPARATOR).PATH_SEPARATOR;
+          $qn= $base.strtr($line, '/', DIRECTORY_SEPARATOR).PATH_SEPARATOR;
           if ('.php' === substr($qn, -5, 4)) {
             require(substr($qn, 0, -1));
           } else {

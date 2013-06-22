@@ -246,5 +246,15 @@
      * @return  bool eof
      */
     public abstract function stream_eof();
+
+    /**
+     * Callback for casting
+     *
+     * @param   int cast_as
+     * @return  var
+     */
+    public function stream_cast($cast_as) {
+      return FALSE;
+    }
   }
 ?>

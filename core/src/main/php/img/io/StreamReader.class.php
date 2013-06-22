@@ -9,15 +9,23 @@
   /**
    * Read images from a stream
    *
-   * @ext      gd
-   * @test     xp://net.xp_framework.unittest.img.ImageReaderTest
-   * @see      xp://img.io.ImageReader
-   * @see      xp://img.Image#loadFrom
-   * @purpose  Base class
+   * @ext   gd
+   * @test  xp://net.xp_framework.unittest.img.ImageReaderTest
+   * @see   xp://img.io.ImageReader
+   * @see   xp://img.Image#loadFrom
    */
   class StreamReader extends Object implements ImageReader {
     public $stream= NULL;
-    
+    protected static $GD_USERSTREAMS_BUG= FALSE;
+    protected $reader= NULL;
+
+    static function __static() {
+      self::$GD_USERSTREAMS_BUG= (
+        version_compare(PHP_VERSION, '5.5.0RC1', '>=') && version_compare(PHP_VERSION, '5.5.1', '<') &&
+        0 !== strncmp('WIN', PHP_OS, 3)
+      );
+    }
+
     /**
      * Constructor
      *
@@ -27,9 +35,37 @@
     public function __construct($stream) {
       $this->stream= deref($stream);
       if ($this->stream instanceof InputStream) {
-        // Already open
+        if ($this instanceof img·io·UriReader && !self::$GD_USERSTREAMS_BUG) {
+          $this->reader= function($reader, $stream) {
+            return $reader->readImageFromUri(Streams::readableUri($stream));
+          };
+        } else {
+          $this->reader= function($reader, $stream) {
+            $bytes= '';
+            while ($stream->available() > 0) {
+              $bytes.= $stream->read();
+            }
+            $stream->close();
+            return $reader->readImageFromString($bytes);
+          };
+        }
       } else if ($this->stream instanceof Stream) {
-        $this->stream->open(STREAM_MODE_READ);
+        if ($this instanceof img·io·UriReader && !self::$GD_USERSTREAMS_BUG) {
+          $this->reader= function($reader, $stream) {
+            $stream->open(STREAM_MODE_READ);
+            return $reader->readImageFromUri($stream->getURI());
+          };
+        } else {
+          $this->reader= function($reader, $stream) {
+            $stream->open(STREAM_MODE_READ);
+            $bytes= '';
+            do {
+              $bytes.= $stream->read();
+            } while (!$stream->eof());
+            $stream->close();
+            return $reader->readImageFromString($bytes);
+          };
+        }
       } else {
         throw new IllegalArgumentException('Expected either an io.streams.InputStream or an io.Stream, have '.xp::typeOf($this->stream));
       }
@@ -42,46 +78,13 @@
      * @return  resource
      * @throws  img.ImagingException
      */
-    protected function readImage0($bytes) {
+    public function readImageFromString($bytes) {
       if (FALSE === ($r= imagecreatefromstring($bytes))) {
         $e= new ImagingException('Cannot read image');
         xp::gc(__FILE__);
         throw $e;
       }
       return $r;
-    }
-
-    /**
-     * Read an image from an io.Stream object
-     *
-     * @deprecated
-     * @return  resource
-     * @throws  img.ImagingException
-     */    
-    public function readFromStream() {
-      $bytes= '';
-      do {
-        $bytes.= $this->stream->read();
-      } while (!$this->stream->eof());
-      $this->stream->close();
-
-      return $this->readImage0($bytes);
-    }
-
-    /**
-     * Read an image
-     *
-     * @return  resource
-     * @throws  img.ImagingException
-     */    
-    public function readImage() {
-      $bytes= '';
-      while ($this->stream->available() > 0) {
-        $bytes.= $this->stream->read();
-      }
-      $this->stream->close();
-
-      return $this->readImage0($bytes);
     }
     
     /**
@@ -92,11 +95,7 @@
      */
     public function getResource() {
       try {
-        if ($this->stream instanceof InputStream) {
-          return $this->readImage();
-        } else {
-          return $this->readFromStream();
-        }
+        return call_user_func($this->reader, $this, $this->stream);
       } catch (IOException $e) {
         throw new ImagingException($e->getMessage());
       }

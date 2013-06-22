@@ -7,6 +7,12 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed issue #309: Warning for empty class path elements - (@thekid)
+
+## 5.9.4 / 2013-06-11
+
+### Bugfixes
+
 * Fixed issue #304: Classpath element not found error not very helpful - (@thekid)
 * Fixed issue #305: rdbms.SQLStatementFailedException (errorcode 0: Unexpected 
   token 0x02 (number 0) - (@thekid)
