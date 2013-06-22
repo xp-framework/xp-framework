@@ -58,8 +58,13 @@
     }
 
     #[@test]
-    public function value_of_parses_address() {
+    public function value_of_parses_v4_address() {
       $this->assertEquals(new SocketEndpoint('127.0.0.1', 6100), SocketEndpoint::valueOf('127.0.0.1:6100'));
+    }
+
+    #[@test]
+    public function value_of_parses_v6_address() {
+      $this->assertEquals(new SocketEndpoint('[fe80::1]', 6100), SocketEndpoint::valueOf('[fe80::1]:6100'));
     }
 
     #[@test, @expect('lang.FormatException')]
