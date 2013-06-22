@@ -17,11 +17,15 @@
     /**
      * Constructor
      *
-     * @param   string host hostname or IP address
+     * @param   var host either hostname or an IP address in string or peer.net.InetAddress form
      * @param   int port
      */
     public function __construct($host, $port) {
-      $this->host= $host;
+      if ($host instanceof InetAddress) {
+        $this->host= $host->asString();
+      } else {
+        $this->host= (string)$host;
+      }
       $this->port= $port;
     }
 

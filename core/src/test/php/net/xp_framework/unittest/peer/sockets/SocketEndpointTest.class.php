@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('unittest.TestCase', 'peer.SocketEndpoint');
+  uses('unittest.TestCase', 'peer.SocketEndpoint', 'peer.net.Inet4Address', 'peer.net.Inet6Address');
 
   /**
    * TestCase
@@ -16,6 +16,22 @@
     #[@test]
     public function host_passed_to_constructor() {
       $this->assertEquals('127.0.0.1', create(new SocketEndpoint('127.0.0.1', 6100))->getHost());
+    }
+
+    #[@test]
+    public function v4_addr_passed_to_constructor() {
+      $this->assertEquals(
+        '127.0.0.1',
+        create(new SocketEndpoint(new Inet4Address('127.0.0.1'), 6100))->getHost()
+      );
+    }
+
+    #[@test]
+    public function v6_addr_passed_to_constructor() {
+      $this->assertEquals(
+        'fe80::1',
+        create(new SocketEndpoint(new Inet6Address('fe80::1'), 6100))->getHost()
+      );
     }
 
     #[@test]
