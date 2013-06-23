@@ -6,6 +6,8 @@ XP Framework ChangeLog
 ### Bugfixes
 
 * Fixed issue #313: Expected exception not considered - (@thekid)
+* Fixed issue #310: PHP 5.5.0RC3 & GD Extension: stream_cast() undefined
+  which also included adding a workaround PHP Bug 65060 - (@thekid)
 * Fixed issue #309: Warning for empty class path elements - (@thekid)
 
 ## 5.9.4 / 2013-06-11
