@@ -375,5 +375,26 @@
       $this->suite->runTest($test);
       $this->assertEquals(array(1, 2, 3), $test->values);
     }
+
+    /**
+     * Tests `values` in conjunction with `expect`.
+     *
+     * @see  https://github.com/xp-framework/xp-framework/issues/313
+     */
+    #[@test]
+    public function values_with_expect() {
+      $test= newinstance('unittest.TestCase', array('not_at_number'), '{
+        private function values() {
+          return array("a");
+        }
+
+        #[@test, @values("values"), @expect("lang.FormatException")]
+        public function not_at_number($value) {
+          throw new FormatException("Not a number: ".$value);
+        }
+      }');
+      $r= $this->suite->runTest($test);
+      $this->assertEquals(1, $r->successCount());
+    }
   }
 ?>
