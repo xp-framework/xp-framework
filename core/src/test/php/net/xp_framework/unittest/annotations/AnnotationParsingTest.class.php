@@ -252,6 +252,21 @@
     /**
      * Tests simple annotation with multiple values
      *
+     * @see  https://github.com/xp-framework/xp-framework/issues/313
+     * @deprecated
+     */
+    #[@test]
+    public function parsingContinuesAfterMultiValue() {
+      $this->assertEquals(
+        array(0 => array('xmlmapping' => array('hw_server', 'server'), 'restricted' => NULL), 1 => array()),
+        $this->parse("#[@xmlmapping('hw_server', 'server'), @restricted]")
+      );
+      xp::gc();
+    }
+
+    /**
+     * Tests simple annotation with multiple values
+     *
      */
     #[@test]
     public function multiValueUsingShortArray() {
