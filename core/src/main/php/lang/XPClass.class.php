@@ -757,7 +757,10 @@
                 $offset+= $s;
               }
             } while ($offset <= $length);
-            break;
+            $annotation= $value= NULL;
+            $s= strspn($input, ',]', $offset);
+            $offset+= $s + 1;
+            continue;
           }
           if (NULL === $annotation) {
             // Nothing
