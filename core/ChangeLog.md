@@ -3,6 +3,12 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+### Heads up!
+
+* We now officially support PHP 5.5.0 now that it's released!
+  http://news.planet-xp.net/article/542/2013/06/24/
+  (@thekid)
+
 ### Bugfixes
 
 * Fixed issue #313: Expected exception not considered - (@thekid)
