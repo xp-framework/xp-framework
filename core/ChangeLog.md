@@ -3,6 +3,8 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 5.9.5 / 2013-06-24
+
 ### Heads up!
 
 * We now officially support PHP 5.5.0 now that it's released!
