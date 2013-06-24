@@ -3,6 +3,13 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+### Features
+
+* Added peer.SocketEndpoint class and accessors on the peer.Socket and
+  peer.BSDSocket implementations to return local and remote endpoints -
+  see pull request #312. - (@thekid)
+
+
 ## 5.9.5 / 2013-06-24
 
 ### Heads up!
