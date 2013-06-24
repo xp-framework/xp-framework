@@ -7,6 +7,7 @@
   uses(
     'peer.ConnectException',
     'peer.SocketTimeoutException',
+    'peer.SocketEndpoint',
     'peer.SocketException',
     'peer.SocketInputStream',
     'peer.SocketOutputStream'
@@ -49,6 +50,31 @@
       $this->port= $port;
       $this->_sock= $socket;
       $this->context= stream_context_create();
+    }
+
+    /**
+     * Returns remote endpoint
+     *
+     * @return  peer.SocketEndpoint
+     */
+    public function remoteEndpoint() {
+      return new SocketEndpoint($this->host, $this->port);
+    }
+
+    /**
+     * Returns local endpoint
+     *
+     * @return  peer.SocketEndpoint
+     * @throws  peer.SocketException
+     */
+    public function localEndpoint() {
+      if (is_resource($this->_sock)) {
+        if (FALSE === ($addr= stream_socket_get_name($this->_sock, FALSE))) {
+          throw new SocketException('Cannot get socket name on '.$this->_sock);
+        }
+        return SocketEndpoint::valueOf($addr);
+      }
+      return NULL;    // Not connected
     }
 
     /**
