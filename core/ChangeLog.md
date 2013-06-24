@@ -3,6 +3,11 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+### Bugfixes
+
+* Fixed issue #311: Find out socket endpoint on accepted socket from 0.0.0.0
+  (@thekid)
+
 ### Features
 
 * Added peer.SocketEndpoint class and accessors on the peer.Socket and
