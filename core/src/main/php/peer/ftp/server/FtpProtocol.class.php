@@ -932,7 +932,7 @@
 
       // Open a new server socket if non exists
       if (!$this->datasock[$socket->hashCode()]) {
-        $this->datasock[$socket->hashCode()]= new ServerSocket($this->server->socket->host, 0);
+        $this->datasock[$socket->hashCode()]= new ServerSocket($socket->localEndpoint()->getHost(), 0);
         try {
           $this->datasock[$socket->hashCode()]->create();
           $this->datasock[$socket->hashCode()]->bind();
