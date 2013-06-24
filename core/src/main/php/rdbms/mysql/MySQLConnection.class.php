@@ -82,6 +82,7 @@
         $connect= $host.':'.$this->dsn->getPort(3306);
       }
 
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECT, $reconnect));
       if ($this->flags & DB_PERSISTENT) {
         $this->handle= mysql_pconnect(
           $connect,
@@ -97,7 +98,7 @@
         );
       }
       
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECTED, $reconnect));
       $ini && ini_set('mysql.default_socket', $ini);
       if (!is_resource($this->handle)) {
         $e= new SQLConnectException('#'.mysql_errno().': '.mysql_error(), $this->dsn);

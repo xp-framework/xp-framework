@@ -10,6 +10,12 @@
    * @purpose  Wrap database events
    */
   class DBEvent extends Object {
+    const
+      CONNECT   = 'connect',
+      CONNECTED = 'connected',
+      QUERY     = 'query',
+      QUERYEND  = 'queryend';
+
     public
       $name=  '',
       $arg=   NULL;
