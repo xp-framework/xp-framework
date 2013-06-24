@@ -55,13 +55,34 @@
       
       // Add observers
       foreach ($observers as $observer => $param) {
-        $this->addObserver(XPClass::forName($observer)->getMethod('instanceFor')->invoke(NULL, array($param)));
+        $class= XPClass::forName($observer);
+
+        // Check if class implements BoundLogObserver: in that case use factory method to acquire instance
+        if ($class->isAssignableFrom('util.log.BoundLogObserver')) {
+          $this->addObserver($class->getMethod('instanceFor')->invoke(NULL, array($param)));
+
+        // Otherwise, just use the constructor
+        } else {
+          $this->addObserver($class->newInstance($param));
+        }
       }
 
       // Time zone handling
       if ($tz= $dsn->getProperty('timezone', FALSE)) {
         $this->tz= new TimeZone($tz);
       }
+    }
+
+    /**
+     * Retrieve DSN - cleaned from password
+     *
+     * @return rdbms.DSN
+     */
+    public function getDSN() {
+      $dsn= clone $this->dsn;
+      $dsn->url->setPassword(NULL);
+
+      return $dsn;
     }
     
     /**
