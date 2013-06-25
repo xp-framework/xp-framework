@@ -45,6 +45,19 @@
         self::$decrypt= function($value) use ($engine) {
           return rtrim(mdecrypt_generic($engine, $value), "\0");
         };
+      } else if (Runtime::getInstance()->extensionAvailable('openssl')) {
+        $key= substr(md5(uniqid()));
+        $iv= substr(md5(uniqid()), 0, openssl_cipher_iv_length("des"));
+
+        self::$encrypt= function($value) use ($key, $iv) {
+          return openssl_encrypt($value, "DES", $key,  0, $iv);
+        };
+
+        self::$decrypt= function($value) use ($key, $iv) {
+          return openssl_decrypt($value, "DES", $key,  0, $iv);
+        };
+      } else {
+        throw new RuntimeException('Cannot instanciate, neither extension "mcrypt" nor "openssl" available - at least one required.');
       }
     }
 
