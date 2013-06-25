@@ -28,39 +28,24 @@
    */
   final class SecureString extends Object {
     private static $store   = array();
-    private static $engine  = NULL;
-    private static $engineiv= NULL;
-    private static $key     = NULL;
+    private static $encrypt = NULL;
+    private static $decrypt = NULL;
 
-
-    private static function initMcrypt() {
-      if (!self::$engine) {
-        self::$engine= mcrypt_module_open(MCRYPT_DES, '', 'ecb', '');
-        self::$engineiv= mcrypt_create_iv(mcrypt_enc_get_iv_size(self::$engine), MCRYPT_RAND);
-        self::$key= substr(md5(uniqid()), 0, mcrypt_enc_get_key_size(self::$engine));
-
-        mcrypt_generic_init(self::$engine, self::$key, self::$engineiv);
-      }
-    }
-
-    private static function encrypt($value) {
+    static function __static() {
       if (Runtime::getInstance()->extensionAvailable('mcrypt')) {
-        self::initMcrypt();
+        $engine= mcrypt_module_open(MCRYPT_DES, '', 'ecb', '');
+        $engineiv= mcrypt_create_iv(mcrypt_enc_get_iv_size($engine), MCRYPT_RAND);
+        $key= substr(md5(uniqid()), 0, mcrypt_enc_get_key_size($engine));
+        mcrypt_generic_init($engine, $key, $engineiv);
 
-        return mcrypt_generic(self::$engine, $value);
+        self::$encrypt= function($value) use($engine) {
+          return mcrypt_generic($engine, $value);
+        };
+
+        self::$decrypt= function($value) use ($engine) {
+          return rtrim(mdecrypt_generic($engine, $value), "\0");
+        };
       }
-
-      return $value;
-    }
-
-    private static function decrypt($value) {
-      if (Runtime::getInstance()->extensionAvailable('mcrypt')) {
-        self::initMcrypt();
-
-        return rtrim(mdecrypt_generic(self::$engine, $value), "\0");
-      }
-
-      return $value;
     }
 
     /**
@@ -86,9 +71,10 @@
      *
      * @param string $c
      */
-    public function setCharacters($c) {
+    public function setCharacters(&$c) {
       try {
-        self::$store[$this->hashCode()]= self::encrypt($c);
+        $m= self::$encrypt;
+        self::$store[$this->hashCode()]= $m($c);
       } catch (Exception $e) {
         // This intentionally catches *ALL* exceptions, in order not to fail
         // and produce a stacktrace (containing arguments on the stack that were)
@@ -111,7 +97,8 @@
       if (!isset(self::$store[$this->hashCode()])) {
         throw new IllegalStateException('An error occurred during storing the encrypted password.');
       }
-      return self::decrypt(self::$store[$this->hashCode()]);
+      $m= self::$decrypt;
+      return $m(self::$store[$this->hashCode()]);
     }
 
     /**
