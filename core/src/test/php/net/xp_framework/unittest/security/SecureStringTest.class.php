@@ -11,6 +11,10 @@
 
   class SecureStringTest extends TestCase {
 
+    public function setUp() {
+      SecureString::__static();
+    }
+
     #[@test]
     public function create() {
       new SecureString('payload');
@@ -74,6 +78,33 @@
       $data= str_repeat('*', 1024000);
       $secure= new SecureString($data);
       $this->assertEquals($data, $secure->getCharacters());
+    }
+
+    #[@test]
+    public function creation_never_throws_exception() {
+      $called= FALSE;
+      SecureString::setBacking(function($value) use (&$called) {
+        $called= TRUE;
+        throw new XPException('Something went wrong - intentionally.');
+      }, function($value) { return NULL; });
+
+      new SecureString('foo');
+      $this->assertTrue($called);
+    }
+
+    #[@test, @expect(class= 'security.SecurityException', withMessage= '/An error occurred during storing the encrypted password./')]
+    public function decryption_throws_exception_if_creation_has_failed() {
+      $called= FALSE;
+      SecureString::setBacking(function($value) {
+        throw new XPException('Something went wrong - intentionally.');
+      }, function($value) { return NULL; });
+
+      create(new SecureString('foo'))->getCharacters();
+    }
+
+    #[@test]
+    public function encryption_and_decryption() {
+      $this->big_data();
     }
   }
 ?>

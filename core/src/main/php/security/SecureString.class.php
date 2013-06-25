@@ -4,7 +4,7 @@
  *
  */
 
-  uses('lang.Runtime');
+  uses('lang.Runtime', 'lang.RuntimeError', 'security.SecurityException');
 
   /**
    * SecureString provides a reasonable secure storage for security-sensistive
@@ -38,27 +38,34 @@
         $key= substr(md5(uniqid()), 0, mcrypt_enc_get_key_size($engine));
         mcrypt_generic_init($engine, $key, $engineiv);
 
-        self::$encrypt= function($value) use($engine) {
-          return mcrypt_generic($engine, $value);
-        };
-
-        self::$decrypt= function($value) use ($engine) {
-          return rtrim(mdecrypt_generic($engine, $value), "\0");
-        };
+        self::setBacking(function($value) use($engine) {
+            return mcrypt_generic($engine, $value);
+          }, function($value) use ($engine) {
+            return rtrim(mdecrypt_generic($engine, $value), "\0");
+        });
       } else if (Runtime::getInstance()->extensionAvailable('openssl')) {
         $key= substr(md5(uniqid()));
         $iv= substr(md5(uniqid()), 0, openssl_cipher_iv_length("des"));
 
-        self::$encrypt= function($value) use ($key, $iv) {
-          return openssl_encrypt($value, "DES", $key,  0, $iv);
-        };
-
-        self::$decrypt= function($value) use ($key, $iv) {
-          return openssl_decrypt($value, "DES", $key,  0, $iv);
-        };
+        self::setBacking(function($value) use ($key, $iv) {
+            return openssl_encrypt($value, "DES", $key,  0, $iv);
+          }, self::$decrypt= function($value) use ($key, $iv) {
+            return openssl_decrypt($value, "DES", $key,  0, $iv);
+        });
       } else {
-        throw new RuntimeException('Cannot instanciate, neither extension "mcrypt" nor "openssl" available - at least one required.');
+        throw new RuntimeError('Cannot instanciate, neither extension "mcrypt" nor "openssl" available - at least one required.');
       }
+    }
+
+    /**
+     * Store encryption and decryption routines (unittest method only)
+     *
+     * @param callable $encrypt
+     * @param callable $decrypt
+     */
+    public static function setBacking($encrypt, $decrypt) {
+      self::$encrypt= $encrypt;
+      self::$decrypt= $decrypt;
     }
 
     /**
@@ -108,7 +115,7 @@
      */
     public function getCharacters() {
       if (!isset(self::$store[$this->hashCode()])) {
-        throw new IllegalStateException('An error occurred during storing the encrypted password.');
+        throw new SecurityException('An error occurred during storing the encrypted password.');
       }
       $m= self::$decrypt;
       return $m(self::$store[$this->hashCode()]);
