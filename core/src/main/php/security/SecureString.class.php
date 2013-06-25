@@ -139,6 +139,9 @@
       return $this->getClassName().'('.$this->hashCode().') {}';
     }
 
+    /**
+     * Destructor; removes references from crypted storage for this instance.
+     */
     public function __destruct() {
       unset(self::$store[$this->hashCode()]);
     }
