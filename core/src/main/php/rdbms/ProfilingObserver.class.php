@@ -18,7 +18,9 @@
 
     protected $cat  = NULL;
     protected $name = NULL;
+
     private $timer  = NULL;
+    private $lastq  = NULL;
     private $dsn    = NULL;
     private $timing = array();
     
@@ -32,6 +34,17 @@
       $this->name= $name;
     }
 
+    protected function typeOf($sql) {
+      $sql= strtolower(ltrim($sql));
+      $verb= substr($sql, 0, strpos($sql, ' '));
+
+      if (in_array($verb, array('update', 'insert', 'select', 'delete', 'set', 'show'))) {
+        return $verb;
+      }
+
+      return '<unknown>';
+    }
+
     /**
      * Update method
      *
@@ -39,8 +52,10 @@
      * @param   var arg default NULL
      */
     public function update($obs, $arg= NULL) {
-      if (!$arg instanceof DBEvent) return;
-      if (!$obs instanceof DBConnection) return;
+      if (!$obs instanceof DBConnection) {
+        throw new IllegalArgumentException('Argument 1 must be instanceof "rdbms.DBConnection", "'.xp::typeOf($obs).'" given.');
+      }
+      if (!$arg instanceof DBEvent);
 
       // Store reference for later reuse
       if (NULL === $this->cat) $this->cat= Logger::getInstance()->getCategory($this->name);
@@ -54,14 +69,10 @@
           $this->timer= new Timer();
           $this->timer->start();
 
-          $sql= strtolower(ltrim($arg->getArgument()));
-          $verb= substr($sql, 0, strpos($sql, ' '));
+          $this->lastq= $this->typeOf($arg->getArgument());
 
           // Count some well-known SQL keywords
-          if (in_array($verb, array('update', 'insert', 'select', 'delete', 'set', 'show'))) {
-            if (!isset($this->timing[$verb][self::COUNT])) $this->timing[$verb][self::COUNT]= 0;
-            $this->timing[$verb][self::COUNT]++;
-          }
+          $this->countFor($this->lastq);
 
           break;
         }
@@ -71,8 +82,11 @@
           if (!$this->timer) return;
           $this->timer->stop();
 
-          if (!isset($this->timing[$method])) $this->timing[$method]= 0;
-          $this->timing[$method]+= $this->timer->elapsedTime();
+          $this->addElapsedTimeTo($method, $this->timer->elapsedTime());
+          if ($this->lastq) {
+            $this->addElapsedTimeTo($this->lastq, $this->timer->elapsedTime());
+            $this->lastq= NULL;
+          }
 
           $this->timer= NULL;
           break;
@@ -91,14 +105,29 @@
           $this->dsn->getUser(),
           $this->dsn->getHost(),
           $this->dsn->getDatabase()
-          ), array_merge($this->timing, $this->stats)
+          ), $this->timing
         );
       }
+    }
+
+    protected function countFor($type) {
+      if (!isset($this->timing[$type][self::COUNT])) $this->timing[$type][self::COUNT]= 0;
+      $this->timing[$type][self::COUNT]++;
+    }
+
+    protected function addElapsedTimeTo($type, $elapsed) {
+      if (!isset($this->timing[$type][self::TIMES])) $this->timing[$type][self::TIMES]= 0;
+      $this->timing[$type][self::TIMES]+= $elapsed;
     }
 
     public function numberOfTimes($type) {
       if (!isset($this->timing[$type][self::COUNT])) return 0;
       return $this->timing[$type][self::COUNT];
+    }
+
+    public function elapsedTimeOfAll($type) {
+      if (!isset($this->timing[$type][self::TIMES])) return 0.0;
+      return $this->timing[$type][self::TIMES];
     }
 
     /** 
