@@ -3,7 +3,7 @@
  * This class is part of the XP Framework
  *
  */
-  uses('util.Observer');
+  uses('util.Observer', 'util.log.Logger');
 
   /**
    * Profiling database observer
@@ -13,11 +13,13 @@
    * 
    */
   class ProfilingObserver extends Object implements Observer {
+    const COUNT= 0x01;
+    const TIMES= 0x02;
+
     protected $cat  = NULL;
     protected $name = NULL;
     private $timer  = NULL;
     private $dsn    = NULL;
-    private $stats  = array();
     private $timing = array();
     
     /**
@@ -25,7 +27,8 @@
      *
      * @param   string cat
      */
-    public function __construct($name) {
+    public function __construct($name= NULL) {
+      if (NULL === $name) $name= 'default';
       $this->name= $name;
     }
 
@@ -37,6 +40,7 @@
      */
     public function update($obs, $arg= NULL) {
       if (!$arg instanceof DBEvent) return;
+      if (!$obs instanceof DBConnection) return;
 
       // Store reference for later reuse
       if (NULL === $this->cat) $this->cat= Logger::getInstance()->getCategory($this->name);
@@ -55,8 +59,8 @@
 
           // Count some well-known SQL keywords
           if (in_array($verb, array('update', 'insert', 'select', 'delete', 'set', 'show'))) {
-            if (!isset($this->stats[$verb])) $this->stats[$verb]= 0;
-            $this->stats[$verb]++;
+            if (!isset($this->timing[$verb][self::COUNT])) $this->timing[$verb][self::COUNT]= 0;
+            $this->timing[$verb][self::COUNT]++;
           }
 
           break;
@@ -81,13 +85,20 @@
      * 
      */
     public function emitTimings() {
-      $this->cat->info(__CLASS__, 'for', sprintf('%s://%s@%s/%s',
-        $this->dsn->getDriver(),
-        $this->dsn->getUser(),
-        $this->dsn->getHost(),
-        $this->dsn->getDatabase()
-        ), array_merge($this->timing, $this->stats)
-      );
+      if ($this->cat && $this->dsn) {
+        $this->cat->info(__CLASS__, 'for', sprintf('%s://%s@%s/%s',
+          $this->dsn->getDriver(),
+          $this->dsn->getUser(),
+          $this->dsn->getHost(),
+          $this->dsn->getDatabase()
+          ), array_merge($this->timing, $this->stats)
+        );
+      }
+    }
+
+    public function numberOfTimes($type) {
+      if (!isset($this->timing[$type][self::COUNT])) return 0;
+      return $this->timing[$type][self::COUNT];
     }
 
     /** 
