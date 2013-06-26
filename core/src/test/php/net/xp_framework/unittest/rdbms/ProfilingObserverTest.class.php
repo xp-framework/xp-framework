@@ -44,27 +44,37 @@
       $o->update($this->conn(), new DBEvent('hello', 'select * from world.'));
     }
 
-    #[@test]
-    public function update_with_query_and_queryend_does_count_timing() {
+    private function observerWithSelect() {
       $o= new ProfilingObserver();
       $conn= $this->conn();
       $o->update($conn, new DBEvent('query', 'select * from world.'));
+      usleep(100000);
       $o->update($conn, new DBEvent('queryend', 5));
+      
+      return $o;      
+    }
+
+    #[@test]
+    public function update_with_query_and_queryend_does_count_timing() {
+      $o= $this->observerWithSelect();
 
       $this->assertEquals(1, $o->numberOfTimes('select'));
     }
 
     #[@test]
     public function update_with_query_and_queryend_does_time_aggregation() {
-      $o= new ProfilingObserver();
-      $conn= $this->conn();
-      $o->update($conn, new DBEvent('query', 'select * from world.'));
-      usleep(100000);
-      $o->update($conn, new DBEvent('queryend', 5));
+      $o= $this->observerWithSelect();
 
       $this->assertFalse(0 == $o->elapsedTimeOfAll('queryend'));
       $this->assertTrue(0.1 <= $o->elapsedTimeOfAll('queryend'));
-      var_dump($o);
     }
+
+    #[@test]
+    public function timing_as_string() {
+      $o= $this->observerWithSelect();
+      $this->assertTrue(0 < strlen($o->getTimingAsString()));
+    }
+
+    
   }
 ?>

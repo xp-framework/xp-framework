@@ -3,7 +3,7 @@
  * This class is part of the XP Framework
  *
  */
-  uses('util.Observer', 'util.log.Logger');
+  uses('util.Observer', 'util.log.Logger', 'util.log.Traceable');
 
   /**
    * Profiling database observer
@@ -12,7 +12,7 @@
    * `default` denotes the log category to log to.
    * 
    */
-  class ProfilingObserver extends Object implements Observer {
+  class ProfilingObserver extends Object implements Observer, Traceable {
     const COUNT= 0x01;
     const TIMES= 0x02;
 
@@ -34,6 +34,15 @@
       $this->name= $name;
     }
 
+    /**
+     * Set log category
+     * 
+     * @param util.log.LogCategory $cat
+     */
+    public function setTrace($cat) {
+      $this->cat= $cat;
+    }
+
     protected function typeOf($sql) {
       $sql= strtolower(ltrim($sql));
       $verb= substr($sql, 0, strpos($sql, ' '));
@@ -42,7 +51,7 @@
         return $verb;
       }
 
-      return '<unknown>';
+      return 'unknown';
     }
 
     /**
@@ -105,9 +114,23 @@
           $this->dsn->getUser(),
           $this->dsn->getHost(),
           $this->dsn->getDatabase()
-          ), $this->timing
+          ), $this->getTimingAsString()
         );
       }
+    }
+
+    public function getTimingAsString() {
+      $s= '';
+
+      foreach ($this->timing as $type => $details) {
+        $s.= sprintf("%s: [%0.3fs%s], ",
+          $type,
+          $details[self::TIMES],
+          isset($details[self::COUNT]) ? sprintf(' in %d queries', $details[self::COUNT]) : ''
+        );
+      }
+
+      return substr($s, 0, -2);
     }
 
     protected function countFor($type) {
