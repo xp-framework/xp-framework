@@ -1,5 +1,9 @@
-<?php 
+<?php
   define('EPREPEND_IDENTIFIER', "\6100");
+  if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+    trigger_error('This version of the XP Framework requires PHP 5.3.0+, have PHP '.PHP_VERSION.PHP_EOL, E_USER_ERROR);
+    exit(0x3d);
+  }
 
   // {{{ internal string __output(string buf)
   //     Output handler. Checks for fatal errors

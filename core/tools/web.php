@@ -1,4 +1,8 @@
 <?php
+  if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+    trigger_error('This version of the XP Framework requires PHP 5.3.0+, have PHP '.PHP_VERSION, E_USER_ERROR);
+    exit(0x3d);
+  }
   $webroot= getenv('WEB_ROOT') ?: $_SERVER['DOCUMENT_ROOT'].'/..';
   $configd= ini_get('user_dir') ?: $webroot.'/etc';
 

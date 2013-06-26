@@ -10,6 +10,8 @@ XP Framework ChangeLog
 
 ### Features
 
+* Added a better error message for PHP runtime version mismatch - see 
+  discussion in issue #316 - (@thekid, @kiesel)
 * Added peer.SocketEndpoint class and accessors on the peer.Socket and
   peer.BSDSocket implementations to return local and remote endpoints -
   see pull request #312. - (@thekid)
