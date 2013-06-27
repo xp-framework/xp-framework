@@ -12,7 +12,13 @@
   class SecureStringTest extends TestCase {
 
     public function setUp() {
-      SecureString::__static();
+      SecureString::useBacking(SecureString::BACKING_MCRYPT);
+    }
+
+    protected static function useBacking($backing) {
+      SecureString::useBacking(
+        XPClass::forName('security.SecureString')->getConstant('BACKING_'.$backing)
+      );
     }
 
     #[@test]
@@ -32,14 +38,16 @@
       serialize(new SecureString('payload'));
     }
 
-    #[@test]
-    public function var_export_not_revealing_payload() {
+    #[@test, @values('MCRYPT', 'OPENSSL', 'PLAINTEXT')]
+    public function var_export_not_revealing_payload($backing) {
+      self::useBacking($backing);
       $export= var_export(new SecureString('payload'), TRUE);
       $this->assertFalse(strpos($export, 'payload'));
     }
 
-    #[@test]
-    public function var_dump_not_revealing_payload() {
+    #[@test, @values('MCRYPT', 'OPENSSL', 'PLAINTEXT')]
+    public function var_dump_not_revealing_payload($backing) {
+      self::useBacking($backing);
       ob_start();
       var_dump(new SecureString('payload'));
 
@@ -49,32 +57,37 @@
       $this->assertFalse(strpos($output, 'payload'));
     }
 
-    #[@test]
-    public function toString_not_revealing_payload() {
+    #[@test, @values('MCRYPT', 'OPENSSL', 'PLAINTEXT')]
+    public function toString_not_revealing_payload($backing) {
+      self::useBacking($backing);
       $output= create(new SecureString('payload'))->toString();
       $this->assertFalse(strpos($output, 'payload'));
     }
 
-    #[@test]
-    public function string_cast_not_revealing_payload() {
+    #[@test, @values('MCRYPT', 'OPENSSL', 'PLAINTEXT')]
+    public function string_cast_not_revealing_payload($backing) {
+      self::useBacking($backing);
       $output= (string)new SecureString('payload');
       $this->assertFalse(strpos($output, 'payload'));
     }
 
-    #[@test]
-    public function array_cast_not_revealing_payload() {
+    #[@test, @values('MCRYPT', 'OPENSSL', 'PLAINTEXT')]
+    public function array_cast_not_revealing_payload($backing) {
+      self::useBacking($backing);
       $output= var_export((array)new SecureString('payload'), 1);
       $this->assertFalse(strpos($output, 'payload'));
     }
 
-    #[@test]
-    public function getPayload_reveals_original_data() {
+    #[@test, @values('MCRYPT', 'OPENSSL', 'PLAINTEXT')]
+    public function getPayload_reveals_original_data($backing) {
+      self::useBacking($backing);
       $secure= new SecureString('payload');
       $this->assertEquals('payload', $secure->getCharacters());
     }
 
-    #[@test]
-    public function big_data() {
+    #[@test, @values('MCRYPT', 'OPENSSL', 'PLAINTEXT')]
+    public function big_data($backing) {
+      self::useBacking($backing);
       $data= str_repeat('*', 1024000);
       $secure= new SecureString($data);
       $this->assertEquals($data, $secure->getCharacters());
@@ -100,11 +113,6 @@
       }, function($value) { return NULL; });
 
       create(new SecureString('foo'))->getCharacters();
-    }
-
-    #[@test]
-    public function encryption_and_decryption() {
-      $this->big_data();
     }
   }
 ?>

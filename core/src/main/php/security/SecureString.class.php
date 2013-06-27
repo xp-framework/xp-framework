@@ -67,7 +67,7 @@
           if (!Runtime::getInstance()->extensionAvailable('openssl')) {
             throw new IllegalStateException('Backing "openssl" required but extension not available.');
           }
-          $key= substr(md5(uniqid()));
+          $key= md5(uniqid());
           $iv= substr(md5(uniqid()), 0, openssl_cipher_iv_length("des"));
 
           return self::setBacking(function($value) use ($key, $iv) {
