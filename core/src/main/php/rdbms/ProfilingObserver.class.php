@@ -64,10 +64,10 @@
       if (!$obs instanceof DBConnection) {
         throw new IllegalArgumentException('Argument 1 must be instanceof "rdbms.DBConnection", "'.xp::typeOf($obs).'" given.');
       }
-      if (!$arg instanceof DBEvent);
+      if (!$arg instanceof DBEvent) return;
 
       // Store reference for later reuse
-      if (NULL === $this->cat) $this->cat= Logger::getInstance()->getCategory($this->name);
+      if (NULL === $this->cat) $this->setTrace(Logger::getInstance()->getCategory($this->name));
       if (NULL === $this->dsn) $this->dsn= $obs->getDSN();
 
       $method= $arg->getName();

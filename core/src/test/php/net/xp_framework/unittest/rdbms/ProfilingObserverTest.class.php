@@ -8,7 +8,9 @@
     'unittest.TestCase',
     'rdbms.DBEvent',
     'rdbms.ProfilingObserver',
-    'rdbms.sqlite3.SQLite3Connection'
+    'rdbms.sqlite3.SQLite3Connection',
+    'util.log.LogCategory',
+    'util.log.StreamAppender'
   );
 
   class ProfilingObserverTest extends TestCase {
@@ -75,6 +77,17 @@
       $this->assertTrue(0 < strlen($o->getTimingAsString()));
     }
 
-    
+    #[@test]
+    public function destructor_emits_timing() {
+      $o= $this->observerWithSelect();
+      $stream= new MemoryOUtputStream();
+      $lc= create(new LogCategory('profiling'))->withAppender(new StreamAppender($stream));
+      $o->setTrace($lc);
+      $o= NULL;
+
+      $this->assertTrue(0 < strlen($stream->getBytes()));
+    }
+
+
   }
 ?>
