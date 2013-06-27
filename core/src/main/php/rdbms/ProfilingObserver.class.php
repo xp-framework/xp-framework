@@ -72,13 +72,15 @@
 
       $method= $arg->getName();
       switch ($method) {
-        case 'connect':
         case 'query':
-        case 'open': {
+        case 'open':
+          $this->lastq= $this->typeOf($arg->getArgument());
+          // Fallthrough intentional
+
+        case 'connect': {
+          if ('connect' == $method) $this->lastq= $method;
           $this->timer= new Timer();
           $this->timer->start();
-
-          $this->lastq= $this->typeOf($arg->getArgument());
 
           // Count some well-known SQL keywords
           $this->countFor($this->lastq);
@@ -88,6 +90,8 @@
 
         case 'connected':
         case 'queryend': {
+
+          // Protect against illegal order of events (should not occur)
           if (!$this->timer) return;
           $this->timer->stop();
 

@@ -88,6 +88,62 @@
       $this->assertTrue(0 < strlen($stream->getBytes()));
     }
 
+    #[@test]
+    public function dbevent_in_illegal_order_is_ignored() {
+      $o= new ProfilingObserver();
+      $conn= $this->conn();
+
+      $o->update($conn, new DBEvent('queryend', 5));
+      $this->assertEquals(.0, $o->elapsedTimeOfAll('queryend'));
+    }
+
+    #[@test]
+    public function connect_is_counted_as_verb() {
+      $o= new ProfilingObserver();
+
+      $c1= $this->conn();
+      $o->update($c1, new DBEvent('connect'));
+      $o->update($c1, new DBEvent('connected'));
+
+      $this->assertEquals(1, $o->numberOfTimes('connect'));
+    }
+
+    #[@test, @ignore('Expected behavior not finally decided')]
+    public function observer_only_listens_to_one_dbconnection() {
+      $o= new ProfilingObserver();
+
+      $c1= $this->conn();
+      $o->update($c1, new DBEvent('connect'));
+      $o->update($c1, new DBEvent('connected'));
+
+      $c2= $this->conn();
+      $o->update($c2, new DBEvent('connect'));
+      $o->update($c2, new DBEvent('connected'));
+
+      $this->assertEquals(1, $o->numberOfTimes('connect'));
+    }
+
+    #[@test]
+    public function unknown_sql_token_is_classified_as_unknown() {
+      $o= new ProfilingObserver();
+
+      $c1= $this->conn();
+      $o->update($c1, new DBEvent('query', 'encrypt foo from bar'));;
+      $o->update($c1, new DBEvent('queryend'));
+
+      $this->assertEquals(1, $o->numberOfTimes('unknown'));
+    }
+
+    #[@test]
+    public function update_sql_token_is_classified_as_unknown() {
+      $o= new ProfilingObserver();
+
+      $c1= $this->conn();
+      $o->update($c1, new DBEvent('query', 'update foo from bar'));;
+      $o->update($c1, new DBEvent('queryend'));
+
+      $this->assertEquals(1, $o->numberOfTimes('update'));
+    }
 
   }
 ?>
