@@ -27,33 +27,67 @@
    *
    */
   final class SecureString extends Object {
+    const BACKING_MCRYPT    = 0x01;
+    const BACKING_OPENSSL   = 0x02;
+    const BACKING_PLAINTEXT = 0x03;
+
     private static $store   = array();
     private static $encrypt = NULL;
     private static $decrypt = NULL;
 
     static function __static() {
       if (Runtime::getInstance()->extensionAvailable('mcrypt')) {
-        $engine= mcrypt_module_open(MCRYPT_DES, '', 'ecb', '');
-        $engineiv= mcrypt_create_iv(mcrypt_enc_get_iv_size($engine), MCRYPT_RAND);
-        $key= substr(md5(uniqid()), 0, mcrypt_enc_get_key_size($engine));
-        mcrypt_generic_init($engine, $key, $engineiv);
-
-        self::setBacking(function($value) use($engine) {
-            return mcrypt_generic($engine, $value);
-          }, function($value) use ($engine) {
-            return rtrim(mdecrypt_generic($engine, $value), "\0");
-        });
+        self::useBacking(self::BACKING_MCRYPT);
       } else if (Runtime::getInstance()->extensionAvailable('openssl')) {
-        $key= substr(md5(uniqid()));
-        $iv= substr(md5(uniqid()), 0, openssl_cipher_iv_length("des"));
-
-        self::setBacking(function($value) use ($key, $iv) {
-            return openssl_encrypt($value, "DES", $key,  0, $iv);
-          }, self::$decrypt= function($value) use ($key, $iv) {
-            return openssl_decrypt($value, "DES", $key,  0, $iv);
-        });
+        self::useBacking(self::BACKING_OPENSSL);
       } else {
-        throw new RuntimeError('Cannot instanciate, neither extension "mcrypt" nor "openssl" available - at least one required.');
+        self::useBacking(self::BACKING_PLAINTEXT);
+      }
+    }
+
+    public static function useBacking($type) {
+      switch ($type) {
+        case self::BACKING_MCRYPT: {
+          if (!Runtime::getInstance()->extensionAvailable('mcrypt')) {
+            throw new IllegalStateException('Backing "mcrypt" required but extension not available.');
+          }
+          $engine= mcrypt_module_open(MCRYPT_DES, '', 'ecb', '');
+          $engineiv= mcrypt_create_iv(mcrypt_enc_get_iv_size($engine), MCRYPT_RAND);
+          $key= substr(md5(uniqid()), 0, mcrypt_enc_get_key_size($engine));
+          mcrypt_generic_init($engine, $key, $engineiv);
+
+          return self::setBacking(function($value) use($engine) {
+              return mcrypt_generic($engine, $value);
+            }, function($value) use ($engine) {
+              return rtrim(mdecrypt_generic($engine, $value), "\0");
+          });
+        }
+
+        case self::BACKING_OPENSSL: {
+          if (!Runtime::getInstance()->extensionAvailable('openssl')) {
+            throw new IllegalStateException('Backing "openssl" required but extension not available.');
+          }
+          $key= substr(md5(uniqid()));
+          $iv= substr(md5(uniqid()), 0, openssl_cipher_iv_length("des"));
+
+          return self::setBacking(function($value) use ($key, $iv) {
+              return openssl_encrypt($value, "DES", $key,  0, $iv);
+            }, self::$decrypt= function($value) use ($key, $iv) {
+              return openssl_decrypt($value, "DES", $key,  0, $iv);
+          });
+        }
+
+        case self::BACKING_PLAINTEXT: {
+          return self::setBacking(function($value) {
+              return base64_encode($value);
+            }, function($value) {
+              return base64_decode($value);
+          });
+        }
+
+        default: {
+          throw new IllegalArgumentException('Invalid backing given: '.xp::stringOf($type));
+        }
       }
     }
 
