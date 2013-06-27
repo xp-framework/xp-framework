@@ -34,6 +34,7 @@
 
     public
       $sessions         = array(),
+      $timeout          = 300.0,      // 5 minutes
       $cat              = NULL,
       $authenticator    = NULL,
       $storage          = NULL,
@@ -962,6 +963,7 @@
       // Create a new session object for this client
       $this->sessions[$socket->hashCode()]= new FtpSession();
       $this->answer($socket, 220, 'FTP server ready');
+      $socket->setTimeout($this->timeout);
     }
     
     /**
