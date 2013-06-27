@@ -1022,7 +1022,7 @@
      * @param   lang.XPException e
      */
     public function handleError($socket, $e) {
-      $this->cat && $this->cat->debugf('Client %s I/O error', $socket->host, ' ~ ', $e);
+      $this->cat && $this->cat->debugf('Client %s I/O error ~ %s', $socket->host, $e->toString());
       
       // Kill associated session
       delete($this->sessions[$socket->hashCode()]);
