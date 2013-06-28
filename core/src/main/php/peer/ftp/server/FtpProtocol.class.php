@@ -34,6 +34,7 @@
 
     public
       $sessions         = array(),
+      $timeout          = 300.0,      // 5 minutes
       $cat              = NULL,
       $authenticator    = NULL,
       $storage          = NULL,
@@ -932,7 +933,7 @@
 
       // Open a new server socket if non exists
       if (!$this->datasock[$socket->hashCode()]) {
-        $this->datasock[$socket->hashCode()]= new ServerSocket($this->server->socket->host, 0);
+        $this->datasock[$socket->hashCode()]= new ServerSocket($socket->localEndpoint()->getHost(), 0);
         try {
           $this->datasock[$socket->hashCode()]->create();
           $this->datasock[$socket->hashCode()]->bind();
@@ -962,6 +963,7 @@
       // Create a new session object for this client
       $this->sessions[$socket->hashCode()]= new FtpSession();
       $this->answer($socket, 220, 'FTP server ready');
+      $socket->setTimeout($this->timeout);
     }
     
     /**
@@ -1022,7 +1024,7 @@
      * @param   lang.XPException e
      */
     public function handleError($socket, $e) {
-      $this->cat && $this->cat->debugf('Client %s I/O error', $socket->host, ' ~ ', $e);
+      $this->cat && $this->cat->debugf('Client %s I/O error ~ %s', $socket->host, $e->toString());
       
       // Kill associated session
       delete($this->sessions[$socket->hashCode()]);

@@ -146,7 +146,7 @@
             $this->protocol->handleError($m, $e);
             break;
           }
-        } while (!$m->eof() && !$this->terminate);
+        } while ($m->isConnected() && !$m->eof() && !$this->terminate);
 
         $m->close();
         $this->protocol->handleDisconnect($m);
