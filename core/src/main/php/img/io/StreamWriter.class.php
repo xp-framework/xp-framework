@@ -60,7 +60,7 @@
         $this->writer= function($writer, $stream, $handle) {
           ob_start(function($data) use($stream) { $stream->write($data); });
           $r= $writer->output($handle);
-          ob_end_clean();
+          ob_end_flush();
           return $r;
         };
       }
@@ -82,14 +82,11 @@
      * @throws  img.ImagingException
      */
     public function setResource($handle) {
-      $l= ob_get_level();
       try {
         $r= call_user_func($this->writer, $this, $this->stream, $handle);
         $this->stream->close();
       } catch (Throwable $e) {
-        while (ob_get_level() > $l){
-          ob_end_clean();
-        }
+        ob_clean();
         throw new ImagingException($e->getMessage());
       }
       if (!$r) throw new ImagingException('Could not write image');
