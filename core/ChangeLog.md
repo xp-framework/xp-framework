@@ -5,6 +5,7 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed FTP client hanging after server disconnects - (@thekid)
 * Fixed I/O errors in FTP Protocol after proper client disconnect - (@thekid)
 * Fixed issue #311: Find out socket endpoint on accepted socket from 0.0.0.0
   (@thekid)
