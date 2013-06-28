@@ -11,6 +11,9 @@ XP Framework ChangeLog
 
 ### Features
 
+* Added timeout handling to peer.server API. Defaulting to 60 seconds - a 
+  client that does not perform any protocol actions in this period will be
+  ungracefully disconnected - (@thekid)
 * Added a better error message for PHP runtime version mismatch - see 
   discussion in issue #316 - (@thekid, @kiesel)
 * Added peer.SocketEndpoint class and accessors on the peer.Socket and
