@@ -26,7 +26,12 @@
       new SecureString('payload');
     }
 
-    protected function getValue() { return "payload"; }
+    /**
+     * Retrieve value
+     *
+     * @return string
+     */
+    protected function getValue() { return 'payload'; }
 
     #[@test]
     public function create_from_function_return_value() {

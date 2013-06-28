@@ -45,6 +45,13 @@
       }
     }
 
+    /**
+     * Switch storage algorithm backing
+     *
+     * @param  int $type one of BACKING_MCRYPT, BACKING_OPENSSL, BACKING_PLAINTEXT
+     * @throws lang.IllegalArgumentException If illegal backing type was given
+     * @throws lang.IllegalStateException If chosen backing missed a extension dependency
+     */
     public static function useBacking($type) {
       switch ($type) {
         case self::BACKING_MCRYPT: {
@@ -56,11 +63,10 @@
           $key= substr(md5(uniqid()), 0, mcrypt_enc_get_key_size($engine));
           mcrypt_generic_init($engine, $key, $engineiv);
 
-          return self::setBacking(function($value) use($engine) {
-              return mcrypt_generic($engine, $value);
-            }, function($value) use ($engine) {
-              return rtrim(mdecrypt_generic($engine, $value), "\0");
-          });
+          return self::setBacking(
+            function($value) use($engine) { return mcrypt_generic($engine, $value); },
+            function($value) use($engine) { return rtrim(mdecrypt_generic($engine, $value), "\0"); }
+          );
         }
 
         case self::BACKING_OPENSSL: {
@@ -70,19 +76,17 @@
           $key= md5(uniqid());
           $iv= substr(md5(uniqid()), 0, openssl_cipher_iv_length("des"));
 
-          return self::setBacking(function($value) use ($key, $iv) {
-              return openssl_encrypt($value, "DES", $key,  0, $iv);
-            }, self::$decrypt= function($value) use ($key, $iv) {
-              return openssl_decrypt($value, "DES", $key,  0, $iv);
-          });
+          return self::setBacking(
+            function($value) use ($key, $iv) { return openssl_encrypt($value, "DES", $key,  0, $iv); },
+            function($value) use ($key, $iv) { return openssl_decrypt($value, "DES", $key,  0, $iv); }
+          );
         }
 
         case self::BACKING_PLAINTEXT: {
-          return self::setBacking(function($value) {
-              return base64_encode($value);
-            }, function($value) {
-              return base64_decode($value);
-          });
+          return self::setBacking(
+            function($value) { return base64_encode($value); },
+            function($value) { return base64_decode($value); }
+          );
         }
 
         default: {
