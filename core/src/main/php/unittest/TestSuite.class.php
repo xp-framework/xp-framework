@@ -278,6 +278,22 @@
         $values= array(array());
       }
 
+      // Check for @before and @after methods
+      if ($method->hasAnnotation('action')) {
+        $action= XPClass::forName($method->getAnnotation('action'))->newInstance();
+        $setUp= function($test) use($action) {
+          $test->setUp();
+          $action->beforeTest($test);
+        };
+        $tearDown= function($test) use($action) {
+          $test->tearDown();
+          $action->afterTest($test);
+        };
+      } else {
+        $setUp= function($test) { $test->setUp(); };
+        $tearDown= function($test) { $test->tearDown(); };
+      }
+
       $timer= new Timer();
       foreach ($values as $args) {
         $t= $variation ? new TestVariation($test, $args) : $test;
@@ -286,7 +302,7 @@
 
         // Setup test
         try {
-          $test->setUp();
+          $setUp($test);
         } catch (PrerequisitesNotMetError $e) {
           $timer->stop();
           $this->notifyListeners('testSkipped', array(
@@ -315,7 +331,7 @@
           $method->invoke($test, is_array($args) ? $args : array($args));
         } catch (TargetInvocationException $x) {
           $timer->stop();
-          $test->tearDown();
+          $tearDown($test);
           $e= $x->getCause();
 
           // Was that an expected exception?
@@ -371,7 +387,7 @@
         }
 
         $timer->stop();
-        $test->tearDown();
+        $tearDown($test);
         
         // Check expected exception
         if ($expected) {
