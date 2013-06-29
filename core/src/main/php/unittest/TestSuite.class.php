@@ -278,12 +278,12 @@
         $values= array(array());
       }
 
-      // Check for @before and @after methods
+      // Check for @actions, initialize setUp and tearDown call chains
       if ($method->hasAnnotation('action')) {
         $action= XPClass::forName($method->getAnnotation('action'))->newInstance();
         $setUp= function($test) use($action) {
-          $test->setUp();
           $action->beforeTest($test);
+          $test->setUp();
         };
         $tearDown= function($test) use($action) {
           $test->tearDown();

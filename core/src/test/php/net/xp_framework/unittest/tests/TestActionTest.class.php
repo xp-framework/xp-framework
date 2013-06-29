@@ -21,7 +21,7 @@
 
     #[@test]
     public function beforeTest_and_afterTest_methods_invocation_order() {
-      ClassLoader::defineClass('net.xp_framework.unittest.tests.RecordActionInvocation', 'lang.Object', array(), '{
+      ClassLoader::defineClass('net.xp_framework.unittest.tests.RecordActionInvocation', 'lang.Object', array('unittest.TestAction'), '{
         public function beforeTest(TestCase $t) {
           $t->run[]= "before";
         }
@@ -29,7 +29,6 @@
         public function afterTest(TestCase $t) {
           $t->run[]= "after";
         }
-
       }');
       $test= newinstance('unittest.TestCase', array('fixture'), '{
         public $run= array();
