@@ -1,9 +1,9 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
- 
+
   uses('unittest.TestCase');
 
   /**
@@ -11,7 +11,7 @@
    */
   class TestActionTest extends TestCase {
     protected $suite= NULL;
-      
+
     /**
      * Setup method. Creates a new test suite.
      */

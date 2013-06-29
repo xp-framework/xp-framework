@@ -12,7 +12,7 @@
   interface TestAction {
 
     /**
-     * This method gets invoked before a test method is invoked, and before 
+     * This method gets invoked before a test method is invoked, and before
      * the setUp() method is called.
      *
      * @param  unittest.TestCase $t
