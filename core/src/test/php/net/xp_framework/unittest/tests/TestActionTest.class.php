@@ -20,7 +20,7 @@
     }
 
     #[@test]
-    public function beforeTest_and_afterTest_methods_invocation_order() {
+    public function methods_invocation_order() {
       ClassLoader::defineClass('net.xp_framework.unittest.tests.RecordActionInvocation', 'lang.Object', array('unittest.TestAction'), '{
         public function beforeTest(TestCase $t) {
           $t->run[]= "before";
@@ -33,13 +33,21 @@
       $test= newinstance('unittest.TestCase', array('fixture'), '{
         public $run= array();
 
+        public function setUp() {
+          $this->run[]= "setup";
+        }
+
+        public function tearDown() {
+          $this->run[]= "teardown";
+        }
+
         #[@test, @action("net.xp_framework.unittest.tests.RecordActionInvocation")]
         public function fixture() {
           $this->run[]= "test";
         }
       }');
       $this->suite->runTest($test);
-      $this->assertEquals(array('before', 'test', 'after'), $test->run);
+      $this->assertEquals(array('before', 'setup', 'test', 'teardown', 'after'), $test->run);
     }
   }
 ?>
