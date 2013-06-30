@@ -84,5 +84,26 @@
       $this->suite->runTest($test);
       $this->assertEquals(array('before', 'test', 'teardown', 'after'), $test->run);
     }
+
+    #[@test]
+    public function beforeTest_can_skip_test() {
+      ClassLoader::defineClass('net.xp_framework.unittest.tests.SkipThisTest', 'lang.Object', array('unittest.TestAction'), '{
+        public function beforeTest(TestCase $t) {
+          throw new PrerequisitesNotMetError("Skip");
+        }
+
+        public function afterTest(TestCase $t) {
+          // NOOP
+        }
+      }');
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        #[@test, @action("net.xp_framework.unittest.tests.SkipThisTest")]
+        public function fixture() {
+          throw new IllegalStateException("This test should have been skipped");
+        }
+      }');
+      $r= $this->suite->runTest($test);
+      $this->assertEquals(1, $r->skipCount());
+    }
   }
 ?>
