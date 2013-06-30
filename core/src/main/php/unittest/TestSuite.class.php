@@ -231,7 +231,8 @@
      * @throws  lang.MethodNotImplementedException
      */
     protected function runInternal($test, $result) {
-      $method= $test->getClass()->getMethod($test->name);
+      $class= $test->getClass();
+      $method= $class->getMethod($test->name);
       $this->notifyListeners('testStarted', array($test));
       
       // Check for @ignore
@@ -279,20 +280,25 @@
       }
 
       // Check for @actions, initialize setUp and tearDown call chains
-      if ($method->hasAnnotation('action')) {
-        $action= XPClass::forName($method->getAnnotation('action'))->newInstance();
-        $setUp= function($test) use($action) {
-          $action->beforeTest($test);
-          $test->setUp();
-        };
-        $tearDown= function($test) use($action) {
-          $test->tearDown();
-          $action->afterTest($test);
-        };
-      } else {
-        $setUp= function($test) { $test->setUp(); };
-        $tearDown= function($test) { $test->tearDown(); };
+      $actions= array();
+      if ($class->hasAnnotation('action')) {
+        $actions[]= XPClass::forName($class->getAnnotation('action'))->newInstance();
       }
+      if ($method->hasAnnotation('action')) {
+        $actions[]= XPClass::forName($method->getAnnotation('action'))->newInstance();
+      }
+      $setUp= function($test) use($actions) {
+        foreach ($actions as $action) {
+          $action->beforeTest($test);
+        }
+        $test->setUp();
+      };
+      $tearDown= function($test) use($actions) {
+        $test->tearDown();
+        foreach ($actions as $action) {
+          $action->afterTest($test);
+        }
+      };
 
       $timer= new Timer();
       foreach ($values as $args) {

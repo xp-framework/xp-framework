@@ -105,5 +105,15 @@
       $r= $this->suite->runTest($test);
       $this->assertEquals(1, $r->skipCount());
     }
+
+    #[@test]
+    public function invocation_order_with_class_annotation() {
+      $this->suite->addTestClass(XPClass::forName('net.xp_framework.unittest.tests.TestWithAction'));
+      $this->suite->run();
+      $this->assertEquals(
+        array('before', 'one', 'after', 'before', 'two', 'after'),
+        array_merge($this->suite->testAt(0)->run, $this->suite->testAt(1)->run)
+      );
+    }
   }
 ?>
