@@ -13,14 +13,10 @@
     protected $suite= NULL;
 
     /**
-     * Setup method. Creates a new test suite.
+     * Defines RecordActionInvocation class used in this test
      */
-    public function setUp() {
-      $this->suite= new TestSuite();
-    }
-
-    #[@test]
-    public function methods_invocation_order() {
+    #[@beforeClass]
+    public static function defineActionInvocataionRecorder() {
       ClassLoader::defineClass('net.xp_framework.unittest.tests.RecordActionInvocation', 'lang.Object', array('unittest.TestAction'), '{
         public function beforeTest(TestCase $t) {
           $t->run[]= "before";
@@ -30,12 +26,51 @@
           $t->run[]= "after";
         }
       }');
+    }
+
+    /**
+     * Setup method. Creates a new test suite.
+     */
+    public function setUp() {
+      $this->suite= new TestSuite();
+    }
+
+    #[@test]
+    public function beforeTest_and_afterTest_invocation_order() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public $run= array();
+
+        #[@test, @action("net.xp_framework.unittest.tests.RecordActionInvocation")]
+        public function fixture() {
+          $this->run[]= "test";
+        }
+      }');
+      $this->suite->runTest($test);
+      $this->assertEquals(array('before', 'test', 'after'), $test->run);
+    }
+
+    #[@test]
+    public function beforeTest_is_invoked_before_setUp() {
       $test= newinstance('unittest.TestCase', array('fixture'), '{
         public $run= array();
 
         public function setUp() {
           $this->run[]= "setup";
         }
+
+        #[@test, @action("net.xp_framework.unittest.tests.RecordActionInvocation")]
+        public function fixture() {
+          $this->run[]= "test";
+        }
+      }');
+      $this->suite->runTest($test);
+      $this->assertEquals(array('before', 'setup', 'test', 'after'), $test->run);
+    }
+
+    #[@test]
+    public function afterTest_is_invoked_after_tearDown() {
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+        public $run= array();
 
         public function tearDown() {
           $this->run[]= "teardown";
@@ -47,7 +82,7 @@
         }
       }');
       $this->suite->runTest($test);
-      $this->assertEquals(array('before', 'setup', 'test', 'teardown', 'after'), $test->run);
+      $this->assertEquals(array('before', 'test', 'teardown', 'after'), $test->run);
     }
   }
 ?>
