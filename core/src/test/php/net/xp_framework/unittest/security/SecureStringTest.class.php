@@ -100,7 +100,15 @@
         throw new XPException('Something went wrong - intentionally.');
       }, function($value) { return NULL; });
 
-      create(new SecureString('foo'))->getCharacters();
+      // Creation may never throw exception
+      try {
+        $s= new SecureString('foo');
+      } catch (Throwable $t) {
+        $this->fail('Exception thrown where no exception may be thrown', $t, NULL);
+      }
+
+      // Buf if creation failed, an exception must be raised here:
+      $s->getCharacters();
     }
 
     #[@test, @expect('lang.IllegalArgumentException')]
