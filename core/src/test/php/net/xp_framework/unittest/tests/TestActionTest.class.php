@@ -115,5 +115,36 @@
         array_merge($this->suite->testAt(0)->run, $this->suite->testAt(1)->run)
       );
     }
+
+    #[@test]
+    public function test_action_with_arguments() {
+      ClassLoader::defineClass('net.xp_framework.unittest.tests.PlatformVerification', 'lang.Object', array('unittest.TestAction'), '{
+        protected $platform;
+
+        public function __construct($platform) {
+          $this->platform= $platform;
+        }
+
+        public function beforeTest(TestCase $t) {
+          if (PHP_OS !== $this->platform) {
+            throw new PrerequisitesNotMetError("Skip", NULL, $this->platform);
+          }
+        }
+
+        public function afterTest(TestCase $t) {
+          // NOOP
+        }
+      }');
+      $test= newinstance('unittest.TestCase', array('fixture'), '{
+
+        #[@test, @action(class= "net.xp_framework.unittest.tests.PlatformVerification", args= array("Test"))]
+        public function fixture() {
+          throw new IllegalStateException("This test should have been skipped");
+        }
+      }');
+      $outcome= $this->suite->runTest($test)->outcomeOf($test);
+      $this->assertInstanceOf('unittest.TestPrerequisitesNotMet', $outcome);
+      $this->assertEquals(array('Test'), $outcome->reason->prerequisites);
+    }
   }
 ?>

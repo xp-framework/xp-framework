@@ -224,6 +224,25 @@
     }
 
     /**
+     * Returns values
+     *
+     * @param  var annotation
+     * @return unittest.TestAction
+     */
+    protected function actionFor($annotation) {
+      if (is_array($annotation)) {
+        $class= XPClass::forName($annotation['class']);
+        if (isset($annotation['args'])) {
+          return $class->getConstructor()->newInstance($annotation['args']);
+        } else {
+          return $class->newInstance();
+        }
+      } else {
+        return XPClass::forName($annotation)->newInstance();
+      }
+    }
+
+    /**
      * Run a test case.
      *
      * @param   unittest.TestCase test
@@ -282,10 +301,10 @@
       // Check for @actions, initialize setUp and tearDown call chains
       $actions= array();
       if ($class->hasAnnotation('action')) {
-        $actions[]= XPClass::forName($class->getAnnotation('action'))->newInstance();
+        $actions[]= $this->actionFor($class->getAnnotation('action'));
       }
       if ($method->hasAnnotation('action')) {
-        $actions[]= XPClass::forName($method->getAnnotation('action'))->newInstance();
+        $actions[]= $this->actionFor($method->getAnnotation('action'));
       }
       $setUp= function($test) use($actions) {
         foreach ($actions as $action) {
