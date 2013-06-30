@@ -1,7 +1,7 @@
 <?php
-/*
- * This class is part of the XP Framework
+/* This class is part of the XP Framework
  *
+ * $Id$
  */
 
   uses(
