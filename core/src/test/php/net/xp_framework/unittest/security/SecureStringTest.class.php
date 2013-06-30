@@ -11,12 +11,6 @@
 
   abstract class SecureStringTest extends TestCase {
 
-    protected static function useBacking($backing) {
-      SecureString::useBacking(
-        XPClass::forName('security.SecureString')->getConstant('BACKING_'.$backing)
-      );
-    }
-
     #[@test]
     public function create() {
       new SecureString('payload');
