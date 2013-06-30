@@ -9,6 +9,10 @@
     'security.SecureString'
   );
 
+  /**
+   * Testcase for plaintext backed security.SecureString implementation
+   *
+   */
   class PlainTextSecureStringTest extends SecureStringTest {
 
     public function setUp() {

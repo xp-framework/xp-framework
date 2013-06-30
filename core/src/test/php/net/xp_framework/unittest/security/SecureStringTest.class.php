@@ -9,6 +9,10 @@
     'security.SecureString'
   );
 
+  /**
+   * Baseclass for test cases for security.SecureString
+   *
+   */
   abstract class SecureStringTest extends TestCase {
 
     #[@test]

@@ -9,6 +9,10 @@
     'security.SecureString'
   );
 
+  /**
+   * Testcase for openssl backed security.SecureString implementation
+   *
+   */
   class OpenSSLSecureStringTest extends SecureStringTest {
 
     public function setUp() {

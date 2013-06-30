@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('lang.Runtime', 'lang.RuntimeError', 'security.SecurityException');
+  uses('lang.Runtime', 'security.SecurityException');
 
   /**
    * SecureString provides a reasonable secure storage for security-sensistive
@@ -25,6 +25,10 @@
    *
    * As a rule of thumb: extract it from the container at the last possible location.
    *
+   * @test  xp://net.xp_framework.unittest.security.SecureStringTest
+   * @test  xp://net.xp_framework.unittest.security.McryptSecureStringTest
+   * @test  xp://net.xp_framework.unittest.security.OpenSSLSecureStringTest
+   * @test  xp://net.xp_framework.unittest.security.PlainTextSecureStringTest
    */
   final class SecureString extends Object {
     const BACKING_MCRYPT    = 0x01;
@@ -74,11 +78,11 @@
             throw new IllegalStateException('Backing "openssl" required but extension not available.');
           }
           $key= md5(uniqid());
-          $iv= substr(md5(uniqid()), 0, openssl_cipher_iv_length("des"));
+          $iv= substr(md5(uniqid()), 0, openssl_cipher_iv_length('des'));
 
           return self::setBacking(
-            function($value) use ($key, $iv) { return openssl_encrypt($value, "DES", $key,  0, $iv); },
-            function($value) use ($key, $iv) { return openssl_decrypt($value, "DES", $key,  0, $iv); }
+            function($value) use ($key, $iv) { return openssl_encrypt($value, 'DES', $key,  0, $iv); },
+            function($value) use ($key, $iv) { return openssl_decrypt($value, 'DES', $key,  0, $iv); }
           );
         }
 

@@ -9,6 +9,10 @@
     'security.SecureString'
   );
 
+  /**
+   * Testcase for mcrypt backed security.SecureString implementation
+   *
+   */
   class McryptSecureStringTest extends SecureStringTest {
 
     public function setUp() {
