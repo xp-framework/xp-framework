@@ -50,7 +50,7 @@
       }
       
       if (!$r) {
-        throw new PrerequisitesNotMetError('Test not intended for this platform ('.self::$os.')', NULL, $platform);
+        throw new PrerequisitesNotMetError('Test not intended for this platform ('.self::$os.')', NULL, array($this->platform));
       }
     }
 
