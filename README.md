@@ -1,6 +1,7 @@
 XP Framework
 ============
-[![Build Status](https://secure.travis-ci.org/xp-framework/xp-framework.png)](http://travis-ci.org/xp-framework/xp-framework)
+[![Build Status on TravisCI](https://secure.travis-ci.org/xp-framework/xp-framework.png)](http://travis-ci.org/xp-framework/xp-framework)
+[![Build Status on Jenkins](http://ci.planet-xp.net/job/xp-framework/badge/icon)](http://ci.planet-xp.net/job/xp-framework/)
 
 This is the XP Framework's development checkout
 
