@@ -14,6 +14,8 @@ XP Framework ChangeLog
 
 ### Features
 
+* Implemented a secure storage for sensitive strings, e.g. passwords - see
+  pull request #315 - (@kiesel)
 * Added timeout handling to peer.server API. Defaulting to 60 seconds - a 
   client that does not perform any protocol actions in this period will be
   ungracefully disconnected - (@thekid)
