@@ -11,10 +11,12 @@
 
   /**
    * Testcase for plaintext backed security.SecureString implementation
-   *
    */
   class PlainTextSecureStringTest extends SecureStringTest {
 
+    /**
+     * Sets up tests and forces SecureString to use PLAINTEXT backing
+     */
     public function setUp() {
       SecureString::useBacking(SecureString::BACKING_PLAINTEXT);
     }

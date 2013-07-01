@@ -11,15 +11,14 @@
 
   /**
    * Testcase for mcrypt backed security.SecureString implementation
-   *
    */
+  #[@action(class= 'unittest.actions.ExtensionAvailable', args= array('mcrypt'))]
   class McryptSecureStringTest extends SecureStringTest {
 
+    /**
+     * Sets up tests and forces SecureString to use MCRYPT backing
+     */
     public function setUp() {
-      if (!Runtime::getInstance()->extensionAvailable('mcrypt')) {
-        throw new PrerequisitesNotMetError('Needs extension "mcrypt"');
-      }
-
       SecureString::useBacking(SecureString::BACKING_MCRYPT);
     }
   }

@@ -11,15 +11,14 @@
 
   /**
    * Testcase for openssl backed security.SecureString implementation
-   *
    */
+  #[@action(class= 'unittest.actions.ExtensionAvailable', args= array('openssl'))]
   class OpenSSLSecureStringTest extends SecureStringTest {
 
+    /**
+     * Sets up tests and forces SecureString to use OPENSSL backing
+     */
     public function setUp() {
-      if (!Runtime::getInstance()->extensionAvailable('openssl')) {
-        throw new PrerequisitesNotMetError('Needs extension "openssl"');
-      }
-
       SecureString::useBacking(SecureString::BACKING_OPENSSL);
     }
   }
