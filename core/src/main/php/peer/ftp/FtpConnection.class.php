@@ -208,7 +208,16 @@
       $response= '';
       do {
         $response.= $this->socket->read();
-      } while (!strstr($response, "\r\n"));
+        $eof= $this->socket->eof();
+      } while (!$eof && !strstr($response, "\r\n"));
+
+      // Detect EOF
+      if ($eof) {
+        $this->cat && $this->cat->debug('<<< (EOF)');
+        $this->socket->close();
+        throw new SocketException('Connection closed by remote host');
+      }
+
       $this->cat && $this->cat->debug('<<<', $response);
       return explode("\n", rtrim($response, "\r\n"));
     }

@@ -127,25 +127,33 @@
       if (!$this->socket->isConnected()) return FALSE;
 
       $null= NULL;
-      $handles= array();
+      $handles= $lastAction= array();
       $accepting= $this->socket->getHandle();
       $this->protocol->initialize();
 
       // Loop
       $tcp= getprotobyname('tcp');
+      $timeout= NULL;
       while (!$this->terminate) {
         xp::gc();
 
         // Build array of sockets that we want to check for data. If one of them
         // has disconnected in the meantime, notify the listeners (socket will be
         // already invalid at that time) and remove it from the clients list.
-        $read= array($this->socket->_sock);
-        foreach (array_keys($handles) as $h) {
-          if (!$handles[$h]->isConnected()) {
-            $this->protocol->handleDisconnect($handles[$h]);
+        $read= array($this->socket->getHandle());
+        $currentTime= time();
+        foreach ($handles as $h => $handle) {
+          if (!$handle->isConnected()) {
+            $this->protocol->handleDisconnect($handle);
             unset($handles[$h]);
+            unset($lastAction[$h]);
+          } else if ($currentTime - $lastAction[$h] > $handle->getTimeout()) {
+            $this->protocol->handleError($handle, new SocketTimeoutException('Timed out', $handle->getTimeout()));
+            $handle->close();
+            unset($handles[$h]);
+            unset($lastAction[$h]);
           } else {
-            $read[]= $handles[$h]->getHandle();
+            $read[]= $handle->getHandle();
           }
         }
 
@@ -155,7 +163,7 @@
         // should not happen!
         do {
           $socketSelectInterrupted = FALSE;
-          if (FALSE === socket_select($read, $null, $null, NULL)) {
+          if (FALSE === socket_select($read, $null, $null, $timeout)) {
           
             // If socket_select has been interrupted by a signal, it will return FALSE,
             // but no actual error occurred - so check for "real" errors before throwing
@@ -189,7 +197,10 @@
             
             $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);
             $this->protocol->handleConnect($m);
-            $handles[(int)$m->getHandle()]= $m;
+            $index= (int)$m->getHandle();
+            $handles[$index]= $m;
+            $lastAction[$index]= $currentTime;
+            $timeout= $m->getTimeout();
             continue;
           }
           
@@ -197,21 +208,24 @@
           // do with it. In case of an I/O error, close the client socket and remove 
           // the client from the list.
           $index= (int)$handle;
+          $lastAction[$index]= $currentTime;
           try {
             $this->protocol->handleData($handles[$index]);
           } catch (IOException $e) {
             $this->protocol->handleError($handles[$index], $e);
             $handles[$index]->close();
             unset($handles[$index]);
+            unset($lastAction[$index]);
             continue;
           }
           
           // Check if we got an EOF from the client - in this file the connection
           // was gracefully closed.
-          if ($handles[$index]->eof()) {
+          if (!$handles[$index]->isConnected() || $handles[$index]->eof()) {
             $this->protocol->handleDisconnect($handles[$h]);
             $handles[$index]->close();
             unset($handles[$index]);
+            unset($lastAction[$index]);
           }
         }
       }

@@ -5,6 +5,47 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed image writers not writing image data to the underlying stream fully
+  on certain setups - see issue #317 (@thekid)
+* Fixed FTP client hanging after server disconnects - (@thekid)
+* Fixed I/O errors in FTP Protocol after proper client disconnect - (@thekid)
+* Fixed issue #311: Find out socket endpoint on accepted socket from 0.0.0.0
+  (@thekid)
+
+### Features
+
+* Implemented a secure storage for sensitive strings, e.g. passwords - see
+  pull request #315 - (@kiesel)
+* Added timeout handling to peer.server API. Defaulting to 60 seconds - a 
+  client that does not perform any protocol actions in this period will be
+  ungracefully disconnected - (@thekid)
+* Added a better error message for PHP runtime version mismatch - see 
+  discussion in issue #316 - (@thekid, @kiesel)
+* Added peer.SocketEndpoint class and accessors on the peer.Socket and
+  peer.BSDSocket implementations to return local and remote endpoints -
+  see pull request #312. - (@thekid)
+
+
+## 5.9.5 / 2013-06-24
+
+### Heads up!
+
+* We now officially support PHP 5.5.0 now that it's released!
+  http://news.planet-xp.net/article/542/2013/06/24/
+  (@thekid)
+
+### Bugfixes
+
+* Fixed issue #313: Expected exception not considered - (@thekid)
+* Fixed issue #310: PHP 5.5.0RC3 & GD Extension: stream_cast() undefined
+  which also included adding a workaround PHP Bug 65060 - (@thekid)
+* Fixed issue #309: Warning for empty class path elements - (@thekid)
+
+
+## 5.9.4 / 2013-06-11
+
+### Bugfixes
+
 * Fixed issue #304: Classpath element not found error not very helpful - (@thekid)
 * Fixed issue #305: rdbms.SQLStatementFailedException (errorcode 0: Unexpected 
   token 0x02 (number 0) - (@thekid)

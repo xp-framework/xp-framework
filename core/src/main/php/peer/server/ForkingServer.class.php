@@ -80,8 +80,7 @@
               $this->protocol->handleError($m, $e);
               break;
             }
-
-          } while (!$m->eof());
+          } while ($m->isConnected() && !$m->eof());
 
           $this->protocol->handleDisconnect($m);
           $m->close();

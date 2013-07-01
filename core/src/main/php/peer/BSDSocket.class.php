@@ -31,6 +31,22 @@
     }
 
     /**
+     * Returns local endpoint
+     *
+     * @return  peer.SocketEndpoint
+     * @throws  peer.SocketException
+     */
+    public function localEndpoint() {
+      if (is_resource($this->_sock)) {
+        if (FALSE === socket_getsockname($this->_sock, $host, $port)) {
+          throw new SocketException('Cannot get socket name on '.$this->_sock);
+        }
+        return new SocketEndpoint($host, $port);
+      }
+      return NULL;    // Not connected
+    }
+
+    /**
      * Set Domain
      *
      * @param   int domain one of AF_INET or AF_UNIX

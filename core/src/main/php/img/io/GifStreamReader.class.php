@@ -4,53 +4,32 @@
  * $Id$ 
  */
 
-  uses('img.io.StreamReader');
+  uses('img.io.StreamReader', 'img.io.UriReader');
 
   /**
    * Reads GIF from an image
    *
-   * @ext      gd
-   * @see      php://imagecreatefromgif
-   * @see      xp://img.io.StreamReader
-   * @purpose  Reader
+   * @ext   gd
+   * @see   php://imagecreatefromgif
+   * @see   xp://img.io.StreamReader
+   * @test  xp://net.xp_framework.unittest.img.GifImageReaderTest
    */
-  class GifStreamReader extends StreamReader {
+  class GifStreamReader extends StreamReader implements img·io·UriReader {
 
     /**
-     * Read image via imagecreatefromgif()
+     * Read image
      *
      * @param   string uri
      * @return  resource
      * @throws  img.ImagingException
      */
-    protected function readImage0($uri) {
+    public function readImageFromUri($uri) {
       if (FALSE === ($r= imagecreatefromgif($uri))) {
-        $e= new ImagingException('Cannot read image');
+        $e= new ImagingException('Cannot read image from "'.$uri.'"');
         xp::gc(__FILE__);
         throw $e;
       }
       return $r;
-    }
-
-    /**
-     * Read an image
-     *
-     * @deprecated
-     * @return  resource
-     * @throws  img.ImagingException
-     */    
-    public function readFromStream() {
-      return $this->readImage0($this->stream->getURI());
-    }
-    
-    /**
-     * Read an image
-     *
-     * @return  resource
-     * @throws  img.ImagingException
-     */    
-    public function readImage() {
-      return $this->readImage0(Streams::readableUri($this->stream));
     }
   }
 ?>

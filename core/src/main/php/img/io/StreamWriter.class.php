@@ -17,7 +17,16 @@
    */
   abstract class StreamWriter extends Object implements ImageWriter {
     public $stream= NULL;
-    
+    protected static $GD_USERSTREAMS_BUG= FALSE;
+    protected $writer= NULL;
+
+    static function __static() {
+      self::$GD_USERSTREAMS_BUG= (
+        version_compare(PHP_VERSION, '5.5.0RC1', '>=') && version_compare(PHP_VERSION, '5.5.1', '<') &&
+        0 !== strncmp('WIN', PHP_OS, 3)
+      );
+    }
+
     /**
      * Constructor
      *
@@ -33,6 +42,28 @@
       } else {
         throw new IllegalArgumentException('Expected either an io.streams.OutputStream or an io.Stream, have '.xp::typeOf($this->stream));
       }
+
+      if (self::$GD_USERSTREAMS_BUG) {
+        $this->writer= function($writer, $stream, $handle) {
+          ob_start();
+          $r= $writer->output($handle);
+          if ($r) {
+            $stream->write(ob_get_contents());
+          }
+          ob_end_clean();
+          return $r;
+        };
+      } else {
+
+        // Use output buffering with a callback method to capture the 
+        // image(gd|jpeg|png|...) functions' output.
+        $this->writer= function($writer, $stream, $handle) {
+          ob_start(function($data) use($stream) { $stream->write($data); });
+          $r= $writer->output($handle);
+          ob_end_flush();
+          return $r;
+        };
+      }
     }
 
     /**
@@ -42,16 +73,7 @@
      * @param   resource handle
      * @return  bool
      */    
-    protected abstract function output($handle);
-    
-    /**
-     * Callback for output buffering which writes to the stream
-     *
-     * @param   string data
-     */
-    protected function streamWrite($data) {
-      $this->stream->write($data);
-    }
+    public abstract function output($handle);
     
     /**
      * Sets the image resource that is to be written
@@ -61,16 +83,10 @@
      */
     public function setResource($handle) {
       try {
-        
-        // Use output buffering with a callback method to capture the 
-        // image(gd|jpeg|png|...) functions' output.
-        ob_start(array($this, 'streamWrite'));
-        $r= $this->output($handle);
-        ob_end_flush();
-        
+        $r= call_user_func($this->writer, $this, $this->stream, $handle);
         $this->stream->close();
       } catch (Throwable $e) {
-        ob_end_clean();
+        ob_clean();
         throw new ImagingException($e->getMessage());
       }
       if (!$r) throw new ImagingException('Could not write image');
