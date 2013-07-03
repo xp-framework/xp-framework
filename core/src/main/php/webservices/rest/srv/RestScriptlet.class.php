@@ -45,7 +45,7 @@
       if ('' === (string)$router) {
         $this->router= new RestDefaultRouter();
       } else {
-        $this->router= XPClass::forName($name)->newInstance();
+        $this->router= XPClass::forName($router)->newInstance();
       }
       $this->router->configure($package, $this->base);
       $this->router->setInputFormats(array('*json', '*xml', 'application/x-www-form-urlencoded'));

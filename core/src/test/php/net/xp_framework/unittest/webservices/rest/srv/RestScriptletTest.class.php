@@ -34,6 +34,11 @@
       return new RestScriptlet('net.xp_framework.unittest.webservices.rest.srv.fixture');
     }
 
+    #[@test]
+    public function can_create_with_custom_router() {
+      new RestScriptlet('net.xp_framework.unittest.webservices.rest.srv.fixture', '', '', 'webservices.rest.srv.RestDefaultRouter');
+    }
+
     /**
      * Test constructor
      * 
