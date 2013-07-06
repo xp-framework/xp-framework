@@ -31,9 +31,9 @@
       $this->assertTrue(create(new IsPlatform('WINDOWS'))->verify('Windows'));
     }
 
-    #[@test]
-    public function verify_platform_matching_leading_segment() {
-      $this->assertTrue(create(new IsPlatform('WIN'))->verify('Windows'));
+    #[@test, @values(array('WinNT', 'Windows', 'Windows 8.1'))]
+    public function verify_platform_matching_leading_segment($value) {
+      $this->assertTrue(create(new IsPlatform('WIN'))->verify($value));
     }
 
     #[@test]
@@ -41,14 +41,14 @@
       $this->assertFalse(create(new IsPlatform('DOW'))->verify('Windows'));
     }
 
-    #[@test]
-    public function verify_platform_with_different_name() {
-      $this->assertFalse(create(new IsPlatform('Windows'))->verify('MacOS'));
+    #[@test, @values(array('Linux', 'MacOS', 'Un*x'))]
+    public function verify_platform_with_different_name($value) {
+      $this->assertFalse(create(new IsPlatform('Windows'))->verify($value));
     }
 
-    #[@test]
-    public function negative_verify_platform_with_different_name() {
-      $this->assertTrue(create(new IsPlatform('!Windows'))->verify('MacOS'));
+    #[@test, @values(array('Linux', 'MacOS', 'Un*x'))]
+    public function negative_verify_platform_with_different_name($value) {
+      $this->assertTrue(create(new IsPlatform('!Windows'))->verify($value));
     }
 
     #[@test]
