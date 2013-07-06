@@ -24,6 +24,15 @@
     }
 
     /**
+     * Verify a the extension exists
+     *
+     * @return bool
+     */
+    public function verify() {
+      return Runtime::getInstance()->extensionAvailable($this->extension);
+    }
+
+    /**
      * This method gets invoked before a test method is invoked, and before
      * the setUp() method is called.
      *
@@ -31,7 +40,7 @@
      * @throws unittest.PrerequisitesNotMetError
      */
     public function beforeTest(TestCase $t) { 
-      if (!Runtime::getInstance()->extensionAvailable($this->extension)) {
+      if (!$this->verify()) {
         throw new PrerequisitesNotMetError('PHP Extension not available', NULL, array($this->extension));
       }
     }

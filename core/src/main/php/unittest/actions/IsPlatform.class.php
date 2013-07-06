@@ -11,7 +11,7 @@
    * 
    * The platform annotation may be written as "WIN" (meaning this works only 
    * on operating systems whose names contain "WIN" - e.g. Windows)  or as 
-   * "!BSD" (this means this test will not run on OSes with "BSD" in their 
+   * "!*BSD" (this means this test will not run on OSes with "BSD" in their 
    * names but on any other)
    */
   class IsPlatform extends Object implements TestAction {
@@ -32,7 +32,22 @@
      * @param string platform A pattern to match against PHP_OS, case-insensitively
      */
     public function __construct($platform) {
-      $this->platform= $platform;
+      $this->platform= strtr($platform, array('*' => '.+', '?' => '.'));
+    }
+
+    /**
+     * Verify a given OS matches this platform
+     *
+     * @param  string os The OS' name - omit to use current OS
+     * @return bool
+     */
+    public function verify($os= NULL) {
+      $os ?: $os= self::$os;
+      if ('!' === $this->platform{0}) {
+        return !preg_match('/^'.substr($this->platform, 1).'/i', $os);
+      } else {
+        return (bool)preg_match('/^'.$this->platform.'/i', $os);
+      }
     }
 
     /**
@@ -43,13 +58,7 @@
      * @throws unittest.PrerequisitesNotMetError
      */
     public function beforeTest(TestCase $t) { 
-      if ('!' === $this->platform{0}) {
-        $r= !preg_match('/'.substr($this->platform, 1).'/i', self::$os);
-      } else {
-        $r= preg_match('/'.$this->platform.'/i', self::$os);
-      }
-      
-      if (!$r) {
+      if (!$this->verify()) {
         throw new PrerequisitesNotMetError('Test not intended for this platform ('.self::$os.')', NULL, array($this->platform));
       }
     }
