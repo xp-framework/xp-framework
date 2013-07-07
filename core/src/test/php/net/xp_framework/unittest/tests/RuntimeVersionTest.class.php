@@ -106,12 +106,12 @@
       $this->assertFalse(create(new RuntimeVersion('>=5.3.0,<5.5.0'))->verify($value));
     }
 
-    #[@test, @values(array('1.2.0', '1.2.1', '1.2.99'))]
+    #[@test, @values(array('1.2.0', '1.2.1', '1.2.99', '1.3.0', '1.99.99'))]
     public function next_significant_release_with_minor($value) {
       $this->assertTrue(create(new RuntimeVersion('~1.2'))->verify($value));
     }
 
-    #[@test, @values(array('1.1.0', '1.3.0'))]
+    #[@test, @values(array('2.0.0', '2.2.0'))]
     public function not_next_significant_release_with_minor($value) {
       $this->assertFalse(create(new RuntimeVersion('~1.2'))->verify($value));
     }
