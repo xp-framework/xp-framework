@@ -226,19 +226,34 @@
     /**
      * Returns values
      *
-     * @param  var annotation
+     * @param  var annotatable
+     * @param  string impl The interface which must've been implemented
      * @return unittest.TestAction
      */
-    protected function actionFor($annotation) {
+    protected function actionFor($annotatable, $impl) {
+      if (!$annotatable->hasAnnotation('action')) return NULL;
+
+      // Parse annotation formats
+      $annotation= $annotatable->getAnnotation('action');
+      $args= NULL;
       if (is_array($annotation)) {
         $class= XPClass::forName($annotation['class']);
         if (isset($annotation['args'])) {
-          return $class->getConstructor()->newInstance($annotation['args']);
-        } else {
-          return $class->newInstance();
+          $args= $annotation['args'];
         }
       } else {
-        return XPClass::forName($annotation)->newInstance();
+        $class= XPClass::forName($annotation);
+      }
+
+      // If the class is a subclass of the implementation, instantiate
+      // it (optionally using determined arguments) and return; otherwise
+      // return NULL so the calling code won't add it.
+      if (!$class->isSubclassOf($impl)) {
+        return NULL; 
+      } else if ($args) {
+        return $class->getConstructor()->newInstance($args);
+      } else {
+        return $class->newInstance();
       }
     }
 
@@ -300,11 +315,11 @@
 
       // Check for @actions, initialize setUp and tearDown call chains
       $actions= array();
-      if ($class->hasAnnotation('action')) {
-        $actions[]= $this->actionFor($class->getAnnotation('action'));
+      if ($action= $this->actionFor($class, 'unittest.TestAction')) {
+        $actions[]= $action;
       }
-      if ($method->hasAnnotation('action')) {
-        $actions[]= $this->actionFor($method->getAnnotation('action'));
+      if ($action= $this->actionFor($method, 'unittest.TestAction')) {
+        $actions[]= $action;
       }
       $setUp= function($test) use($actions) {
         foreach ($actions as $action) {
@@ -490,6 +505,9 @@
      * @param  lang.XPClass class
      */
     protected function beforeClass($class) {
+      if ($action= $this->actionFor($class, 'unittest.TestClassAction')) {
+        $action->beforeTestClass($class);
+      }
       foreach ($class->getMethods() as $m) {
         if (!$m->hasAnnotation('beforeClass')) continue;
         try {
@@ -517,6 +535,9 @@
         try {
           $m->invoke(NULL, array());
         } catch (TargetInvocationException $ignored) { }
+      }
+      if ($action= $this->actionFor($class, 'unittest.TestClassAction')) {
+        $action->afterTestClass($class);
       }
     }
 
