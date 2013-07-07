@@ -12,7 +12,7 @@
    * @see  http://getcomposer.org/doc/01-basic-usage.md#package-versions
    */
   class RuntimeVersion extends Object implements TestAction {
-    protected $compare= '';
+    protected $compare= array();
 
     /**
      * Create a new RuntimeVersion match
@@ -20,10 +20,11 @@
      * @param string pattern A pattern to match against PHP_VERSION
      */
     public function __construct($pattern) {
-      $cmp= array();
       foreach (explode(',', $pattern) as $specifier) {
         if ('*' === $specifier{strlen($specifier)- 1}) {
-          $cmp[]= function($compare) use($specifier) { return 0 === strncmp($compare, $specifier, strlen($specifier)- 1); };
+          $this->compare[]= function($compare) use($specifier) {
+            return 0 === strncmp($compare, $specifier, strlen($specifier)- 1);
+          };
         } else if ('~' === $specifier{0}) {
           $c= sscanf($specifier, '~%d.%d.%d', $s, $m, $p);
           $lower= substr($specifier, 1);
@@ -31,7 +32,7 @@
             case 2: $upper= sprintf('%d.0.0', $s + 1); break;
             case 3: $upper= sprintf('%d.%d.0', $s, $m + 1); break;
           }
-          $cmp[]= function($compare) use($lower, $upper) {
+          $this->compare[]= function($compare) use($lower, $upper) {
             return version_compare($compare, $lower, 'ge') && version_compare($compare, $upper, 'lt');
           };
         } else if ('<' === $specifier{0}) {
@@ -42,7 +43,9 @@
             $op= 'lt';
             $specifier= substr($specifier, 1);
           }
-          $cmp[]= function($compare) use($specifier, $op) { return version_compare($compare, $specifier, $op); };
+          $this->compare[]= function($compare) use($specifier, $op) {
+            return version_compare($compare, $specifier, $op);
+          };
         } else if ('>' === $specifier{0}) {
           if ('=' === $specifier{1}) {
             $op= 'ge';
@@ -51,20 +54,19 @@
             $op= 'gt';
             $specifier= substr($specifier, 1);
           }
-          $cmp[]= function($compare) use($specifier, $op) { return version_compare($compare, $specifier, $op); };
+          $this->compare[]= function($compare) use($specifier, $op) {
+            return version_compare($compare, $specifier, $op);
+          };
         } else if ('!=' === $specifier{0}.$specifier{1}) {
-          $cmp[]= function($compare) use($specifier) { return $compare !== substr($specifier, 2); };
+          $this->compare[]= function($compare) use($specifier) {
+            return $compare !== substr($specifier, 2);
+          };
         } else {
-          $cmp[]= function($compare) use($specifier) { return $compare === $specifier; };
+          $this->compare[]= function($compare) use($specifier) {
+            return $compare === $specifier;
+          };
         }
       }
-
-      $this->compare= function($compare) use($cmp) {
-        foreach ($cmp as $f) {
-          if (!$f($compare)) return FALSE;
-        }
-        return TRUE;
-      };
     }
 
     /**
@@ -75,7 +77,10 @@
      */
     public function verify($version= NULL) {
       $version ?: $version= PHP_VERSION;
-      return call_user_func($this->compare, $version);
+      foreach ($this->compare as $f) {
+        if (!$f($version)) return FALSE;
+      }
+      return TRUE;
     }
 
     /**
