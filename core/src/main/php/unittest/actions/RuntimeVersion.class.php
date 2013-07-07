@@ -26,7 +26,7 @@
           $cmp[]= function($compare) use($specifier) { return 0 === strncmp($compare, $specifier, strlen($specifier)- 1); };
         } else if ('~' === $specifier{0}) {
           sscanf($specifier, '~%d.%d.%d', $s, $m, $p);
-          $lower= sprintf('%d.%d.%d', $s, $m, $p);
+          $lower= substr($specifier, 1);
           $upper= sprintf('%d.%d.0', $s, $m + 1);
           $cmp[]= function($compare) use($lower, $upper) {
             return version_compare($compare, $lower, 'ge') && version_compare($compare, $upper, 'lt');
