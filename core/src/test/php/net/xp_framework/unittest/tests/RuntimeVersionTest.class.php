@@ -95,5 +95,15 @@
     public function not_larger_than_or_equal_to($value) {
       $this->assertFalse(create(new RuntimeVersion('>=5.3.0'))->verify($value));
     }
+
+    #[@test, @values('5.3.0', '5.4.0', '5.4.99')]
+    public function range($value) {
+      $this->assertTrue(create(new RuntimeVersion('>=5.3.0,<5.5.0'))->verify($value));
+    }
+
+    #[@test, @values('5.2.99', '5.5.0')]
+    public function not_range($value) {
+      $this->assertFalse(create(new RuntimeVersion('>=5.3.0,<5.5.0'))->verify($value));
+    }
   }
 ?>
