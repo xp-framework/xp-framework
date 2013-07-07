@@ -28,29 +28,6 @@
     }
   
     /**
-     * Setup test. Verifies PHP version constraint
-     *
-     */
-    public function setUp() {
-      static $ops= array(
-        'l' => array('[' =>  'ge', ']' => 'gt'),
-        'u' => array('[' =>  'lt', ']' => 'le'),
-      );
-
-      $constraint= $this->getClass()->getMethod($this->name)->getAnnotation('runtime');
-      $lim= explode(',', $constraint, 2);
-      $cmp= substr(PHP_VERSION, 0, 5);
-      $result= (
-        ($lim[0] ? version_compare($cmp, substr($lim[0], 1), $ops['l'][$lim[0]{0}]) : TRUE) &&
-        ($lim[1] ? version_compare($cmp, substr($lim[1], 0, -1), $ops['u'][$lim[1]{strlen($lim[1]) - 1}]) : TRUE)
-      );
-
-      if (!$result) {
-        throw new PrerequisitesNotMetError('PHP version '.$compare.' not compatible', NULL, $limits);
-      }
-    }
-  
-    /**
      * Create a new runtime
      *
      * @return  var[] an array with three elements: exitcode, stdout and stderr contents
@@ -76,9 +53,8 @@
     /**
      * Before PHP 5.3, the XP Framework is the only one that has a problem
      * with magic quotes.
-     *
      */
-    #[@test, @runtime(',5.3.0[')]
+    #[@test, @action(class= 'unittest.actions.RuntimeVersion', args= array('<5.3.0'))]
     public function xpFrameworkRefusesToStart() {
       $r= $this->run();
       $this->assertEquals(255, $r[0], 'exitcode');
@@ -88,9 +64,8 @@
     /**
      * As of PHP 5.3+, magic_quotes_gpc = On raises a deprecation warning 
      * to standard error. 
-     *
      */
-    #[@test, @runtime('[5.3.4,5.4.0[')]
+    #[@test, @action(class= 'unittest.actions.RuntimeVersion', args= array('>=5.3.4,<5.4.0'))]
     public function xpFrameworkRefusesToStartAndDeprecationWarning() {
       $r= $this->run();
       $this->assertEquals(255, $r[0], 'exitcode');
@@ -101,9 +76,8 @@
     /**
      * As of PHP 5.4, magic quotes have been removed and enabling them will
      * cause PHP to issue a fatal error.
-     *
      */
-    #[@test, @runtime('[5.4.0,')]
+    #[@test, @action(class= 'unittest.actions.RuntimeVersion', args= array('>=5.4.0'))]
     public function phpRefusesToStart() {
       $r= $this->run();
       $this->assertEquals(1, $r[0], 'exitcode');
