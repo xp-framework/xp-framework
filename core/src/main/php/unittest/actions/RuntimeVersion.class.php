@@ -92,7 +92,16 @@
      */
     public function beforeTest(TestCase $t) { 
       if (!$this->verify()) {
-        throw new PrerequisitesNotMetError('Test not intended for this platform ('.self::$os.')', NULL, array($this->platform));
+        $compare= '';
+        foreach ($this->compare as $f) {
+          $test= '';
+          $reflect= new ReflectionFunction($f);   // TODO: Closure reflection via XP
+          foreach ($reflect->getStaticVariables() as $name => $value) {
+            $test.= ', '.$name.'= '.var_export($value, TRUE);
+          }
+          $compare.= ' && ('.substr($test, 2).')';
+        }
+        throw new PrerequisitesNotMetError('Test not intended for this version ('.PHP_VERSION.')', NULL, array(substr($compare, 4)));
       }
     }
 

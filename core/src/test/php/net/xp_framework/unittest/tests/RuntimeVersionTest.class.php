@@ -125,5 +125,10 @@
     public function not_next_significant_release($value) {
       $this->assertFalse(create(new RuntimeVersion('~1.2.3'))->verify($value));
     }
+
+    #[@test, @expect(class= 'unittest.PrerequisitesNotMetError', withMessage= '/Test not intended for this version/')]
+    public function beforeTest_throws_exception() {
+      create(new RuntimeVersion('1.0.0'))->beforeTest($this);
+    }
   }
 ?>
