@@ -70,9 +70,9 @@
     }
 
     /**
-     * Verify a given OS matches this platform
+     * Verify a given runtime version matches this constraint
      *
-     * @param  string os The OS' name - omit to use current OS
+     * @param  string version The runtime's version - omit to use current version
      * @return bool
      */
     public function verify($version= NULL) {
