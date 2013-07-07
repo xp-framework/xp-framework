@@ -96,14 +96,34 @@
       $this->assertFalse(create(new RuntimeVersion('>=5.3.0'))->verify($value));
     }
 
-    #[@test, @values('5.3.0', '5.4.0', '5.4.99')]
+    #[@test, @values(array('5.3.0', '5.4.0', '5.4.99'))]
     public function range($value) {
       $this->assertTrue(create(new RuntimeVersion('>=5.3.0,<5.5.0'))->verify($value));
     }
 
-    #[@test, @values('5.2.99', '5.5.0')]
+    #[@test, @values(array('5.2.99', '5.5.0'))]
     public function not_range($value) {
       $this->assertFalse(create(new RuntimeVersion('>=5.3.0,<5.5.0'))->verify($value));
+    }
+
+    #[@test, @values(array('1.2.0', '1.2.1', '1.2.99'))]
+    public function next_significant_release_with_minor($value) {
+      $this->assertTrue(create(new RuntimeVersion('~1.2'))->verify($value));
+    }
+
+    #[@test, @values(array('1.1.0', '1.3.0'))]
+    public function not_next_significant_release_with_minor($value) {
+      $this->assertFalse(create(new RuntimeVersion('~1.2'))->verify($value));
+    }
+
+    #[@test, @values(array('1.2.3', '1.2.99'))]
+    public function next_significant_release($value) {
+      $this->assertTrue(create(new RuntimeVersion('~1.2.3'))->verify($value));
+    }
+
+    #[@test, @values(array('1.1.0', '1.2.0', '1.2.2', '1.3.0'))]
+    public function not_next_significant_release($value) {
+      $this->assertFalse(create(new RuntimeVersion('~1.2.3'))->verify($value));
     }
   }
 ?>
