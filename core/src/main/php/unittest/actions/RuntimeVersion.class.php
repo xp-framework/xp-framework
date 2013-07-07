@@ -42,6 +42,8 @@
             $specifier= substr($specifier, 1);
           }
           $cmp[]= function($compare) use($specifier, $op) { return version_compare($compare, $specifier, $op); };
+        } else if ('!=' === $specifier{0}.$specifier{1}) {
+          $cmp[]= function($compare) use($specifier) { return $compare !== substr($specifier, 2); };
         } else {
           $cmp[]= function($compare) use($specifier) { return $compare === $specifier; };
         }

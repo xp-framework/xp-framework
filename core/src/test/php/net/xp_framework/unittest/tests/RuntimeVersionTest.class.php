@@ -21,6 +21,16 @@
       $this->assertTrue(create(new RuntimeVersion('5.3.0'))->verify('5.3.0'));
     }
 
+    #[@test, @values(array('4.3.0', '5.2.0', '5.2.99', '5.3.0RC1', '5.3.0alpha', '5.3.0beta', '5.3.1', '6.3.0'))]
+    public function negation($value) {
+      $this->assertTrue(create(new RuntimeVersion('!=5.3.0'))->verify($value));
+    }
+
+    #[@test]
+    public function not_negation() {
+      $this->assertFalse(create(new RuntimeVersion('!=5.3.0'))->verify('5.3.0'));
+    }
+
     #[@test, @values(array('5.3.0', '5.3.6', '5.3.26'))]
     public function wildcard_match($value) {
       $this->assertTrue(create(new RuntimeVersion('5.3.*'))->verify($value));
