@@ -1,7 +1,7 @@
 <?php
-/*
- * This class is part of the XP Framework
+/* This class is part of the XP framework
  *
+ * $Id$
  */
 
   uses(
@@ -13,10 +13,35 @@
     'util.log.StreamAppender'
   );
 
+  /**
+   * Testcase for the profiling observer class
+   *
+   * @see   xp://rdbms.ProfilingObserver
+   */
   class ProfilingObserverTest extends TestCase {
-    
+
+    /**
+     * Returns a database connection to test with
+     *
+     * @return rdbms.DBConnection
+     */
     protected function conn() {
       return new SQLite3Connection(new DSN('sqlite+3:///foo.sqlite'));
+    }
+
+    /**
+     * Returns a profiling observer instance which has already "run" a query
+     *
+     * @return rdbms.ProfilingObserver
+     */
+    private function observerWithSelect() {
+      $o= new ProfilingObserver();
+      $conn= $this->conn();
+      $o->update($conn, new DBEvent('query', 'select * from world.'));
+      usleep(100000);
+      $o->update($conn, new DBEvent('queryend', 5));
+
+      return $o;
     }
 
     #[@test]
@@ -44,16 +69,6 @@
     public function update_with_event() {
       $o= new ProfilingObserver();
       $o->update($this->conn(), new DBEvent('hello', 'select * from world.'));
-    }
-
-    private function observerWithSelect() {
-      $o= new ProfilingObserver();
-      $conn= $this->conn();
-      $o->update($conn, new DBEvent('query', 'select * from world.'));
-      usleep(100000);
-      $o->update($conn, new DBEvent('queryend', 5));
-      
-      return $o;      
     }
 
     #[@test]
@@ -144,6 +159,5 @@
 
       $this->assertEquals(1, $o->numberOfTimes('update'));
     }
-
   }
 ?>
