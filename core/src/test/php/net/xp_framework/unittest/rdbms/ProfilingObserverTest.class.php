@@ -84,7 +84,7 @@
 
       $elapsed= $o->elapsedTimeOfAll('queryend');
       $this->assertFalse(0 == $elapsed, $elapsed.'!= 0');
-      $this->assertTrue(0.1 <= $elapsed, $elapsed.' >= 0.1');
+      $this->assertTrue(0.0999 <= $elapsed, $elapsed.' >= 0.0999');
     }
 
     #[@test]
