@@ -110,7 +110,7 @@
       $conn= $this->conn();
 
       $o->update($conn, new DBEvent('queryend', 5));
-      $this->assertEquals(.0, $o->elapsedTimeOfAll('queryend'));
+      $this->assertEquals(0.0, $o->elapsedTimeOfAll('queryend'));
     }
 
     #[@test]
