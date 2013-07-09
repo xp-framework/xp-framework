@@ -37,7 +37,7 @@
     private function observerWithSelect() {
       $o= new ProfilingObserver();
       $conn= $this->conn();
-      $o->update($conn, new DBEvent('query', 'select * from world.'));
+      $o->update($conn, new DBEvent('query', 'select * from world'));
       usleep(100000);
       $o->update($conn, new DBEvent('queryend', 5));
 
@@ -68,7 +68,7 @@
     #[@test]
     public function update_with_event() {
       $o= new ProfilingObserver();
-      $o->update($this->conn(), new DBEvent('hello', 'select * from world.'));
+      $o->update($this->conn(), new DBEvent('hello', 'select * from world'));
     }
 
     #[@test]
@@ -82,8 +82,9 @@
     public function update_with_query_and_queryend_does_time_aggregation() {
       $o= $this->observerWithSelect();
 
-      $this->assertFalse(0 == $o->elapsedTimeOfAll('queryend'));
-      $this->assertTrue(0.1 <= $o->elapsedTimeOfAll('queryend'));
+      $elapsed= $o->elapsedTimeOfAll('queryend');
+      $this->assertFalse(0 == $elapsed, $elapsed.'!= 0');
+      $this->assertTrue(0.1 <= $elapsed, $elapsed.' >= 0.1');
     }
 
     #[@test]
