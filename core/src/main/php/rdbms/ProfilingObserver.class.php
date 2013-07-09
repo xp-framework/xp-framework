@@ -50,7 +50,7 @@
      * @param  string $sql The raw SQL
      * @return string
      */
-    protected function typeOf($sql) {
+    public function typeOf($sql) {
       $sql= strtolower(ltrim($sql));
       $verb= substr($sql, 0, strpos($sql, ' '));
 

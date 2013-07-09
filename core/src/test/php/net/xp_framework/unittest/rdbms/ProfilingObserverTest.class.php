@@ -54,6 +54,45 @@
       new ProfilingObserver();
     }
 
+    #[@test, @values(array(
+    #  'select * from world',
+    #  ' select * from world',
+    #  '  select * from world',
+    #  "\rselect * from world",
+    #  "\r\nselect * from world",
+    #  "\nselect * from world",
+    #  "\tselect * from world",
+    #  'SELECT * from world',
+    #  'Select * from world'
+    #))]
+    public function select_type($sql) {
+      $this->assertEquals('select', create(new ProfilingObserver())->typeOf($sql));
+    }
+
+    public function update_type() {
+      $this->assertEquals('update', create(new ProfilingObserver())->typeOf('update world set ...'));
+    }
+
+    public function insert_type() {
+      $this->assertEquals('insert', create(new ProfilingObserver())->typeOf('insert into world ...'));
+    }
+
+    public function delete_type() {
+      $this->assertEquals('delete', create(new ProfilingObserver())->typeOf('delete from world ...'));
+    }
+
+    public function set_type() {
+      $this->assertEquals('set', create(new ProfilingObserver())->typeOf('set showplan on'));
+    }
+
+    public function show_type() {
+      $this->assertEquals('show', create(new ProfilingObserver())->typeOf('show keys from ...'));
+    }
+
+    public function unknown_type() {
+      $this->assertEquals('unknown', create(new ProfilingObserver())->typeOf('explain ...'));
+    }
+
     #[@test]
     public function emitTiming_without_actually_having_any_timing_does_not_fatal() {
       create(new ProfilingObserver())->emitTimings();
