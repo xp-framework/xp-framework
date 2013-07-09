@@ -470,5 +470,16 @@
       $clone->url->setPassword(NULL);
       $this->assertEquals('password', $dsn->getPassword());
     }
+
+    /**
+     * Tests the withoutPassword() method
+     *
+     */
+    #[@test]
+    public function withoutPassword() {
+      $dsn= new DSN('mysql://root:password@localhost/');
+      $clean= $dsn->withoutPassword();
+      $this->assertNull($clean->getPassword());
+    }
   }
 ?>

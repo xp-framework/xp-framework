@@ -75,7 +75,7 @@
 
       // Store reference for later reuse
       if (NULL === $this->cat) $this->setTrace(Logger::getInstance()->getCategory($this->name));
-      if (NULL === $this->dsn) $this->dsn= $obs->getDSN();
+      if (NULL === $this->dsn) $this->dsn= $obs->getDSN()->withoutPassword();
 
       $method= $arg->getName();
       switch ($method) {

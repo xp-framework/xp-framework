@@ -74,15 +74,12 @@
     }
 
     /**
-     * Retrieve DSN - cleaned from password
+     * Retrieve DSN
      *
      * @return rdbms.DSN
      */
     public function getDSN() {
-      $dsn= clone $this->dsn;
-      $dsn->url->setPassword(NULL);
-
-      return $dsn;
+      return $this->dsn;
     }
     
     /**
