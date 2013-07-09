@@ -43,6 +43,13 @@
       $this->cat= $cat;
     }
 
+    /**
+     * Returns the type of SQL query, one of update, insert, select,
+     * delete, set, show, or unknown if the type cannot be determined.
+     *
+     * @param  string $sql The raw SQL
+     * @return string
+     */
     protected function typeOf($sql) {
       $sql= strtolower(ltrim($sql));
       $verb= substr($sql, 0, strpos($sql, ' '));
@@ -109,7 +116,6 @@
 
     /**
      * Emit recorded timings to LogCategory
-     * 
      */
     public function emitTimings() {
       if ($this->cat && $this->dsn) {
@@ -123,6 +129,11 @@
       }
     }
 
+    /**
+     * Get gathered timing values as string
+     *
+     * @return string
+     */
     public function getTimingAsString() {
       $s= '';
 
@@ -137,21 +148,44 @@
       return substr($s, 0, -2);
     }
 
+    /**
+     * Count statements per type
+     *
+     * @param  string $type
+     */
     protected function countFor($type) {
       if (!isset($this->timing[$type][self::COUNT])) $this->timing[$type][self::COUNT]= 0;
       $this->timing[$type][self::COUNT]++;
     }
 
+    /**
+     * Add timing values for a given type
+     *
+     * @param string $type
+     * @param double $elapsed
+     */
     protected function addElapsedTimeTo($type, $elapsed) {
       if (!isset($this->timing[$type][self::TIMES])) $this->timing[$type][self::TIMES]= 0;
       $this->timing[$type][self::TIMES]+= $elapsed;
     }
 
+    /**
+     * Returns number of statemens per type counted via `countFor()`
+     *
+     * @param  string $type
+     * @return int
+     */
     public function numberOfTimes($type) {
       if (!isset($this->timing[$type][self::COUNT])) return 0;
       return $this->timing[$type][self::COUNT];
     }
 
+    /**
+     * Returns sum of timings per type counted via `addElapsedTimeTo()`
+     *
+     * @param  string $type
+     * @return double
+     */
     public function elapsedTimeOfAll($type) {
       if (!isset($this->timing[$type][self::TIMES])) return 0.0;
       return $this->timing[$type][self::TIMES];
@@ -159,7 +193,6 @@
 
     /** 
      * Destructor; invoke emitTimings() if observer had recorded any activity.
-     * 
      */
     public function __destruct() {
 
