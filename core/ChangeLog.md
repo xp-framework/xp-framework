@@ -3,6 +3,8 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 5.9.6 / 2013-07-12
+
 ### Bugfixes
 
 * Fixed image writers not writing image data to the underlying stream fully
