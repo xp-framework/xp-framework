@@ -14,7 +14,8 @@
       CONNECT   = 'connect',
       CONNECTED = 'connected',
       QUERY     = 'query',
-      QUERYEND  = 'queryend';
+      QUERYEND  = 'queryend',
+      IDENTITY  = 'identity';
 
     public
       $name=  '',

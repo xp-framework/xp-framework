@@ -271,9 +271,9 @@
       $args= func_get_args();
       $sql= call_user_func_array(array($this, 'prepare'), $args);
 
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::QUERY, $sql));
       $result= $this->query0($sql);
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $result));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::QUERYEND, $result));
       return $result;
     }
 
@@ -288,9 +288,9 @@
       $args= func_get_args();
       $sql= call_user_func_array(array($this, 'prepare'), $args);
 
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::QUERy, $sql));
       $result= $this->query0($sql, FALSE);
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $result));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::QUERYEND, $result));
       return $result;
     }
     
