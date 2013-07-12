@@ -175,13 +175,14 @@
     
       if ($this->_connected && !$reconnect) return TRUE;
       
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECT, $reconnect));
       if ($this->connectError) {
         $this->_connected= FALSE;
         throw new SQLConnectException($this->connectError, $this->dsn);
       }
 
       $this->_connected= TRUE;
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECTED, $reconnect));
       return TRUE;
     }
 
@@ -212,7 +213,7 @@
      * @return  mixed identity value
      */
     public function identity($field= NULL) {
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $this->identityValue));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::IDENTITY, $this->identityValue));
       return $this->identityValue;
     }
 

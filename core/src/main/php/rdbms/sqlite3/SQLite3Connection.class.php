@@ -143,7 +143,7 @@
     public function identity($field= NULL) {
       if (!$this->handle instanceof SQLite3) throw new SQLStateException('Not connected');
       $i= $this->handle->lastInsertRowID();
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::IDENTITY, $i));
       return $i;
     }
 

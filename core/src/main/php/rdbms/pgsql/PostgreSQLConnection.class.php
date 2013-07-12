@@ -110,7 +110,7 @@
     public function identity($field= NULL) {
       $q= $this->query('select currval(%s) as id', $field);
       $id= $q ? $q->next('id') : NULL;
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $id));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::IDENTITY, $id));
       return $id;
     }
 

@@ -136,7 +136,7 @@
      */
     public function identity($field= NULL) {
       $i= sqlite_last_insert_rowid($this->handle);
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::IDENTITY, $i));
       return $i;
     }
 

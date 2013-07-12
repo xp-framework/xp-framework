@@ -108,7 +108,7 @@
      */
     public function identity($field= NULL) {
       $i= $this->query('select @@identity as xp_id')->next('xp_id');
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::IDENTITY, $i));
       return $i;
     }
 
