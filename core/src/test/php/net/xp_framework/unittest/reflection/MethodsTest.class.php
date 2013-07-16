@@ -467,7 +467,7 @@
     #[@test]
     public function clearMapString() {
       $this->assertEquals(
-        'protected void clearMap()', 
+        'protected var clearMap()', 
         $this->fixture->getMethod('clearMap')->toString()
       );
     }

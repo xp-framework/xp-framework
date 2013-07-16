@@ -87,6 +87,7 @@
      * Set date
      *
      * @param   util.Date date
+     * @return  void
      * @throws  lang.IllegalArgumentException in case the given argument is of incorrect type
      * @throws  lang.IllegalStateException if date is before 1970
      */    
@@ -129,6 +130,7 @@
      * Set a trace for debugging
      *
      * @param   util.log.LogCategory cat
+     * @return  void
      * @throws  lang.IllegalStateException *ALWAYS*
      */
     public function setTrace($cat) {
@@ -146,10 +148,10 @@
     
     /**
      * Clear map
-     *
      */
     protected function clearMap() {
       $this->map= array();
+      return TRUE;
     }
 
     /**
