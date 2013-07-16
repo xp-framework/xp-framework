@@ -3,6 +3,13 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+### Bugfixes
+
+* Fixed request body detection to not rely on `Content-Type` but to check
+  for the presence of `Content-Length` or `Transfer-Encoding`, conforming
+  to RFC #2616 (see section 4.3) - see issue #319 (@thekid)
+
+
 ## 5.9.6 / 2013-07-12
 
 ### Bugfixes
