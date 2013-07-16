@@ -180,6 +180,27 @@
 
     /**
      * Fixture for handle() tests
+     */
+    #[@webmethod]
+    public function mayReturnSomething() {
+      return NULL;
+    }
+
+    /**
+     * Test handle()
+     *
+     */
+    #[@test]
+    public function handle_non_explicit() {
+      $this->assertEquals(
+        Response::ok()->withPayload(NULL),
+        $this->fixture->handle($this, $this->getClass()->getMethod('mayReturnSomething'), array())
+      );
+    }
+
+
+    /**
+     * Fixture for handle() tests
      *
      * @param   lang.Throwable t
      * @throws  lang.Throwable
