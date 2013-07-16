@@ -112,6 +112,8 @@
     /**
      * Returns content-type of string if a payload is available, NULL otherwise.
      *
+     * @see    http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.3
+     * @see    http://www.w3.org/Protocols/rfc2616/rfc2616-sec7.html#sec7.2.1
      * @param  scriptlet.HttpScriptletRequest request The request
      * @return string
      */
