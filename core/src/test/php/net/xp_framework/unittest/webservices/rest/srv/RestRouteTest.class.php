@@ -164,7 +164,7 @@
     public function string_representation() {
       $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->handler, $this->target, NULL, NULL);
       $this->assertEquals(
-        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} -> void net.xp_framework.unittest.webservices.rest.srv.RestRouteTest::fixtureTarget())', 
+        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} -> var net.xp_framework.unittest.webservices.rest.srv.RestRouteTest::fixtureTarget())', 
         $r->toString()
       );
     }
@@ -177,7 +177,7 @@
     public function string_representation_with_produces() {
       $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->handler, $this->target, NULL, array('text/json'));
       $this->assertEquals(
-        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} -> void net.xp_framework.unittest.webservices.rest.srv.RestRouteTest::fixtureTarget() @ text/json)', 
+        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} -> var net.xp_framework.unittest.webservices.rest.srv.RestRouteTest::fixtureTarget() @ text/json)', 
         $r->toString()
       );
     }
@@ -190,7 +190,7 @@
     public function string_representation_with_accepts_and_produces() {
       $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->handler, $this->target, array('text/xml'), array('text/json'));
       $this->assertEquals(
-        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} @ text/xml -> void net.xp_framework.unittest.webservices.rest.srv.RestRouteTest::fixtureTarget() @ text/json)', 
+        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} @ text/xml -> var net.xp_framework.unittest.webservices.rest.srv.RestRouteTest::fixtureTarget() @ text/json)', 
         $r->toString()
       );
     }
@@ -204,7 +204,7 @@
       $r= new RestRoute('GET', '/resource/{id}', $this->handler, $this->target, NULL, NULL);
       $r->addParam('id', new RestParamSource('id', ParamReader::forName('path')));
       $this->assertEquals(
-        'webservices.rest.srv.RestRoute(GET /resource/{id} -> void net.xp_framework.unittest.webservices.rest.srv.RestRouteTest::fixtureTarget(@$id: path(\'id\')))', 
+        'webservices.rest.srv.RestRoute(GET /resource/{id} -> var net.xp_framework.unittest.webservices.rest.srv.RestRouteTest::fixtureTarget(@$id: path(\'id\')))', 
         $r->toString()
       );
     }
@@ -219,7 +219,7 @@
       $r->addParam('id', new RestParamSource('id', ParamReader::forName('path')));
       $r->addParam('sub', new RestParamSource('sub', ParamReader::forName('path')));
       $this->assertEquals(
-        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} -> void net.xp_framework.unittest.webservices.rest.srv.RestRouteTest::fixtureTarget(@$id: path(\'id\'), @$sub: path(\'sub\')))', 
+        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} -> var net.xp_framework.unittest.webservices.rest.srv.RestRouteTest::fixtureTarget(@$id: path(\'id\'), @$sub: path(\'sub\')))', 
         $r->toString()
       );
     }
