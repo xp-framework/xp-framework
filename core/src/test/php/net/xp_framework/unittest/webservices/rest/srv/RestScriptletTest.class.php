@@ -79,5 +79,57 @@
       $this->assertEquals(404, $res->statusCode);
       $this->assertEquals('{ "message" : "Could not route request to http:\/\/localhost\/" }', $res->getContent());
     }
+
+    /**
+     * Test content type for request
+     *
+     * @see  https://github.com/xp-framework/xp-framework/issues/319
+     */
+    #[@test, @values(array(array(array('Content-Type' => 'application/json')), array(array())))]
+    public function contentTypeOf_request_without_content_length_or_te_is_null($headers) {
+      $req= new HttpScriptletRequest();
+      $req->setHeaders($headers);
+      $this->assertEquals(NULL, $this->newFixture()->contentTypeOf($req));
+    }
+
+    /**
+     * Test content type for request
+     *
+     * @see  https://github.com/xp-framework/xp-framework/issues/319
+     */
+    #[@test]
+    public function contentTypeOf_request_with_content_length() {
+      $req= new HttpScriptletRequest();
+      $req->setHeaders(array('Content-Type' => 'application/json', 'Content-Length' => 6100));
+      $this->assertEquals('application/json', $this->newFixture()->contentTypeOf($req));
+    }
+
+    /**
+     * Test content type for request
+     *
+     * @see  https://github.com/xp-framework/xp-framework/issues/319
+     */
+    #[@test]
+    public function contentTypeOf_request_with_transfer_encoding() {
+      $req= new HttpScriptletRequest();
+      $req->setHeaders(array('Content-Type' => 'application/json', 'Transfer-Encoding' => 'chunked'));
+      $this->assertEquals('application/json', $this->newFixture()->contentTypeOf($req));
+    }
+
+    /**
+     * Test default content type for request
+     *
+     * @see  https://github.com/xp-framework/xp-framework/issues/319
+     * @see  http://www.w3.org/Protocols/rfc2616/rfc2616-sec7.html#sec7.2.1
+     */
+    #[@test, @values(array(
+    #  array(array('Content-Length' => 6100)),
+    #  array(array('Transfer-Encoding' => 'chunked'))
+    #))]
+    public function default_contentTypeOf_request_with_body() {
+      $req= new HttpScriptletRequest();
+      $req->setHeaders(array('Transfer-Encoding' => 'chunked'));
+      $this->assertEquals('application/octet-stream', $this->newFixture()->contentTypeOf($req));
+    }
   }
 ?>

@@ -110,6 +110,21 @@
     }
 
     /**
+     * Returns content-type of string if a payload is available, NULL otherwise.
+     *
+     * @see    http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.3
+     * @see    http://www.w3.org/Protocols/rfc2616/rfc2616-sec7.html#sec7.2.1
+     * @param  scriptlet.HttpScriptletRequest request The request
+     * @return string
+     */
+    public function contentTypeOf($request) {
+      if ($request->getHeader('Content-Length') || $request->getHeader('Transfer-Encoding')) {
+        return $request->getHeader('Content-Type', 'application/octet-stream');
+      }
+      return NULL;
+    }
+
+    /**
      * Process request and handle errors
      * 
      * @param  scriptlet.HttpScriptletRequest request The request
@@ -117,10 +132,11 @@
      */
     public function doProcess($request, $response) {
       $url= $request->getURL();
+      $type= $this->contentTypeOf($request);
       $accept= new Preference($request->getHeader('Accept', '*/*'));
       $this->cat && $this->cat->info(
         $request->getMethod(),
-        $request->getHeader('Content-Type', '(null)'),
+        $type ?: '(null)',
         $url->getURL(),
         $accept
       );
@@ -130,7 +146,7 @@
       foreach ($this->router->targetsFor(
         $request->getMethod(), 
         $url->getPath(), 
-        $request->getHeader('Content-Type', NULL), 
+        $type,
         $accept
       ) as $target) {
         if ($ctx->process($target, $request, $response)) return;
