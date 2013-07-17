@@ -17,6 +17,12 @@ XP Framework ChangeLog
   for the presence of `Content-Length` or `Transfer-Encoding`, conforming
   to RFC #2616 (see section 4.3) - see issue #319 (@thekid)
 
+### Features
+
+* Added rdbms.ProfilingObserver to measure overall SQL performance -
+  see pull request #314
+  (@kiesel)
+
 
 ## 5.9.6 / 2013-07-12
 
