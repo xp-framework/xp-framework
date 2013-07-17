@@ -78,6 +78,7 @@
       if (is_resource($this->handle)) return TRUE;  // Already connected
       if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECT, $reconnect));
       if (!($this->flags & DB_PERSISTENT)) {
         $this->handle= sqlite_open(
           urldecode($this->dsn->getDatabase()), 
@@ -97,7 +98,7 @@
       }
       
       $this->getFormatter()->dialect->registerCallbackFunctions($this->handle);
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECTED, $reconnect));
 
       return TRUE;
     }
@@ -135,7 +136,7 @@
      */
     public function identity($field= NULL) {
       $i= sqlite_last_insert_rowid($this->handle);
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::IDENTITY, $i));
       return $i;
     }
 

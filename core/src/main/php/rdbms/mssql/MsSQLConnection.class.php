@@ -61,6 +61,7 @@
       if (is_resource($this->handle)) return TRUE;  // Already connected
       if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECT, $reconnect));
       if ($this->flags & DB_PERSISTENT) {
         $this->handle= mssql_pconnect(
           $this->dsn->getHost(), 
@@ -82,7 +83,7 @@
       }
       xp::gc(__FILE__);
 
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECTED, $reconnect));
       return parent::connect();
     }
     
@@ -124,7 +125,7 @@
      */
     public function identity($field= NULL) {
       $i= $this->query('select @@identity as i')->next('i');
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::IDENTITY, $i));
       return $i;
     }
 

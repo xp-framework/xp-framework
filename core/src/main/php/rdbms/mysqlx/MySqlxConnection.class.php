@@ -76,12 +76,13 @@
       if ($this->handle->connected) return TRUE;                    // Already connected
       if (!$reconnect && (NULL === $this->handle->connected)) return FALSE;   // Previously failed connecting
 
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECT, $reconnect));
       try {
         $this->handle->connect($this->dsn->getUser(), $this->dsn->getPassword());
-        $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
+        $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECTED, $reconnect));
       } catch (IOException $e) {
         $this->handle->connected= NULL;
-        $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
+        $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECTED, $reconnect));
         throw new SQLConnectException($e->getMessage(), $this->dsn);
       }
 
@@ -144,7 +145,7 @@
      */
     public function identity($field= NULL) {
       $i= $this->query('select last_insert_id() as xp_id')->next('xp_id');
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::IDENTITY, $i));
       return $i;
     }
 

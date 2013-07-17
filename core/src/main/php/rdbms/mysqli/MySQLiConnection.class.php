@@ -62,6 +62,8 @@
       if (is_object($this->handle)) return TRUE;  // Already connected
       if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECT, $reconnect));
+
       // Connect via local sockets if "." is passed. This will not work on
       // Windows with the mysqlnd extension (see PHP bug #48082: "mysql_connect
       // does not work with named pipes"). For mysqlnd, we default to mysqlx
@@ -89,7 +91,7 @@
         $sock
       );
 
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECTED, $reconnect));
 
       if (!is_object($this->handle)) {
         $e= new SQLConnectException('#'.mysqli_connect_errno().': '.mysqli_connect_error(), $this->dsn);
@@ -157,7 +159,7 @@
      */
     public function identity($field= NULL) {
       $i= $this->query('select last_insert_id() as xp_id')->next('xp_id');
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::IDENTITY, $i));
       return $i;
     }
 
