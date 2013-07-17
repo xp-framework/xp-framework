@@ -864,7 +864,7 @@
             $m= $tokens[$i][1];
             $details[1][$m]= array(
               DETAIL_ARGUMENTS    => array(),
-              DETAIL_RETURNS      => NULL === $comment ? NULL : 'void',
+              DETAIL_RETURNS      => NULL,
               DETAIL_THROWS       => array(),
               DETAIL_COMMENT      => trim(preg_replace('/\n\s+\* ?/', "\n", "\n".substr(
                 $comment, 
