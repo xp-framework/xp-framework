@@ -458,5 +458,28 @@
         new DSN('scheme://host/DATABASE?log=default&observer[rdbms.sybase.SybaseShowplanObserver]=sql&autoconnect=1')
       );
     }
+
+    /**
+     * Tests the cloning method
+     *
+     */
+    #[@test]
+    public function cloning() {
+      $dsn= new DSN('mysql://root:password@localhost/');
+      $clone= clone $dsn;
+      $clone->url->setPassword(NULL);
+      $this->assertEquals('password', $dsn->getPassword());
+    }
+
+    /**
+     * Tests the withoutPassword() method
+     *
+     */
+    #[@test]
+    public function withoutPassword() {
+      $dsn= new DSN('mysql://root:password@localhost/');
+      $clean= $dsn->withoutPassword();
+      $this->assertNull($clean->getPassword());
+    }
   }
 ?>
