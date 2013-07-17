@@ -3,8 +3,16 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+### Heads up!
+
+* Changed reflection API to only return `void` return if explicitely
+  stated in apidocs. See pull request #322
+  (@iigorr, @thekid)
+
 ### Bugfixes
 
+* Fixed issue #321 - REST Handler does not return anything unless @return
+  is defined (@thekid)
 * Fixed request body detection to not rely on `Content-Type` but to check
   for the presence of `Content-Length` or `Transfer-Encoding`, conforming
   to RFC #2616 (see section 4.3) - see issue #319 (@thekid)
