@@ -69,6 +69,13 @@
           array_slice($this->classes, $this->offset+ 1)
         );
         $name= $this->classes[$this->offset];
+      } else if ('**' == $name) {
+        $this->classes= array_merge(
+          array_slice($this->classes, 0, $this->offset),
+          $this->root->classesIn('', TRUE),
+          array_slice($this->classes, $this->offset+ 1)
+        );
+        $name= $this->classes[$this->offset];
       }
       $this->offset++;
       return $this->root->classNamed($name);
