@@ -160,7 +160,7 @@
      * @return  lang.IClassLoader the classloader providing the package
      */
     public function findPackage($package) {
-      foreach ($this->sourcepath as $loader) {
+      foreach (ClassLoader::getDefault()->getLoaders() as $loader) {
         if ($loader->providesPackage($package)) return $loader;
       }
       return NULL;
@@ -173,7 +173,7 @@
      * @return  lang.IClassLoader the classloader providing the resource
      */
     public function findResource($name) {
-      foreach ($this->sourcepath as $loader) {
+      foreach (ClassLoader::getDefault()->getLoaders() as $loader) {
         if ($loader->providesResource($name)) return $loader;
       }
       return NULL;
@@ -186,7 +186,7 @@
      * @return  lang.IClassLoader the classloader providing the class
      */
     public function findClass($classname) {
-      foreach ($this->sourcepath as $loader) {
+      foreach (ClassLoader::getDefault()->getLoaders() as $loader) {
         if ($loader->providesClass($classname)) return $loader;
       }
       return NULL;
