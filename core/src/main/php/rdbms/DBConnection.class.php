@@ -58,7 +58,7 @@
         $class= XPClass::forName($observer);
 
         // Check if class implements BoundLogObserver: in that case use factory method to acquire instance
-        if ($class->isAssignableFrom('util.log.BoundLogObserver')) {
+        if (XPClass::forName('util.log.BoundLogObserver')->isAssignableFrom($class)) {
           $this->addObserver($class->getMethod('instanceFor')->invoke(NULL, array($param)));
 
         // Otherwise, just use the constructor
@@ -288,7 +288,7 @@
       $args= func_get_args();
       $sql= call_user_func_array(array($this, 'prepare'), $args);
 
-      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::QUERy, $sql));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::QUERY, $sql));
       $result= $this->query0($sql, FALSE);
       $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::QUERYEND, $result));
       return $result;
