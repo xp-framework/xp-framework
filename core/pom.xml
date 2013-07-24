@@ -12,7 +12,7 @@
   <!-- The basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>core</artifactId>
-  <version>5.9.6-SNAPSHOT</version>
+  <version>5.9.7-SNAPSHOT</version>
   <packaging>xar</packaging>
 
   <!-- More project information -->
