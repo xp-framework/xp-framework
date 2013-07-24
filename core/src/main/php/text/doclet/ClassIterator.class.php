@@ -63,9 +63,29 @@
       }
       $name= $this->classes[$this->offset];
       if ($p= strstr($name, '.*')) {
+        $add= $this->root->classesIn(substr($name, 0, -strlen($p)), '.**' == $p);
+
+        if (!sizeof($add)) {
+          $this->offset++;
+          return $this->next();
+        }
         $this->classes= array_merge(
           array_slice($this->classes, 0, $this->offset),
-          $this->root->classesIn(substr($name, 0, -strlen($p)), '.**' == $p),
+          $add,
+          array_slice($this->classes, $this->offset+ 1)
+        );
+        $name= $this->classes[$this->offset];
+      } else if ('**' == $name) {
+        $add= $this->root->classesIn('', TRUE);
+
+        if (!sizeof ($add)) {
+          $this->offset++;
+          return $this->next();
+        }
+
+        $this->classes= array_merge(
+          array_slice($this->classes, 0, $this->offset),
+          $add,
           array_slice($this->classes, $this->offset+ 1)
         );
         $name= $this->classes[$this->offset];

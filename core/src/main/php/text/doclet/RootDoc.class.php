@@ -160,7 +160,7 @@
      * @return  lang.IClassLoader the classloader providing the package
      */
     public function findPackage($package) {
-      foreach ($this->sourcepath as $loader) {
+      foreach (ClassLoader::getDefault()->getLoaders() as $loader) {
         if ($loader->providesPackage($package)) return $loader;
       }
       return NULL;
@@ -173,7 +173,7 @@
      * @return  lang.IClassLoader the classloader providing the resource
      */
     public function findResource($name) {
-      foreach ($this->sourcepath as $loader) {
+      foreach (ClassLoader::getDefault()->getLoaders() as $loader) {
         if ($loader->providesResource($name)) return $loader;
       }
       return NULL;
@@ -186,7 +186,7 @@
      * @return  lang.IClassLoader the classloader providing the class
      */
     public function findClass($classname) {
-      foreach ($this->sourcepath as $loader) {
+      foreach (ClassLoader::getDefault()->getLoaders() as $loader) {
         if ($loader->providesClass($classname)) return $loader;
       }
       return NULL;
@@ -204,10 +204,11 @@
       $l= -strlen(xp::CLASS_FILE_EXT);
       foreach ($this->sourcepath as $loader) {
         foreach ($loader->packageContents($package) as $name) {
+          $appx= $package ? $package.'.' : '';
           if (xp::CLASS_FILE_EXT === substr($name, $l)) {
-            $r[]= $package.'.'.substr($name, 0, $l);
+            $r[]= $appx.substr($name, 0, $l);
           } else if ($recursive && '/' === substr($name, -1)) {
-            $r= array_merge($r, $this->classesIn($package.'.'.substr($name, 0, -1), $recursive));
+            $r= array_merge($r, $this->classesIn($appx.substr($name, 0, -1), $recursive));
           }
         }
       }
