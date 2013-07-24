@@ -19,6 +19,9 @@ XP Framework ChangeLog
 
 ### Features
 
+* Added `**` operator to text.doclet.Doclet - (@kiesel)
+* Made doclet only analyze classes in `sourcePath`, excluding
+  `classPath` - (@kiesel)
 * Added rdbms.ProfilingObserver to measure overall SQL performance -
   see pull request #314
   (@kiesel)
