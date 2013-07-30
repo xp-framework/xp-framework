@@ -352,7 +352,7 @@
     case 20:  #line 67 "src/main/jay/webservices/json/json.jay"
     {
         $yyVal= iconv('utf-8', $this->targetEncoding, $yyVals[0+$yyTop]);
-        if (FALSE === $yyVal) {
+        if (xp::errorAt(__FILE__, __LINE__ - 1)) {
           $message= key(xp::$errors[__FILE__][__LINE__ - 2]);
           xp::gc(__FILE__);
           throw new FormatException('Cannot decode string '.create(new Bytes($yyVals[0+$yyTop]))->toString().' to '.$this->targetEncoding);
