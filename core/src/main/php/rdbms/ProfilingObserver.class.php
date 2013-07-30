@@ -1,16 +1,16 @@
 <?php
-/*
- * This class is part of the XP Framework
+/* This class is part of the XP Framework
  *
+ * $Id$
  */
-  uses('util.Observer', 'util.log.Logger', 'util.log.Traceable');
+
+  uses('util.Observer', 'util.log.Logger', 'util.log.Traceable', 'util.profiling.Timer');
 
   /**
    * Profiling database observer
    *
    * Attach to database by appending `&observer[rdbms.ProfilingObserver]=default` where
    * `default` denotes the log category to log to.
-   * 
    */
   class ProfilingObserver extends Object implements Observer, Traceable {
     const COUNT= 0x01;
