@@ -5,6 +5,8 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed StreamTokenizer::pushBack() not working correctly if previously
+  read all the way to the end - (@thekid)
 * Fixed issue #324 - Encoding not handled correctly in JsonDecoder; the
   bug here is that it doesn't raise an exception for malformed input!
   (@thekid)

@@ -10,10 +10,11 @@
   );
 
   /**
-   * Test string tokenizing.
+   * Abstract base class for different tokenizer tests
    *
-   * @see      xp://text.Tokenizer
-   * @purpose  Abstract base class for different tokenizer tests
+   * @see  xp://text.Tokenizer
+   * @see  xp://net.xp_framework.unittest.text.StringTokenizerTest
+   * @see  xp://net.xp_framework.unittest.text.StreamTokenizerTest
    */
   abstract class AbstractTokenizerTest extends TestCase {
   
@@ -175,7 +176,20 @@
       $this->assertEquals('4', $t->nextToken());
       $this->assertEquals('5', $t->nextToken());
     }
-    
+
+    /**
+     * Test pushing back a delimiter
+     *
+     */
+    #[@test]
+    public function pushBackDelimiterAtEnd() {
+      $t= $this->tokenizerInstance("One\nTwo", "\n");
+      $this->assertEquals('One', $t->nextToken());
+      $this->assertEquals('Two', $t->nextToken());
+      $t->pushBack("Two\n");
+      $this->assertEquals('Two', $t->nextToken());
+    }
+
     /**
      * Returns all tokens
      *
