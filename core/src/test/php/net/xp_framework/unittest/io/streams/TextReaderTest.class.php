@@ -184,7 +184,16 @@
     public function readZero() {
       $this->assertEquals('', $this->newReader('Hello')->read(0));
     }
-        
+
+    /**
+     * Test reading
+     *
+     */
+    #[@test]
+    public function readLineEmptyInput() {
+      $this->assertNull($this->newReader('')->readLine());
+    }
+
     /**
      * Test reading lines separated by "\n", "\r" and "\r\n"
      *
@@ -529,6 +538,30 @@
     #[@test]
     public function readLineWithAutoDetectedUtf8Charset() {
       $this->assertEquals('H', $this->newReader("\357\273\277H\r\n", NULL)->readLine());
+    }
+
+    /**
+     * Test reading
+     */
+    #[@test]
+    public function readLineEmptyInputWithAutoDetectedIso88591Charset() {
+      $this->assertNull($this->newReader('', NULL)->readLine());
+    }
+
+    /**
+     * Test reading
+     */
+    #[@test, @values(array("\377", "\377\377", "\377\377\377"))]
+    public function readNonBOMInputWithAutoDetectedIso88591Charset($value) {
+      $this->assertEquals($value, $this->newReader($value, NULL)->read(0xFF));
+    }
+
+    /**
+     * Test reading
+     */
+    #[@test, @values(array("\377", "\377\377", "\377\377\377"))]
+    public function readLineNonBOMInputWithAutoDetectedIso88591Charset($value) {
+      $this->assertEquals($value, $this->newReader($value, NULL)->readLine());
     }
   }
 ?>
