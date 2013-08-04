@@ -120,8 +120,8 @@
 
       if ('' === $this->buf) return NULL;
 
-      $chunk= $this->buf;
-      $this->buf= '';
+      $chunk= substr($this->buf, 0, $size);
+      $this->buf= (string)substr($this->buf, $size);
       return $chunk;
     }
     

@@ -466,5 +466,69 @@
       }'));
       $r->reset();
     }
+
+    /**
+     * Test reading after character set auto-detection
+     */
+    #[@test]
+    public function readOneWithAutoDetectedIso88591Charset() {
+      $this->assertEquals('H', $this->newReader('Hello', NULL)->read(1));
+    }
+
+    /**
+     * Test reading after character set auto-detection
+     */
+    #[@test]
+    public function readOneWithAutoDetectedUtf16BECharset() {
+      $this->assertEquals('H', $this->newReader("\376\377\0H\0e\0l\0l\0o", NULL)->read(1));
+    }
+
+    /**
+     * Test reading after character set auto-detection
+     */
+    #[@test]
+    public function readOneWithAutoDetectedUtf16LECharset() {
+      $this->assertEquals('H', $this->newReader("\377\376H\0e\0l\0l\0o\0", NULL)->read(1));
+    }
+
+    /**
+     * Test reading after character set auto-detection
+     */
+    #[@test]
+    public function readOneWithAutoDetectedUtf8Charset() {
+      $this->assertEquals('H', $this->newReader("\357\273\277Hello", NULL)->read(1));
+    }
+
+    /**
+     * Test reading after character set auto-detection
+     */
+    #[@test]
+    public function readLineWithAutoDetectedIso88591Charset() {
+      $this->assertEquals('H', $this->newReader("H\r\n", NULL)->readLine());
+    }
+
+    /**
+     * Test reading after character set auto-detection
+     */
+    #[@test]
+    public function readLineWithAutoDetectedUtf16BECharset() {
+      $this->assertEquals('H', $this->newReader("\376\377\0H\0\r\0\n", NULL)->readLine());
+    }
+
+    /**
+     * Test reading after character set auto-detection
+     */
+    #[@test]
+    public function readLineWithAutoDetectedUtf16LECharset() {
+      $this->assertEquals('H', $this->newReader("\377\376H\0\r\0\n\0", NULL)->readLine());
+    }
+
+    /**
+     * Test reading after character set auto-detection
+     */
+    #[@test]
+    public function readLineWithAutoDetectedUtf8Charset() {
+      $this->assertEquals('H', $this->newReader("\357\273\277H\r\n", NULL)->readLine());
+    }
   }
 ?>
