@@ -201,6 +201,21 @@
     }
 
     /**
+     * Test reading lines with one character separated by "\n", "\r" and "\r\n"
+     *
+     */
+    #[@test, @values(array(
+    #  "1\n2\n", "1\r2\r", "1\r\n2\r\n",
+    #  "1\n2", "1\r2", "1\r\n2\r\n"
+    #))]
+    public function readLinesWithSingleCharacter($value) {
+      $r= $this->newReader($value);
+      $this->assertEquals('1', $r->readLine());
+      $this->assertEquals('2', $r->readLine());
+      $this->assertNull($r->readLine());
+    }
+
+    /**
      * Test reading an empty line
      *
      */

@@ -7,11 +7,10 @@
   uses('io.streams.InputStream', 'lang.Closeable');
 
   /**
-   * Servers as an bstract base class for all other readers. A reader 
-   * returns characters it reads from the underlying InputStream 
+   * Servers as an abstract base class for all other readers. A reader
+   * returns characters it reads from the underlying InputStream
    * implementation (which works with bytes - for single-byte character
    * sets, there is no difference, obviously).
-   *
    */
   abstract class Reader extends Object implements Closeable {
     protected $stream= NULL;
