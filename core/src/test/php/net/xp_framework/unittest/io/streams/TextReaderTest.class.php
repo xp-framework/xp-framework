@@ -186,10 +186,13 @@
     }
         
     /**
-     * Test reading lines separated by "\n"
+     * Test reading lines separated by "\n", "\r" and "\r\n"
      *
      */
-    #[@test, @values(array("Hello\nWorld", "Hello\rWorld", "Hello\r\nWorld"))]
+    #[@test, @values(array(
+    #  "Hello\nWorld\n", "Hello\rWorld\r", "Hello\r\nWorld\r\n",
+    #  "Hello\nWorld", "Hello\rWorld", "Hello\r\nWorld"
+    #))]
     public function readLines($value) {
       $r= $this->newReader($value);
       $this->assertEquals('Hello', $r->readLine());
