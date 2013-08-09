@@ -230,7 +230,16 @@
     public function decodeInvalidUTF8String() {
       $this->decode('"Knüper"');
     }
-    
+
+    /**
+     * Test string decoding
+     *
+     */
+    #[@test, @expect(class= 'webservices.json.JsonException', withMessage= '/Cannot decode string/')]
+    public function decodeInvalidUTF8Sequence() {
+      $this->decode('"\u20ACuro"', $targetEncoding= 'ascii');
+    }
+
     /**
      * Test string decoding
      *

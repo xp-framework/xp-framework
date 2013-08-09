@@ -341,23 +341,23 @@
     { $yyVal= array_merge($yyVals[-2+$yyTop], array($yyVals[0+$yyTop])); } break;
 
     case 16:  #line 57 "src/main/jay/webservices/json/json.jay"
-    { $yyVal= $yyVals[-1+$yyTop]; } break;
+    {
+      if (xp::errorAt(__FILE__)) {
+        $e= new FormatException('Cannot decode string '.create(new Bytes($yyVals[-2+$yyTop]))->toString().' to '.$this->targetEncoding);
+        xp::gc(__FILE__);
+        throw $e;
+      }
+      $yyVal= $yyVals[-1+$yyTop];
+    } break;
 
-    case 17:  #line 58 "src/main/jay/webservices/json/json.jay"
+    case 17:  #line 65 "src/main/jay/webservices/json/json.jay"
     { $yyVal= ''; } break;
 
-    case 19:  #line 63 "src/main/jay/webservices/json/json.jay"
+    case 19:  #line 70 "src/main/jay/webservices/json/json.jay"
     { $yyVal= $yyVals[-1+$yyTop].$yyVals[0+$yyTop]; } break;
 
-    case 20:  #line 67 "src/main/jay/webservices/json/json.jay"
-    {
-        $yyVal= iconv('utf-8', $this->targetEncoding, $yyVals[0+$yyTop]);
-        if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-          $message= key(xp::$errors[__FILE__][__LINE__ - 2]);
-          xp::gc(__FILE__);
-          throw new FormatException('Cannot decode string '.create(new Bytes($yyVals[0+$yyTop]))->toString().' to '.$this->targetEncoding);
-        }
-      } break;
+    case 20:  #line 74 "src/main/jay/webservices/json/json.jay"
+    { $yyVal= iconv('utf-8', $this->targetEncoding, $yyVals[0+$yyTop]); } break;
 
     case 21:  #line 75 "src/main/jay/webservices/json/json.jay"
     { $yyVal= '"'; } break;

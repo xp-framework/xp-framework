@@ -54,7 +54,14 @@ arraycontent:
 ;
 
 string:
-    '"' word '"' { $$= $2; }
+    '"' word '"' {
+      if (xp::errorAt(__FILE__)) {
+        $e= new FormatException('Cannot decode string '.create(new Bytes($1))->toString().' to '.$this->targetEncoding);
+        xp::gc(__FILE__);
+        throw $e;
+      }
+      $$= $2;
+    }
   | '"' '"' { $$= ''; }
 ;
 
@@ -64,14 +71,7 @@ word:
 ;
 
 stringpart:
-      T_STRING {
-        $$= iconv('utf-8', $this->targetEncoding, $1);
-        if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-          $message= key(xp::$errors[__FILE__][__LINE__ - 2]);
-          xp::gc(__FILE__);
-          throw new FormatException('Cannot decode string '.create(new Bytes($1))->toString().' to '.$this->targetEncoding);
-        }
-      }
+      T_STRING { $$= iconv('utf-8', $this->targetEncoding, $1); }
     | T_ESCAPE_QUOTATION      { $$= '"'; }
     | T_ESCAPE_REVERSESOLIDUS { $$= "\\"; }
     | T_ESCAPE_SOLIDUS        { $$= "/"; }
