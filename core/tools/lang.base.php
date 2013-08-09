@@ -144,6 +144,13 @@
         }
         unset($protect[$ser]);
         return $r.$indent.']';
+      } else if ($arg instanceof \Closure) {
+        $sig= '';
+        $f= new \ReflectionFunction($arg);
+        foreach ($f->getParameters() as $p) {
+          $sig.= ', $'.$p->name;
+        }
+        return '<function('.substr($sig, 2).')>';
       } else if (is_object($arg)) {
         $ser= serialize($arg);
         if (isset($protect[$ser])) return '->{:recursion:}';

@@ -292,5 +292,35 @@
         $cl->newInstance($cl->newInstance(NULL))->toString()
       );
     }
+
+    /**
+     * Verifies closures
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/325
+     */
+    #[@test]
+    public function closure() {
+      $this->assertEquals('<function()>', xp::stringOf(function() { }));
+    }
+
+    /**
+     * Verifies closures
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/325
+     */
+    #[@test]
+    public function closureWithOneParam() {
+      $this->assertEquals('<function($a)>', xp::stringOf(function($a) { }));
+    }
+
+    /**
+     * Verifies closures
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/325
+     */
+    #[@test]
+    public function closureWithTwoParams() {
+      $this->assertEquals('<function($a, $b)>', xp::stringOf(function($a, $b) { }));
+    }
   }
 ?>
