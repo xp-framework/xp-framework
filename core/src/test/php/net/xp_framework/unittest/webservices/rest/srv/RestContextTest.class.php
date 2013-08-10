@@ -455,9 +455,10 @@
     protected function assertProcess($status, $headers, $content, $route, $request) {
       $response= new HttpScriptletResponse();
       $this->fixture->process($route, $request, $response);
-      $this->assertEquals($status, $response->statusCode, 'Status code');
-      $this->assertEquals($headers, $response->headers, 'Headers');
-      $this->assertEquals($content, $response->content, 'Content');
+      $this->assertEquals(
+        array('status' => $status, 'headers' => $headers, 'content' => $content),
+        array('status' => $response->statusCode, 'headers' => $response->headers, 'content' => $response->content)
+      );
     }
 
     /**
@@ -663,6 +664,33 @@
     #[@test]
     public function get_non_existant_marshaller() {
       $this->assertNull($this->fixture->getMarshaller('unittest.TestCase'));
+    }
+
+    #[@test, @values(array(
+    #  array('Test', 4),
+    #  array('\u00fcbercoder', 9),
+    #  array('30,00 \u20ac', 7),
+    #  array('Test in chinese: \u6d4b\u8bd5', 19)
+    #))]
+    public function process_string($text, $length) {
+      $handler= newinstance('lang.Object', array(), '{
+        #[@webmethod(verb= "POST")]
+        public function fixture(String $input) {
+          return $input->length();
+        }
+      }');
+      $route= array(
+        'handler'  => $handler->getClass(),
+        'target'   => $handler->getClass()->getMethod('fixture'),
+        'params'   => array('input' => new RestParamSource('input', ParamReader::$BODY)),
+        'segments' => array(),
+        'input'    => 'text/json',
+        'output'   => 'text/json'
+      );
+      $this->assertProcess(
+        200, array('Content-Type: text/json'), (string)$length,
+        $route, $this->newRequest(array(), '{ "input" : "'.$text.'" }')
+      );
     }
   }
 ?>
