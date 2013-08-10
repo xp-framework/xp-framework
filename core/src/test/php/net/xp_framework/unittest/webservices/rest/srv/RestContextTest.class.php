@@ -113,196 +113,6 @@
     }
 
     /**
-     * Fixture for handle() tests
-     *
-     * @return  string
-     */
-    #[@webmethod]
-    public function helloWorld() {
-      return 'Hello World';
-    }
-
-    /**
-     * Test handle()
-     * 
-     */
-    #[@test]
-    public function handle_primitive_return() {
-      $this->assertEquals(
-        Response::status(200)->withPayload(new Payload('Hello World')),
-        $this->fixture->handle($this, $this->getClass()->getMethod('helloWorld'), array())
-      );
-    }
-
-    /**
-     * Fixture for handle() tests
-     *
-     * @return  string
-     */
-    #[@webmethod]
-    public function createIt() {
-      return Response::created('/resource/4711');
-    }
-
-    /**
-     * Test handle()
-     * 
-     */
-    #[@test]
-    public function handle_response_instance_return() {
-      $this->assertEquals(
-        Response::status(201)->withHeader('Location', '/resource/4711'),
-        $this->fixture->handle($this, $this->getClass()->getMethod('createIt'), array())
-      );
-    }
-
-    /**
-     * Fixture for handle() tests
-     *
-     * @return  void
-     */
-    #[@webmethod]
-    public function fireAndForget() {
-      // Initially empty
-    }
-
-    /**
-     * Test handle()
-     * 
-     */
-    #[@test]
-    public function handle_void() {
-      $this->assertEquals(
-        Response::status(204),
-        $this->fixture->handle($this, $this->getClass()->getMethod('fireAndForget'), array())
-      );
-    }
-
-    /**
-     * Fixture for handle() tests
-     */
-    #[@webmethod]
-    public function mayReturnSomething() {
-      return NULL;
-    }
-
-    /**
-     * Test handle()
-     *
-     */
-    #[@test]
-    public function handle_non_explicit() {
-      $this->assertEquals(
-        Response::ok()->withPayload(NULL),
-        $this->fixture->handle($this, $this->getClass()->getMethod('mayReturnSomething'), array())
-      );
-    }
-
-
-    /**
-     * Fixture for handle() tests
-     *
-     * @param   lang.Throwable t
-     * @throws  lang.Throwable
-     * @return  void
-     */
-    #[@webmethod]
-    public function raiseAnError($t) {
-      throw $t;
-    }
-
-    /**
-     * Test handle()
-     * 
-     */
-    #[@test]
-    public function handle_exception() {
-      $t= new Throwable('Test');
-      $this->assertEquals(
-        Response::error(500)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
-        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
-      );
-    }
-
-    /**
-     * Test handle()
-     * 
-     */
-    #[@test]
-    public function handle_illegal_argument_exception() {
-      $t= new IllegalArgumentException('Test');
-      $this->assertEquals(
-        Response::error(400)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
-        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
-      );
-    }
-
-    /**
-     * Test handle()
-     * 
-     */
-    #[@test]
-    public function handle_illegal_state_exception() {
-      $t= new IllegalStateException('Test');
-      $this->assertEquals(
-        Response::error(409)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
-        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
-      );
-    }
-
-    /**
-     * Test handle()
-     * 
-     */
-    #[@test]
-    public function handle_illegal_access_exception() {
-      $t= new IllegalAccessException('Test');
-      $this->assertEquals(
-        Response::error(403)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
-        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
-      );
-    }
-
-    /**
-     * Test handle()
-     * 
-     */
-    #[@test]
-    public function handle_element_not_found_exception() {
-      $t= new ElementNotFoundException('Test');
-      $this->assertEquals(
-        Response::error(404)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
-        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
-      );
-    }
-
-    /**
-     * Test handle()
-     * 
-     */
-    #[@test]
-    public function handle_method_not_implemented_exception() {
-      $t= new MethodNotImplementedException('Test', $this->name);
-      $this->assertEquals(
-        Response::error(501)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
-        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
-      );
-    }
-
-    /**
-     * Test handle()
-     * 
-     */
-    #[@test]
-    public function handle_format_exception() {
-      $t= new FormatException('Test');
-      $this->assertEquals(
-        Response::error(422)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
-        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
-      );
-    }
-
-    /**
      * Test handle()
      * 
      */
@@ -332,6 +142,18 @@
         Response::error(200)->withPayload(new Payload('Hello Test', array('name' => 'greeting'))),
         $this->fixture->handle($handler, $handler->getClass()->getMethod('greet'), array('Test'))
       );
+    }
+
+    /**
+     * Fixture for handle() tests
+     *
+     * @param   lang.Throwable t
+     * @throws  lang.Throwable
+     * @return  void
+     */
+    #[@webmethod]
+    public function raiseAnError($t) {
+      throw $t;
     }
 
     /**
