@@ -692,5 +692,31 @@
         $route, $this->newRequest(array(), '{ "input" : "'.$text.'" }')
       );
     }
+
+    #[@test, @values(array(
+    #  array('Test', 4),
+    #  array('\u00fcbercoder', 9)
+    #))]
+    public function process_string_primitive($text, $length) {
+      $handler= newinstance('lang.Object', array(), '{
+        /** @param string input */
+        #[@webmethod(verb= "POST")]
+        public function fixture($input) {
+          return strlen($input);
+        }
+      }');
+      $route= array(
+        'handler'  => $handler->getClass(),
+        'target'   => $handler->getClass()->getMethod('fixture'),
+        'params'   => array('input' => new RestParamSource('input', ParamReader::$BODY)),
+        'segments' => array(),
+        'input'    => 'text/json',
+        'output'   => 'text/json'
+      );
+      $this->assertProcess(
+        200, array('Content-Type: text/json'), (string)$length,
+        $route, $this->newRequest(array(), '{ "input" : "'.$text.'" }')
+      );
+    }
   }
 ?>

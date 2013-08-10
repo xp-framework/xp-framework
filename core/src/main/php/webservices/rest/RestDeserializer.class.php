@@ -79,7 +79,7 @@
       } else if (NULL === $data) {                        // Valid for any type
         return NULL;
       } else if ($type->equals(XPClass::forName('lang.types.String'))) {
-        return new String($this->valueOf($data));
+        return new String($this->valueOf($data), 'utf-8');
       } else if ($type->equals(XPClass::forName('util.Date'))) {
         return $type->newInstance($data);
       } else if ($type instanceof XPClass) {
@@ -150,7 +150,7 @@
         }
         return $return;
       } else if ($type->equals(Primitive::$STRING)) {
-        return (string)$this->valueOf($data);
+        return utf8_decode((string)$this->valueOf($data));
       } else if ($type->equals(Primitive::$INT)) {
         return (int)$this->valueOf($data);
       } else if ($type->equals(Primitive::$DOUBLE)) {
