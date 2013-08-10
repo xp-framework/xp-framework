@@ -5,6 +5,7 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed webservices.rest.Payload::equals() method for arrays - (@thekid)
 * Fixed issue #325: Serialization of 'Closure' is not allowed - (@thekid)
 * Fixed io.streams.TextReader class not reading first chunk correctly when
   character set auto-detection fell back to iso-8859-1 - (@thekid)

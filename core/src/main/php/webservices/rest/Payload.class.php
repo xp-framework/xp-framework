@@ -4,9 +4,12 @@
  * $Id$ 
  */
 
+  uses('util.Objects');
+
   /**
    * Represents the REST payload
    *
+   * @test  xp://net.xp_framework.unittest.webservices.rest.PayloadTest
    */
   class Payload extends Object {
     public $value, $properties;
@@ -31,7 +34,7 @@
     public function equals($cmp) {
       return (
         $cmp instanceof self && 
-        ($this->value instanceof Generic ? $this->value->equals($cmp->value) : $this->value === $cmp->value) &&
+        Objects::equal($cmp->value, $this->value) &&
         $this->properties === $cmp->properties
       );
     }

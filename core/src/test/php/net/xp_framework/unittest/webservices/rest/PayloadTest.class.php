@@ -71,6 +71,24 @@
      */
     #[@test]
     public function object_payloads_are_equal() {
+      $this->assertEquals(new Payload(new String('a')), new Payload(new String('a')));
+    }
+
+    /**
+     * Test equals()
+     * 
+     */
+    #[@test]
+    public function array_of_object_payloads_are_equal() {
+      $this->assertEquals(new Payload(array(new String('a'))), new Payload(array(new String('a'))));
+    }
+
+    /**
+     * Test equals()
+     * 
+     */
+    #[@test]
+    public function identical_object_payloads_are_equal() {
       $this->assertEquals(new Payload($this), new Payload($this));
     }
 
@@ -79,7 +97,7 @@
      * 
      */
     #[@test]
-    public function different_pobject_payloads_are_equal() {
+    public function different_object_payloads_are_not_equal() {
       $this->assertNotEquals(new Payload($this), new Payload(new Object()));
     }
 
