@@ -673,8 +673,8 @@
      */
     protected function isoStrings() {
       return array(
-        array('Test', 4),
-        array('\u00fcbercoder', 9)
+        array('"Test"', 4),
+        array('"\u00fcbercoder"', 9)
       );
     }
 
@@ -685,8 +685,8 @@
      */
     protected function unicodeStrings() {
       return array(
-        array('30,00 \u20ac', 7),                     // ISO-8859-15, the EUR symbol
-        array('Test in chinese: \u6d4b\u8bd5', 19)
+        array('"30,00 \u20ac"', 7),                     // ISO-8859-15, the EUR symbol
+        array('"Test in chinese: \u6d4b\u8bd5"', 19)
       );
     }
 
@@ -717,7 +717,7 @@
       );
       $this->assertProcess(
         200, array('Content-Type: text/json'), (string)$length,
-        $route, $this->newRequest(array(), '"'.$text.'"')
+        $route, $this->newRequest(array(), $text)
       );
     }
 
@@ -740,7 +740,7 @@
       );
       $this->assertProcess(
         200, array('Content-Type: text/json'), (string)$length,
-        $route, $this->newRequest(array(), '"'.$text.'"')
+        $route, $this->newRequest(array(), $text)
       );
     }
 
@@ -762,7 +762,7 @@
       );
       $this->assertProcess(
         200, array('Content-Type: text/json'), (string)$length,
-        $route, $this->newRequest(array(), '"'.$text.'"')
+        $route, $this->newRequest(array(), $text)
       );
     }
   }
