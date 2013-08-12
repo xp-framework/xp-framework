@@ -105,5 +105,14 @@
     public function offsetUnset($offset) {
       throw new IllegalAccessException('Read-only');
     }
+
+    /**
+     * String cast overloading
+     *
+     * @return  string
+     */
+    public function __toString() {
+      return $this->node->getContent();
+    }
   }
 ?>

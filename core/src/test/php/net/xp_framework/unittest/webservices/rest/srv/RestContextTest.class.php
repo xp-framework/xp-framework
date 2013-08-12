@@ -674,7 +674,9 @@
     protected function isoInput() {
       return array(
         array('text/json', '"Test"', 4),
-        array('text/json', '"\u00fcbercoder"', 9)
+        array('text/json', '"\u00fcbercoder"', 9),
+        array('text/xml', '<input>Test</input>', 4),
+        array('text/xml', '<input>&#x00fc;bercoder</input>', 9)
       );
     }
 
@@ -686,7 +688,9 @@
     protected function unicodeInput() {
       return array(
         array('text/json', '"30,00 \u20ac"', 7),                     // ISO-8859-15, the EUR symbol
-        array('text/json', '"Test in chinese: \u6d4b\u8bd5"', 19)
+        array('text/json', '"Test in chinese: \u6d4b\u8bd5"', 19),
+        array('text/xml', '<input>30,00 &#x20ac;</input>', 7),
+        array('text/xml', '<input>Test in chinese: &#x6d4b;&#x8bd5;</input>', 19)
       );
     }
 
