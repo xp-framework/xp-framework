@@ -691,7 +691,7 @@
     }
 
     /**
-     * Returns JSON strings
+     * Returns JSON input
      *
      * @return var[]
      */
@@ -700,7 +700,7 @@
     }
 
     #[@test, @values('allInput')]
-    public function process_string($contentType, $text, $length) {
+    public function process_string($contentType, $input, $length) {
       $handler= newinstance('lang.Object', array(), '{
         #[@webmethod(verb= "POST")]
         public function fixture(String $input) {
@@ -717,12 +717,12 @@
       );
       $this->assertProcess(
         200, array('Content-Type: text/json'), (string)$length,
-        $route, $this->newRequest(array(), $text)
+        $route, $this->newRequest(array(), $input)
       );
     }
 
     #[@test, @values('isoInput')]
-    public function process_string_primitive($contentType, $text, $length) {
+    public function process_string_primitive($contentType, $input, $length) {
       $handler= newinstance('lang.Object', array(), '{
         /** @param string input */
         #[@webmethod(verb= "POST")]
@@ -740,12 +740,12 @@
       );
       $this->assertProcess(
         200, array('Content-Type: text/json'), (string)$length,
-        $route, $this->newRequest(array(), $text)
+        $route, $this->newRequest(array(), $input)
       );
     }
 
     #[@test, @values('isoInput')]
-    public function process_var_primitive($contentType, $text, $length) {
+    public function process_var_primitive($contentType, $input, $length) {
       $handler= newinstance('lang.Object', array(), '{
         #[@webmethod(verb= "POST")]
         public function fixture($input) {
@@ -762,7 +762,7 @@
       );
       $this->assertProcess(
         200, array('Content-Type: text/json'), (string)$length,
-        $route, $this->newRequest(array(), $text)
+        $route, $this->newRequest(array(), $input)
       );
     }
   }
