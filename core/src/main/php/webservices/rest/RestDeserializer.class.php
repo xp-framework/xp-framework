@@ -75,7 +75,7 @@
      */
     public function convert($type, $data) {
       if (NULL === $type || $type->equals(Type::$VAR)) {  // No conversion
-        return $data;
+        return is_string($data) ? utf8_decode($data) : $data;
       } else if (NULL === $data) {                        // Valid for any type
         return NULL;
       } else if ($type->equals(XPClass::forName('lang.types.String'))) {

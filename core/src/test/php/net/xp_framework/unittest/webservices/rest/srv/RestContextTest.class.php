@@ -666,12 +666,40 @@
       $this->assertNull($this->fixture->getMarshaller('unittest.TestCase'));
     }
 
-    #[@test, @values(array(
-    #  array('Test', 4),
-    #  array('\u00fcbercoder', 9),
-    #  array('30,00 \u20ac', 7),
-    #  array('Test in chinese: \u6d4b\u8bd5', 19)
-    #))]
+    /**
+     * Returns JSON strings convertible to ISO-8859-1
+     *
+     * @return var[]
+     */
+    protected function isoStrings() {
+      return array(
+        array('Test', 4),
+        array('\u00fcbercoder', 9)
+      );
+    }
+
+    /**
+     * Returns JSON strings not convertible to ISO-8859-1
+     *
+     * @return var[]
+     */
+    protected function unicodeStrings() {
+      return array(
+        array('30,00 \u20ac', 7),                     // ISO-8859-15, the EUR symbol
+        array('Test in chinese: \u6d4b\u8bd5', 19)
+      );
+    }
+
+    /**
+     * Returns JSON strings
+     *
+     * @return var[]
+     */
+    protected function allStrings() {
+      return array_merge($this->isoStrings(), $this->unicodeStrings());
+    }
+
+    #[@test, @values('allStrings')]
     public function process_string($text, $length) {
       $handler= newinstance('lang.Object', array(), '{
         #[@webmethod(verb= "POST")]
@@ -689,14 +717,11 @@
       );
       $this->assertProcess(
         200, array('Content-Type: text/json'), (string)$length,
-        $route, $this->newRequest(array(), '{ "input" : "'.$text.'" }')
+        $route, $this->newRequest(array(), '"'.$text.'"')
       );
     }
 
-    #[@test, @values(array(
-    #  array('Test', 4),
-    #  array('\u00fcbercoder', 9)
-    #))]
+    #[@test, @values('isoStrings')]
     public function process_string_primitive($text, $length) {
       $handler= newinstance('lang.Object', array(), '{
         /** @param string input */
@@ -715,7 +740,29 @@
       );
       $this->assertProcess(
         200, array('Content-Type: text/json'), (string)$length,
-        $route, $this->newRequest(array(), '{ "input" : "'.$text.'" }')
+        $route, $this->newRequest(array(), '"'.$text.'"')
+      );
+    }
+
+    #[@test, @values('isoStrings')]
+    public function process_var_primitive($text, $length) {
+      $handler= newinstance('lang.Object', array(), '{
+        #[@webmethod(verb= "POST")]
+        public function fixture($input) {
+          return strlen($input);
+        }
+      }');
+      $route= array(
+        'handler'  => $handler->getClass(),
+        'target'   => $handler->getClass()->getMethod('fixture'),
+        'params'   => array('input' => new RestParamSource('input', ParamReader::$BODY)),
+        'segments' => array(),
+        'input'    => 'text/json',
+        'output'   => 'text/json'
+      );
+      $this->assertProcess(
+        200, array('Content-Type: text/json'), (string)$length,
+        $route, $this->newRequest(array(), '"'.$text.'"')
       );
     }
   }
