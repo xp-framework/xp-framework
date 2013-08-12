@@ -667,26 +667,26 @@
     }
 
     /**
-     * Returns JSON strings convertible to ISO-8859-1
+     * Returns input convertible to ISO-8859-1
      *
      * @return var[]
      */
-    protected function isoStrings() {
+    protected function isoInput() {
       return array(
-        array('"Test"', 4),
-        array('"\u00fcbercoder"', 9)
+        array('text/json', '"Test"', 4),
+        array('text/json', '"\u00fcbercoder"', 9)
       );
     }
 
     /**
-     * Returns JSON strings not convertible to ISO-8859-1
+     * Returns input not convertible to ISO-8859-1
      *
      * @return var[]
      */
-    protected function unicodeStrings() {
+    protected function unicodeInput() {
       return array(
-        array('"30,00 \u20ac"', 7),                     // ISO-8859-15, the EUR symbol
-        array('"Test in chinese: \u6d4b\u8bd5"', 19)
+        array('text/json', '"30,00 \u20ac"', 7),                     // ISO-8859-15, the EUR symbol
+        array('text/json', '"Test in chinese: \u6d4b\u8bd5"', 19)
       );
     }
 
@@ -695,12 +695,12 @@
      *
      * @return var[]
      */
-    protected function allStrings() {
-      return array_merge($this->isoStrings(), $this->unicodeStrings());
+    protected function allInput() {
+      return array_merge($this->isoInput(), $this->unicodeInput());
     }
 
-    #[@test, @values('allStrings')]
-    public function process_string($text, $length) {
+    #[@test, @values('allInput')]
+    public function process_string($contentType, $text, $length) {
       $handler= newinstance('lang.Object', array(), '{
         #[@webmethod(verb= "POST")]
         public function fixture(String $input) {
@@ -712,7 +712,7 @@
         'target'   => $handler->getClass()->getMethod('fixture'),
         'params'   => array('input' => new RestParamSource('input', ParamReader::$BODY)),
         'segments' => array(),
-        'input'    => 'text/json',
+        'input'    => $contentType,
         'output'   => 'text/json'
       );
       $this->assertProcess(
@@ -721,8 +721,8 @@
       );
     }
 
-    #[@test, @values('isoStrings')]
-    public function process_string_primitive($text, $length) {
+    #[@test, @values('isoInput')]
+    public function process_string_primitive($contentType, $text, $length) {
       $handler= newinstance('lang.Object', array(), '{
         /** @param string input */
         #[@webmethod(verb= "POST")]
@@ -735,7 +735,7 @@
         'target'   => $handler->getClass()->getMethod('fixture'),
         'params'   => array('input' => new RestParamSource('input', ParamReader::$BODY)),
         'segments' => array(),
-        'input'    => 'text/json',
+        'input'    => $contentType,
         'output'   => 'text/json'
       );
       $this->assertProcess(
@@ -744,8 +744,8 @@
       );
     }
 
-    #[@test, @values('isoStrings')]
-    public function process_var_primitive($text, $length) {
+    #[@test, @values('isoInput')]
+    public function process_var_primitive($contentType, $text, $length) {
       $handler= newinstance('lang.Object', array(), '{
         #[@webmethod(verb= "POST")]
         public function fixture($input) {
@@ -757,7 +757,7 @@
         'target'   => $handler->getClass()->getMethod('fixture'),
         'params'   => array('input' => new RestParamSource('input', ParamReader::$BODY)),
         'segments' => array(),
-        'input'    => 'text/json',
+        'input'    => $contentType,
         'output'   => 'text/json'
       );
       $this->assertProcess(
