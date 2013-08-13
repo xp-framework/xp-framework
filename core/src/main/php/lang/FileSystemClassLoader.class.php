@@ -84,7 +84,10 @@
      * @return  lang.XPClass
      */
     public function classFromUri($uri) {
-      if (is_file($this->path.DIRECTORY_SEPARATOR.$uri)) {
+      if (
+        0 === substr_compare($uri, xp::CLASS_FILE_EXT, -strlen(xp::CLASS_FILE_EXT)) &&
+        is_file($this->path.DIRECTORY_SEPARATOR.$uri)
+      ) {
         return $this->loadClass(strtr(
           substr($uri, 0, -strlen(xp::CLASS_FILE_EXT)),
           '/'.DIRECTORY_SEPARATOR,

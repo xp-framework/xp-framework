@@ -388,9 +388,6 @@
      * @return  lang.XPClass
      */
     public function classFromUri($uri) {
-      if (0 !== substr_compare($uri, xp::CLASS_FILE_EXT, -strlen(xp::CLASS_FILE_EXT))) {
-        throw new IllegalArgumentException('URI does not reference a class: '.$uri);
-      }
       foreach (self::$delegates as $delegate) {
         if (NULL !== ($class= $delegate->classFromUri($uri))) return $class;
       }

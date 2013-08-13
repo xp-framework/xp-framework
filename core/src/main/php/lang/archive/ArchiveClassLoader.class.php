@@ -65,6 +65,26 @@
     }
 
     /**
+     * Find the class by a given URI
+     *
+     * @param   string uri
+     * @return  lang.XPClass
+     */
+    public function classFromUri($uri) {
+      if (
+        0 === substr_compare($uri, xp::CLASS_FILE_EXT, -strlen(xp::CLASS_FILE_EXT)) &&
+        is_file($this->archive.strtr($uri, DIRECTORY_SEPARATOR, '/'))
+      ) {
+        return $this->loadClass(strtr(
+          substr($uri, 0, -strlen(xp::CLASS_FILE_EXT)),
+          '/'.DIRECTORY_SEPARATOR,
+          '..'
+        ));
+      }
+      return NULL;
+    }
+
+    /**
      * Loads a resource.
      *
      * @param   string string name of resource

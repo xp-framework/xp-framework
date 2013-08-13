@@ -338,7 +338,7 @@
      *
      */
     #[@test]
-    public function fromRelativeUri() {
+    public function fromRelativeUriInFileSystemCL() {
       $cl= ClassLoader::getDefault();
       $this->assertEquals(
         $cl->loadClass('net.xp_framework.unittest.reflection.classes.ClassOne'),
@@ -347,12 +347,25 @@
     }
 
     /**
-     * Test classFromUri() with non-class URI
+     * Test classFromUri() with relative file name
      *
      */
-    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/URI does not reference a class/')]
-    public function fromNonClassUri() {
-      ClassLoader::getDefault()->classFromUri('Class.php');
+    #[@test]
+    public function fromRelativeUriInArchiveCL() {
+      $cl= ClassLoader::getDefault();
+      $this->assertEquals(
+        $cl->loadClass('net.xp_framework.unittest.reflection.classes.ClassThree'),
+        $cl->classFromUri('net/xp_framework/unittest/reflection/classes/ClassThree.class.php')
+      );
+    }
+
+    /**
+     * Test classFromUri() with non-existant class
+     *
+     */
+    #[@test]
+    public function fromNonExistantUri() {
+      $this->assertNull(ClassLoader::getDefault()->classFromUri('Does-not-exist.class.php'));
     }
   }
 ?>
