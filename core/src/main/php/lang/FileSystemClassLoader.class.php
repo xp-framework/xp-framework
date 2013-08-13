@@ -78,6 +78,23 @@
     }
 
     /**
+     * Find the class by a given URI
+     *
+     * @param   string uri
+     * @return  lang.XPClass
+     */
+    public function classFromUri($uri) {
+      if (is_file($this->path.DIRECTORY_SEPARATOR.$uri)) {
+        return $this->loadClass(strtr(
+          substr($uri, 0, -strlen(xp::CLASS_FILE_EXT)),
+          '/'.DIRECTORY_SEPARATOR,
+          '..'
+        ));
+      }
+      return NULL;
+    }
+
+    /**
      * Loads a resource.
      *
      * @param   string filename name of resource
