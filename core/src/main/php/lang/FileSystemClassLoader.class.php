@@ -84,17 +84,24 @@
      * @return  lang.XPClass
      */
     public function classFromUri($uri) {
-      if (
-        0 === substr_compare($uri, xp::CLASS_FILE_EXT, -strlen(xp::CLASS_FILE_EXT)) &&
-        is_file($this->path.DIRECTORY_SEPARATOR.$uri)
-      ) {
-        return $this->loadClass(strtr(
-          substr($uri, 0, -strlen(xp::CLASS_FILE_EXT)),
-          '/'.DIRECTORY_SEPARATOR,
-          '..'
-        ));
+      if (0 !== substr_compare($uri, xp::CLASS_FILE_EXT, -strlen(xp::CLASS_FILE_EXT))) return NULL;
+
+      // Check for absolute path first - see if it that's inside this CL path
+      if ((DIRECTORY_SEPARATOR === $uri{0} || (':' === $uri{1} && '\\' === $uri{2}))) {
+        $absolute= realpath($uri);
+        $l= strlen($this->path);
+        if (0 !== strncmp($absolute, $this->path, $l) || !is_file($absolute)) return NULL;
+      } else if (is_file($this->path.DIRECTORY_SEPARATOR.$uri)) {
+        $l= 0;
+      } else {
+        return NULL;
       }
-      return NULL;
+
+      return $this->loadClass(strtr(
+        substr($uri, $l, -strlen(xp::CLASS_FILE_EXT)),
+        '/'.DIRECTORY_SEPARATOR,
+        '..'
+      ));
     }
 
     /**
