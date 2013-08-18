@@ -20,7 +20,11 @@
      * @param  string $contents
      */
     protected static function newFile($name, $contents) {
-      FileUtil::setContents(new File(self::$temp, $name), $contents);
+      $file= new File(self::$temp, $name);
+      $path= new Folder($file->getPath());
+      $path->exists() || $path->create();
+
+      FileUtil::setContents($file, $contents);
     }
 
     /**
@@ -35,7 +39,7 @@
         $path= $name;
         $ns= '';
       } else {
-        $class= substr($name, $p);
+        $class= substr($name, $p + 1);
         $path= strtr($name, '.', DIRECTORY_SEPARATOR);
         $ns= 'namespace '.strtr(substr($name, 0, $p), '.', '\\').';';
       }
@@ -44,7 +48,7 @@
         '<?php %s %s %s extends \lang\Object { }',
         $ns,
         $type,
-        $name
+        $class
       ));
     }
 
@@ -57,6 +61,7 @@
       self::$temp->create();
 
       self::newType('class', 'FSCLT1');
+      self::newType('class', 'net.xp_framework.unittest.reflection.FSCLT2');
       self::newFile('FSCLT1.txt', 'This is not a class');
     }
 
@@ -75,8 +80,21 @@
       self::$temp->unlink();
     }
 
+    /**
+     * Compose a path from a list of elements
+     *
+     * @param  string... args
+     * @return string
+     */
+    protected function compose() {
+      return implode(DIRECTORY_SEPARATOR, array_map(
+        function($e) { return rtrim($e, DIRECTORY_SEPARATOR); },
+        func_get_args()
+      ));
+    }
+
     #[@test]
-    public function from_a_relative_path() {
+    public function from_a_relative_path_in_root() {
       $this->assertEquals(
         $this->fixture->loadClass('FSCLT1'),
         $this->fixture->classFromUri('FSCLT1.class.php')
@@ -84,10 +102,26 @@
     }
 
     #[@test]
-    public function from_an_absolute_path() {
+    public function from_a_relative_path() {
+      $this->assertEquals(
+        $this->fixture->loadClass('net.xp_framework.unittest.reflection.FSCLT2'),
+        $this->fixture->classFromUri($this->compose('net', 'xp_framework', 'unittest', 'reflection', 'FSCLT2.class.php'))
+      );
+    }
+
+    #[@test]
+    public function from_an_absolute_path_in_root() {
       $this->assertEquals(
         $this->fixture->loadClass('FSCLT1'),
-        $this->fixture->classFromUri(self::$temp->getURI().'FSCLT1.class.php')
+        $this->fixture->classFromUri($this->compose(self::$temp->getURI(), 'FSCLT1.class.php'))
+      );
+    }
+
+    #[@test]
+    public function from_an_absolute_path() {
+      $this->assertEquals(
+        $this->fixture->loadClass('net.xp_framework.unittest.reflection.FSCLT2'),
+        $this->fixture->classFromUri($this->compose(self::$temp->getURI(), 'net', 'xp_framework', 'unittest', 'reflection', 'FSCLT2.class.php'))
       );
     }
 
