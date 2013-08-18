@@ -60,9 +60,9 @@
       self::$base= new Folder(System::tempDir(), 'fsclt');
       self::$base->create();
 
-      self::newType('class', 'FSCLT1');
-      self::newType('class', 'net.xp_framework.unittest.reflection.FSCLT2');
-      self::newFile('FSCLT1.txt', 'This is not a class');
+      self::newType('class', 'CLT1');
+      self::newType('class', 'net.xp_framework.unittest.reflection.CLT2');
+      self::newFile('CLT1.txt', 'This is not a class');
     }
 
     /**
@@ -96,43 +96,43 @@
     #[@test]
     public function from_a_relative_path_in_root() {
       $this->assertEquals(
-        $this->fixture->loadClass('FSCLT1'),
-        $this->fixture->classFromUri('FSCLT1.class.php')
+        $this->fixture->loadClass('CLT1'),
+        $this->fixture->classFromUri('CLT1.class.php')
       );
     }
 
     #[@test]
     public function from_a_relative_path() {
       $this->assertEquals(
-        $this->fixture->loadClass('net.xp_framework.unittest.reflection.FSCLT2'),
-        $this->fixture->classFromUri($this->compose('net', 'xp_framework', 'unittest', 'reflection', 'FSCLT2.class.php'))
+        $this->fixture->loadClass('net.xp_framework.unittest.reflection.CLT2'),
+        $this->fixture->classFromUri($this->compose('net', 'xp_framework', 'unittest', 'reflection', 'CLT2.class.php'))
       );
     }
 
     #[@test]
     public function from_an_absolute_path_in_root() {
       $this->assertEquals(
-        $this->fixture->loadClass('FSCLT1'),
-        $this->fixture->classFromUri($this->compose(self::$base->getURI(), 'FSCLT1.class.php'))
+        $this->fixture->loadClass('CLT1'),
+        $this->fixture->classFromUri($this->compose(self::$base->getURI(), 'CLT1.class.php'))
       );
     }
 
     #[@test]
     public function from_an_absolute_path() {
       $this->assertEquals(
-        $this->fixture->loadClass('net.xp_framework.unittest.reflection.FSCLT2'),
-        $this->fixture->classFromUri($this->compose(self::$base->getURI(), 'net', 'xp_framework', 'unittest', 'reflection', 'FSCLT2.class.php'))
+        $this->fixture->loadClass('net.xp_framework.unittest.reflection.CLT2'),
+        $this->fixture->classFromUri($this->compose(self::$base->getURI(), 'net', 'xp_framework', 'unittest', 'reflection', 'CLT2.class.php'))
       );
     }
 
     #[@test]
     public function from_an_absolute_path_not_inside_cl_base() {
-      $this->assertNull($this->fixture->classFromUri($this->compose(NULL, 'FSCLT1.class.php')));
+      $this->assertNull($this->fixture->classFromUri($this->compose(NULL, 'CLT1.class.php')));
     }
 
     #[@test]
     public function from_non_class_file() {
-      $this->assertNull($this->fixture->classFromUri('FSCLT1.txt'));
+      $this->assertNull($this->fixture->classFromUri('CLT1.txt'));
     }
   }
 ?>
