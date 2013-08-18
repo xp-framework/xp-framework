@@ -29,7 +29,7 @@
      * @param  string $type class type, either "interface" or "class"
      * @param  string $name fully qualified class name
      */
-    protected static function define($type, $name) {
+    protected static function newType($type, $name) {
       if (FALSE === ($p= strrpos($name, '.'))) {
         $class= $name;
         $path= $name;
@@ -56,7 +56,7 @@
       self::$temp= new Folder(System::tempDir(), 'fsclt');
       self::$temp->create();
 
-      self::define('class', 'FSCLT1');
+      self::newType('class', 'FSCLT1');
       self::newFile('FSCLT1.txt', 'This is not a class');
     }
 
