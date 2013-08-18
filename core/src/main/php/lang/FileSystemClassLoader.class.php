@@ -90,7 +90,7 @@
       if ((DIRECTORY_SEPARATOR === $uri{0} || (':' === $uri{1} && '\\' === $uri{2}))) {
         $absolute= realpath($uri);
         $l= strlen($this->path);
-        if (0 !== strncmp($absolute, $this->path, $l) || !is_file($absolute)) return NULL;
+        if (FALSE === $absolute || 0 !== strncmp($absolute, $this->path, $l) || !is_file($absolute)) return NULL;
       } else if (is_file($this->path.DIRECTORY_SEPARATOR.$uri)) {
         $l= 0;
       } else {
