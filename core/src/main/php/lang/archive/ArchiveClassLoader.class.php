@@ -95,10 +95,10 @@
         }
       }
 
-      if (is_file($archive.substr($path, 1))) {
-        return $this->loadClass(strtr(substr($path, 1, -strlen(xp::CLASS_FILE_EXT)), '/', '.'));
-      }
-      return NULL;
+      return is_file($archive.substr($path, 1))
+        ? $this->loadClass(strtr(substr($path, 1, -strlen(xp::CLASS_FILE_EXT)), '/', '.'))
+        : NULL
+      ;
     }
 
     /**
