@@ -12,6 +12,16 @@
   abstract class ClassFromUriBase extends Object {
 
     /**
+     * Lifecycle: Initializes this base
+     *
+     * @param  var initializer A function to execute inside created base
+     */
+    public function initialize($initializer) {
+      $this->create();
+      $initializer($this);
+    }
+
+    /**
      * Lifecycle: Creates this base
      */
     public abstract function create();

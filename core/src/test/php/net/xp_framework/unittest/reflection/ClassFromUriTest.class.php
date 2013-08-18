@@ -25,22 +25,16 @@
     }
 
     /**
-     * Creates base
+     * Creates base and defines fixture classes
      */
     #[@beforeClass]
     public static function createBase() {
       self::$base= static::baseImpl();
-      self::$base->create();
-    }
-
-    /**
-     * Defines fixture classes
-     */
-    #[@beforeClass]
-    public static function defineClasses() {
-      self::$base->newType('class', 'CLT1');
-      self::$base->newType('class', 'net.xp_framework.unittest.reflection.CLT2');
-      self::$base->newFile('CLT1.txt', 'This is not a class');
+      self::$base->initialize(function($self) {
+        $self->newType('class', 'CLT1');
+        $self->newType('class', 'net.xp_framework.unittest.reflection.CLT2');
+        $self->newFile('CLT1.txt', 'This is not a class');
+      });
     }
 
     /**
