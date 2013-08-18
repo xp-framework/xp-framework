@@ -10,7 +10,7 @@
    * TestCase for classloading
    */
   class FileSystemClassLoaderTest extends TestCase {
-    protected static $temp;
+    protected static $base;
     protected $fixture;
 
     /**
@@ -20,7 +20,7 @@
      * @param  string $contents
      */
     protected static function newFile($name, $contents) {
-      $file= new File(self::$temp, $name);
+      $file= new File(self::$base, $name);
       $path= new Folder($file->getPath());
       $path->exists() || $path->create();
 
@@ -57,8 +57,8 @@
      */
     #[@beforeClass]
     public static function defineClasses() {
-      self::$temp= new Folder(System::tempDir(), 'fsclt');
-      self::$temp->create();
+      self::$base= new Folder(System::tempDir(), 'fsclt');
+      self::$base->create();
 
       self::newType('class', 'FSCLT1');
       self::newType('class', 'net.xp_framework.unittest.reflection.FSCLT2');
@@ -69,7 +69,7 @@
      * Creates fixture.
      */
     public function setUp() {
-      $this->fixture= new FileSystemClassLoader(self::$temp->getURI());
+      $this->fixture= new FileSystemClassLoader(self::$base->getURI());
     }
 
     /**
@@ -77,7 +77,7 @@
      */
     #[@afterClass]
     public static function removeTempDir() {
-      self::$temp->unlink();
+      self::$base->unlink();
     }
 
     /**
@@ -113,7 +113,7 @@
     public function from_an_absolute_path_in_root() {
       $this->assertEquals(
         $this->fixture->loadClass('FSCLT1'),
-        $this->fixture->classFromUri($this->compose(self::$temp->getURI(), 'FSCLT1.class.php'))
+        $this->fixture->classFromUri($this->compose(self::$base->getURI(), 'FSCLT1.class.php'))
       );
     }
 
@@ -121,7 +121,7 @@
     public function from_an_absolute_path() {
       $this->assertEquals(
         $this->fixture->loadClass('net.xp_framework.unittest.reflection.FSCLT2'),
-        $this->fixture->classFromUri($this->compose(self::$temp->getURI(), 'net', 'xp_framework', 'unittest', 'reflection', 'FSCLT2.class.php'))
+        $this->fixture->classFromUri($this->compose(self::$base->getURI(), 'net', 'xp_framework', 'unittest', 'reflection', 'FSCLT2.class.php'))
       );
     }
 
