@@ -30,31 +30,6 @@
     }
 
     /**
-     * Defines a type
-     *
-     * @param  string $type class type, either "interface" or "class"
-     * @param  string $name fully qualified class name
-     */
-    protected static function newType($type, $name) {
-      if (FALSE === ($p= strrpos($name, '.'))) {
-        $class= $name;
-        $path= $name;
-        $ns= '';
-      } else {
-        $class= substr($name, $p + 1);
-        $path= strtr($name, '.', DIRECTORY_SEPARATOR);
-        $ns= 'namespace '.strtr(substr($name, 0, $p), '.', '\\').';';
-      }
-
-      self::$base->newFile($path.xp::CLASS_FILE_EXT, sprintf(
-        '<?php %s %s %s extends \lang\Object { }',
-        $ns,
-        $type,
-        $class
-      ));
-    }
-
-    /**
      * Defines fixture classes in a temp dir
      */
     #[@beforeClass]
@@ -62,8 +37,8 @@
       self::$base= static::baseImpl();
       self::$base->create();
 
-      self::newType('class', 'CLT1');
-      self::newType('class', 'net.xp_framework.unittest.reflection.CLT2');
+      self::$base->newType('class', 'CLT1');
+      self::$base->newType('class', 'net.xp_framework.unittest.reflection.CLT2');
       self::$base->newFile('CLT1.txt', 'This is not a class');
     }
 

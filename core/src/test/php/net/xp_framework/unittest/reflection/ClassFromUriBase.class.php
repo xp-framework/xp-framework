@@ -5,21 +5,28 @@
  */
 
   /**
-   * TestCase for classloading
+   * Represents the base underlying the given class loader implementation
+   *
+   * @see   xp://net.xp_framework.unittest.reflection.ClassFromUriTest
    */
-  interface ClassFromUriBase {
+  abstract class ClassFromUriBase extends Object {
 
     /**
-     * Creates this base
+     * Lifecycle: Creates this base
      */
-    public function create();
+    public abstract function create();
+
+    /**
+     * Lifecycle: Deletes this base
+     */
+    public abstract function delete();
 
     /**
      * Returns the path for this URI base
      *
      * @return string
      */
-    public function path();
+    public abstract function path();
 
     /**
      * Creates a new file (in this underlying base)
@@ -27,11 +34,31 @@
      * @param  string $name
      * @param  string $contents
      */
-    public function newFile($name, $contents);
+    public abstract function newFile($name, $contents);
 
     /**
-     * Deletes this base
+     * Defines a type
+     *
+     * @param  string $type class type, either "interface" or "class"
+     * @param  string $name fully qualified class name
      */
-    public function delete();
+    public function newType($type, $name) {
+      if (FALSE === ($p= strrpos($name, '.'))) {
+        $class= $name;
+        $path= $name;
+        $ns= '';
+      } else {
+        $class= substr($name, $p + 1);
+        $path= strtr($name, '.', DIRECTORY_SEPARATOR);
+        $ns= 'namespace '.strtr(substr($name, 0, $p), '.', '\\').';';
+      }
+
+      $this->newFile($path.xp::CLASS_FILE_EXT, sprintf(
+        '<?php %s %s %s extends \lang\Object { }',
+        $ns,
+        $type,
+        $class
+      ));
+    }
   }
 ?>
