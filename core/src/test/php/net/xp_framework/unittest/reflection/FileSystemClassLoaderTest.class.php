@@ -88,7 +88,10 @@
      */
     protected function compose() {
       return implode(DIRECTORY_SEPARATOR, array_map(
-        function($e) { return rtrim($e, DIRECTORY_SEPARATOR); },
+        function($e) { return $e instanceof Folder || $e instanceof File
+          ? rtrim($e->getURI(), DIRECTORY_SEPARATOR)
+          : rtrim($e, DIRECTORY_SEPARATOR);
+        },
         func_get_args()
       ));
     }
@@ -113,7 +116,7 @@
     public function from_an_absolute_path_in_root() {
       $this->assertEquals(
         $this->fixture->loadClass('CLT1'),
-        $this->fixture->classFromUri($this->compose(self::$base->getURI(), 'CLT1.class.php'))
+        $this->fixture->classFromUri($this->compose(self::$base, 'CLT1.class.php'))
       );
     }
 
@@ -121,7 +124,7 @@
     public function from_an_absolute_path() {
       $this->assertEquals(
         $this->fixture->loadClass('net.xp_framework.unittest.reflection.CLT2'),
-        $this->fixture->classFromUri($this->compose(self::$base->getURI(), 'net', 'xp_framework', 'unittest', 'reflection', 'CLT2.class.php'))
+        $this->fixture->classFromUri($this->compose(self::$base, 'net', 'xp_framework', 'unittest', 'reflection', 'CLT2.class.php'))
       );
     }
 
