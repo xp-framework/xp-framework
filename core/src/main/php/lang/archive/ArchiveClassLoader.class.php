@@ -74,7 +74,9 @@
       if (0 !== substr_compare($uri, xp::CLASS_FILE_EXT, -strlen(xp::CLASS_FILE_EXT))) return NULL;
 
       // Absolute URIs have the form "xar://containing.xar?the/classes/Name.class.php"
-      if (FALSE !== ($p= strpos($uri, '?'))) {
+      if ((DIRECTORY_SEPARATOR === $uri{0} || (':' === $uri{1} && '\\' === $uri{2}))) {
+        return NULL;
+      } else if (FALSE !== ($p= strpos($uri, '?'))) {
         $archive= substr($uri, 0, $p + 1);
         if ($archive !== $this->archive) return NULL;
         $uri= substr($uri, $p + 1);
