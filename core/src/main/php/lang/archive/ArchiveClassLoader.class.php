@@ -23,6 +23,7 @@
    * </code>
    *
    * @test  xp://net.xp_framework.unittest.core.ArchiveClassLoaderTest
+   * @test  xp://net.xp_framework.unittest.reflection.ClassFromArchiveTest
    * @see   xp://lang.ClassLoader
    * @see   xp://lang.archive.Archive
    */
