@@ -96,11 +96,7 @@
       }
 
       if (is_file($archive.substr($path, 1))) {
-        return $this->loadClass(strtr(
-          substr($path, 1, -strlen(xp::CLASS_FILE_EXT)),
-          '/'.DIRECTORY_SEPARATOR,
-          '..'
-        ));
+        return $this->loadClass(strtr(substr($path, 1, -strlen(xp::CLASS_FILE_EXT)), '/', '.'));
       }
       return NULL;
     }
