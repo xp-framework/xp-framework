@@ -10,6 +10,7 @@
    * Loads a class from the filesystem
    * 
    * @test  xp://net.xp_framework.unittest.reflection.ClassLoaderTest
+   * @test  xp://net.xp_framework.unittest.reflection.ClassFromFileSystemTest
    * @see   xp://lang.XPClass#forName
    */
   class FileSystemClassLoader extends AbstractClassLoader {

@@ -4,27 +4,29 @@
  * $Id$ 
  */
 
-  uses('unittest.TestCase', 'lang.FileSystemClassLoader', 'io.File', 'io.FileUtil', 'io.Folder', 'lang.System');
+  uses('unittest.TestCase', 'net.xp_framework.unittest.reflection.ClassFromUriBase');
 
   /**
    * TestCase for classloading
    */
-  class FileSystemClassLoaderTest extends TestCase {
+  abstract class ClassFromUriTest extends TestCase {
     protected static $base;
     protected $fixture;
 
     /**
-     * Creates a new file (in the temporary directory)
+     * Creates fixture
      *
-     * @param  string $name
-     * @param  string $contents
+     * @return   lang.IClassLoader
      */
-    protected static function newFile($name, $contents) {
-      $file= new File(self::$base, $name);
-      $path= new Folder($file->getPath());
-      $path->exists() || $path->create();
+    protected abstract function newFixture();
 
-      FileUtil::setContents($file, $contents);
+    /**
+     * Creates underlying base for class loader, e.g. a directory or a .XAR file
+     *
+     * @return  net.xp_framework.unittest.reflection.ClassFromUriBase
+     */
+    protected static function baseImpl() {
+      raise('lang.MethodNotImplementedException', 'Implement in subclass!', __FUNCTION__);
     }
 
     /**
@@ -44,7 +46,7 @@
         $ns= 'namespace '.strtr(substr($name, 0, $p), '.', '\\').';';
       }
 
-      self::newFile($path.xp::CLASS_FILE_EXT, sprintf(
+      self::$base->newFile($path.xp::CLASS_FILE_EXT, sprintf(
         '<?php %s %s %s extends \lang\Object { }',
         $ns,
         $type,
@@ -57,40 +59,40 @@
      */
     #[@beforeClass]
     public static function defineClasses() {
-      self::$base= new Folder(System::tempDir(), 'fsclt');
+      self::$base= static::baseImpl();
       self::$base->create();
 
       self::newType('class', 'CLT1');
       self::newType('class', 'net.xp_framework.unittest.reflection.CLT2');
-      self::newFile('CLT1.txt', 'This is not a class');
+      self::$base->newFile('CLT1.txt', 'This is not a class');
     }
 
     /**
      * Creates fixture.
      */
     public function setUp() {
-      $this->fixture= new FileSystemClassLoader(self::$base->getURI());
+      $this->fixture= $this->newFixture();
     }
 
     /**
-     * Removes temp dir created in `defineClasses()`.
+     * Removes base
      */
     #[@afterClass]
-    public static function removeTempDir() {
-      self::$base->unlink();
+    public static function cleanUp() {
+      self::$base->delete();
     }
 
     /**
      * Compose a path from a list of elements
      *
-     * @param  var... args either strings, io.File or io.Folder instances
+     * @param  var... args either strings or a ClassFromUriBase instance
      * @return string
      */
     protected function compose() {
+      $base= self::$base;
       return implode(DIRECTORY_SEPARATOR, array_map(
-        function($e) { return $e instanceof Folder || $e instanceof File
-          ? rtrim($e->getURI(), DIRECTORY_SEPARATOR)
-          : rtrim($e, DIRECTORY_SEPARATOR);
+        function($e) use($base) {
+          return $base->equals($e) ? $base->path() : rtrim($e, DIRECTORY_SEPARATOR);
         },
         func_get_args()
       ));
