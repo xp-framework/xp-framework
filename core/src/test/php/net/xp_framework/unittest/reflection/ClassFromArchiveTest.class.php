@@ -24,7 +24,7 @@
      * @return   lang.IClassLoader
      */
     protected function newFixture() {
-      return new ArchiveClassLoader(rtrim(self::$base->path(), '?'));
+      return new ArchiveClassLoader(self::$base->archive());
     }
 
     /**
@@ -58,8 +58,12 @@
           $this->t->addBytes(strtr($name, DIRECTORY_SEPARATOR, "/"), $contents);
         }
 
+        public function archive() {
+          return $this->t;
+        }
+
         public function path() {
-          return $this->t->getURI()."?";
+          return "xar://".$this->t->getURI()."?";
         }
       }');
     }
