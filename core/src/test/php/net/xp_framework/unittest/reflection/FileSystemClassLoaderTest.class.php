@@ -161,5 +161,15 @@
     public function from_non_class_file() {
       $this->assertNull($this->fixture->classFromUri('CLT1.txt'));
     }
+
+    #[@test]
+    public function from_directory() {
+      $this->assertNull($this->fixture->classFromUri($this->compose(self::$base, 'net', 'xp_framework')));
+    }
+
+    #[@test]
+    public function from_non_existant_file() {
+      $this->assertNull($this->fixture->classFromUri($this->compose(self::$base, 'NonExistant.File')));
+    }
   }
 ?>
