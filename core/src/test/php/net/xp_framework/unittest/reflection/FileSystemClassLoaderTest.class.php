@@ -113,6 +113,30 @@
     }
 
     #[@test]
+    public function from_a_relative_path_with_dot() {
+      $this->assertEquals(
+        $this->fixture->loadClass('CLT1'),
+        $this->fixture->classFromUri($this->compose('.', 'CLT1.class.php'))
+      );
+    }
+
+    #[@test]
+    public function from_a_relative_path_with_dot_dot() {
+      $this->assertEquals(
+        $this->fixture->loadClass('CLT1'),
+        $this->fixture->classFromUri($this->compose('net', 'xp_framework', '..', '..', 'CLT1.class.php'))
+      );
+    }
+
+    #[@test]
+    public function from_a_relative_path_with_multiple_directory_separators() {
+      $this->assertEquals(
+        $this->fixture->loadClass('CLT1'),
+        $this->fixture->classFromUri($this->compose('.', NULL, 'CLT1.class.php'))
+      );
+    }
+
+    #[@test]
     public function from_an_absolute_path_in_root() {
       $this->assertEquals(
         $this->fixture->loadClass('CLT1'),
