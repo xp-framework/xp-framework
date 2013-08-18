@@ -25,30 +25,22 @@
     }
 
     /**
-     * Creates fixture
-     *
-     * @return   lang.IClassLoader
-     */
-    protected abstract function newFixture();
-
-    /**
-     * Defines fixture classes in a temp dir
+     * Creates base
      */
     #[@beforeClass]
-    public static function defineClasses() {
+    public static function createBase() {
       self::$base= static::baseImpl();
       self::$base->create();
-
-      self::$base->newType('class', 'CLT1');
-      self::$base->newType('class', 'net.xp_framework.unittest.reflection.CLT2');
-      self::$base->newFile('CLT1.txt', 'This is not a class');
     }
 
     /**
-     * Creates fixture.
+     * Defines fixture classes
      */
-    public function setUp() {
-      $this->fixture= $this->newFixture();
+    #[@beforeClass]
+    public static function defineClasses() {
+      self::$base->newType('class', 'CLT1');
+      self::$base->newType('class', 'net.xp_framework.unittest.reflection.CLT2');
+      self::$base->newFile('CLT1.txt', 'This is not a class');
     }
 
     /**
@@ -57,6 +49,20 @@
     #[@afterClass]
     public static function cleanUp() {
       self::$base->delete();
+    }
+
+    /**
+     * Creates fixture.
+     *
+     * @return   lang.IClassLoader
+     */
+    protected abstract function newFixture();
+
+    /**
+     * Initializes fixture member with the results from `newFixture()`.
+     */
+    public function setUp() {
+      $this->fixture= $this->newFixture();
     }
 
     /**

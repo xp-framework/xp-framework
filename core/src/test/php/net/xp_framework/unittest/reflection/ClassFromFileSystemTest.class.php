@@ -41,6 +41,10 @@
           $this->t->create();
         }
 
+        public function delete() {
+          $this->t->unlink();
+        }
+
         public function newFile($name, $contents) {
           $file= new File($this->t, $name);
           $path= new Folder($file->getPath());
@@ -51,10 +55,6 @@
 
         public function path() {
           return rtrim($this->t->getURI(), DIRECTORY_SEPARATOR);
-        }
-
-        public function delete() {
-          $this->t->unlink();
         }
       }');
     }
