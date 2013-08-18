@@ -127,7 +127,7 @@
 
     #[@test]
     public function from_an_absolute_path_not_inside_cl_base() {
-      $this->assertNull($this->fixture->classFromUri(DIRECTORY_SEPARATOR.'FSCLT1.class.php'));
+      $this->assertNull($this->fixture->classFromUri($this->compose(NULL, 'FSCLT1.class.php')));
     }
 
     #[@test]
