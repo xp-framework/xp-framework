@@ -7,18 +7,13 @@
   uses('unittest.TestCase', 'net.xp_framework.unittest.reflection.ClassFromUriBase');
 
   /**
-   * TestCase for classloading
+   * TestCase for resolving classes from URIs using the `classFromUri()` method.
+   *
+   * @see  xp://net.xp_framework.unittest.reflection.ClassFromFileSystemTest
    */
   abstract class ClassFromUriTest extends TestCase {
     protected static $base;
     protected $fixture;
-
-    /**
-     * Creates fixture
-     *
-     * @return   lang.IClassLoader
-     */
-    protected abstract function newFixture();
 
     /**
      * Creates underlying base for class loader, e.g. a directory or a .XAR file
@@ -28,6 +23,13 @@
     protected static function baseImpl() {
       raise('lang.MethodNotImplementedException', 'Implement in subclass!', __FUNCTION__);
     }
+
+    /**
+     * Creates fixture
+     *
+     * @return   lang.IClassLoader
+     */
+    protected abstract function newFixture();
 
     /**
      * Defines fixture classes in a temp dir
