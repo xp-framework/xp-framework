@@ -83,7 +83,7 @@
     /**
      * Compose a path from a list of elements
      *
-     * @param  string... args
+     * @param  var... args either strings, io.File or io.Folder instances
      * @return string
      */
     protected function compose() {
