@@ -1,0 +1,67 @@
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  uses(
+    'net.xp_framework.unittest.reflection.ClassFromUriTest',
+    'lang.archive.ArchiveClassLoader',
+    'lang.archive.Archive',
+    'io.TempFile'
+  );
+
+  /**
+   * TestCase for classloading
+   *
+   * @see  xp://lang.ArchiveClassLoader#classFromUri
+   */
+  class ClassFromArchiveTest extends ClassFromUriTest {
+
+    /**
+     * Creates fixture
+     *
+     * @return   lang.IClassLoader
+     */
+    protected function newFixture() {
+      return new ArchiveClassLoader(rtrim(self::$base->path(), '?'));
+    }
+
+    /**
+     * Creates underlying base for class loader, e.g. a directory or a .XAR file
+     *
+     * @return  net.xp_framework.unittest.reflection.ClassFromUriBase
+     */
+    protected static function baseImpl() {
+      return newinstance('net.xp_framework.unittest.reflection.ClassFromUriBase', array(), '{
+        protected $t= NULL;
+
+        public function initialize($initializer) {
+          parent::initialize($initializer);
+
+          // Create archive; it will be flushed to disk at this point
+          $this->t->create();
+        }
+
+        public function create() {
+          $this->t= new Archive(new TempFile("arcl"));
+          $this->t->open(ARCHIVE_CREATE);
+        }
+
+        public function delete() {
+          $this->t->file->unlink();
+        }
+
+        public function newFile($name, $contents) {
+
+          // Always use forward slashes inside archive
+          $this->t->addBytes(strtr($name, DIRECTORY_SEPARATOR, "/"), $contents);
+        }
+
+        public function path() {
+          return $this->t->getURI()."?";
+        }
+      }');
+    }
+  }
+?>
