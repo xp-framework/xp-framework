@@ -332,40 +332,5 @@
         ->loadClass('net.xp_framework.unittest.reflection.classes.Classone')
       ;
     }
-
-    /**
-     * Test classFromUri() with relative file name
-     *
-     */
-    #[@test]
-    public function fromRelativeUriInFileSystemCL() {
-      $cl= ClassLoader::getDefault();
-      $this->assertEquals(
-        $cl->loadClass('net.xp_framework.unittest.reflection.classes.ClassOne'),
-        $cl->classFromUri('net/xp_framework/unittest/reflection/classes/ClassOne.class.php')
-      );
-    }
-
-    /**
-     * Test classFromUri() with relative file name
-     *
-     */
-    #[@test]
-    public function fromRelativeUriInArchiveCL() {
-      $cl= ClassLoader::getDefault();
-      $this->assertEquals(
-        $cl->loadClass('net.xp_framework.unittest.reflection.classes.ClassThree'),
-        $cl->classFromUri('net/xp_framework/unittest/reflection/classes/ClassThree.class.php')
-      );
-    }
-
-    /**
-     * Test classFromUri() with non-existant class
-     *
-     */
-    #[@test]
-    public function fromNonExistantUri() {
-      $this->assertNull(ClassLoader::getDefault()->classFromUri('Does-not-exist.class.php'));
-    }
   }
 ?>
