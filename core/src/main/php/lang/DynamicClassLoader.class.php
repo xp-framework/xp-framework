@@ -99,7 +99,18 @@
     protected function classUri($class) {
       return 'dyn://'.$class;
     }
-    
+
+    /**
+     * Find the class by a given URI
+     *
+     * @param   string uri
+     * @return  lang.XPClass
+     */
+    public function classFromUri($uri) {
+      sscanf($uri, 'dyn://%s', $name);
+      return isset(self::$bytes[$name]) ? $this->loadClass($name) : NULL;
+    }
+
     /**
      * Fetch instance of classloader by path
      *
