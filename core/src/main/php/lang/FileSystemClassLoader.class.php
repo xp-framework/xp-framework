@@ -79,12 +79,12 @@
     }
 
     /**
-     * Find the class by a given URI
+     * Return a class at the given URI
      *
      * @param   string uri
-     * @return  lang.XPClass
+     * @return  string fully qualified class name, or NULL
      */
-    public function loadUri($uri) {
+    protected function classAtUri($uri) {
       if (0 !== substr_compare($uri, xp::CLASS_FILE_EXT, -strlen(xp::CLASS_FILE_EXT))) return NULL;
 
       // Resolve path if not absolute
@@ -98,11 +98,11 @@
       $l= strlen($this->path);
       if (FALSE === $absolute || 0 !== strncmp($absolute, $this->path, $l) || !is_file($absolute)) return NULL;
 
-      return $this->loadClass(strtr(
+      return strtr(
         substr($absolute, $l, -strlen(xp::CLASS_FILE_EXT)),
         '/'.DIRECTORY_SEPARATOR,
         '..'
-      ));
+      );
     }
 
     /**

@@ -70,7 +70,12 @@
     }
 
     #[@test]
-    public function from_a_relative_path_in_root() {
+    public function provides_a_relative_path_in_root() {
+      $this->assertTrue($this->fixture->providesUri('dyn://CLT1'));
+    }
+
+    #[@test]
+    public function load_from_a_relative_path_in_root() {
       $this->assertEquals(
         $this->fixture->loadClass('CLT1'),
         $this->fixture->loadUri('dyn://CLT1')

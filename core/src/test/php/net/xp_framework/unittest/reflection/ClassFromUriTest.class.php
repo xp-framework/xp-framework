@@ -76,7 +76,12 @@
     }
 
     #[@test]
-    public function from_a_relative_path_in_root() {
+    public function provides_a_relative_path_in_root() {
+      $this->assertTrue($this->fixture->providesUri('CLT1.class.php'));
+    }
+
+    #[@test]
+    public function load_from_a_relative_path_in_root() {
       $this->assertEquals(
         $this->fixture->loadClass('CLT1'),
         $this->fixture->loadUri('CLT1.class.php')

@@ -102,14 +102,14 @@
     }
 
     /**
-     * Find the class by a given URI
+     * Return a class at the given URI
      *
      * @param   string uri
-     * @return  lang.XPClass
+     * @return  string fully qualified class name, or NULL
      */
-    public function loadUri($uri) {
+    protected function classAtUri($uri) {
       sscanf($uri, 'dyn://%s', $name);
-      return isset(self::$bytes[$name]) ? $this->loadClass($name) : NULL;
+      return isset(self::$bytes[$name]) ? $name : NULL;
     }
 
     /**

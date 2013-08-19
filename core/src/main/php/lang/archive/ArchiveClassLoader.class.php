@@ -66,12 +66,12 @@
     }
 
     /**
-     * Find the class by a given URI
+     * Return a class at the given URI
      *
      * @param   string uri
-     * @return  lang.XPClass
+     * @return  string fully qualified class name, or NULL
      */
-    public function loadUri($uri) {
+    protected function classAtUri($uri) {
       if (0 !== substr_compare($uri, xp::CLASS_FILE_EXT, -strlen(xp::CLASS_FILE_EXT))) return NULL;
 
       // Absolute URIs have the form "xar://containing.xar?the/classes/Name.class.php"
@@ -99,7 +99,7 @@
       }
 
       return is_file($archive.substr($path, 1))
-        ? $this->loadClass(strtr(substr($path, 1, -strlen(xp::CLASS_FILE_EXT)), '/', '.'))
+        ? strtr(substr($path, 1, -strlen(xp::CLASS_FILE_EXT)), '/', '.')
         : NULL
       ;
     }
