@@ -12,7 +12,7 @@
   /**
    * TestCase for classloading
    *
-   * @see  xp://lang.DynamicClassLoader#classFromUri
+   * @see  xp://lang.DynamicClassLoader#loadUri
    */
   class ClassFromDynamicDefinitionTest extends ClassFromUriTest {
 
@@ -73,7 +73,7 @@
     public function from_a_relative_path_in_root() {
       $this->assertEquals(
         $this->fixture->loadClass('CLT1'),
-        $this->fixture->classFromUri('dyn://CLT1')
+        $this->fixture->loadUri('dyn://CLT1')
       );
     }
 
@@ -81,7 +81,7 @@
     public function from_a_relative_path() {
       $this->assertEquals(
         $this->fixture->loadClass('net.xp_framework.unittest.reflection.CLT2'),
-        $this->fixture->classFromUri('dyn://net.xp_framework.unittest.reflection.CLT2')
+        $this->fixture->loadUri('dyn://net.xp_framework.unittest.reflection.CLT2')
       );
     }
 

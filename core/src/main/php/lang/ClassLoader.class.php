@@ -387,9 +387,9 @@
      * @param   string uri
      * @return  lang.XPClass
      */
-    public function classFromUri($uri) {
+    public function loadUri($uri) {
       foreach (self::$delegates as $delegate) {
-        if (NULL !== ($class= $delegate->classFromUri($uri))) return $class;
+        if (NULL !== ($class= $delegate->loadUri($uri))) return $class;
       }
       return NULL;
     }

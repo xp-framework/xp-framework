@@ -107,7 +107,7 @@
      * @param   string uri
      * @return  lang.XPClass
      */
-    public function classFromUri($uri) {
+    public function loadUri($uri) {
       sscanf($uri, 'dyn://%s', $name);
       return isset(self::$bytes[$name]) ? $this->loadClass($name) : NULL;
     }

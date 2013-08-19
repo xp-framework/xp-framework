@@ -71,7 +71,7 @@
      * @param   string uri
      * @return  lang.XPClass
      */
-    public function classFromUri($uri) {
+    public function loadUri($uri) {
       if (0 !== substr_compare($uri, xp::CLASS_FILE_EXT, -strlen(xp::CLASS_FILE_EXT))) return NULL;
 
       // Absolute URIs have the form "xar://containing.xar?the/classes/Name.class.php"

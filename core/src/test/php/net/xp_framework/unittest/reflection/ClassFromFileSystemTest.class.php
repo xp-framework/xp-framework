@@ -16,7 +16,7 @@
   /**
    * TestCase for classloading
    *
-   * @see  xp://lang.FileSystemClassLoader#classFromUri
+   * @see  xp://lang.FileSystemClassLoader#loadUri
    */
   class ClassFromFileSystemTest extends ClassFromUriTest {
 

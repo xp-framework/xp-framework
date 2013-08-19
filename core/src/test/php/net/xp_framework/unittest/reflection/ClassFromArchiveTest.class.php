@@ -14,7 +14,7 @@
   /**
    * TestCase for classloading
    *
-   * @see  xp://lang.archive.ArchiveClassLoader#classFromUri
+   * @see  xp://lang.archive.ArchiveClassLoader#loadUri
    */
   class ClassFromArchiveTest extends ClassFromUriTest {
 

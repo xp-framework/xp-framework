@@ -7,7 +7,7 @@
   uses('unittest.TestCase', 'net.xp_framework.unittest.reflection.ClassFromUriBase');
 
   /**
-   * TestCase for resolving classes from URIs using the `classFromUri()` method.
+   * TestCase for resolving classes from URIs using the `loadUri()` method.
    *
    * @see  xp://net.xp_framework.unittest.reflection.ClassFromFileSystemTest
    */
@@ -79,7 +79,7 @@
     public function from_a_relative_path_in_root() {
       $this->assertEquals(
         $this->fixture->loadClass('CLT1'),
-        $this->fixture->classFromUri('CLT1.class.php')
+        $this->fixture->loadUri('CLT1.class.php')
       );
     }
 
@@ -87,7 +87,7 @@
     public function from_a_relative_path() {
       $this->assertEquals(
         $this->fixture->loadClass('net.xp_framework.unittest.reflection.CLT2'),
-        $this->fixture->classFromUri($this->compose('net', 'xp_framework', 'unittest', 'reflection', 'CLT2.class.php'))
+        $this->fixture->loadUri($this->compose('net', 'xp_framework', 'unittest', 'reflection', 'CLT2.class.php'))
       );
     }
 
@@ -95,7 +95,7 @@
     public function from_a_relative_path_with_dot() {
       $this->assertEquals(
         $this->fixture->loadClass('CLT1'),
-        $this->fixture->classFromUri($this->compose('.', 'CLT1.class.php'))
+        $this->fixture->loadUri($this->compose('.', 'CLT1.class.php'))
       );
     }
 
@@ -103,7 +103,7 @@
     public function from_a_relative_path_with_dot_dot() {
       $this->assertEquals(
         $this->fixture->loadClass('CLT1'),
-        $this->fixture->classFromUri($this->compose('net', 'xp_framework', '..', '..', 'CLT1.class.php'))
+        $this->fixture->loadUri($this->compose('net', 'xp_framework', '..', '..', 'CLT1.class.php'))
       );
     }
 
@@ -111,7 +111,7 @@
     public function from_a_relative_path_with_multiple_directory_separators() {
       $this->assertEquals(
         $this->fixture->loadClass('CLT1'),
-        $this->fixture->classFromUri($this->compose('.', NULL, 'CLT1.class.php'))
+        $this->fixture->loadUri($this->compose('.', NULL, 'CLT1.class.php'))
       );
     }
 
@@ -119,7 +119,7 @@
     public function from_an_absolute_path_in_root() {
       $this->assertEquals(
         $this->fixture->loadClass('CLT1'),
-        $this->fixture->classFromUri($this->compose(self::$base, 'CLT1.class.php'))
+        $this->fixture->loadUri($this->compose(self::$base, 'CLT1.class.php'))
       );
     }
 
@@ -127,28 +127,28 @@
     public function from_an_absolute_path() {
       $this->assertEquals(
         $this->fixture->loadClass('net.xp_framework.unittest.reflection.CLT2'),
-        $this->fixture->classFromUri($this->compose(self::$base, 'net', 'xp_framework', 'unittest', 'reflection', 'CLT2.class.php'))
+        $this->fixture->loadUri($this->compose(self::$base, 'net', 'xp_framework', 'unittest', 'reflection', 'CLT2.class.php'))
       );
     }
 
     #[@test]
     public function from_an_absolute_path_not_inside_cl_base() {
-      $this->assertNull($this->fixture->classFromUri($this->compose(NULL, 'CLT1.class.php')));
+      $this->assertNull($this->fixture->loadUri($this->compose(NULL, 'CLT1.class.php')));
     }
 
     #[@test]
     public function from_non_class_file() {
-      $this->assertNull($this->fixture->classFromUri('CLT1.txt'));
+      $this->assertNull($this->fixture->loadUri('CLT1.txt'));
     }
 
     #[@test]
     public function from_directory() {
-      $this->assertNull($this->fixture->classFromUri($this->compose(self::$base, 'net', 'xp_framework')));
+      $this->assertNull($this->fixture->loadUri($this->compose(self::$base, 'net', 'xp_framework')));
     }
 
     #[@test]
     public function from_non_existant_file() {
-      $this->assertNull($this->fixture->classFromUri($this->compose(self::$base, 'NonExistant.File')));
+      $this->assertNull($this->fixture->loadUri($this->compose(self::$base, 'NonExistant.File')));
     }
   }
 ?>
