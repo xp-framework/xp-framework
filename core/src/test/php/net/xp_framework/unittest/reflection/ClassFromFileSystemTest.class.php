@@ -26,7 +26,7 @@
      * @return   lang.IClassLoader
      */
     protected function newFixture() {
-      return new FileSystemClassLoader(self::$base->path());
+      return new FileSystemClassLoader(realpath(self::$base->path()));
     }
 
     /**
