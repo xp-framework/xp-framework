@@ -268,6 +268,19 @@
       }
       return FALSE;
     }
+
+    /**
+     * Checks whether this loader can provide the requested URI as a class
+     *
+     * @param   string uri
+     * @return  bool
+     */
+    public function providesUri($class) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesUri($class)) return TRUE;
+      }
+      return FALSE;
+    }
     
     /**
      * Checks whether this loader can provide the requested resource
