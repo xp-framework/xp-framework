@@ -23,6 +23,7 @@
    * </code>
    *
    * @test  xp://net.xp_framework.unittest.core.ArchiveClassLoaderTest
+   * @test  xp://net.xp_framework.unittest.reflection.ClassFromArchiveTest
    * @see   xp://lang.ClassLoader
    * @see   xp://lang.archive.Archive
    */
@@ -62,6 +63,45 @@
      */
     protected function classUri($class) {
       return $this->archive.strtr($class, '.', '/').xp::CLASS_FILE_EXT;
+    }
+
+    /**
+     * Return a class at the given URI
+     *
+     * @param   string uri
+     * @return  string fully qualified class name, or NULL
+     */
+    protected function classAtUri($uri) {
+      if (0 !== substr_compare($uri, xp::CLASS_FILE_EXT, -strlen(xp::CLASS_FILE_EXT))) return NULL;
+
+      // Absolute URIs have the form "xar://containing.xar?the/classes/Name.class.php"
+      if ((DIRECTORY_SEPARATOR === $uri{0} || (':' === $uri{1} && '\\' === $uri{2}))) {
+        return NULL;
+      } else if (FALSE !== ($p= strpos($uri, '?'))) {
+        $archive= substr($uri, 0, $p + 1);
+        if ($archive !== $this->archive) return NULL;
+        $uri= substr($uri, $p + 1);
+      } else {
+        $archive= $this->archive;
+      }
+
+      // Normalize path: Force forward slashes, strip out "." and empty elements,
+      // interpret ".." by backing up until last forward slash is found.
+      $path= '';
+      foreach (explode('/', strtr($uri, DIRECTORY_SEPARATOR, '/')) as $element) {
+        if ('' === $element || '.' === $element) {
+          // NOOP
+        } else if ('..' === $element) {
+          $path= substr($path, 0, strrpos($path, '/'));
+        } else {
+          $path.= '/'.$element;
+        }
+      }
+
+      return is_file($archive.substr($path, 1))
+        ? strtr(substr($path, 1, -strlen(xp::CLASS_FILE_EXT)), '/', '.')
+        : NULL
+      ;
     }
 
     /**
