@@ -57,9 +57,12 @@
      *
      * @param   string uri
      * @return  lang.XPClass
+     * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadUri($uri) {
-      if (NULL === ($class= $this->classAtUri($uri))) return NULL;
+      if (NULL === ($class= $this->classAtUri($uri))) {
+        throw new ClassNotFoundException('URI:'.$uri);
+      }
       return $this->loadClass($class);
     }
 

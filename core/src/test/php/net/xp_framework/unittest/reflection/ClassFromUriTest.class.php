@@ -136,24 +136,24 @@
       );
     }
 
-    #[@test]
+    #[@test, @expect('lang.ClassNotFoundException')]
     public function from_an_absolute_path_not_inside_cl_base() {
-      $this->assertNull($this->fixture->loadUri($this->compose(NULL, 'CLT1.class.php')));
+      $this->fixture->loadUri($this->compose(NULL, 'CLT1.class.php'));
     }
 
-    #[@test]
+    #[@test, @expect('lang.ClassNotFoundException')]
     public function from_non_class_file() {
-      $this->assertNull($this->fixture->loadUri('CLT1.txt'));
+      $this->fixture->loadUri('CLT1.txt');
     }
 
-    #[@test]
+    #[@test, @expect('lang.ClassNotFoundException')]
     public function from_directory() {
-      $this->assertNull($this->fixture->loadUri($this->compose(self::$base, 'net', 'xp_framework')));
+      $this->fixture->loadUri($this->compose(self::$base, 'net', 'xp_framework'));
     }
 
-    #[@test]
+    #[@test, @expect('lang.ClassNotFoundException')]
     public function from_non_existant_file() {
-      $this->assertNull($this->fixture->loadUri($this->compose(self::$base, 'NonExistant.File')));
+      $this->fixture->loadUri($this->compose(self::$base, 'NonExistant.File'));
     }
   }
 ?>

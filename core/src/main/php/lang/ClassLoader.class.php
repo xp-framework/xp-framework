@@ -412,12 +412,13 @@
      *
      * @param   string uri
      * @return  lang.XPClass
+     * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadUri($uri) {
       foreach (self::$delegates as $delegate) {
-        if (NULL !== ($class= $delegate->loadUri($uri))) return $class;
+        if ($delegate->providesUri($uri)) return $delegate->loadUri($uri);
       }
-      return NULL;
+      throw new ClassNotFoundException('URI:'.$uri, self::getLoaders());
     }
 
     /**

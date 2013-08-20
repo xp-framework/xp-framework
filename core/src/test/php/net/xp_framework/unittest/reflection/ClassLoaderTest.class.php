@@ -396,11 +396,9 @@
      * Test loadUri()
      *
      */
-    #[@test]
+    #[@test, @expect('lang.ClassNotFoundException')]
     public function loadNonExistantUri() {
-      $this->assertNull(ClassLoader::getDefault()->loadUri(
-        'non/existant/Class.class.php'
-      ));
+      ClassLoader::getDefault()->loadUri('non/existant/Class.class.php');
     }
   }
 ?>
