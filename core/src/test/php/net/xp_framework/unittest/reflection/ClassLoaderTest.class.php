@@ -366,5 +366,16 @@
         ClassLoader::getDefault()->loadUri('net/xp_framework/unittest/reflection/classes/ClassOne.class.php')
       );
     }
+
+    /**
+     * Test loadUri()
+     *
+     */
+    #[@test]
+    public function loadNonExistantUri() {
+      $this->assertNull(ClassLoader::getDefault()->loadUri(
+        'non/existant/Class.class.php'
+      ));
+    }
   }
 ?>
