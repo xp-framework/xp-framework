@@ -275,9 +275,9 @@
      * @param   string uri
      * @return  bool
      */
-    public function providesUri($class) {
+    public function providesUri($uri) {
       foreach (self::$delegates as $delegate) {
-        if ($delegate->providesUri($class)) return TRUE;
+        if ($delegate->providesUri($uri)) return TRUE;
       }
       return FALSE;
     }
