@@ -339,9 +339,9 @@
      */
     #[@test]
     public function providesExistantUri() {
-      $this->assertTrue(ClassLoader::getDefault()->providesUri(
-        'net/xp_framework/unittest/reflection/classes/ClassOne.class.php'
-      ));
+      $this->assertTrue(
+        ClassLoader::getDefault()->providesUri('net/xp_framework/unittest/reflection/classes/ClassOne.class.php')
+      );
     }
 
     /**
@@ -350,9 +350,34 @@
      */
     #[@test]
     public function doesNotProvideNonExistantUri() {
-      $this->assertFalse(ClassLoader::getDefault()->providesUri(
-        'non/existant/Class.class.php'
-      ));
+      $this->assertFalse(
+        ClassLoader::getDefault()->providesUri('non/existant/Class.class.php')
+      );
+    }
+
+    /**
+     * Test findUri()
+     *
+     */
+    #[@test]
+    public function findExistantUri() {
+      $cl= ClassLoader::getDefault();
+      $this->assertEquals(
+        $cl->findClass('net.xp_framework.unittest.reflection.classes.ClassOne'),
+        $cl->findUri('net/xp_framework/unittest/reflection/classes/ClassOne.class.php')
+      );
+    }
+
+    /**
+     * Test findUri()
+     *
+     */
+    #[@test]
+    public function cannotFindNontExistantUri() {
+      $this->assertEquals(
+        xp::null(),
+        ClassLoader::getDefault()->findUri('non/existant/Class.class.php')
+      );
     }
 
     /**

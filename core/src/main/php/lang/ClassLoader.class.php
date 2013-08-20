@@ -319,7 +319,20 @@
         if ($delegate->providesClass($class)) return $delegate;
       }
       return xp::null();
-    }    
+    }
+
+    /**
+     * Find the class by the specified URI
+     *
+     * @param   string uri
+     * @return  lang.IClassLoader the classloader that provides this uri
+     */
+    public function findUri($uri) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesUri($uri)) return $delegate;
+      }
+      return xp::null();
+    }
 
     /**
      * Find the package by the specified name
