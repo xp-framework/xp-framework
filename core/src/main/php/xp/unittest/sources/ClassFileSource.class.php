@@ -37,20 +37,12 @@
      */
     public function testCasesWith($arguments) {
       $uri= $this->file->getURI();
-      $path= dirname($uri);
-      $paths= array_flip(array_filter(array_map('realpath', xp::$classpath)));
-
-      // Search class path
-      while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 
-        if (isset($paths[$path])) return $this->testCasesInClass(
-          XPClass::forName(strtr(substr($uri, strlen($path)+ 1, -10), DIRECTORY_SEPARATOR, '.')),
-          $arguments
-        );
-
-        $path= substr($path, 0, $pos); 
+      $cl= ClassLoader::getDefault()->findUri($uri);
+      if (is(NULL, $cl)) {
+        throw new IllegalArgumentException('Cannot load class from '.$this->file->toString());
       }
-      
-      throw new IllegalArgumentException('Cannot load class from '.$this->file->toString());
+
+      return $this->testCasesInClass($cl->loadUri($uri), $arguments);
     }
     
     /**
