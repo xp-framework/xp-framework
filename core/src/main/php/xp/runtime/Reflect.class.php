@@ -260,26 +260,6 @@
     }
 
     /**
-     * Derive class from a given file
-     *
-     * @param  io.File file
-     * @return lang.XPClass
-     * @throws lang.ElementNotFoundException
-     */
-    protected static function findClassBy($file) {
-      $q= $file->getURI();
-      foreach (ClassLoader::getLoaders() as $loader) {
-        if (
-          0 === strncmp($q, $loader->path, $l= strlen($loader->path)) &&
-          $loader->providesResource(substr($q, $l))
-        ) {
-          return $loader->loadClass(strtr(substr($q, $l, -strlen(xp::CLASS_FILE_EXT)), DIRECTORY_SEPARATOR, '.'));
-        }
-      }
-      raise('lang.ElementNotFoundException', 'Cannot derive class name from '.$q);
-    }
-
-    /**
      * Derive package from a given file
      *
      * @param  io.Folder folder
@@ -313,7 +293,7 @@
       // Check whether a file, class or a package directory or name is given
       $cl= ClassLoader::getDefault();
       if (strstr($args[0], xp::CLASS_FILE_EXT)) {
-        $class= self::findClassBy(new File($args[0]));
+        $class= $cl->loadUri(realpath($args[0]));
       } else if ($cl->providesClass($args[0])) {
         $class= XPClass::forName($args[0], $cl);
       } else {
