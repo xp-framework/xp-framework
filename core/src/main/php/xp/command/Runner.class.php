@@ -242,21 +242,11 @@
           self::$err->writeLine('*** Cannot load class from non-existant file ', $classname);
           return 1;
         }
-        $uri= $file->getURI();
-        $path= dirname($uri);
-        $paths= array_flip(array_map('realpath', xp::$classpath));
-        $class= NULL;
-        while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 
-          if (isset($paths[$path])) {
-            $class= XPClass::forName(strtr(substr($uri, strlen($path)+ 1, -10), DIRECTORY_SEPARATOR, '.'));
-            break;
-          }
 
-          $path= substr($path, 0, $pos); 
-        }
-
-        if (!$class) {
-          self::$err->writeLine('*** Cannot load class from ', $file);
+        try {
+          $class= ClassLoader::getDefault()->loadUri($file->getURI());
+        } catch (ClassNotFoundException $e) {
+          self::$err->writeLine('*** ', $this->verbose ? $e : $e->getMessage());
           return 1;
         }
       } else {
