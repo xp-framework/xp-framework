@@ -3,6 +3,11 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+### RFCs
+
+* Implemented RFC 275: Map class URIs to classes. See pull request #327
+  (@thekid)
+
 ### Bugfixes
 
 * Fixed webservices.rest.Payload::equals() method for arrays - (@thekid)
