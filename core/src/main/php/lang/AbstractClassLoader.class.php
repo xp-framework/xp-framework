@@ -35,6 +35,39 @@
     protected abstract function classUri($class);
 
     /**
+     * Return a class at the given URI
+     *
+     * @param   string uri
+     * @return  string fully qualified class name, or NULL
+     */
+    protected abstract function classAtUri($uri);
+
+    /**
+     * Return whether this class loader provides a given class via URI
+     *
+     * @param   string uri
+     * @return  bool
+     */
+    public function providesUri($uri) {
+      return NULL !== $this->classAtUri($uri);
+    }
+
+    /**
+     * Find the class by a given URI
+     *
+     * @param   string uri
+     * @return  lang.XPClass
+     * @throws  lang.ClassNotFoundException in case the class can not be found
+     */
+    public function loadUri($uri) {
+      if (NULL === ($class= $this->classAtUri($uri))) {
+        throw new ClassNotFoundException('URI:'.$uri);
+      }
+      return $this->loadClass($class);
+    }
+
+
+    /**
      * Load the class by the specified name
      *
      * @param   string class fully qualified class name io.File

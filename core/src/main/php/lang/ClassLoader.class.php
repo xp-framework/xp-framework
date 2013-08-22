@@ -268,6 +268,19 @@
       }
       return FALSE;
     }
+
+    /**
+     * Checks whether this loader can provide the requested URI as a class
+     *
+     * @param   string uri
+     * @return  bool
+     */
+    public function providesUri($uri) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesUri($uri)) return TRUE;
+      }
+      return FALSE;
+    }
     
     /**
      * Checks whether this loader can provide the requested resource
@@ -306,7 +319,20 @@
         if ($delegate->providesClass($class)) return $delegate;
       }
       return xp::null();
-    }    
+    }
+
+    /**
+     * Find the class by the specified URI
+     *
+     * @param   string uri
+     * @return  lang.IClassLoader the classloader that provides this uri
+     */
+    public function findUri($uri) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesUri($uri)) return $delegate;
+      }
+      return xp::null();
+    }
 
     /**
      * Find the package by the specified name
@@ -379,6 +405,20 @@
         $string,
         xp::stringOf(self::getLoaders())
       ));
+    }
+
+    /**
+     * Find the class by a given URI
+     *
+     * @param   string uri
+     * @return  lang.XPClass
+     * @throws  lang.ClassNotFoundException in case the class can not be found
+     */
+    public function loadUri($uri) {
+      foreach (self::$delegates as $delegate) {
+        if ($delegate->providesUri($uri)) return $delegate->loadUri($uri);
+      }
+      throw new ClassNotFoundException('URI:'.$uri, self::getLoaders());
     }
 
     /**

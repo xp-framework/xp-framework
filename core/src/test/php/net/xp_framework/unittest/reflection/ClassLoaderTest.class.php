@@ -332,5 +332,73 @@
         ->loadClass('net.xp_framework.unittest.reflection.classes.Classone')
       ;
     }
+
+    /**
+     * Test providesUri()
+     *
+     */
+    #[@test]
+    public function providesExistantUri() {
+      $this->assertTrue(
+        ClassLoader::getDefault()->providesUri('net/xp_framework/unittest/reflection/classes/ClassOne.class.php')
+      );
+    }
+
+    /**
+     * Test providesUri()
+     *
+     */
+    #[@test]
+    public function doesNotProvideNonExistantUri() {
+      $this->assertFalse(
+        ClassLoader::getDefault()->providesUri('non/existant/Class.class.php')
+      );
+    }
+
+    /**
+     * Test findUri()
+     *
+     */
+    #[@test]
+    public function findExistantUri() {
+      $cl= ClassLoader::getDefault();
+      $this->assertEquals(
+        $cl->findClass('net.xp_framework.unittest.reflection.classes.ClassOne'),
+        $cl->findUri('net/xp_framework/unittest/reflection/classes/ClassOne.class.php')
+      );
+    }
+
+    /**
+     * Test findUri()
+     *
+     */
+    #[@test]
+    public function cannotFindNontExistantUri() {
+      $this->assertEquals(
+        xp::null(),
+        ClassLoader::getDefault()->findUri('non/existant/Class.class.php')
+      );
+    }
+
+    /**
+     * Test loadUri()
+     *
+     */
+    #[@test]
+    public function loadUri() {
+      $this->assertEquals(
+        XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassOne'),
+        ClassLoader::getDefault()->loadUri('net/xp_framework/unittest/reflection/classes/ClassOne.class.php')
+      );
+    }
+
+    /**
+     * Test loadUri()
+     *
+     */
+    #[@test, @expect('lang.ClassNotFoundException')]
+    public function loadNonExistantUri() {
+      ClassLoader::getDefault()->loadUri('non/existant/Class.class.php');
+    }
   }
 ?>
