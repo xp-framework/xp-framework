@@ -244,6 +244,43 @@
     }
 
     /**
+     * Tests getSource()
+     *
+     * XXX Breaks if xp::ENCODING is changed XXX
+     */
+    #[@test]
+    public function getSourceWithDefaultEncoding() {
+      $this->assertEquals(
+        "<n>\xdcbercoder</n>",
+        create(new Node('n', "\xdcbercoder"))->getSource(INDENT_NONE)
+      );
+    }
+
+    /**
+     * Tests getSource()
+     *
+     */
+    #[@test]
+    public function getSourceWithIsoEncoding() {
+      $this->assertEquals(
+        "<n>\xdcbercoder</n>",
+        create(new Node('n', "\xdcbercoder"))->getSource(INDENT_NONE, 'iso-8859-1')
+      );
+    }
+
+    /**
+     * Tests getSource()
+     *
+     */
+    #[@test]
+    public function getSourceWithUtf8Encoding() {
+      $this->assertEquals(
+        "<n>\xc3\x9cbercoder</n>",
+        create(new Node('n', "\xdcbercoder"))->getSource(INDENT_NONE, 'utf-8')
+      );
+    }
+
+    /**
      * Tests fromObject() 
      *
      */
