@@ -12,6 +12,8 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed lang.Thread class behaving unexpectedly when its target method 
+  raises an exception - (@kiesel, @thekid).
 * Fixed webservices.rest.Payload::equals() method for arrays - (@thekid)
 * Fixed issue #325: Serialization of 'Closure' is not allowed - (@thekid)
 * Fixed io.streams.TextReader class not reading first chunk correctly when
