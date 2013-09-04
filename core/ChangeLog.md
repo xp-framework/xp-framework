@@ -5,6 +5,8 @@ XP Framework ChangeLog
 
 ### RFCs
 
+* Added forward-compatibility patches to several places for RFC 146: 
+  Unicode - (@thekid, @kiesel)
 * Implemented RFC 275: Map class URIs to classes. See pull request #327
   (@thekid)
 
