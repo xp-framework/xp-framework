@@ -44,7 +44,7 @@
         public function unmarshal($stream, $field, $records) {
           if (0 === ($len= $stream->getByte())) return NULL;
           $string= $stream->read($len);
-          return iconv($field["conv"], "iso-8859-1", substr($string, 0, strcspn($string, "\0")));
+          return iconv($field["conv"], xp::ENCODING, substr($string, 0, strcspn($string, "\0")));
         }
       }');
       $records[self::T_IMAGE]= newinstance('rdbms.tds.TdsRecord', array(), '{
@@ -62,7 +62,7 @@
           // but as IMAGE type with different inside layout!
           return iconv(
             strlen($r) > 1 && "\0" === $r{1} ? "ucs-2le" : $field["conv"],
-            "iso-8859-1",
+            xp::ENCODING,
             $r
           );
         }
@@ -71,7 +71,7 @@
         public function unmarshal($stream, $field, $records) {
           if (0 === ($len= $stream->getByte())) return NULL;
 
-          return iconv($field["conv"], "iso-8859-1", $stream->read($len));
+          return iconv($field["conv"], xp::ENCODING, $stream->read($len));
         }
       }');
       $records[self::T_LONGBINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
