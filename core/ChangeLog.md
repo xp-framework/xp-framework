@@ -3,6 +3,8 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 5.9.8 / 2013-09-06
+
 ### RFCs
 
 * Added forward-compatibility patches to several places for RFC 146: 
