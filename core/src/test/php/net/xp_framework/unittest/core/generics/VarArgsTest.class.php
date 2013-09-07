@@ -1,56 +1,35 @@
 <?php namespace net\xp_framework\unittest\core\generics;
 
-
-
-use unittest\TestCase;
-
-
 /**
  * TestCase for generic construction behaviour at runtime.
  *
  * @see   xp://net.xp_framework.unittest.core.generics.ListOf
  */
-class VarArgsTest extends TestCase {
+class VarArgsTest extends \unittest\TestCase {
 
-  /**
-   * Test constructor with arguments
-   *
-   */
   #[@test]
-    public function withArguments() {
+  public function withArguments() {
     $this->assertEquals(
       array('Hello', 'World'),
       create('new net.xp_framework.unittest.core.generics.ListOf<string>', 'Hello', 'World')->elements()
     );
   }
 
-  /**
-   * Test constructor with arguments
-   *
-   */
   #[@test]
-    public function withoutArguments() {
+  public function withoutArguments() {
     $this->assertEquals(
       array(),
       create('new net.xp_framework.unittest.core.generics.ListOf<string>')->elements()
     );
   }
 
-  /**
-   * Test constructor with arguments
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
-    public function withIncorrectArguments() {
+  public function withIncorrectArguments() {
     create('new net.xp_framework.unittest.core.generics.ListOf<string>', 'Hello', 1);
   }
 
-  /**
-   * Test method with arguments
-   *
-   */
   #[@test]
-    public function withAllOf() {
+  public function withAllOf() {
     $this->assertEquals(
       array('Hello', 'World'),
       create('new net.xp_framework.unittest.core.generics.ListOf<string>')->withAll('Hello', 'World')->elements()

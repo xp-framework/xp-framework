@@ -1,8 +1,5 @@
 <?php namespace net\xp_framework\unittest\core\generics;
 
-
-
-use unittest\TestCase;
 use lang\types\String;
 use lang\types\Integer;
 
@@ -12,14 +9,10 @@ use lang\types\Integer;
  *
  * @see   xp://net.xp_framework.unittest.core.generics.ArrayFilter
  */
-class AnonymousInstanceTest extends TestCase {
+class AnonymousInstanceTest extends \unittest\TestCase {
 
-  /**
-   * Test an array filter returning all test methods
-   *
-   */
   #[@test]
-    public function testMethods() {
+  public function testMethods() {
     $testmethods= newinstance('net.xp_framework.unittest.core.generics.ArrayFilter<Method>', array(), '{
       protected function accept($e) {
         return $e->hasAnnotation("test");
@@ -31,12 +24,8 @@ class AnonymousInstanceTest extends TestCase {
     $this->assertEquals('testMethods', $filtered[0]->getName());
   }
 
-  /**
-   * Test class name of a anonymous generic instance
-   *
-   */
   #[@test]
-    public function classNameOfGeneric() {
+  public function classNameOfGeneric() {
     $instance= newinstance('util.collections.Vector<Object>', array(), '{
     }');
     $n= $instance->getClassName();
@@ -47,12 +36,8 @@ class AnonymousInstanceTest extends TestCase {
     );
   }
 
-  /**
-   * Test class name of a anonymous generic instance
-   *
-   */
   #[@test]
-    public function classNameOfGenericInPackage() {
+  public function classNameOfGenericInPackage() {
     $instance= newinstance('net.xp_framework.unittest.core.generics.ArrayFilter<Object>', array(), '{
       protected function accept($e) { return TRUE; }
     }');

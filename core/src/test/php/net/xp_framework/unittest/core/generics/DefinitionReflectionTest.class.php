@@ -1,7 +1,5 @@
 <?php namespace net\xp_framework\unittest\core\generics;
 
-
-
 /**
  * TestCase for definition reflection
  *
