@@ -3,6 +3,15 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+### Heads up!
+
+* Converted unittest classes to namespaces / new coding standards - (@thekid)
+
+### Bugfixes
+
+* Fixed lang.XPClass::createGenericType() for namespaced code - (@thekid)
+
+
 ## 5.9.8 / 2013-09-06
 
 ### RFCs
