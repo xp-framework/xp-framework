@@ -1,26 +1,18 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\archive;
 
-  uses('net.xp_framework.unittest.archive.ArchiveTest');
+/**
+ * Unittest v1 XARs
+ *
+ * @see  xp://net.xp_framework.unittest.archive.ArchiveTest
+ */
+class ArchiveV1Test extends ArchiveTest {
 
   /**
-   * TestCase
+   * Returns the xar version to test
    *
-   * @see      xp://net.xp_framework.unittest.archive.ArchiveTest
-   * @purpose  Unittest v1 XARs
+   * @return  int
    */
-  class ArchiveV1Test extends ArchiveTest {
-
-    /**
-     * Returns the xar version to test
-     *
-     * @return  int
-     */
-    protected function version() { 
-      return 1;
-    }
+  protected function version() { 
+    return 1;
   }
-?>
+}
