@@ -32,5 +32,4 @@ interface NSIDictionary {
    */
   #[@generic(return= 'V[]')]
   public function values();
-  }
 }

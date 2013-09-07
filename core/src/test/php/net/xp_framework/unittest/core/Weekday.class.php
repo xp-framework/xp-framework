@@ -1,16 +1,8 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$
- */
+<?php namespace net\xp_framework\unittest\core;
 
-  uses('lang.Enum');
-  
-  /**
-   * Weekday enumeration
-   * 
-   */
-  class Weekday extends Enum {
-    public static $MON= 1, $TUE, $WED, $THU, $FRI, $SAT, $SUN;
-  }
-?>
+/**
+ * Weekday enumeration
+ */
+class Weekday extends \lang\Enum {
+  public static $MON= 1, $TUE, $WED, $THU, $FRI, $SAT, $SUN;
+}

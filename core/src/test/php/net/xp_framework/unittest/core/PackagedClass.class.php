@@ -1,17 +1,10 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\core;
+
+/**
+ * Fixture for newinstance tests
  *
- * $Id$ 
+ * @see   xp://net.xp_framework.unittest.core.NewInstanceTest
  */
-
-  $package= 'net.xp_framework.unittest.core';
-
-  /**
-   * Fixture for newinstance tests
-   *
-   * @see   xp://net.xp_framework.unittest.core.NewInstanceTest
-   */
-  class net·xp_framework·unittest·core·PackagedClass extends Object {
-    
-  }
-?>
+class PackagedClass extends \lang\Object {
+  
+}

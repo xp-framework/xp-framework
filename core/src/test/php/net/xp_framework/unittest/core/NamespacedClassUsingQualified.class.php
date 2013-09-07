@@ -1,25 +1,18 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\core;
 
-  namespace net\xp_framework\unittest\core;
+/**
+ * Fixture for namespaces tests
+ *
+ * @see   xp://net.xp_framework.unittest.core.NamespacedClassesTest
+ */
+class NamespacedClassUsingQualified extends \lang\Object {
   
   /**
-   * Fixture for namespaces tests
+   * Returns a namespaced class
    *
-   * @see   xp://net.xp_framework.unittest.core.NamespacedClassesTest
+   * @return  net.xp_framework.unittest.core.NamespacedClass
    */
-  class NamespacedClassUsingQualified extends \lang\Object {
-    
-    /**
-     * Returns a namespaced class
-     *
-     * @return  net.xp_framework.unittest.core.NamespacedClass
-     */
-    public function getNamespacedClass() {
-      return new NamespacedClass();
-    }
+  public function getNamespacedClass() {
+    return new NamespacedClass();
   }
-?>
+}
