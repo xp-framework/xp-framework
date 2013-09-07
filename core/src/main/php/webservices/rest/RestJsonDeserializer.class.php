@@ -25,7 +25,7 @@
      */
     public function deserialize($in, $target) {
       try {
-        return $this->convert($target, JsonFactory::create()->decodeFrom($in));
+        return $this->convert($target, JsonFactory::create()->decodeFrom($in, 'utf-8'));
       } catch (JsonException $e) {
         throw new FormatException('Malformed JSON', $e);
       }

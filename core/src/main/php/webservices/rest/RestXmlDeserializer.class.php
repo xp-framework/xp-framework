@@ -27,7 +27,7 @@
      */
     public function deserialize($in, $target) {
       $tree= new Tree();
-      create(new XMLParser())->withCallback($tree)->parse(new StreamInputSource($in));
+      create(new XMLParser())->withCallback($tree)->withEncoding('utf-8')->parse(new StreamInputSource($in));
       return $this->convert($target, new RestXmlMap($tree->root));
     }
   }

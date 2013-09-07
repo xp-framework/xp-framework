@@ -455,9 +455,10 @@
     protected function assertProcess($status, $headers, $content, $route, $request) {
       $response= new HttpScriptletResponse();
       $this->fixture->process($route, $request, $response);
-      $this->assertEquals($status, $response->statusCode, 'Status code');
-      $this->assertEquals($headers, $response->headers, 'Headers');
-      $this->assertEquals($content, $response->content, 'Content');
+      $this->assertEquals(
+        array('status' => $status, 'headers' => $headers, 'content' => $content),
+        array('status' => $response->statusCode, 'headers' => $response->headers, 'content' => $response->content)
+      );
     }
 
     /**
@@ -663,6 +664,110 @@
     #[@test]
     public function get_non_existant_marshaller() {
       $this->assertNull($this->fixture->getMarshaller('unittest.TestCase'));
+    }
+
+    /**
+     * Returns input convertible to ISO-8859-1
+     *
+     * @return var[]
+     */
+    protected function isoInput() {
+      return array(
+        array('text/json', '"Test"', 4),
+        array('text/json', '"\u00fcbercoder"', 9),
+        array('text/xml', '<input>Test</input>', 4),
+        array('text/xml', '<input>&#x00fc;bercoder</input>', 9)
+      );
+    }
+
+    /**
+     * Returns input not convertible to ISO-8859-1
+     *
+     * @return var[]
+     */
+    protected function unicodeInput() {
+      return array(
+        array('text/json', '"30,00 \u20ac"', 7),                     // ISO-8859-15, the EUR symbol
+        array('text/json', '"Test in chinese: \u6d4b\u8bd5"', 19),
+        array('text/xml', '<input>30,00 &#x20ac;</input>', 7),
+        array('text/xml', '<input>Test in chinese: &#x6d4b;&#x8bd5;</input>', 19)
+      );
+    }
+
+    /**
+     * Returns JSON input
+     *
+     * @return var[]
+     */
+    protected function allInput() {
+      return array_merge($this->isoInput(), $this->unicodeInput());
+    }
+
+    #[@test, @values('allInput')]
+    public function process_string($contentType, $input, $length) {
+      $handler= newinstance('lang.Object', array(), '{
+        #[@webmethod(verb= "POST")]
+        public function fixture(String $input) {
+          return $input->length();
+        }
+      }');
+      $route= array(
+        'handler'  => $handler->getClass(),
+        'target'   => $handler->getClass()->getMethod('fixture'),
+        'params'   => array('input' => new RestParamSource('input', ParamReader::$BODY)),
+        'segments' => array(),
+        'input'    => $contentType,
+        'output'   => 'text/json'
+      );
+      $this->assertProcess(
+        200, array('Content-Type: text/json'), (string)$length,
+        $route, $this->newRequest(array(), $input)
+      );
+    }
+
+    #[@test, @values('isoInput')]
+    public function process_string_primitive($contentType, $input, $length) {
+      $handler= newinstance('lang.Object', array(), '{
+        /** @param string input */
+        #[@webmethod(verb= "POST")]
+        public function fixture($input) {
+          return strlen($input);
+        }
+      }');
+      $route= array(
+        'handler'  => $handler->getClass(),
+        'target'   => $handler->getClass()->getMethod('fixture'),
+        'params'   => array('input' => new RestParamSource('input', ParamReader::$BODY)),
+        'segments' => array(),
+        'input'    => $contentType,
+        'output'   => 'text/json'
+      );
+      $this->assertProcess(
+        200, array('Content-Type: text/json'), (string)$length,
+        $route, $this->newRequest(array(), $input)
+      );
+    }
+
+    #[@test, @values('isoInput')]
+    public function process_var_primitive($contentType, $input, $length) {
+      $handler= newinstance('lang.Object', array(), '{
+        #[@webmethod(verb= "POST")]
+        public function fixture($input) {
+          return strlen($input);
+        }
+      }');
+      $route= array(
+        'handler'  => $handler->getClass(),
+        'target'   => $handler->getClass()->getMethod('fixture'),
+        'params'   => array('input' => new RestParamSource('input', ParamReader::$BODY)),
+        'segments' => array(),
+        'input'    => $contentType,
+        'output'   => 'text/json'
+      );
+      $this->assertProcess(
+        200, array('Content-Type: text/json'), (string)$length,
+        $route, $this->newRequest(array(), $input)
+      );
     }
   }
 ?>
