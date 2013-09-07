@@ -401,7 +401,7 @@
         NULL,
         new AsEnum(XPClass::forName('net.xp_framework.unittest.core.Coin'))
       ));
-      $this->assertEquals(array('200', Coin::$penny), $in->read());
+      $this->assertEquals(array('200', \net\xp_framework\unittest\core\Coin::$penny), $in->read());
     }
 
     /**
@@ -438,7 +438,7 @@
         NULL,
         new FormatEnum()
       ));
-      $writer->write(array('200', Coin::$penny));
+      $writer->write(array('200', \net\xp_framework\unittest\core\Coin::$penny));
       $this->assertEquals("200;penny\n", $this->out->getBytes());
     }
 
