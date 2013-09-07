@@ -23,7 +23,7 @@ class CharacterTest extends TestCase {
 
   #[@test, @expect('lang.FormatException')]
   public function incompleteMultiByteCharacter() {
-    new Character('ä', 'utf-8');
+    new Character("\xe4", 'utf-8');
   }
 
   #[@test]
@@ -38,7 +38,7 @@ class CharacterTest extends TestCase {
 
   #[@test, @expect('lang.FormatException')]
   public function illegalCharacter() {
-    new Character('ä', 'US-ASCII');
+    new Character("\xe4", 'US-ASCII');
   }
 
   #[@test, @expect('lang.IllegalArgumentException')]
@@ -53,27 +53,27 @@ class CharacterTest extends TestCase {
 
   #[@test]
   public function umlautCharacter() {
-    $this->assertEquals(new Bytes("\303\244"), create(new Character('ä'))->getBytes('utf-8'));
+    $this->assertEquals(new Bytes("\303\244"), create(new Character('Ã¤', 'utf-8'))->getBytes('utf-8'));
   }
 
   #[@test]
   public function utf8Character() {
     $this->assertEquals(
       new Character('Ã¤', 'utf-8'),
-      new Character('ä', 'iso-8859-1')
+      new Character("\xe4", 'iso-8859-1')
     );
   }
 
   #[@test, @ignore('Does not work with all iconv implementations')]
   public function transliteration() {
-    $this->assertEquals('c', create(new String('Ä', 'utf-8'))->toString());
+    $this->assertEquals('c', create(new String('Ã„Â', 'utf-8'))->toString());
   }
 
   #[@test]
   public function worksWithEchoStatement() {
     ob_start();
-    echo new Character('ü');
-    $this->assertEquals('ü', ob_get_clean());
+    echo new Character('w');
+    $this->assertEquals('w', ob_get_clean());
   }
 
   #[@test]
