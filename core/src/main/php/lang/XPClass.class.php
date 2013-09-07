@@ -1158,17 +1158,17 @@
                   } else if ('...' === substr($type, -3)) {
                     $src.= $j ? '$·args= array_slice(func_get_args(), '.$j.');' : '$·args= func_get_args();';
                     $src.= (
-                      ' if (!is(\''.substr($generic[$j], 0, -3).'[]\', $·args)) throw new IllegalArgumentException('.
+                      ' if (!is(\''.substr($generic[$j], 0, -3).'[]\', $·args)) throw new \lang\IllegalArgumentException('.
                       '"Vararg '.($j + 1).' passed to ".__METHOD__."'.
-                      ' must be of '.$type.', ".xp::stringOf($·args)." given"'.
+                      ' must be of '.$type.', ".\xp::stringOf($·args)." given"'.
                       ');'
                     );
                   } else {
                     $src.= (
                       ' if ('.(isset($default[$j]) ? '('.$default[$j].' !== '.$parameters[$j].') && ' : '').
-                      '!is(\''.$generic[$j].'\', '.$parameters[$j].')) throw new IllegalArgumentException('.
+                      '!is(\''.$generic[$j].'\', '.$parameters[$j].')) throw new \lang\IllegalArgumentException('.
                       '"Argument '.($j + 1).' passed to ".__METHOD__."'.
-                      ' must be of '.$type.', ".xp::typeOf('.$parameters[$j].')." given"'.
+                      ' must be of '.$type.', ".\xp::typeOf('.$parameters[$j].')." given"'.
                       ');'
                     );
                   }
