@@ -279,6 +279,19 @@ class AnnotationParsingTest extends \unittest\TestCase {
   }
 
   #[@test]
+  public function overloaded_annotation_spanning_multiple_lines() {
+    $this->assertEquals(
+      array(0 => array('overloaded' => array('signatures' => array(array('string'), array('string', 'string')))), 1 => array()),
+      $this->parse(
+        "#[@overloaded(signatures= array(\n".
+        "  array('string'),\n".
+        "  array('string', 'string')\n".
+        "))]"
+      )
+    );
+  }
+
+  #[@test]
   public function webmethod_with_parameter_annotations() {
     $this->assertEquals(
       array(
@@ -334,6 +347,14 @@ class AnnotationParsingTest extends \unittest\TestCase {
     $this->assertEquals(
       array(0 => array('values' => array(array(1, 1), array(2, 2), array(3, 3))), 1 => array()),
       $this->parse("#[@values([array(1, 1), array(2, 2), array(3, 3)])]")
+    );
+  }
+
+  #[@test]
+  public function negative_float_inside_array() {
+    $this->assertEquals(
+      array(0 => array('values' => array(0.0, -1.5)), 1 => array()),
+      $this->parse("#[@values(array(0.0, -1.5))]")
     );
   }
 }
