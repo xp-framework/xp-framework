@@ -592,225 +592,143 @@
      * @throws  lang.ClassFormatException
      */
     public static function parseAnnotations($input, $context) {
-      $input= trim($input, "[]# \t\n\r").']';
-      $offset= 0;
+      static $states= array(
+        'annotation', 'annotation name', 'annotation value', 'annotation map', 'annotation map key', 'annotation map value', 'multi-value'
+      );
+
+      $tokens= token_get_all('<?php '.trim($input, "[]# \t\n\r").']');
       $annotations= array(0 => array(), 1 => array());
-      $annotation= $value= NULL;
-      $length= strlen($input);
-      ob_start();
-      while ($offset < $length) {
-        $state= $input{$offset};
-        if ('@' === $state) {
-          $s= strcspn($input, ',(]', $offset);
-          $annotation= substr($input, $offset+ 1, $s- 1);
-          $offset+= $s;
-        } else if (']' === $state) {
-          if (NULL === $annotation) {
-            // Nothing
-          } else if (FALSE === ($p= strpos($annotation, ':'))) {
-            $annotations[0][$annotation]= $value;
+
+      // Parse a single value (recursively, if necessary)
+      $valueOf= function($tokens, &$i) use(&$valueOf) {
+        if ('-' ===  $tokens[$i][0]) {
+          $i++;
+          return -1 * $valueOf($tokens, $i);
+        } else if (T_CONSTANT_ENCAPSED_STRING === $tokens[$i][0]) {
+          return eval('return '.$tokens[$i][1].';');
+        } else if (T_LNUMBER === $tokens[$i][0]) {
+          return (int)$tokens[$i][1];
+        } else if (T_DNUMBER === $tokens[$i][0]) {
+          return (double)$tokens[$i][1];
+        } else if ('[' === $tokens[$i] || T_ARRAY === $tokens[$i][0]) {
+          $value= array();
+          $element= null;
+          $end= '[' === $tokens[$i] ? ']' : ')';
+          for ($i++, $s= sizeof($tokens); ; $i++) {
+            if ($i >= $s) {
+              raise('lang.ClassFormatException', 'Parse error: Unterminated array');
+            } else if ($end === $tokens[$i]) {
+              $element && $value[]= $element[0];
+              break;
+            } else if ('(' === $tokens[$i]) {
+              // Skip
+            } else if (',' === $tokens[$i]) {
+              $element || raise('lang.ClassFormatException', 'Parse error: Malformed array - no value before comma');
+              $value[]= $element[0];
+              $element= null;
+            } else if (T_WHITESPACE === $tokens[$i][0]) {
+              $element= null;
+            } else {
+              $element= array($valueOf($tokens, $i));
+            }
+          }
+          return $value;
+        } else if (T_STRING === $tokens[$i][0]) {
+          return constant($tokens[$i][1]);
+        } else {
+          raise('lang.ClassFormatException', sprintf(
+            'Parse error: Unexpected %s',
+            is_array($tokens[$i]) ? token_name($tokens[$i][0]) : '"'.$tokens[$i].'"'
+          ));
+        }
+      };
+
+      // Parse tokens
+      for ($state= 0, $i= 1, $s= sizeof($tokens); $i < $s; $i++) {
+        if (T_WHITESPACE === $tokens[$i][0]) {
+          continue;
+        } else if (0 === $state) {             // Initial state, expecting @attr or @$param: attr
+          if ('@' === $tokens[$i]) {
+            $annotation= $tokens[$i + 1][1];
+            $param= NULL;
+            $value= NULL;
+            $i++;
+            $state= 1;
           } else {
-            $target= rtrim(substr($annotation, 0, $p), ' ');
-            $annotation= ltrim(substr($annotation, $p+ 1), ' ');
-            isset($annotations[1][$target]) || $annotations[1][$target]= array();
-            $annotations[1][$target][$annotation]= $value;
-          }
-          break;
-        } else if ('(' === $state) {
-          $peek= substr($input, $offset+ 1, strcspn($input, '="\')', $offset));
-          if ('\'' === $peek{0} || '"' === $peek{0}) {
-            $p= $offset+ 2;
-            $q= $peek{0};
-            while (($s= strcspn($input, $q, $p)) !== 0) {
-              $p+= $s;
-              if ('\\' !== $input{$p- 1}) break;
-              $p++;   
-            }
-            if (!is_string($value= @eval('return '.substr($input, $offset+ 1, $p - $offset).';'))) {
-              raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
-            }
-            $offset= $p+ 1;
-          } else if ('[' === ($a= $peek{0}) || 'array(' === ($a= substr($peek, 0, 6))) {
-            $la= strlen($a);
-            $b= 1;
-            $p= $offset+ $la+ 1;
-            $a= 'array(';
-            while ($b > 0 && $p < $length) {
-              $ps= $p;
-              $p+= strcspn($input, '[]()"\'', $p);
-              if ('[' === $input{$p}) {
-                $aa= 'array(';
-                $b++;
-              } else if ('(' === $input{$p}) {
-                $b++;
-                $aa= '(';
-              } else if (']' === $input{$p} || ')' === $input{$p}) {
-                $b--;
-                $aa= ')';
-              } else if ('\'' === $input{$p} || '"' === $input{$p}) {
-                $q= $input{$p};
-                $p++;
-                while (($s= strcspn($input, $q, $p)) !== 0) {
-                  $p+= $s;
-                  if ('\\' !== $input{$p- 1}) break;
-                  $p++;
-                }
-                $aa= $q;
-              }
-              $a.= substr($input, $ps, $p - $ps).$aa;
-              $p++;
-            }
-            if ($p >= $length) {
-              raise('lang.ClassFormatException', 'Parse error: Unterminated array in '.$context);
-            }
-            if (!is_array($value= @eval('return '.$a.';'))) {
-              raise('lang.ClassFormatException', 'Parse error: Malformed array `'.$a.'` in '.$context);
-            }
-            $offset= $p;
-          } else if ('=' !== $peek{strlen($peek)- 1}) {
-            $value= eval('return '.substr($peek, 0, -1).';');
-            $offset+= strlen($peek);
-          } else {
-            $value= array();
-            do {
-              $key= trim($peek, '= ');
-              $offset+= strlen($peek)+ 1;
-              $offset+= strspn($input, ' ', $offset);
-              if ($offset >= $length) {
-                break;
-              } else if ('[' === ($a= $input{$offset}) || 'array(' === ($a= substr($input, $offset, 6))) {
-                $la= strlen($a);
-                $b= 1;
-                $p= $offset+ $la;
-                $a= 'array(';
-                while ($b > 0 && $p < $length) {
-                  $ps= $p;
-                  $p+= strcspn($input, '[]()"\'', $p);
-                  if ('[' === $input{$p}) {
-                    $aa= 'array(';
-                    $b++;
-                  } else if ('(' === $input{$p}) {
-                    $b++;
-                    $aa= '(';
-                  } else if (']' === $input{$p} || ')' === $input{$p}) {
-                    $b--;
-                    $aa= ')';
-                  } else if ('\'' === $input{$p} || '"' === $input{$p}) {
-                    $q= $input{$p};
-                    $p++;
-                    while (($s= strcspn($input, $q, $p)) !== 0) {
-                      $p+= $s;
-                      if ('\\' !== $input{$p- 1}) break;
-                      $p++;
-                    }
-                    $aa= $q;
-                  }
-                  $a.= substr($input, $ps, $p - $ps).$aa;
-                  $p++;
-                }
-                if ($p >= $length) {
-                  raise('lang.ClassFormatException', 'Parse error: Unterminated array in '.$context);
-                }
-                if (!is_array($value[$key]= @eval('return '.$a.';'))) {
-                  raise('lang.ClassFormatException', 'Parse error: Malformed array `'.$a.'` in '.$context);
-                }
-                $offset= $p;
-              } else if ('\'' === $input{$offset} || '"' === $input{$offset}) {
-                $p= $offset+ 1;
-                $q= $input{$offset};
-                while (($s= strcspn($input, $q, $p)) !== 0) {
-                  $p+= $s;
-                  if ('\\' !== $input{$p- 1}) break;
-                  $p++;   
-                }
-                if (!is_string($value[$key]= @eval('return '.substr($input, $offset, $p - $offset + 1).';'))) {
-                  raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
-                }
-                $offset= $p+ 1;
-              } else {
-                $s= strcspn($input, ',)', $offset);
-                $value[$key]= eval('return '.substr($input, $offset, $s).';');
-                $offset+= $s;
-              }
-              
-              // Find next key
-              $s= strcspn($input, '="\')', $offset);
-              $peek= substr($input, $offset+ 1, $s);
-            } while ($s);
-          }
-          if ($offset >= $length) {
-            raise('lang.ClassFormatException', 'Parse error: Expecting ] in '.$context);
-          }
-        } else if (')' === $state) {
-          if (FALSE === ($p= strpos($annotation, ':'))) {
-            $annotations[0][$annotation]= $value;
-          } else {
-            $target= rtrim(substr($annotation, 0, $p), ' ');
-            $annotation= ltrim(substr($annotation, $p+ 1), ' ');
-            isset($annotations[1][$target]) || $annotations[1][$target]= array();
-            $annotations[1][$target][$annotation]= $value;
-          }
-          $annotation= $value= NULL;
-          $s= strspn($input, ',]', $offset);
-          $offset+= $s + 1;
-        } else if (',' === $state) {
-          if (NULL !== $annotation && NULL !== $value) {    // BC
-            trigger_error('Deprecated usage of multi-value annotations in '.$context, E_USER_DEPRECATED);
-            $annotations[0][$annotation]= array($value);
-            do {
-              $s= strspn($input, ' "\')', $offset+ 1);
-              $offset+= $s;
-              if ('\'' === $input{$offset} || '"' === $input{$offset}) {
-                $p= $offset+ 1;
-                $q= $input{$offset};
-                while (($s= strcspn($input, $q, $p)) !== 0) {
-                  $p+= $s;
-                  if ('\\' !== $input{$p- 1}) break;
-                  $p++;
-                }
-                if (!is_string($value= @eval('return '.substr($input, $offset, $p - $offset+ 1).';'))) {
-                  raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
-                }
-                $offset= $p+ 1;
-                $annotations[0][$annotation][]= $value;
-              } else if (')' === $input{$offset}) {
-                break;
-              } else {
-                $s= strcspn($input, ',)', $offset);
-                $annotations[0][$annotation][]= eval('return '.substr($input, $offset, $s).';');
-                $offset+= $s;
-              }
-            } while ($offset <= $length);
-            $annotation= $value= NULL;
-            $s= strspn($input, ',]', $offset);
-            $offset+= $s + 1;
-            continue;
-          }
-          if (NULL === $annotation) {
-            // Nothing
-          } else if (FALSE === ($p= strpos($annotation, ':'))) {
-            $annotations[0][$annotation]= $value;
-          } else {
-            $target= rtrim(substr($annotation, 0, $p), ' ');
-            $annotation= ltrim(substr($annotation, $p+ 1), ' ');
-            isset($annotations[1][$target]) || $annotations[1][$target]= array();
-            $annotations[1][$target][$annotation]= $value;
-          }
-          $annotation= $value= NULL;
-          if (FALSE === ($offset= strpos($input, '@', $offset))) {
             raise('lang.ClassFormatException', 'Parse error: Expecting @ in '.$context);
           }
-        } else {
-          raise('lang.ClassFormatException', 'Parse error: Unknown state '.$state.' at position '.$offset.' in '.$context);
+        } else if (1 === $state) {              // Inside attribute, check for values
+          if ('(' === $tokens[$i]) {
+            $state= 2;
+          } else if (',' === $tokens[$i]) {
+            if ($param) {
+              $annotations[1][$param][$annotation]= $value;
+            } else {
+              $annotations[0][$annotation]= $value;
+            }
+            $state= 0;
+          } else if (']' === $tokens[$i]) {
+            if ($param) {
+              $annotations[1][$param][$annotation]= $value;
+            } else {
+              $annotations[0][$annotation]= $value;
+            }
+            return $annotations;
+          } else if (':' === $tokens[$i]) {
+            $param= $annotation;
+            $annotation= NULL;
+          } else if (T_STRING === $tokens[$i][0]) {
+            $annotation= $tokens[$i][1];
+          } else {
+            raise('lang.ClassFormatException', 'Parse error: Expecting either "(", "," or "]" in '.$context);
+          }
+        } else if (2 === $state) {              // Inside braces of @attr(...)
+          if (')' === $tokens[$i]) {
+            $state= 1;
+          } else if (T_STRING === $tokens[$i][0] || T_CLASS === $tokens[$i][0] || T_RETURN === $tokens[$i][0]) {
+            $value= $tokens[$i][1];
+            $state= 3;
+          } else if ('[' === $tokens[$i] || is_array($tokens[$i])) {
+            $value= $valueOf($tokens, $i);
+          } else if (',' === $tokens[$i]) {
+            trigger_error('Deprecated usage of multi-value annotations in '.$context, E_USER_DEPRECATED);
+            $value= (array)$value;
+            $state= 6;
+          }
+        } else if (3 === $state) {              // Looking for either @attr(key= value) or @attr(key)
+          if ('=' === $tokens[$i]) {
+            $key= $value;
+            $value= array();
+            $state= 5;
+          } else if (')' === $tokens[$i]) {
+            $value= constant($value);
+            $state= 1;
+          }
+        } else if (4 === $state) {              // Parsing key inside @attr(a= b, c= d)
+          if (')' === $tokens[$i]) {
+            $state= 1;
+          } else if (',' === $tokens[$i]) {
+            $key= null;
+          } else if ('=' === $tokens[$i]) {
+            $state= 5;
+          } else if (is_array($tokens[$i])) {
+            $key= $tokens[$i][1];
+          }
+        } else if (5 === $state) {              // Parsing value inside @attr(a= b, c= d)
+          $value[$key]= $valueOf($tokens, $i);
+          $state= 4;
+        } else if (6 === $state) {
+          if (')' === $tokens[$i]) {            // BC: Deprecated multi-value annotations
+            $value[]= $element;
+            $state= 1;
+          } else if (',' === $tokens[$i]) {
+            $value[]= $element;
+          } else {
+            $element= $valueOf($tokens, $i);
+          }
         }
       }
-      $error= ob_get_contents();
-      ob_end_clean();
-      if ($error) {
-        raise('lang.ClassFormatException', trim($error).' in '.$context);
-      }
-      
-      return $annotations;
+      raise('lang.ClassFormatException', 'Parse error: Unterminated '.$states[$state].' in '.$context);
     }
 
     /**
