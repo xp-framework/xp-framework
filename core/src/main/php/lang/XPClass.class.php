@@ -644,14 +644,14 @@
               }
 
               if ('[' === $input{$p}) {
-                $a.= substr($input, $ps, $p - $ps).'array(';
+                $aa= 'array(';
                 $b++;
               } else if ('(' === $input{$p}) {
                 $b++;
-                $a.= substr($input, $ps, $p - $ps).'(';
+                $aa= '(';
               } else if (']' === $input{$p} || ')' === $input{$p}) {
                 $b--;
-                $a.= substr($input, $ps, $p - $ps).')';
+                $aa= ')';
               } else if ('\'' === $input{$p} || '"' === $input{$p}) {
                 $q= $input{$p};
                 $p++;
@@ -660,10 +660,9 @@
                   if ('\\' !== $input{$p- 1}) break;
                   $p++;
                 }
-                $a.= substr($input, $ps, $p - $ps + 1);
-              } else {
-                $a.= substr($input, $ps, $p - $ps);
+                $aa= $q;
               }
+              $a.= substr($input, $ps, $p - $ps).$aa;
               $p++;
             }
 
