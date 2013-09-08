@@ -635,12 +635,24 @@
             $ba= '[' === $a ? '[]' : '()';
             $b= 1;
             $p= $offset+ $la+ 1;
+            $a= 'array(';
             while ($b > 0) {
+              $ps= $p;
               $p+= strcspn($input, $ba.'"\'', $p);
               if ($p >= $length) {
                 raise('lang.ClassFormatException', 'Parse error: Unterminated array in '.$context);
               }
-              if ($ba{0} === $input{$p}) $b++; else if ($ba{1} === $input{$p}) $b--;else if ('\'' === $input{$p} || '"' === $input{$p}) {
+
+              if ('[' === $input{$p}) {
+                $a.= substr($input, $ps, $p - $ps).'array(';
+                $b++;
+              } else if ('(' === $input{$p}) {
+                $b++;
+                $a.= substr($input, $ps, $p - $ps).'(';
+              } else if (']' === $input{$p} || ')' === $input{$p}) {
+                $b--;
+                $a.= substr($input, $ps, $p - $ps).')';
+              } else if ('\'' === $input{$p} || '"' === $input{$p}) {
                 $q= $input{$p};
                 $p++;
                 while (($s= strcspn($input, $q, $p)) !== 0) {
@@ -648,10 +660,14 @@
                   if ('\\' !== $input{$p- 1}) break;
                   $p++;
                 }
+                $a.= substr($input, $ps, $p - $ps + 1);
+              } else {
+                $a.= substr($input, $ps, $p - $ps);
               }
               $p++;
             }
-            if ($p >= $length || !is_array($value= @eval('return array('.substr($input, $offset+ $la+ 1, $p- $offset- $la- 1- 1).');'))) {
+
+            if ($p >= $length || !is_array($value= @eval('return '.$a.';'))) {
               raise('lang.ClassFormatException', 'Parse error: Malformed array in '.$context);
             }
             $offset= $p;

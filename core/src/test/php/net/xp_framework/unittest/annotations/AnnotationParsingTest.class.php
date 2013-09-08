@@ -304,4 +304,12 @@ class AnnotationParsingTest extends \unittest\TestCase {
       $this->parse("#[@permissions(names = ['rn=login, rt=config', 'rn=admin, rt=config'])]")
     );
   }
+
+  #[@test]
+  public function nested_short_array_syntax() {
+    $this->assertEquals(
+      array(0 => array('values' => array(array(1, 1), array(2, 2), array(3, 3))), 1 => array()),
+      $this->parse("#[@values([[1, 1], [2, 2], [3, 3]])]")
+    );
+  }
 }
