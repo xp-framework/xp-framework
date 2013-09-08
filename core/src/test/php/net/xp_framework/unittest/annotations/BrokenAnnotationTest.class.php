@@ -54,17 +54,17 @@ class BrokenAnnotationTest extends \unittest\TestCase {
     $this->parse('#[@ignore, @test, ]');
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated or malformed string/')]
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Unexpected T_ENCAPSED_AND_WHITESPACE/')]
   public function unterminatedString() {
     $this->parse('#[@ignore("Test)]');
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated array/')]
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Unexpected "]"/')]
   public function unterminatedArray() {
     $this->parse('#[@ignore(array(1]');
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated array/')]
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Unexpected "]"/')]
   public function unterminatedArrayKey() {
     $this->parse('#[@ignore(name = array(1]');
   }
