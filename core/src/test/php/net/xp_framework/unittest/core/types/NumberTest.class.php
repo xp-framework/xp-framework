@@ -1,13 +1,11 @@
 <?php namespace net\xp_framework\unittest\core\types;
 
-use unittest\TestCase;
 use lang\types\Long;
 use lang\types\Byte;
 use lang\types\Short;
 use lang\types\Integer;
 use lang\types\Float;
 use lang\types\Double;
-
 
 /**
  * Tests the number wrapper typess
@@ -19,7 +17,7 @@ use lang\types\Double;
  * @see   xp://lang.types.Double
  * @see   xp://lang.types.Float
  */
-class NumberTest extends TestCase {
+class NumberTest extends \unittest\TestCase {
 
   /**
    * Tests a given type
@@ -32,21 +30,6 @@ class NumberTest extends TestCase {
     $this->assertEquals($int, $number->intValue(), 'intValue');
     $this->assertEquals($float, $number->floatValue(), 'floatValue');
     $this->assertEquals($number, clone($number), 'clone');
-  }
-
-  /**
-   * Method to determine if a value would break the constructor of Number
-   *
-   * @param  var $value
-   * @return boolean
-   */
-  protected function isNumeric($value) {
-    try {
-      Long::valueOf($value);
-    } catch (\lang\IllegalArgumentException $e) {
-      return false;
-    }
-    return true;
   }
 
   #[@test]
