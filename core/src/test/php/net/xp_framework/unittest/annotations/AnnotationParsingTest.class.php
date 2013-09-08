@@ -312,4 +312,28 @@ class AnnotationParsingTest extends \unittest\TestCase {
       $this->parse("#[@values([[1, 1], [2, 2], [3, 3]])]")
     );
   }
+
+  #[@test]
+  public function nested_short_array_syntax_as_key() {
+    $this->assertEquals(
+      array(0 => array('test' => array('values' => array(array(1, 1), array(2, 2), array(3, 3)))), 1 => array()),
+      $this->parse("#[@test(values = [[1, 1], [2, 2], [3, 3]])]")
+    );
+  }
+
+  #[@test]
+  public function combined_long_and_short_array_syntaxes() {
+    $this->assertEquals(
+      array(0 => array('values' => array(array(1, 1), array(2, 2), array(3, 3))), 1 => array()),
+      $this->parse("#[@values(array([1, 1], [2, 2], [3, 3]))]")
+    );
+  }
+
+  #[@test]
+  public function combined_short_and_long_array_syntaxes() {
+    $this->assertEquals(
+      array(0 => array('values' => array(array(1, 1), array(2, 2), array(3, 3))), 1 => array()),
+      $this->parse("#[@values([array(1, 1), array(2, 2), array(3, 3)])]")
+    );
+  }
 }

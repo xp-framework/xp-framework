@@ -9,6 +9,8 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed lang.XPClass::parseAnnotations() to support combined long and short
+  array syntaxes in annotations, either way around - (@thekid)
 * Fixed lang.XPClass::createGenericType() for namespaced code - (@thekid)
 
 
