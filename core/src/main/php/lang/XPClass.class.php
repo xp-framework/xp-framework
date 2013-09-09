@@ -612,20 +612,25 @@
           return (double)$tokens[$i][1];
         } else if ('[' === $tokens[$i] || T_ARRAY === $tokens[$i][0]) {
           $value= array();
-          $element= null;
+          $element= NULL;
+          $key= 0;
           $end= '[' === $tokens[$i] ? ']' : ')';
           for ($i++, $s= sizeof($tokens); ; $i++) {
             if ($i >= $s) {
               raise('lang.ClassFormatException', 'Parse error: Unterminated array');
             } else if ($end === $tokens[$i]) {
-              $element && $value[]= $element[0];
+              $element && $value[$key]= $element[0];
               break;
             } else if ('(' === $tokens[$i]) {
               // Skip
             } else if (',' === $tokens[$i]) {
               $element || raise('lang.ClassFormatException', 'Parse error: Malformed array - no value before comma');
-              $value[]= $element[0];
-              $element= null;
+              $value[$key]= $element[0];
+              $element= NULL;
+              $key= sizeof($value);
+            } else if (T_DOUBLE_ARROW === $tokens[$i][0]) {
+              $key= $element[0];
+              $element= NULL;
             } else if (T_WHITESPACE === $tokens[$i][0]) {
               continue;
             } else {

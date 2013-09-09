@@ -207,6 +207,14 @@ class AnnotationParsingTest extends \unittest\TestCase {
   }
 
   #[@test]
+  public function map_value() {
+    $this->assertEquals(
+      array(0 => array('colors' => array('green' => '$10.50', 'red' => '$9.99')), 1 => array()),
+      $this->parse("#[@colors(array('green' => '$10.50', 'red' => '$9.99'))]")
+    );
+  }
+
+  #[@test]
   public function multi_line_annotation() {
     $this->assertEquals(
       array(0 => array('interceptors' => array('classes' => array(
@@ -299,6 +307,14 @@ class AnnotationParsingTest extends \unittest\TestCase {
         1 => array('$name' => array('path' => NULL), '$greeting' => array('param' => NULL))
       ),
       $this->parse('#[@webmethod(verb= "GET", path= "/greet/{name}"), @$name: path, @$greeting: param]')
+    );
+  }
+
+  #[@test]
+  public function map_value_with_short_syntax() {
+    $this->assertEquals(
+      array(0 => array('colors' => array('green' => '$10.50', 'red' => '$9.99')), 1 => array()),
+      $this->parse("#[@colors(['green' => '$10.50', 'red' => '$9.99'])]")
     );
   }
 
