@@ -643,6 +643,24 @@
           return $value;
         } else if (T_STRING === $tokens[$i][0]) {
           return constant($tokens[$i][1]);
+        } else if (T_NEW === $tokens[$i][0]) {
+          $type= '';
+          while ('(' !== $tokens[$i++]) {
+            if (T_STRING === $tokens[$i][0]) $type.= '.'.$tokens[$i][1];
+          }
+          $class= self::forName(strrpos($type, '.') > 0 ? substr($type, 1) : xp::nameOf(substr($type, 1)));
+          for ($args= array(), $arg= NULL, $s= sizeof($tokens); ; $i++) {
+            if (')' === $tokens[$i]) {
+              $arg && $args[]= $arg[0];
+              break;
+            } else if (',' === $tokens[$i]) {
+              $args[]= $arg[0];
+              $arg= NULL;
+            } else if (T_WHITESPACE !== $tokens[$i][0]) {
+              $arg= array($valueOf($tokens, $i));
+            }
+          }
+          return $class->hasConstructor() ? $class->getConstructor()->newInstance($args) : $class->newInstance();
         } else {
           raise('lang.ClassFormatException', sprintf(
             'Parse error: Unexpected %s',

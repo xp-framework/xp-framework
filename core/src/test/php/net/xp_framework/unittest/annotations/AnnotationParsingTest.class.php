@@ -367,10 +367,26 @@ class AnnotationParsingTest extends \unittest\TestCase {
   }
 
   #[@test]
-  public function negative_float_inside_array() {
+  public function negative_and_positive_floats_inside_array() {
     $this->assertEquals(
-      array(0 => array('values' => array(0.0, -1.5)), 1 => array()),
-      $this->parse("#[@values(array(0.0, -1.5))]")
+      array(0 => array('values' => array(0.0, -1.5, +1.5)), 1 => array()),
+      $this->parse("#[@values(array(0.0, -1.5, +1.5))]")
+    );
+  }
+
+  #[@test]
+  public function class_instance_value() {
+    $this->assertEquals(
+      array(0 => array('value' => new \lang\types\String('hello')), 1 => array()),
+      $this->parse('#[@value(new String("hello"))]')
+    );
+  }
+
+  #[@test]
+  public function ns_class_instance_value() {
+    $this->assertEquals(
+      array(0 => array('value' => new \lang\types\String('hello')), 1 => array()),
+      $this->parse('#[@value(new \lang\types\String("hello"))]')
     );
   }
 }
