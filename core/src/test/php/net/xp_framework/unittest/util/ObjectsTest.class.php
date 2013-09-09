@@ -99,12 +99,12 @@
       $this->assertFalse(Objects::equal(NULL, $val));
     }
 
-    #[@test, @values(source= 'valuesExcept', args= array(FALSE)))]
+    #[@test, @values(source= 'valuesExcept', args= array(FALSE))]
     public function false_not_equal_to_other_values($val) {
       $this->assertFalse(Objects::equal(FALSE, $val));
     }
 
-    #[@test, @values(source= 'valuesExcept', args= array(TRUE)))]
+    #[@test, @values(source= 'valuesExcept', args= array(TRUE))]
     public function true_not_equal_to_other_values($val) {
       $this->assertFalse(Objects::equal(TRUE, $val));
     }

@@ -137,7 +137,7 @@
     #[@test, @values(array(
     #  array(array()),
     #  array(array(1, 2, 3)),
-    #  array(array(array(1), array(), array(-1, 4), array(new String('baz')))
+    #  array(array(array(1), array(), array(-1, 4), array(new String('baz'))))
     #))]
     public function arraysAreEqual($array) {
       $this->assertEquals($array, $array);
@@ -185,7 +185,7 @@
     /**
      * Test assertNotEquals() for integers
      */    
-    #[@test, @values(array(-1, 1.0, NULL, FALSE, TRUE, '', array(array()), new String('1'))]
+    #[@test, @values(array(-1, 1.0, NULL, FALSE, TRUE, '', array(array()), new String('1')))]
     public function integersAreNotEqual($cmp) {
       $this->assertNotEquals(1, $cmp);
     }    
