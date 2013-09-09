@@ -627,7 +627,7 @@
               $value[]= $element[0];
               $element= null;
             } else if (T_WHITESPACE === $tokens[$i][0]) {
-              $element= null;
+              continue;
             } else {
               $element= array($valueOf($tokens, $i));
             }
