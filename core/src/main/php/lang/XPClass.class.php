@@ -648,7 +648,7 @@
           while ('(' !== $tokens[$i++]) {
             if (T_STRING === $tokens[$i][0]) $type.= '.'.$tokens[$i][1];
           }
-          $class= self::forName(strrpos($type, '.') > 0 ? substr($type, 1) : xp::nameOf(substr($type, 1)));
+          $class= XPClass::forName(strrpos($type, '.') > 0 ? substr($type, 1) : xp::nameOf(substr($type, 1)));
           for ($args= array(), $arg= NULL, $s= sizeof($tokens); ; $i++) {
             if (')' === $tokens[$i]) {
               $arg && $args[]= $arg[0];
