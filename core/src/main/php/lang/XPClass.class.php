@@ -604,6 +604,9 @@
         if ('-' ===  $tokens[$i][0]) {
           $i++;
           return -1 * $valueOf($tokens, $i);
+        } else if ('+' ===  $tokens[$i][0]) {
+          $i++;
+          return +1 * $valueOf($tokens, $i);
         } else if (T_CONSTANT_ENCAPSED_STRING === $tokens[$i][0]) {
           return eval('return '.$tokens[$i][1].';');
         } else if (T_LNUMBER === $tokens[$i][0]) {
