@@ -645,6 +645,8 @@
             }
           }
           return $value;
+        } else if ('"' === $tokens[$i] || T_ENCAPSED_AND_WHITESPACE === $tokens[$i][0]) {
+          raise('lang.ClassFormatException', 'Parse error: Unterminated string in '.$place);
         } else if (T_NS_SEPARATOR === $tokens[$i][0]) {
           $type= '';
           while (T_NS_SEPARATOR === $tokens[$i++][0]) {
@@ -735,7 +737,7 @@
             trigger_error('Deprecated usage of multi-value annotations in '.$place, E_USER_DEPRECATED);
             $value= (array)$value;
             $state= 5;
-          } else if ('=' === $tokens[$i + 1] || '=' === $tokens[$i + 2]) {
+          } else if ($i + 2 < $s && ('=' === $tokens[$i + 1] || '=' === $tokens[$i + 2])) {
             $key= $tokens[$i][1];
             $value= array();
             $state= 3;

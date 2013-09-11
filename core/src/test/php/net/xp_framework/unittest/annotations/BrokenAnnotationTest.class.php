@@ -54,9 +54,14 @@ class BrokenAnnotationTest extends \unittest\TestCase {
     $this->parse('#[@ignore, @test, ]');
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Unexpected T_ENCAPSED_AND_WHITESPACE/')]
-  public function unterminated_string() {
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Unterminated string/')]
+  public function unterminated_dq_string() {
     $this->parse('#[@ignore("Test)]');
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Unterminated string/')]
+  public function unterminated_sq_string() {
+    $this->parse("#[@ignore('Test)]");
   }
 
   #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Unexpected "]"/')]
