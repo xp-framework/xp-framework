@@ -41,7 +41,7 @@
      * Test
      *
      */
-    #[@test @throws('rdbms.SQLConnectException')]
+    #[@test, @expect('rdbms.SQLConnectException')]
     public function connect_persistent_is_not_supported() {
       $conn= new SQLite3Connection(new DSN('sqlite+3://./:memory:/?persistent=1'));
       $conn->connect();
