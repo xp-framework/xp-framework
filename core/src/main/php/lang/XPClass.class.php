@@ -595,8 +595,8 @@
     public static function parseAnnotations($input, $context, $line= -1) {
       static $states= array(
         'annotation', 'annotation name', 'annotation value',
-        'annotation map', 'annotation map key', 'annotation map value',
-        'multi-value', 'annotation class constant value'
+        'annotation map key', 'annotation map value',
+        'multi-value'
       );
 
       $tokens= token_get_all('<?php '.trim($input, "[]# \t\n\r").']');
@@ -733,52 +733,28 @@
           } else if (',' === $tokens[$i]) {
             trigger_error('Deprecated usage of multi-value annotations in '.$place, E_USER_DEPRECATED);
             $value= (array)$value;
-            $state= 6;
-          } else if (T_STRING === $tokens[$i][0] || T_CLASS === $tokens[$i][0] || T_RETURN === $tokens[$i][0]) {
-            $value= $tokens[$i][1];
+            $state= 5;
+          } else if ('=' === $tokens[$i + 1] || '=' === $tokens[$i + 2]) {
+            $key= $tokens[$i][1];
+            $value= array();
             $state= 3;
-          } else if (T_NS_SEPARATOR === $tokens[$i][0]) {
-            $value= '';
-            while (T_NS_SEPARATOR === $tokens[$i++][0]) {
-              $value.= '.'.$tokens[$i++][1];
-            }
-            $i-= 2;
-            $state= 3;
-          } else if ('[' === $tokens[$i] || is_array($tokens[$i])) {
+          } else {
             $value= $valueOf($tokens, $i);
           }
-        } else if (3 === $state) {              // Looking for either @attr(key= value), @attr(key::const) or @attr(key)
-          if ('=' === $tokens[$i]) {
-            $key= $value;
-            $value= array();
-            $state= 5;
-          } else if (')' === $tokens[$i]) {
-            $value= constant($value);
-            $state= 1;
-          } else if (T_DOUBLE_COLON === $tokens[$i][0]) {
-            if ('self' === $value) {
-              $class= XPClass::forName($context);
-            } else if (FALSE === strpos($value, '.')) {
-              $class= XPClass::forName(substr($context, 0, strrpos($context, '.') + 1).$value);
-            } else {
-              $class= XPClass::forName(substr($value, 1));
-            }
-            $state= 7;
-          }
-        } else if (4 === $state) {              // Parsing key inside @attr(a= b, c= d)
+        } else if (3 === $state) {              // Parsing key inside @attr(a= b, c= d)
           if (')' === $tokens[$i]) {
             $state= 1;
           } else if (',' === $tokens[$i]) {
             $key= null;
           } else if ('=' === $tokens[$i]) {
-            $state= 5;
+            $state= 4;
           } else if (is_array($tokens[$i])) {
             $key= $tokens[$i][1];
           }
-        } else if (5 === $state) {              // Parsing value inside @attr(a= b, c= d)
+        } else if (4 === $state) {              // Parsing value inside @attr(a= b, c= d)
           $value[$key]= $valueOf($tokens, $i);
-          $state= 4;
-        } else if (6 === $state) {
+          $state= 3;
+        } else if (5 === $state) {
           if (')' === $tokens[$i]) {            // BC: Deprecated multi-value annotations
             $value[]= $element;
             $state= 1;
@@ -786,12 +762,6 @@
             $value[]= $element;
           } else {
             $element= $valueOf($tokens, $i);
-          }
-        } else if (7 === $state) {              // Class constant
-          if (')' === $tokens[$i]) {
-            $state= 1;
-          } else if (T_STRING === $tokens[$i][0]) {
-            $value= $class->getConstant($tokens[$i][1]);
           }
         }
       }
