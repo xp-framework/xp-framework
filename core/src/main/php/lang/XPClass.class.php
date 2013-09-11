@@ -604,7 +604,7 @@
       $place= $context.(-1 === $line ? '' : ', line '.$line);
 
       // Parse a single value (recursively, if necessary)
-      $valueOf= function($tokens, &$i) use(&$valueOf, $context) {
+      $valueOf= function($tokens, &$i) use(&$valueOf, $context, $place) {
         if ('-' ===  $tokens[$i][0]) {
           $i++;
           return -1 * $valueOf($tokens, $i);
@@ -624,14 +624,14 @@
           $end= '[' === $tokens[$i] ? ']' : ')';
           for ($i++, $s= sizeof($tokens); ; $i++) {
             if ($i >= $s) {
-              raise('lang.ClassFormatException', 'Parse error: Unterminated array');
+              raise('lang.ClassFormatException', 'Parse error: Unterminated array in '.$place);
             } else if ($end === $tokens[$i]) {
               $element && $value[$key]= $element[0];
               break;
             } else if ('(' === $tokens[$i]) {
               // Skip
             } else if (',' === $tokens[$i]) {
-              $element || raise('lang.ClassFormatException', 'Parse error: Malformed array - no value before comma');
+              $element || raise('lang.ClassFormatException', 'Parse error: Malformed array - no value before comma in '.$place);
               $value[$key]= $element[0];
               $element= NULL;
               $key= sizeof($value);
@@ -682,8 +682,9 @@
           return $class->hasConstructor() ? $class->getConstructor()->newInstance($args) : $class->newInstance();
         } else {
           raise('lang.ClassFormatException', sprintf(
-            'Parse error: Unexpected %s',
-            is_array($tokens[$i]) ? token_name($tokens[$i][0]) : '"'.$tokens[$i].'"'
+            'Parse error: Unexpected %s in %s',
+            is_array($tokens[$i]) ? token_name($tokens[$i][0]) : '"'.$tokens[$i].'"',
+            $place
           ));
         }
       };
