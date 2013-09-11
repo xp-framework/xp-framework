@@ -11,6 +11,7 @@
  * @see     https://gist.github.com/1240769
  */
 class AnnotationParsingTest extends \unittest\TestCase {
+  const CONSTANT = 'constant';
 
   /**
    * Helper
@@ -387,6 +388,30 @@ class AnnotationParsingTest extends \unittest\TestCase {
     $this->assertEquals(
       array(0 => array('value' => new \lang\types\String('hello')), 1 => array()),
       $this->parse('#[@value(new \lang\types\String("hello"))]')
+    );
+  }
+
+  #[@test]
+  public function class_constant_via_self() {
+    $this->assertEquals(
+      array(0 => array('value' => 'constant'), 1 => array()),
+      $this->parse('#[@value(self::CONSTANT)]')
+    );
+  }
+
+  #[@test]
+  public function class_constant_via_classname() {
+    $this->assertEquals(
+      array(0 => array('value' => 'constant'), 1 => array()),
+      $this->parse('#[@value(AnnotationParsingTest::CONSTANT)]')
+    );
+  }
+
+  #[@test]
+  public function class_constant_via_ns_classname() {
+    $this->assertEquals(
+      array(0 => array('value' => 'constant'), 1 => array()),
+      $this->parse('#[@value(\net\xp_framework\unittest\annotations\AnnotationParsingTest::CONSTANT)]')
     );
   }
 }
