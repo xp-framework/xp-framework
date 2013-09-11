@@ -5,6 +5,11 @@ XP Framework ChangeLog
 
 ### Heads up!
 
+* Switched annotation parser in lang.XPClass to a more robust implementation
+  based on token_get_all(). This also fixes previously undefined behaviour
+  with class constants, and gives more verbose error messages for malformed
+  annotations, both without having a negative impact on performance or 
+  memory usage. See pull request #328 - (@thekid)
 * Converted unittest classes to namespaces / new coding standards - (@thekid)
 
 ### Bugfixes
