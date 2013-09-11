@@ -40,43 +40,57 @@ class BrokenAnnotationTest extends \unittest\TestCase {
   }
 
   #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
-  public function missingAnnotationAfterCommaAndValue() {
+  public function missing_annotation_after_comma_and_value() {
     $this->parse('#[@ignore("Test"), ]');
   }
 
   #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
-  public function missingAnnotationAfterComma() {
+  public function missing_annotation_after_comma() {
     $this->parse('#[@ignore, ]');
   }
 
   #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
-  public function missingAnnotationAfterSecondComma() {
+  public function missing_annotation_after_second_comma() {
     $this->parse('#[@ignore, @test, ]');
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated or malformed string/')]
-  public function unterminatedString() {
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Unterminated string/')]
+  public function unterminated_dq_string() {
     $this->parse('#[@ignore("Test)]');
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated array/')]
-  public function unterminatedArray() {
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Unterminated string/')]
+  public function unterminated_sq_string() {
+    $this->parse("#[@ignore('Test)]");
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Unexpected "]"/')]
+  public function unterminated_array() {
     $this->parse('#[@ignore(array(1]');
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated array/')]
-  public function unterminatedArrayKey() {
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Unexpected "]"/')]
+  public function unterminated_array_key() {
     $this->parse('#[@ignore(name = array(1]');
   }
 
   #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Malformed array/')]
-  public function malformedArray() {
+  public function malformed_array() {
     $this->parse('#[@ignore(array(1 ,, 2))]');
   }
 
-
   #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Malformed array/')]
-  public function malformedArrayKey() {
+  public function malformed_array_inside_key_value_pairs() {
     $this->parse('#[@ignore(name= array(1 ,, 2))]');
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Expecting either "\(", "," or "\]"/')]
+  public function annotation_not_separated_by_commas() {
+    $this->parse("#[@test @throws('rdbms.SQLConnectException')]");
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Expecting either "\(", "," or "\]"/')]
+  public function too_many_closing_braces() {
+    $this->parse("#[@throws('rdbms.SQLConnectException'))]");
   }
 }

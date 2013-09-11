@@ -1,5 +1,7 @@
 <?php namespace net\xp_framework\unittest\annotations;
 
+use net\xp_framework\unittest\annotations\fixture\Namespaced;
+
 /**
  * Tests the XP Framework's annotation parsing implementation
  *
@@ -11,6 +13,7 @@
  * @see     https://gist.github.com/1240769
  */
 class AnnotationParsingTest extends \unittest\TestCase {
+  const CONSTANT = 'constant';
 
   /**
    * Helper
@@ -19,7 +22,9 @@ class AnnotationParsingTest extends \unittest\TestCase {
    * @return  [:var]
    */
   protected function parse($input) {
-    return \lang\XPClass::parseAnnotations($input, $this->getClassName());
+    return \lang\XPClass::parseAnnotations($input, $this->getClassName(), array(
+      'Namespaced' => 'net.xp_framework.unittest.annotations.fixture.Namespaced'
+    ));
   }
 
   #[@test]
@@ -207,6 +212,14 @@ class AnnotationParsingTest extends \unittest\TestCase {
   }
 
   #[@test]
+  public function map_value() {
+    $this->assertEquals(
+      array(0 => array('colors' => array('green' => '$10.50', 'red' => '$9.99')), 1 => array()),
+      $this->parse("#[@colors(array('green' => '$10.50', 'red' => '$9.99'))]")
+    );
+  }
+
+  #[@test]
   public function multi_line_annotation() {
     $this->assertEquals(
       array(0 => array('interceptors' => array('classes' => array(
@@ -279,6 +292,19 @@ class AnnotationParsingTest extends \unittest\TestCase {
   }
 
   #[@test]
+  public function overloaded_annotation_spanning_multiple_lines() {
+    $this->assertEquals(
+      array(0 => array('overloaded' => array('signatures' => array(array('string'), array('string', 'string')))), 1 => array()),
+      $this->parse(
+        "#[@overloaded(signatures= array(\n".
+        "  array('string'),\n".
+        "  array('string', 'string')\n".
+        "))]"
+      )
+    );
+  }
+
+  #[@test]
   public function webmethod_with_parameter_annotations() {
     $this->assertEquals(
       array(
@@ -286,6 +312,14 @@ class AnnotationParsingTest extends \unittest\TestCase {
         1 => array('$name' => array('path' => NULL), '$greeting' => array('param' => NULL))
       ),
       $this->parse('#[@webmethod(verb= "GET", path= "/greet/{name}"), @$name: path, @$greeting: param]')
+    );
+  }
+
+  #[@test]
+  public function map_value_with_short_syntax() {
+    $this->assertEquals(
+      array(0 => array('colors' => array('green' => '$10.50', 'red' => '$9.99')), 1 => array()),
+      $this->parse("#[@colors(['green' => '$10.50', 'red' => '$9.99'])]")
     );
   }
 
@@ -334,6 +368,86 @@ class AnnotationParsingTest extends \unittest\TestCase {
     $this->assertEquals(
       array(0 => array('values' => array(array(1, 1), array(2, 2), array(3, 3))), 1 => array()),
       $this->parse("#[@values([array(1, 1), array(2, 2), array(3, 3)])]")
+    );
+  }
+
+  #[@test]
+  public function negative_and_positive_floats_inside_array() {
+    $this->assertEquals(
+      array(0 => array('values' => array(0.0, -1.5, +1.5)), 1 => array()),
+      $this->parse("#[@values(array(0.0, -1.5, +1.5))]")
+    );
+  }
+
+  #[@test]
+  public function class_instance_value() {
+    $this->assertEquals(
+      array(0 => array('value' => new \lang\types\String('hello')), 1 => array()),
+      $this->parse('#[@value(new String("hello"))]')
+    );
+  }
+
+  #[@test]
+  public function ns_class_instance_value() {
+    $this->assertEquals(
+      array(0 => array('value' => new \lang\types\String('hello')), 1 => array()),
+      $this->parse('#[@value(new \lang\types\String("hello"))]')
+    );
+  }
+
+  #[@test]
+  public function class_constant_via_self() {
+    $this->assertEquals(
+      array(0 => array('value' => 'constant'), 1 => array()),
+      $this->parse('#[@value(self::CONSTANT)]')
+    );
+  }
+
+  #[@test]
+  public function class_constant_via_classname() {
+    $this->assertEquals(
+      array(0 => array('value' => 'constant'), 1 => array()),
+      $this->parse('#[@value(AnnotationParsingTest::CONSTANT)]')
+    );
+  }
+
+  #[@test]
+  public function class_constant_via_ns_classname() {
+    $this->assertEquals(
+      array(0 => array('value' => 'constant'), 1 => array()),
+      $this->parse('#[@value(\net\xp_framework\unittest\annotations\AnnotationParsingTest::CONSTANT)]')
+    );
+  }
+
+  #[@test]
+  public function class_constant_via_imported_classname() {
+    $this->assertEquals(
+      array(0 => array('value' => 'namespaced'), 1 => array()),
+      $this->parse('#[@value(Namespaced::CONSTANT)]')
+    );
+  }
+
+  #[@test]
+  public function class_constant_via_self_in_map() {
+    $this->assertEquals(
+      array(0 => array('map' => array('key' => 'constant', 'value' => 'val')), 1 => array()),
+      $this->parse('#[@map(key = self::CONSTANT, value = "val")]')
+    );
+  }
+
+  #[@test]
+  public function class_constant_via_classname_in_map() {
+    $this->assertEquals(
+      array(0 => array('map' => array('key' => 'constant', 'value' => 'val')), 1 => array()),
+      $this->parse('#[@map(key = AnnotationParsingTest::CONSTANT, value = "val")]')
+    );
+  }
+
+  #[@test]
+  public function class_constant_via_ns_classname_in_map() {
+    $this->assertEquals(
+      array(0 => array('map' => array('key' => 'constant', 'value' => 'val')), 1 => array()),
+      $this->parse('#[@map(key = \net\xp_framework\unittest\annotations\AnnotationParsingTest::CONSTANT, value = "val")]')
     );
   }
 }
