@@ -1,5 +1,7 @@
 <?php namespace net\xp_framework\unittest\annotations;
 
+use net\xp_framework\unittest\annotations\fixture\Namespaced;
+
 /**
  * Tests the XP Framework's annotation parsing implementation
  *
@@ -20,7 +22,9 @@ class AnnotationParsingTest extends \unittest\TestCase {
    * @return  [:var]
    */
   protected function parse($input) {
-    return \lang\XPClass::parseAnnotations($input, $this->getClassName());
+    return \lang\XPClass::parseAnnotations($input, $this->getClassName(), array(
+      'Namespaced' => 'net.xp_framework.unittest.annotations.fixture.Namespaced'
+    ));
   }
 
   #[@test]
@@ -412,6 +416,14 @@ class AnnotationParsingTest extends \unittest\TestCase {
     $this->assertEquals(
       array(0 => array('value' => 'constant'), 1 => array()),
       $this->parse('#[@value(\net\xp_framework\unittest\annotations\AnnotationParsingTest::CONSTANT)]')
+    );
+  }
+
+  #[@test]
+  public function class_constant_via_imported_classname() {
+    $this->assertEquals(
+      array(0 => array('value' => 'namespaced'), 1 => array()),
+      $this->parse('#[@value(Namespaced::CONSTANT)]')
     );
   }
 

@@ -588,11 +588,12 @@
      *
      * @param   string input
      * @param   string context the class name
+     * @return  [:string] imports
      * @param   int line 
      * @return  [:var]
      * @throws  lang.ClassFormatException
      */
-    public static function parseAnnotations($input, $context, $line= -1) {
+    public static function parseAnnotations($input, $context, $imports= array(), $line= -1) {
       static $states= array(
         'annotation', 'annotation name', 'annotation value',
         'annotation map key', 'annotation map value',
@@ -603,8 +604,23 @@
       $annotations= array(0 => array(), 1 => array());
       $place= $context.(-1 === $line ? '' : ', line '.$line);
 
+      // Resolve classes
+      $resolve= function($type, $context, $imports) {
+        if ('self' === $type) {
+          return XPClass::forName($context);
+        } else if (FALSE !== strpos($type, '.')) {
+          return XPClass::forName($type);
+        } else if (isset($imports[$type])) {
+          return XPClass::forName($imports[$type]);
+        } else if (isset(xp::$cn[$type])) {
+          return XPClass::forName(xp::$cn[$type]);
+        } else {
+          return XPClass::forName(substr($context, 0, strrpos($context, '.') + 1).$type);
+        }
+      };
+
       // Parse a single value (recursively, if necessary)
-      $valueOf= function($tokens, &$i) use(&$valueOf, $context, $place) {
+      $valueOf= function($tokens, &$i) use(&$valueOf, $context, $imports, $place, $resolve) {
         if ('-' ===  $tokens[$i][0]) {
           $i++;
           return -1 * $valueOf($tokens, $i);
@@ -655,12 +671,7 @@
           return XPClass::forName(substr($type, 1))->getConstant($tokens[$i][1]);
         } else if (T_STRING === $tokens[$i][0]) {     // constant vs. class::constant
           if (T_DOUBLE_COLON === $tokens[$i + 1][0]) {
-            if ('self' === $tokens[$i][1]) {
-              $class= XPClass::forName($context);
-            } else {
-              $class= XPClass::forName(substr($context, 0, strrpos($context, '.') + 1).$tokens[$i][1]);
-            }
-            return $class->getConstant($tokens[$i+= 2][1]);
+            return $resolve($tokens[$i][1], $context, $imports)->getConstant($tokens[$i+= 2][1]);
           } else {
             return constant($tokens[$i][1]);
           }
@@ -669,7 +680,7 @@
           while ('(' !== $tokens[$i++]) {
             if (T_STRING === $tokens[$i][0]) $type.= '.'.$tokens[$i][1];
           }
-          $class= XPClass::forName(strrpos($type, '.') > 0 ? substr($type, 1) : xp::nameOf(substr($type, 1)));
+          $class= $resolve(substr($type, 1), $context, $imports);
           for ($args= array(), $arg= NULL, $s= sizeof($tokens); ; $i++) {
             if (')' === $tokens[$i]) {
               $arg && $args[]= $arg[0];
@@ -781,12 +792,21 @@
     public static function parseDetails($bytes, $context= '') {
       $details= array(array(), array());
       $annotations= array(0 => array(), 1 => array());
+      $imports= array();
       $comment= NULL;
       $members= TRUE;
       $parsed= '';
       $tokens= token_get_all($bytes);
       for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
         switch ($tokens[$i][0]) {
+          case T_USE:
+            $type= '';
+            while (';' !== $tokens[++$i] && $i < $s) {
+              T_WHITESPACE === $tokens[$i][0] || $type.= $tokens[$i][1];
+            }
+            $imports[substr($type, strrpos($type, '\\')+ 1)]= strtr($type, '\\', '.');
+            break;
+
           case T_DOC_COMMENT:
             $comment= $tokens[$i][1];
             break;
@@ -802,6 +822,7 @@
                 $annotations= self::parseAnnotations(
                   trim($parsed, " \t\n\r"), 
                   $context,
+                  $imports,
                   isset($tokens[$i][2]) ? $tokens[$i][2] : -1
                 );
                 $parsed= '';
