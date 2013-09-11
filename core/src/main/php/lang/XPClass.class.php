@@ -604,7 +604,7 @@
       $place= $context.(-1 === $line ? '' : ', line '.$line);
 
       // Parse a single value (recursively, if necessary)
-      $valueOf= function($tokens, &$i) use(&$valueOf) {
+      $valueOf= function($tokens, &$i) use(&$valueOf, $context) {
         if ('-' ===  $tokens[$i][0]) {
           $i++;
           return -1 * $valueOf($tokens, $i);
@@ -645,8 +645,23 @@
             }
           }
           return $value;
-        } else if (T_STRING === $tokens[$i][0]) {
-          return constant($tokens[$i][1]);
+        } else if (T_NS_SEPARATOR === $tokens[$i][0]) {
+          $type= '';
+          while (T_NS_SEPARATOR === $tokens[$i++][0]) {
+            $type.= '.'.$tokens[$i++][1];
+          }
+          return XPClass::forName(substr($type, 1))->getConstant($tokens[$i][1]);
+        } else if (T_STRING === $tokens[$i][0]) {     // constant vs. class::constant
+          if (T_DOUBLE_COLON === $tokens[$i + 1][0]) {
+            if ('self' === $tokens[$i][1]) {
+              $class= XPClass::forName($context);
+            } else {
+              $class= XPClass::forName(substr($context, 0, strrpos($context, '.') + 1).$tokens[$i][1]);
+            }
+            return $class->getConstant($tokens[$i+= 2][1]);
+          } else {
+            return constant($tokens[$i][1]);
+          }
         } else if (T_NEW === $tokens[$i][0]) {
           $type= '';
           while ('(' !== $tokens[$i++]) {
@@ -715,6 +730,10 @@
         } else if (2 === $state) {              // Inside braces of @attr(...)
           if (')' === $tokens[$i]) {
             $state= 1;
+          } else if (',' === $tokens[$i]) {
+            trigger_error('Deprecated usage of multi-value annotations in '.$place, E_USER_DEPRECATED);
+            $value= (array)$value;
+            $state= 6;
           } else if (T_STRING === $tokens[$i][0] || T_CLASS === $tokens[$i][0] || T_RETURN === $tokens[$i][0]) {
             $value= $tokens[$i][1];
             $state= 3;
@@ -727,12 +746,8 @@
             $state= 3;
           } else if ('[' === $tokens[$i] || is_array($tokens[$i])) {
             $value= $valueOf($tokens, $i);
-          } else if (',' === $tokens[$i]) {
-            trigger_error('Deprecated usage of multi-value annotations in '.$place, E_USER_DEPRECATED);
-            $value= (array)$value;
-            $state= 6;
           }
-        } else if (3 === $state) {              // Looking for either @attr(key= value), @attr(class::key) or @attr(key)
+        } else if (3 === $state) {              // Looking for either @attr(key= value), @attr(key::const) or @attr(key)
           if ('=' === $tokens[$i]) {
             $key= $value;
             $value= array();

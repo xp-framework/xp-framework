@@ -414,4 +414,28 @@ class AnnotationParsingTest extends \unittest\TestCase {
       $this->parse('#[@value(\net\xp_framework\unittest\annotations\AnnotationParsingTest::CONSTANT)]')
     );
   }
+
+  #[@test]
+  public function class_constant_via_self_in_map() {
+    $this->assertEquals(
+      array(0 => array('map' => array('key' => 'constant', 'value' => 'val')), 1 => array()),
+      $this->parse('#[@map(key = self::CONSTANT, value = "val")]')
+    );
+  }
+
+  #[@test]
+  public function class_constant_via_classname_in_map() {
+    $this->assertEquals(
+      array(0 => array('map' => array('key' => 'constant', 'value' => 'val')), 1 => array()),
+      $this->parse('#[@map(key = AnnotationParsingTest::CONSTANT, value = "val")]')
+    );
+  }
+
+  #[@test]
+  public function class_constant_via_ns_classname_in_map() {
+    $this->assertEquals(
+      array(0 => array('map' => array('key' => 'constant', 'value' => 'val')), 1 => array()),
+      $this->parse('#[@map(key = \net\xp_framework\unittest\annotations\AnnotationParsingTest::CONSTANT, value = "val")]')
+    );
+  }
 }
