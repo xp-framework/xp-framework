@@ -1,6 +1,6 @@
 <?php namespace net\xp_framework\unittest\scriptlet\rpc;
 
-
+use net\xp_framework\unittest\scriptlet\rpc\mock\XmlRpcRouterMock;
 
 /**
  * Test case for XmlRpcRpcRouter

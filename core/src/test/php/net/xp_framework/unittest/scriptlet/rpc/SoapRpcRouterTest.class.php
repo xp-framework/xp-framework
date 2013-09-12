@@ -1,7 +1,7 @@
 <?php namespace net\xp_framework\unittest\scriptlet\rpc;
 
 use webservices\soap\xp\XPSoapMessage;
-
+use net\xp_framework\unittest\scriptlet\rpc\mock\SoapRpcRouterMock;
 
 /**
  * Test case for SoapRpcRouter

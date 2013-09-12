@@ -6,7 +6,6 @@ use peer\http\HttpResponse;
 use webservices\xmlrpc\XmlRpcResponseMessage;
 use webservices\xmlrpc\transport\XmlRpcHttpTransport;
 
-
 /**
  * Testcase for XmlRpcClient
  *

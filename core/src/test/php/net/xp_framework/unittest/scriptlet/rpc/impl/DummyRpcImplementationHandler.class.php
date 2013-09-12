@@ -2,8 +2,6 @@
 
 /**
  * Dummy class for unittest
- *
- * @purpose  Dummy implementation
  */
 class DummyRpcImplementationHandler extends \lang\Object {
 
@@ -33,7 +31,7 @@ class DummyRpcImplementationHandler extends \lang\Object {
    */
   #[@webmethod]
   public function giveMeFault() {
-    throw new ServiceException(403, 'This is a intentionally caused exception.');
+    throw new \util\ServiceException(403, 'This is a intentionally caused exception.');
   }
   
   /**

@@ -1,7 +1,7 @@
 <?php namespace net\xp_framework\unittest\scriptlet\rpc;
 
 use webservices\json\JsonFactory;
-
+use net\xp_framework\unittest\scriptlet\rpc\mock\JsonRpcRouterMock;
 
 /**
  * Test case for JsonRpcRpcRouter
