@@ -1,33 +1,28 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\io\archive;
 
-  uses('net.xp_framework.unittest.io.archive.ZipFileTest');
+
+
+/**
+ * Tests ZipArchiveReader class
+ *
+ * @see   xp://io.archive.zip.ZipArchiveReader
+ */
+class ZipArchiveReaderTest extends ZipFileTest {
 
   /**
-   * Tests ZipArchiveReader class
+   * Tests close()
    *
-   * @see   xp://io.archive.zip.ZipArchiveReader
    */
-  class ZipArchiveReaderTest extends ZipFileTest {
-
-    /**
-     * Tests close()
-     *
-     */
-    #[@test]
-    public function close() {
-      $stream= newinstance('io.streams.InputStream', array(), '{
-        public $closed= FALSE;
-        public function read($limit= 8192) { return ""; }
-        public function available() { return 0; }
-        public function close() { $this->closed= TRUE; }
-      }');
-      $reader= new ZipArchiveReader($stream);
-      $reader->close();
-      $this->assertTrue($stream->closed);
-    }
+  #[@test]
+  public function close() {
+    $stream= newinstance('io.streams.InputStream', array(), '{
+      public $closed= FALSE;
+      public function read($limit= 8192) { return ""; }
+      public function available() { return 0; }
+      public function close() { $this->closed= TRUE; }
+    }');
+    $reader= new \io\archive\zip\ZipArchiveReader($stream);
+    $reader->close();
+    $this->assertTrue($stream->closed);
   }
-?>
+}
