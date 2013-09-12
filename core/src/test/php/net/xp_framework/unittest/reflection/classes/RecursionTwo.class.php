@@ -1,19 +1,14 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\reflection\classes;
+
+
+
+/**
+ * (Insert class' description here)
  *
- * $Id$ 
+ * @ext      extension
+ * @see      reference
+ * @purpose  purpose
  */
+class RecursionTwo extends \lang\Object {
 
-  uses('net.xp_framework.unittest.reflection.classes.RecursionOne');
-
-  /**
-   * (Insert class' description here)
-   *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
-   */
-  class RecursionTwo extends Object {
-  
-  }
-?>
+}
