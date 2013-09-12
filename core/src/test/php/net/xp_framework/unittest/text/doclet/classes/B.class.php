@@ -1,17 +1,12 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\text\doclet\classes;
+
+
+
+/**
+ * Class "B"
  *
- * $Id$ 
+ * @see      xp://net.xp_framework.unittest.text.doclet.ClassIteratorTest
  */
-
-  $package= 'net.xp_framework.unittest.text.doclet.classes';
-
-  /**
-   * Class "B"
-   *
-   * @see      xp://net.xp_framework.unittest.text.doclet.ClassIteratorTest
-   */
-  class net·xp_framework·unittest·text·doclet·classes·B extends Object {
-    
-  }
-?>
+class B extends \lang\Object {
+  
+}
