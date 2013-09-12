@@ -248,7 +248,7 @@ class RestSerializerConversionTest extends TestCase {
    */
   #[@test]
   public function issue_with_getter() {
-    $issue= new \IssueWithGetter(1, 'test');
+    $issue= new IssueWithGetter(1, 'test');
     $this->assertEquals(
       array('issueId' => 1, 'title' => 'test', 'createdAt' => null), 
       $this->fixture->convert($issue)

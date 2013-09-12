@@ -7,7 +7,6 @@ use webservices\rest\RestXmlDeserializer;
 use webservices\rest\RestJsonDeserializer;
 use webservices\rest\RestResponse;
 
-
 /**
  * TestCase
  *
@@ -233,7 +232,7 @@ class RestResponseTest extends TestCase {
     $list= $fixture->data(\lang\Type::forName('net.xp_framework.unittest.webservices.rest.IssuesWithSetter'));
 
     $this->assertEquals(
-      new \IssuesWithSetter(array(
+      new IssuesWithSetter(array(
         new IssueWithField(1, 'Found a bug'),
         new IssueWithField(2, 'Another')
       )),
@@ -251,7 +250,7 @@ class RestResponseTest extends TestCase {
     $list= $fixture->data(\lang\Type::forName('net.xp_framework.unittest.webservices.rest.IssuesWithField'));
 
     $this->assertEquals(
-      new \IssuesWithField(array(
+      new IssuesWithField(array(
         new IssueWithField(1, 'Found a bug'),
         new IssueWithField(2, 'Another')
       )),
@@ -300,7 +299,7 @@ class RestResponseTest extends TestCase {
     $list= $fixture->data(\lang\Type::forName('net.xp_framework.unittest.webservices.rest.IssuesWithSetter'));
 
     $this->assertEquals(
-      new \IssuesWithSetter(array(
+      new IssuesWithSetter(array(
         new IssueWithField(1, 'Found a bug'),
         new IssueWithField(2, 'Another')
       )),
@@ -323,7 +322,7 @@ class RestResponseTest extends TestCase {
     $list= $fixture->data(\lang\Type::forName('net.xp_framework.unittest.webservices.rest.IssuesWithField'));
 
     $this->assertEquals(
-      new \IssuesWithField(array(
+      new IssuesWithField(array(
         new IssueWithField(1, 'Found a bug'),
         new IssueWithField(2, 'Another')
       )),
