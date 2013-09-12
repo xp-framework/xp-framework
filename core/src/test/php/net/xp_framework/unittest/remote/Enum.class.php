@@ -1,27 +1,17 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\remote;
+
+/**
+ * Handles the "mock" enum
  *
- * $Id$ 
+ * @see  xp://net.xp_framework.unittest.remote.SerializerTest
  */
+class Enum extends \lang\Enum {
+  public static
+    $Value1= null,
+    $Value2= null;
 
-  $package= 'net.xp_framework.unittest.remote';
-
-  uses('lang.Enum');
-
-  /**
-   * Handles the "mock" enum
-   *
-   * @see      xp://lang.Enum
-   * @purpose  Enum
-   */
-  class net·xp_framework·unittest·remote·Enum extends Enum {
-    public static
-      $Value1= NULL,
-      $Value2= NULL;
-    
-    public static function __static() {
-      self::$Value1= new self(6100, 'Value1');
-      self::$Value2= new self(6101, 'Value2');
-    }
-  } 
-?>
+  public static function __static() {
+    self::$Value1= new self(6100, 'Value1');
+    self::$Value2= new self(6101, 'Value2');
+  }
+}
