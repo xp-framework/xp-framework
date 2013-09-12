@@ -1,22 +1,11 @@
-<?php namespace net\xp_framework\unittest\security;/*
- * This class is part of the XP Framework
- *
- */
+<?php namespace net\xp_framework\unittest\security;
 
-use unittest\TestCase;
 use security\SecureString;
-
 
 /**
  * Baseclass for test cases for security.SecureString
- *
  */
-abstract class SecureStringTest extends TestCase {
-
-  #[@test]
-  public function create() {
-    new SecureString('payload');
-  }
+abstract class SecureStringTest extends \unittest\TestCase {
 
   /**
    * Retrieve value
@@ -24,6 +13,11 @@ abstract class SecureStringTest extends TestCase {
    * @return string
    */
   protected function getValue() { return 'payload'; }
+
+  #[@test]
+  public function create() {
+    new SecureString('payload');
+  }
 
   #[@test]
   public function create_from_function_return_value() {
