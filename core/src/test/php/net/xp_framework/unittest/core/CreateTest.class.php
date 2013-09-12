@@ -28,6 +28,7 @@ class CreateTest extends \unittest\TestCase {
 
   #[@test]
   public function createWithShortNames() {
+    \lang\XPClass::forName('util.collections.HashTable');
     $h= create('new HashTable<String, String>');
     $this->assertEquals(
       array(\lang\XPClass::forName('lang.types.String'), \lang\XPClass::forName('lang.types.String')), 
