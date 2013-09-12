@@ -1,7 +1,5 @@
 <?php namespace net\xp_framework\unittest\scriptlet;
 
-
-
 use unittest\TestCase;
 use xp\scriptlet\Runner;
 use xml\Stylesheet;
@@ -12,7 +10,6 @@ use scriptlet\HttpScriptlet;
 use scriptlet\xml\XMLScriptlet;
 use lang\Runtime;
 use lang\System;
-
 
 /**
  * TestCase
@@ -155,7 +152,7 @@ class RunnerTest extends TestCase {
       }
       
       public function doGet($request, $response) {
-        Runtime::halt($request->getParam("code"), $request->getParam("message"));
+        \lang\Runtime::halt($request->getParam("code"), $request->getParam("message"));
       }
     }');
   }
