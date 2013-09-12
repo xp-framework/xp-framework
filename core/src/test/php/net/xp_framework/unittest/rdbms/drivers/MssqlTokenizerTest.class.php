@@ -1,29 +1,22 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\rdbms\drivers;
  
-  uses(
-    'rdbms.mssql.MsSQLConnection',
-    'net.xp_framework.unittest.rdbms.drivers.TDSTokenizerTest'
-  );
+use rdbms\mssql\MsSQLConnection;
 
+
+/**
+ * Test MSSQL tokenizer
+ *
+ * @see   xp://rdbms.mssql.MsSQLConnection
+ * @see   xp://net.xp_framework.unittest.rdbms.drivers.TDSTokenizerTest
+ */
+class MssqlTokenizerTest extends TDSTokenizerTest {
+    
   /**
-   * Test MSSQL tokenizer
+   * Sets up a Database Object for the test
    *
-   * @see   xp://rdbms.mssql.MsSQLConnection
-   * @see   xp://net.xp_framework.unittest.rdbms.drivers.TDSTokenizerTest
+   * @return  rdbms.DBConnection
    */
-  class MssqlTokenizerTest extends TDSTokenizerTest {
-      
-    /**
-     * Sets up a Database Object for the test
-     *
-     * @return  rdbms.DBConnection
-     */
-    protected function fixture() {
-      return new MsSQLConnection(new DSN('mssql://localhost:1433/'));
-    }
+  protected function fixture() {
+    return new MsSQLConnection(new \rdbms\DSN('mssql://localhost:1433/'));
   }
-?>
+}

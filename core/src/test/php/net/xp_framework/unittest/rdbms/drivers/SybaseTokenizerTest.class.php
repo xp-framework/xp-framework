@@ -1,29 +1,22 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\rdbms\drivers;
  
-  uses(
-    'rdbms.sybase.SybaseConnection',
-    'net.xp_framework.unittest.rdbms.drivers.TDSTokenizerTest'
-  );
+use rdbms\sybase\SybaseConnection;
 
+
+/**
+ * Test sybase tokenizer
+ *
+ * @see   xp://rdbms.sybase.SybaseConnection
+ * @see   xp://net.xp_framework.unittest.rdbms.drivers.TDSTokenizerTest
+ */
+class SybaseTokenizerTest extends TDSTokenizerTest {
+    
   /**
-   * Test sybase tokenizer
+   * Sets up a Database Object for the test
    *
-   * @see   xp://rdbms.sybase.SybaseConnection
-   * @see   xp://net.xp_framework.unittest.rdbms.drivers.TDSTokenizerTest
+   * @return  rdbms.DBConnection
    */
-  class SybaseTokenizerTest extends TDSTokenizerTest {
-      
-    /**
-     * Sets up a Database Object for the test
-     *
-     * @return  rdbms.DBConnection
-     */
-    protected function fixture() {
-      return new SybaseConnection(new DSN('sybase://localhost:1999/'));
-    }
+  protected function fixture() {
+    return new SybaseConnection(new \rdbms\DSN('sybase://localhost:1999/'));
   }
-?>
+}

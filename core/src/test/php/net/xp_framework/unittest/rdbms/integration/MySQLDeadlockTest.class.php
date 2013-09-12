@@ -1,26 +1,19 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\rdbms\integration;
 
-  uses(
-    'net.xp_framework.unittest.rdbms.integration.AbstractDeadlockTest'
-  );
+
+
+/**
+ * Deadlock test on mysql
+ *
+ */
+class MySQLDeadlockTest extends AbstractDeadlockTest {
 
   /**
-   * Deadlock test on mysql
+   * Retrieve DSN
    *
+   * @return  string
    */
-  class MySQLDeadlockTest extends AbstractDeadlockTest {
-
-    /**
-     * Retrieve DSN
-     *
-     * @return  string
-     */
-    public function _dsn() {
-      return 'mysql';
-    }
+  public function _dsn() {
+    return 'mysql';
   }
-?>
+}
