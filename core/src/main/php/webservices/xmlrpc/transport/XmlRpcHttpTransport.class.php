@@ -48,7 +48,7 @@
      * @param   webservices.xmlrpc.XmlRpcMessage message
      * @return  scriptlet.HttpScriptletResponse
      */
-    public function send(XmlRpcMessage $message) {
+    public function send($message) {
       with ($r= $this->_conn->create(new HttpRequest())); {
         $r->setMethod(HttpConstants::POST);
         $r->setParameters(new RequestData($message->serializeData()));
