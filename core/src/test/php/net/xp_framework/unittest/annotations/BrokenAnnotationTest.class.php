@@ -40,17 +40,17 @@ class BrokenAnnotationTest extends \unittest\TestCase {
     $this->parse('#[@attribute(key= "value)]');
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting "@"/')]
   public function missing_annotation_after_comma_and_value() {
     $this->parse('#[@ignore("Test"), ]');
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting "@"/')]
   public function missing_annotation_after_comma() {
     $this->parse('#[@ignore, ]');
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting "@"/')]
   public function missing_annotation_after_second_comma() {
     $this->parse('#[@ignore, @test, ]');
   }

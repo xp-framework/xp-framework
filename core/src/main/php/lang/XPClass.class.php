@@ -622,7 +622,7 @@
       };
 
       // Parse a single value (recursively, if necessary)
-      $valueOf= function($tokens, &$i) use(&$valueOf, $context, $imports, $place, $resolve) {
+      $valueOf= function($tokens, &$i) use(&$valueOf, $context, $imports, $resolve) {
         if ('-' ===  $tokens[$i][0]) {
           $i++;
           return -1 * $valueOf($tokens, $i);
@@ -642,14 +642,14 @@
           $end= '[' === $tokens[$i] ? ']' : ')';
           for ($i++, $s= sizeof($tokens); ; $i++) {
             if ($i >= $s) {
-              raise('lang.ClassFormatException', 'Parse error: Unterminated array in '.$place);
+              throw new IllegalStateException('Parse error: Unterminated array');
             } else if ($end === $tokens[$i]) {
               $element && $value[$key]= $element[0];
               break;
             } else if ('(' === $tokens[$i]) {
               // Skip
             } else if (',' === $tokens[$i]) {
-              $element || raise('lang.ClassFormatException', 'Parse error: Malformed array - no value before comma in '.$place);
+              $element || raise('lang.IllegalStateException', 'Parse error: Malformed array - no value before comma');
               $value[$key]= $element[0];
               $element= NULL;
               $key= sizeof($value);
@@ -664,7 +664,7 @@
           }
           return $value;
         } else if ('"' === $tokens[$i] || T_ENCAPSED_AND_WHITESPACE === $tokens[$i][0]) {
-          raise('lang.ClassFormatException', 'Parse error: Unterminated string in '.$place);
+          throw new IllegalStateException('Parse error: Unterminated string');
         } else if (T_NS_SEPARATOR === $tokens[$i][0]) {
           $type= '';
           while (T_NS_SEPARATOR === $tokens[$i++][0]) {
@@ -677,7 +677,7 @@
           } else if (defined($tokens[$i][1])) {
             return constant($tokens[$i][1]);
           } else {
-            raise('lang.ClassFormatException', 'Undefined constant "'.$tokens[$i][1].'" in '.$place);
+            raise('lang.ElementNotFoundException', 'Undefined constant "'.$tokens[$i][1].'"');
           }
         } else if (T_NEW === $tokens[$i][0]) {
           $type= '';
@@ -698,10 +698,9 @@
           }
           return $class->hasConstructor() ? $class->getConstructor()->newInstance($args) : $class->newInstance();
         } else {
-          raise('lang.ClassFormatException', sprintf(
-            'Parse error: Unexpected %s in %s',
-            is_array($tokens[$i]) ? token_name($tokens[$i][0]) : '"'.$tokens[$i].'"',
-            $place
+          throw new IllegalStateException(sprintf(
+            'Parse error: Unexpected %s',
+            is_array($tokens[$i]) ? token_name($tokens[$i][0]) : '"'.$tokens[$i].'"'
           ));
         }
       };
@@ -719,7 +718,7 @@
               $i++;
               $state= 1;
             } else {
-              raise('lang.ClassFormatException', 'Parse error: Expecting @ in '.$place);
+              throw new IllegalStateException('Parse error: Expecting "@"');
             }
           } else if (1 === $state) {              // Inside attribute, check for values
             if ('(' === $tokens[$i]) {
@@ -744,7 +743,7 @@
             } else if (T_STRING === $tokens[$i][0]) {
               $annotation= $tokens[$i][1];
             } else {
-              raise('lang.ClassFormatException', 'Parse error: Expecting either "(", "," or "]" in '.$place);
+              throw new IllegalStateException('Parse error: Expecting either "(", "," or "]"');
             }
           } else if (2 === $state) {              // Inside braces of @attr(...)
             if (')' === $tokens[$i]) {
@@ -784,8 +783,6 @@
             }
           }
         }
-      } catch (ClassFormatException $e) {
-        throw $e;
       } catch (XPException $e) {
         raise('lang.ClassFormatException', $e->getMessage().' in '.$place, $e);
       }
