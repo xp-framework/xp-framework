@@ -104,4 +104,9 @@ class BrokenAnnotationTest extends \unittest\TestCase {
   public function undefined_class_constant() {
     $this->parse('#[@$editorId: param(self::EDITOR)]');
   }
+
+  #[@test, @expect(class= 'lang.ClassNotFoundException', withMessage= '/Class ".+" could not be found/')]
+  public function undefined_class() {
+    $this->parse('#[@$editorId: param(new NonExistantClass())]');
+  }
 }
