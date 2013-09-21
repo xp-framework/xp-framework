@@ -100,17 +100,17 @@ class BrokenAnnotationTest extends \unittest\TestCase {
     $this->parse('#[@$editorId: param(editor)]');
   }
 
-  #[@test, @expect(class= 'lang.ElementNotFoundException', withMessage= '/No such constant "EDITOR" in class/')]
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/No such constant "EDITOR" in class/')]
   public function undefined_class_constant() {
     $this->parse('#[@$editorId: param(self::EDITOR)]');
   }
 
-  #[@test, @expect(class= 'lang.ClassNotFoundException', withMessage= '/Class ".+" could not be found/')]
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Class ".+" could not be found/')]
   public function undefined_class_in_new() {
     $this->parse('#[@$editorId: param(new NonExistantClass())]');
   }
 
-  #[@test, @expect(class= 'lang.ClassNotFoundException', withMessage= '/Class ".+" could not be found/')]
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Class ".+" could not be found/')]
   public function undefined_class_in_constant() {
     $this->parse('#[@$editorId: param(NonExistantClass::CONSTANT)]');
   }
