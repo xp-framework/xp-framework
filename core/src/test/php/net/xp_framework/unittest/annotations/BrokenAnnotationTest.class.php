@@ -99,4 +99,9 @@ class BrokenAnnotationTest extends \unittest\TestCase {
   public function undefined_constant() {
     $this->parse('#[@$editorId: param(editor)]');
   }
+
+  #[@test, @expect(class= 'lang.ElementNotFoundException', withMessage= '/No such constant "EDITOR" in class/')]
+  public function undefined_class_constant() {
+    $this->parse('#[@$editorId: param(self::EDITOR)]');
+  }
 }
