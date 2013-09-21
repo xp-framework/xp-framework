@@ -648,7 +648,7 @@
       };
 
       // Parse a single value (recursively, if necessary)
-      $valueOf= function($tokens, &$i) use(&$valueOf, &$memberOf, $context, $imports, $resolve) {
+      $valueOf= function($tokens, &$i) use(&$valueOf, &$memberOf, &$resolve, $context, $imports) {
         if ('-' ===  $tokens[$i][0]) {
           $i++;
           return -1 * $valueOf($tokens, $i);
