@@ -600,7 +600,7 @@
         'multi-value'
       );
 
-      $tokens= token_get_all('<?php '.trim($input, "[]# \t\n\r").']');
+      $tokens= token_get_all('<?php '.trim($input, "[# \t\n\r"));
       $annotations= array(0 => array(), 1 => array());
       $place= $context.(-1 === $line ? '' : ', line '.$line);
 
