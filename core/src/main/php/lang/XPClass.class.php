@@ -672,8 +672,10 @@
         } else if (T_STRING === $tokens[$i][0]) {     // constant vs. class::constant
           if (T_DOUBLE_COLON === $tokens[$i + 1][0]) {
             return $resolve($tokens[$i][1], $context, $imports)->getConstant($tokens[$i+= 2][1]);
-          } else {
+          } else if (defined($tokens[$i][1])) {
             return constant($tokens[$i][1]);
+          } else {
+            raise('lang.ClassFormatException', 'Undefined constant "'.$tokens[$i][1].'" in '.$place);
           }
         } else if (T_NEW === $tokens[$i][0]) {
           $type= '';

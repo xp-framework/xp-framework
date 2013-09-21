@@ -5,7 +5,8 @@ use lang\XPClass;
 /**
  * Tests the XP Framework's annotations
  *
- * @see      rfc://0185
+ * @see   rfc://0185
+ * @see   https://github.com/xp-framework/xp-framework/pull/328
  */
 class BrokenAnnotationTest extends \unittest\TestCase {
 
@@ -92,5 +93,10 @@ class BrokenAnnotationTest extends \unittest\TestCase {
   #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Expecting either "\(", "," or "\]"/')]
   public function too_many_closing_braces() {
     $this->parse("#[@throws('rdbms.SQLConnectException'))]");
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Undefined constant "editor"/')]
+  public function undefined_constant() {
+    $this->parse('#[@$editorId: param(editor)]');
   }
 }
