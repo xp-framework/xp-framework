@@ -106,7 +106,12 @@ class BrokenAnnotationTest extends \unittest\TestCase {
   }
 
   #[@test, @expect(class= 'lang.ClassNotFoundException', withMessage= '/Class ".+" could not be found/')]
-  public function undefined_class() {
+  public function undefined_class_in_new() {
     $this->parse('#[@$editorId: param(new NonExistantClass())]');
+  }
+
+  #[@test, @expect(class= 'lang.ClassNotFoundException', withMessage= '/Class ".+" could not be found/')]
+  public function undefined_class_in_constant() {
+    $this->parse('#[@$editorId: param(NonExistantClass::CONSTANT)]');
   }
 }
