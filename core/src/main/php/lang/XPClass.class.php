@@ -322,7 +322,7 @@
         return $this->_reflect->getConstant($constant);
       }
       
-      raise('lang.ElementNotFoundException', 'No such constants "'.$constant.'" in class '.$this->name);
+      raise('lang.ElementNotFoundException', 'No such constant "'.$constant.'" in class '.$this->name);
     }
 
     /**
