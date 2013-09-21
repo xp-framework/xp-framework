@@ -114,4 +114,19 @@ class BrokenAnnotationTest extends \unittest\TestCase {
   public function undefined_class_in_constant() {
     $this->parse('#[@$editorId: param(NonExistantClass::CONSTANT)]');
   }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/No such field "EDITOR" in class/')]
+  public function undefined_class_member() {
+    $this->parse('#[@$editorId: param(self::$EDITOR)]');
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Cannot access protected static field .+AnnotationParsingTest::\$hidden/')]
+  public function class_protected_static_member() {
+    $this->parse('#[@value(AnnotationParsingTest::$hidden)]');
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Cannot access private static field .+AnnotationParsingTest::\$internal/')]
+  public function class_private_static_member() {
+    $this->parse('#[@value(AnnotationParsingTest::$internal)]');
+  }
 }

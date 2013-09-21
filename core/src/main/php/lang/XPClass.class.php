@@ -608,6 +608,8 @@
       $resolve= function($type, $context, $imports) {
         if ('self' === $type) {
           return XPClass::forName($context);
+        } else if ('parent' === $type) {
+          return XPClass::forName($context)->getParentclass();
         } else if (FALSE !== strpos($type, '.')) {
           return XPClass::forName($type);
         } else if (isset($imports[$type])) {
@@ -621,8 +623,32 @@
         }
       };
 
+      // Class::CONSTANT vs. Class::$MEMBER
+      $memberOf= function($tokens, &$i, $class) use ($context) {
+        if (T_VARIABLE === $tokens[$i][0]) {
+          $field= $class->getField(substr($tokens[$i][1], 1));
+          $m= $field->getModifiers();
+          if ($m & MODIFIER_PUBLIC) {
+            return $field->get(NULL);
+          } else if (($m & MODIFIER_PROTECTED) && $class->isAssignableFrom($context)) {
+            return $field->setAccessible(TRUE)->get(NULL);
+          } else if (($m & MODIFIER_PRIVATE) && $class->getName() === $context) {
+            return $field->setAccessible(TRUE)->get(NULL);
+          } else {
+            throw new IllegalAccessException(sprintf(
+              'Cannot access %s field %s::$%s',
+              implode(' ', Modifiers::namesOf($m)),
+              $class->getName(),
+              $field->getName()
+            ));
+          }
+        } else {
+          return $class->getConstant($tokens[$i][1]);
+        }
+      };
+
       // Parse a single value (recursively, if necessary)
-      $valueOf= function($tokens, &$i) use(&$valueOf, $context, $imports, $resolve) {
+      $valueOf= function($tokens, &$i) use(&$valueOf, &$memberOf, $context, $imports, $resolve) {
         if ('-' ===  $tokens[$i][0]) {
           $i++;
           return -1 * $valueOf($tokens, $i);
@@ -670,10 +696,11 @@
           while (T_NS_SEPARATOR === $tokens[$i++][0]) {
             $type.= '.'.$tokens[$i++][1];
           }
-          return XPClass::forName(substr($type, 1))->getConstant($tokens[$i][1]);
+          return $memberOf($tokens, $i, XPClass::forName(substr($type, 1)));
         } else if (T_STRING === $tokens[$i][0]) {     // constant vs. class::constant
           if (T_DOUBLE_COLON === $tokens[$i + 1][0]) {
-            return $resolve($tokens[$i][1], $context, $imports)->getConstant($tokens[$i+= 2][1]);
+            $i+= 2;
+            return $memberOf($tokens, $i, $resolve($tokens[$i - 2][1], $context, $imports));
           } else if (defined($tokens[$i][1])) {
             return constant($tokens[$i][1]);
           } else {
