@@ -15,6 +15,8 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed img.util.ExifData to trim excess whitespace / NUL characters from
+  maker software - (@thekid)
 * Fixed lang.XPClass::parseAnnotations() to support combined long and short
   array syntaxes in annotations, either way around - (@thekid)
 * Fixed lang.XPClass::createGenericType() for namespaced code - (@thekid)
