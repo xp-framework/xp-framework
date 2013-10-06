@@ -37,6 +37,7 @@
       if ($l < $length) {
         $this->buf.= $this->in->read($length- $l);
       }
+
       $chunk= substr($this->buf, 0, $length); 
       $this->buf= substr($this->buf, $length);
       return $chunk;
@@ -54,7 +55,7 @@
       } while (TRUE);
 
       $chunk= substr($this->buf, 0, $offset); 
-      $this->buf= substr($this->buf, $offset+ 1);
+      $this->buf= substr($this->buf, $offset+ 1);   // +1: Skip over delimiter
       return $chunk;
     }
 
