@@ -114,7 +114,8 @@
         // IFD0 info
         $e->setMake(trim(self::lookup($info['IFD0'], 'make')));
         $e->setModel(trim(self::lookup($info['IFD0'], 'model')));
-        $e->setSoftware(trim(self::lookup($info['IFD0'], 'software')));
+        $software= self::lookup($info['IFD0'], 'software');
+        $e->setSoftware(null === $software ? null : trim($software));
 
         if (NULL !== ($o= self::lookup($info['IFD0'], 'orientation'))) {
           $e->setOrientation($o);
