@@ -25,6 +25,11 @@ XP Framework ChangeLog
   array syntaxes in annotations, either way around - (@thekid)
 * Fixed lang.XPClass::createGenericType() for namespaced code - (@thekid)
 
+### Features
+
+* Added possibility for remote.protocol.Serializer to read from input streams
+  (@thekid)
+
 
 ## 5.9.8 / 2013-09-06
 
