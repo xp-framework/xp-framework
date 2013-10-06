@@ -68,9 +68,8 @@
     }
 
     /**
-     * Consume everything up to the next ";" and return it
+     * Consume everything up to the next ";" character and return it
      * 
-     * @param   string stop
      * @return  string
      */     
     public function consumeWord() {
@@ -86,7 +85,6 @@
     /**
      * Consume everything up to the next ":" character and return it
      * 
-     * @param   string stop
      * @return  string
      */     
     public function consumeSize() {
