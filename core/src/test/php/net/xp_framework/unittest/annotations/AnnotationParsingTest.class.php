@@ -12,8 +12,11 @@ use net\xp_framework\unittest\annotations\fixture\Namespaced;
  * @see     https://github.com/xp-framework/xp-framework/pull/56
  * @see     https://gist.github.com/1240769
  */
-class AnnotationParsingTest extends \unittest\TestCase {
+class AnnotationParsingTest extends AbstractAnnotationParsingTest {
   const CONSTANT = 'constant';
+  public static $exposed = 'exposed';
+  protected static $hidden = 'hidden';
+  private static $internal = 'internal';
 
   /**
    * Helper
@@ -404,6 +407,14 @@ class AnnotationParsingTest extends \unittest\TestCase {
   }
 
   #[@test]
+  public function class_constant_via_parent() {
+    $this->assertEquals(
+      array(0 => array('value' => 'constant'), 1 => array()),
+      $this->parse('#[@value(parent::PARENTS_CONSTANT)]')
+    );
+  }
+
+  #[@test]
   public function class_constant_via_classname() {
     $this->assertEquals(
       array(0 => array('value' => 'constant'), 1 => array()),
@@ -449,5 +460,50 @@ class AnnotationParsingTest extends \unittest\TestCase {
       array(0 => array('map' => array('key' => 'constant', 'value' => 'val')), 1 => array()),
       $this->parse('#[@map(key = \net\xp_framework\unittest\annotations\AnnotationParsingTest::CONSTANT, value = "val")]')
     );
+  }
+
+  #[@test]
+  public function class_public_static_member() {
+    $this->assertEquals(
+      array(0 => array('value' => 'exposed'), 1 => array()),
+      $this->parse('#[@value(self::$exposed)]')
+    );
+  }
+
+  #[@test]
+  public function parent_public_static_member() {
+    $this->assertEquals(
+      array(0 => array('value' => 'exposed'), 1 => array()),
+      $this->parse('#[@value(parent::$parentsExposed)]')
+    );
+  }
+
+  #[@test]
+  public function class_protected_static_member() {
+    $this->assertEquals(
+      array(0 => array('value' => 'hidden'), 1 => array()),
+      $this->parse('#[@value(self::$hidden)]')
+    );
+  }
+
+  #[@test]
+  public function parent_protected_static_member() {
+    $this->assertEquals(
+      array(0 => array('value' => 'hidden'), 1 => array()),
+      $this->parse('#[@value(parent::$parentsHidden)]')
+    );
+  }
+
+  #[@test]
+  public function class_private_static_member() {
+    $this->assertEquals(
+      array(0 => array('value' => 'internal'), 1 => array()),
+      $this->parse('#[@value(self::$internal)]')
+    );
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Cannot access private static field .+AbstractAnnotationParsingTest::\$parentsInternal/')]
+  public function parent_private_static_member() {
+    $this->parse('#[@value(parent::$parentsInternal)]');
   }
 }

@@ -5,7 +5,8 @@ use lang\XPClass;
 /**
  * Tests the XP Framework's annotations
  *
- * @see      rfc://0185
+ * @see   rfc://0185
+ * @see   https://github.com/xp-framework/xp-framework/pull/328
  */
 class BrokenAnnotationTest extends \unittest\TestCase {
 
@@ -39,17 +40,17 @@ class BrokenAnnotationTest extends \unittest\TestCase {
     $this->parse('#[@attribute(key= "value)]');
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting "@"/')]
   public function missing_annotation_after_comma_and_value() {
     $this->parse('#[@ignore("Test"), ]');
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting "@"/')]
   public function missing_annotation_after_comma() {
     $this->parse('#[@ignore, ]');
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting "@"/')]
   public function missing_annotation_after_second_comma() {
     $this->parse('#[@ignore, @test, ]');
   }
@@ -92,5 +93,40 @@ class BrokenAnnotationTest extends \unittest\TestCase {
   #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Expecting either "\(", "," or "\]"/')]
   public function too_many_closing_braces() {
     $this->parse("#[@throws('rdbms.SQLConnectException'))]");
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Undefined constant "editor"/')]
+  public function undefined_constant() {
+    $this->parse('#[@$editorId: param(editor)]');
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/No such constant "EDITOR" in class/')]
+  public function undefined_class_constant() {
+    $this->parse('#[@$editorId: param(self::EDITOR)]');
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Class ".+" could not be found/')]
+  public function undefined_class_in_new() {
+    $this->parse('#[@$editorId: param(new NonExistantClass())]');
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Class ".+" could not be found/')]
+  public function undefined_class_in_constant() {
+    $this->parse('#[@$editorId: param(NonExistantClass::CONSTANT)]');
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/No such field "EDITOR" in class/')]
+  public function undefined_class_member() {
+    $this->parse('#[@$editorId: param(self::$EDITOR)]');
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Cannot access protected static field .+AnnotationParsingTest::\$hidden/')]
+  public function class_protected_static_member() {
+    $this->parse('#[@value(AnnotationParsingTest::$hidden)]');
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Cannot access private static field .+AnnotationParsingTest::\$internal/')]
+  public function class_private_static_member() {
+    $this->parse('#[@value(AnnotationParsingTest::$internal)]');
   }
 }
