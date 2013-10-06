@@ -327,4 +327,27 @@ class ClassDetailsTest extends TestCase {
     }
     $this->assertEquals($details, $actual);
   }
+
+  #[@test]
+  public function use_statements_evaluated() {
+    $actual= \lang\XPClass::parseDetails('<?php namespace test\\use;
+      use lang\\Object;
+
+      #[@value(new Object())]
+      class Test extends Object {
+      }
+    ');
+    $this->assertInstanceOf('lang.Object', $actual['class'][DETAIL_ANNOTATIONS]['value']);
+  }
+
+  #[@test]
+  public function closure_use_not_evaluated() {
+    \lang\XPClass::parseDetails('<?php 
+      class Test extends Object {
+        public function run() {
+          $closure= function($a) use($b) { };
+        }
+      }
+    ');
+  }
 }

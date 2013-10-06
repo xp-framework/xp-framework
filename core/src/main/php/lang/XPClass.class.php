@@ -834,6 +834,7 @@
       for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
         switch ($tokens[$i][0]) {
           case T_USE:
+            if (isset($details['class'])) break;  // Inside class, e.g. function() use(...) {}
             $type= '';
             while (';' !== $tokens[++$i] && $i < $s) {
               T_WHITESPACE === $tokens[$i][0] || $type.= $tokens[$i][1];

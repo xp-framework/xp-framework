@@ -15,6 +15,8 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed "Uninitialized string offset: 1" from XPClass::parseDetails() when
+  parsing code with closures using "use" in their declaration - (@thekid)
 * Fixed img.util.ExifData to trim excess whitespace / NUL characters from
   maker software - (@thekid)
 * Fixed issue #329: REST errors are text/html but should be text/json - (@thekid)
