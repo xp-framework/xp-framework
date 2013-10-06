@@ -685,6 +685,7 @@
             } else if (T_WHITESPACE === $tokens[$i][0]) {
               continue;
             } else {
+              $element && raise('lang.IllegalStateException', 'Parse error: Malformed array - missing comma');
               $element= array($valueOf($tokens, $i));
             }
           }

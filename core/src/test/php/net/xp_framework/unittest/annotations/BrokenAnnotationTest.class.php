@@ -65,12 +65,12 @@ class BrokenAnnotationTest extends \unittest\TestCase {
     $this->parse("#[@ignore('Test)]");
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Unexpected "]"/')]
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Malformed array/')]
   public function unterminated_array() {
     $this->parse('#[@ignore(array(1]');
   }
 
-  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Unexpected "]"/')]
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Malformed array/')]
   public function unterminated_array_key() {
     $this->parse('#[@ignore(name = array(1]');
   }
@@ -83,6 +83,11 @@ class BrokenAnnotationTest extends \unittest\TestCase {
   #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Malformed array/')]
   public function malformed_array_inside_key_value_pairs() {
     $this->parse('#[@ignore(name= array(1 ,, 2))]');
+  }
+
+  #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Malformed array/')]
+  public function malformed_array_no_commas() {
+    $this->parse('#[@ignore(array(1 2))]');
   }
 
   #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Parse error: Expecting either "\(", "," or "\]"/')]
