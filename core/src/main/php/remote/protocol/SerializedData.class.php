@@ -11,20 +11,45 @@
    * @purpose  Value object
    */
   class SerializedData extends Object {
-    public
-      $buffer= '',
-      $offset= 0;
+    protected $buffer= '';
+    protected $offset= 0;
 
     /**
      * Constructor
-     * 
+     *
      * @param   string buffer
      */
     public function __construct($buffer) {
       $this->buffer= $buffer;
       $this->offset= 0;
     }
-    
+
+    /**
+     * Consume
+     *
+     * @param   string expected
+     * @throws  lang.FormatException in case the expected characters are not found
+     */
+    public function consume($expected) {
+      $l= strlen($expected);
+      if (0 === substr_compare($this->buffer, $expected, $this->offset, $l)) {
+        $this->offset+= $l;
+        return;
+      }
+      throw new FormatException('Expected '.$expected.', have '.substr($this->buffer, $this->offset, $l));
+    }
+
+    /**
+     * Consume a token (x:... where x is the token)
+     *
+     * @return  string
+     */
+    public function consumeToken() {
+      $token= $this->buffer{$this->offset};
+      $this->offset+= 2;
+      return $token;
+    }
+
     /**
      * Consume a string ([length]:"[string]")
      * 

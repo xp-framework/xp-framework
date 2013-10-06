@@ -25,11 +25,11 @@
     public function valueOf($serializer, $serialized, $context= array()) {
       $a= ArrayList::newInstance($serialized->consumeSize());
       
-      $serialized->offset++;  // Opening "{"
+      $serialized->consume('{');
       for ($i= 0; $i < $a->length; $i++) {
         $a[$i]= $serializer->valueOf($serialized, $context);
       }
-      $serialized->offset++;  // Closing "}"
+      $serialized->consume('}');
       return $a;
     }
 
