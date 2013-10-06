@@ -1,114 +1,91 @@
 <?php namespace net\xp_framework\unittest\remote;
 
-use unittest\TestCase;
 use remote\protocol\Serializer;
 use remote\protocol\RemoteInterfaceMapping;
 use util\Hashmap;
-
 
 /**
  * Unit test for Serializer class
  *
  * @see      xp://remote.Serializer
- * @purpose  TestCase
  */
-class SerializerTest extends TestCase {
+abstract class SerializerTest extends \unittest\TestCase {
   protected $serializer= null;
 
   /**
-   * Setup testcase
+   * Unserializes a value from a given serialized representation
    *
+   * @param  string $bytes
+   * @param  lang.Type $t
+   * @return var value
+   */
+  protected abstract function unserialize($bytes, $t= null, $ctx= array());
+
+  /**
+   * Serializes a value and returns a serialized representation
+   *
+   * @param  var $value
+   * @return string bytes
+   */
+  protected abstract function serialize($value);
+
+  /**
+   * Setup testcase
    */
   public function setUp() {
     $this->serializer= new Serializer();
   }
 
-  /**
-   * Test serialization of NULL
-   *
-   */
   #[@test]
   public function representationOfNull() {
-    $this->assertEquals('N;', $this->serializer->representationOf(null));
+    $this->assertEquals('N;', $this->serialize(null));
   }
 
-  /**
-   * Test serialization of Shorts
-   *
-   */
   #[@test]
   public function representationOfShorts() {
-    $this->assertEquals('S:300;', $this->serializer->representationOf(new \lang\types\Short(300)));
-    $this->assertEquals('S:-300;', $this->serializer->representationOf(new \lang\types\Short(-300)));
+    $this->assertEquals('S:300;', $this->serialize(new \lang\types\Short(300)));
+    $this->assertEquals('S:-300;', $this->serialize(new \lang\types\Short(-300)));
   }
 
-  /**
-   * Test serialization of longs
-   *
-   */
   #[@test]
   public function representationOfBytes() {
-    $this->assertEquals('B:127;', $this->serializer->representationOf(new \lang\types\Byte(127)));
-    $this->assertEquals('B:-128;', $this->serializer->representationOf(new \lang\types\Byte(-128)));
+    $this->assertEquals('B:127;', $this->serialize(new \lang\types\Byte(127)));
+    $this->assertEquals('B:-128;', $this->serialize(new \lang\types\Byte(-128)));
   }
 
-  /**
-   * Test serialization of booleans
-   *
-   */
   #[@test]
   public function representationOfBooleans() {
-    $this->assertEquals('b:1;', $this->serializer->representationOf($var= true));
-    $this->assertEquals('b:0;', $this->serializer->representationOf($var= false));
+    $this->assertEquals('b:1;', $this->serialize($var= true));
+    $this->assertEquals('b:0;', $this->serialize($var= false));
   }
 
-  /**
-   * Test serialization of integers
-   *
-   */
   #[@test]
   public function representationOfIntegers() {
-    $this->assertEquals('i:6100;', $this->serializer->representationOf($var= 6100));
-    $this->assertEquals('i:-6100;', $this->serializer->representationOf($var= -6100));
+    $this->assertEquals('i:6100;', $this->serialize($var= 6100));
+    $this->assertEquals('i:-6100;', $this->serialize($var= -6100));
   }
 
-  /**
-   * Test serialization of longs
-   *
-   */
   #[@test]
   public function representationOfLongs() {
-    $this->assertEquals('l:6100;', $this->serializer->representationOf(new \lang\types\Long(6100)));
-    $this->assertEquals('l:-6100;', $this->serializer->representationOf(new \lang\types\Long(-6100)));
+    $this->assertEquals('l:6100;', $this->serialize(new \lang\types\Long(6100)));
+    $this->assertEquals('l:-6100;', $this->serialize(new \lang\types\Long(-6100)));
   }
 
-  /**
-   * Test serialization of floats
-   *
-   */
   #[@test]
   public function representationOfFloats() {
-    $this->assertEquals('d:0.1;', $this->serializer->representationOf($var= 0.1));
-    $this->assertEquals('d:-0.1;', $this->serializer->representationOf($var= -0.1));
+    $this->assertEquals('d:0.1;', $this->serialize($var= 0.1));
+    $this->assertEquals('d:-0.1;', $this->serialize($var= -0.1));
   }
 
-  /**
-   * Test serialization of doubles
-   *
-   */
   #[@test]
   public function representationOfDoubles() {
-    $this->assertEquals('d:0.1;', $this->serializer->representationOf(new \lang\types\Double(0.1)));
-    $this->assertEquals('d:-0.1;', $this->serializer->representationOf(new \lang\types\Double(-0.1)));
+    $this->assertEquals('d:0.1;', $this->serialize(new \lang\types\Double(0.1)));
+    $this->assertEquals('d:-0.1;', $this->serialize(new \lang\types\Double(-0.1)));
   }
 
-  /**
-   * Test serialization of the string "Hello World"
-   *
-   */
   #[@test]
   public function representationOfString() {
-    $this->assertEquals('s:11:"Hello World";', $this->serializer->representationOf($var= 'Hello World'));
+    $this->assertEquals('s:11:"Hello World";', $this->serialize($var= 'Hello World'));
   }
 
   /**
@@ -120,7 +97,7 @@ class SerializerTest extends TestCase {
   public function representationOfIntegerArray() {
     $this->assertEquals(
       'a:3:{i:0;i:1;i:1;i:2;i:2;i:5;}',
-      $this->serializer->representationOf($var= array(1, 2, 5))
+      $this->serialize($var= array(1, 2, 5))
     );
   }
 
@@ -133,23 +110,15 @@ class SerializerTest extends TestCase {
   public function representationOfStringArray() {
     $this->assertEquals(
       'a:2:{i:0;s:4:"More";i:1;s:5:"Power";}',
-      $this->serializer->representationOf($var= array('More', 'Power'))
+      $this->serialize($var= array('More', 'Power'))
     );
   }
 
-  /**
-   * Test serialization of a date object
-   *
-   */
   #[@test]
   public function representationOfDate() {
-    $this->assertEquals('T:1122644265;', $this->serializer->representationOf(new \util\Date(1122644265)));
+    $this->assertEquals('T:1122644265;', $this->serialize(new \util\Date(1122644265)));
   }
 
-  /**
-   * Test serialization of a hashmap
-   *
-   */
   #[@test]
   public function representationOfHashmap() {
     $h= new Hashmap();
@@ -158,14 +127,10 @@ class SerializerTest extends TestCase {
 
     $this->assertEquals(
       'a:2:{s:3:"key";s:5:"value";s:6:"number";s:4:"6100";}',
-      $this->serializer->representationOf($h)
+      $this->serialize($h)
     );
   }
 
-  /**
-   * Test serialization of a hashmap with mixed values
-   *
-   */
   #[@test]
   public function representationOfMixedHashmap() {
     $h= new Hashmap();
@@ -174,7 +139,7 @@ class SerializerTest extends TestCase {
 
     $this->assertEquals(
       'a:2:{s:3:"key";s:5:"value";s:6:"number";i:6100;}',
-      $this->serializer->representationOf($h)
+      $this->serialize($h)
     );
   }
 
@@ -187,7 +152,7 @@ class SerializerTest extends TestCase {
   public function representationOfValueObject() {
     $this->assertEquals(
       'O:39:"net.xp_framework.unittest.remote.Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}',
-      $this->serializer->representationOf(new Person())
+      $this->serialize(new Person())
     );
   }
 
@@ -201,91 +166,63 @@ class SerializerTest extends TestCase {
     $this->serializer->mapPackage('remote', \lang\reflect\Package::forName('net.xp_framework.unittest.remote'));
     $this->assertEquals(
       'O:13:"remote.Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}',
-      $this->serializer->representationOf(new Person())
+      $this->serialize(new Person())
     );
   }
 
-  /**
-   * Test serialization of a enum object
-   *
-   */
   #[@test]
   public function representationOfEnum() {
     $this->assertEquals(
       'O:37:"net.xp_framework.unittest.remote.Enum":1:{s:4:"name";s:6:"Value1";}',
-      $this->serializer->representationOf(\net\xp_framework\unittest\remote\Enum::$Value1)
+      $this->serialize(\net\xp_framework\unittest\remote\Enum::$Value1)
     );
   }
 
-  /**
-   * Test serialization of a Bytes object
-   *
-   */
   #[@test]
   public function representationOfByes() {
     $this->assertEquals(
       "Y:4:\"\0abc\";",
-      $this->serializer->representationOf(new \lang\types\Bytes(array(0, 'a', 'b', 'c')))
+      $this->serialize(new \lang\types\Bytes(array(0, 'a', 'b', 'c')))
     );
   }
 
-  /**
-   * Test deserialization of an integer
-   *
-   */
   #[@test]
   public function valueOfInt() {
     $this->assertEquals(
       1,
-      $this->serializer->valueOf(new \remote\protocol\SerializedData('i:1;'))
+      $this->unserialize('i:1;')
     );
   }
 
-  /**
-   * Test deserialization of a byte
-   *
-   */
   #[@test]
   public function valueOfByte() {
     $this->assertEquals(
       new \lang\types\Byte(1),
-      $this->serializer->valueOf(new \remote\protocol\SerializedData('B:1;'))
+      $this->unserialize('B:1;')
     );
   }
 
-  /**
-   * Test deserialization of a long
-   *
-   */
   #[@test]
   public function valueOfLong() {
     $this->assertEquals(
       new \lang\types\Long(12345),
-      $this->serializer->valueOf(new \remote\protocol\SerializedData('l:12345;'))
+      $this->unserialize('l:12345;')
     );
   }
 
-  /**
-   * Test deserialization of a float
-   *
-   */
   #[@test]
   public function valueOfFloat() {
     $this->assertEquals(
       new \lang\types\Float(1.5),
-      $this->serializer->valueOf(new \remote\protocol\SerializedData('f:1.5;'))
+      $this->unserialize('f:1.5;')
     );
   }
 
-  /**
-   * Test deserialization of a double
-   *
-   */
   #[@test]
   public function valueOfDouble() {
     $this->assertEquals(
       1.5,
-      $this->serializer->valueOf(new \remote\protocol\SerializedData('d:1.5;'))
+      $this->unserialize('d:1.5;')
     );
   }
 
@@ -298,29 +235,21 @@ class SerializerTest extends TestCase {
   public function valueOfShorts() {
     $this->assertEquals(
       new \lang\types\Short(1),
-      $this->serializer->valueOf(new \remote\protocol\SerializedData('S:1;'))
+      $this->unserialize('S:1;')
     );
   }
 
-  /**
-   * Test deserialization of a date
-   *
-   */
   #[@test]
   public function valueOfDates() {
     $this->assertEquals(
       new \util\Date(328312800),
-      $this->serializer->valueOf(new \remote\protocol\SerializedData('T:328312800;'))
+      $this->unserialize('T:328312800;')
     );
   }
 
-  /**
-   * Test deserialization of enum
-   *
-   */
   #[@test]
   public function valueOfEnum() {
-    $obj= $this->serializer->valueOf(new \remote\protocol\SerializedData('O:37:"net.xp_framework.unittest.remote.Enum":1:{s:4:"name";s:6:"Value1";};'));
+    $obj= $this->unserialize('O:37:"net.xp_framework.unittest.remote.Enum":1:{s:4:"name";s:6:"Value1";};');
     $this->assertEquals(\net\xp_framework\unittest\remote\Enum::$Value1, $obj);
     $this->assertEquals(\net\xp_framework\unittest\remote\Enum::$Value1->ordinal(), $obj->ordinal());
     $this->assertEquals(\net\xp_framework\unittest\remote\Enum::$Value1->name(), $obj->name());
@@ -333,26 +262,22 @@ class SerializerTest extends TestCase {
    */
   #[@test]
   public function valueOfUnknownObject() {
-    $obj= $this->serializer->valueOf(new \remote\protocol\SerializedData('O:40:"net.xp_framework.unittest.remote.Unknown":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";};'));
+    $obj= $this->unserialize('O:40:"net.xp_framework.unittest.remote.Unknown":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";};');
     $this->assertClass($obj, 'remote.UnknownRemoteObject');
     $this->assertEquals('net.xp_framework.unittest.remote.Unknown', $obj->__name);
     $this->assertEquals(1549, $obj->__members['id']);
     $this->assertEquals('Timm Friebe', $obj->__members['name']);
   }
 
-  /**
-   * Test deserialization of an integer
-   *
-   */
   #[@test]
   public function valueOfException() {
-    $exception= $this->serializer->valueOf(new \remote\protocol\SerializedData(
+    $exception= $this->unserialize(
       'E:46:"java.lang.reflect.UndeclaredThrowableException":3:{'.
       's:7:"message";s:12:"*** BLAM ***";'.
       's:5:"trace";a:1:{i:0;t:4:{s:4:"file";s:9:"Test.java";s:5:"class";s:4:"Test";s:6:"method";s:4:"main";s:4:"line";i:10;}}'.
       's:5:"cause";N;'.
       '}'
-    ));
+    );
     $this->assertClass($exception, 'remote.ExceptionReference');
     $this->assertEquals('java.lang.reflect.UndeclaredThrowableException', $exception->referencedClassname);
     $this->assertEquals('*** BLAM ***', $exception->getMessage());
@@ -374,35 +299,27 @@ class SerializerTest extends TestCase {
    */
   #[@test]
   public function valueOfArrayList() {
-    $return= $this->serializer->valueOf(
-      new \remote\protocol\SerializedData('A:2:{O:39:"net.xp_framework.unittest.remote.Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}s:5:"World";}'
-    ));
+    $return= $this->unserialize(
+      'A:2:{O:39:"net.xp_framework.unittest.remote.Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}s:5:"World";}'
+    );
     $this->assertClass($return, 'lang.types.ArrayList');
     $this->assertEquals(2, $return->length);
     $this->assertEquals(new Person(), $return[0]);
     $this->assertEquals('World', $return[1]);
   }
 
-  /**
-   * Test serialization of a Bytes object
-   *
-   */
   #[@test]
   public function valueOfBytes() {
     $this->assertEquals(
       new \lang\types\Bytes(array(0, 'a', 'b', 'c')),
-      $this->serializer->valueOf(new \remote\protocol\SerializedData("Y:4:\"\0abc\";"))
+      $this->unserialize("Y:4:\"\0abc\";")
     );
   }
 
-  /**
-   * Test deserialization of an encapsed arraylist
-   *
-   */
   #[@test]
   public function arrayList() {
-    $list= $this->serializer->valueOf(
-      new \remote\protocol\SerializedData('A:1:{a:2:{s:2:"la";s:2:"la";s:3:"foo";A:2:{a:1:{s:13:"verschachteln";s:7:"istToll";}s:6:"barbar";}}}')
+    $list= $this->unserialize(
+      'A:1:{a:2:{s:2:"la";s:2:"la";s:3:"foo";A:2:{a:1:{s:13:"verschachteln";s:7:"istToll";}s:6:"barbar";}}}'
     );
     $this->assertEquals($list, new \lang\types\ArrayList(
       array(
@@ -415,41 +332,30 @@ class SerializerTest extends TestCase {
     );
   }
 
-  /**
-   * Test deserialization of a classreference
-   *
-   */
   #[@test]
   public function genericClass() {
-    $class= $this->serializer->valueOf(new \remote\protocol\SerializedData('C:47:"net.xp_framework.easc.reflect.MethodDescription"'));
+    $class= $this->unserialize('C:47:"net.xp_framework.easc.reflect.MethodDescription"');
     $this->assertTrue(is('remote.ClassReference', $class));
     $this->assertEquals("net.xp_framework.easc.reflect.MethodDescription", $class->referencedName());
   }
 
-  /**
-   * Test deserialization of a package-mapped classreference
-   *
-   */
   #[@test]
   public function genericPackageMappedClass() {
     $this->serializer->mapPackage('net.xp_framework.easc.reflect', \lang\reflect\Package::forName('remote.reflect'));
 
-    $class= $this->serializer->valueOf(new \remote\protocol\SerializedData('C:47:"net.xp_framework.easc.reflect.MethodDescription"'));
+    $class= $this->unserialize('C:47:"net.xp_framework.easc.reflect.MethodDescription"');
     $this->assertTrue(is('remote.ClassReference', $class));
-    $this->assertEquals("remote.reflect.MethodDescription", $class->referencedName());
+    $this->assertEquals('remote.reflect.MethodDescription', $class->referencedName());
   }
 
-  /**
-   * Test deserialization of a package-mapped classreference
-   *
-   */
   #[@test]
   public function remoteInterfaceMapping() {
     $this->serializer->mapPackage('net.xp_framework.easc.beans', \lang\reflect\Package::forName('remote.beans'));
     $this->serializer->mapping('I', new RemoteInterfaceMapping());
 
-    $class= $this->serializer->valueOf(
-      new \remote\protocol\SerializedData('I:12036987:{s:41:"net.xp_framework.easc.beans.BeanInterface";}'),
+    $class= $this->unserialize(
+      'I:12036987:{s:41:"net.xp_framework.easc.beans.BeanInterface";}',
+      null,
       array('handler' => 'remote.protocol.XPProtocolHandler')
     );
 
@@ -475,9 +381,9 @@ class SerializerTest extends TestCase {
       function representationOf($serializer, $value, $context= array()) { return "FOO:"; }
       public function valueOf($serializer, $serialized, $context= array()) { return NULL; }
     }'));
-    $this->assertEquals('FOO:', $this->serializer->representationOf(new FooClass()));
-    $this->assertEquals('FOO:', $this->serializer->representationOf(new BarClass()));
-    $this->assertEquals('FOO:', $this->serializer->representationOf(new BazClass()));
+    $this->assertEquals('FOO:', $this->serialize(new FooClass()));
+    $this->assertEquals('FOO:', $this->serialize(new BarClass()));
+    $this->assertEquals('FOO:', $this->serialize(new BazClass()));
 
     // Add more concrete mapping for BAR. Foo must still be serialized with FOO, but the BarClass-object
     // has a better matching mapping.
@@ -486,9 +392,9 @@ class SerializerTest extends TestCase {
       function representationOf($serializer, $value, $context= array()) { return "BAR:"; }
       function valueOf($serializer, $serialized, $context= array()) { return NULL; }
     }'));
-    $this->assertEquals('FOO:', $this->serializer->representationOf(new FooClass()));
-    $this->assertEquals('BAR:', $this->serializer->representationOf(new BarClass()));
-    $this->assertEquals('BAR:', $this->serializer->representationOf(new BazClass()));
-    $this->assertEquals('BAR:', $this->serializer->representationOf(new BazookaClass()));
+    $this->assertEquals('FOO:', $this->serialize(new FooClass()));
+    $this->assertEquals('BAR:', $this->serialize(new BarClass()));
+    $this->assertEquals('BAR:', $this->serialize(new BazClass()));
+    $this->assertEquals('BAR:', $this->serialize(new BazookaClass()));
   }
 }
