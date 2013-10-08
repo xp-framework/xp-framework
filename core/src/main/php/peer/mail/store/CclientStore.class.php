@@ -65,6 +65,7 @@
       if ($u->getParam('open')) $flags ^= OP_HALFOPEN;
       if ($u->getParam('read-only')) $flags |= OP_READONLY;
       
+
       $mbx= isset($attr['mbx']) ? $attr['mbx'] : sprintf(
         '{%s:%d/%s}',
         $u->getHost(),
@@ -79,7 +80,7 @@
           $this->_errors()
         );
       }
-      
+
       $this->_hdl= array($conn, $mbx);
       return TRUE;
     }
@@ -341,8 +342,14 @@
      */
     public function getMessages($f) {
       if (1 == func_num_args()) {
-        $count= $this->getMessageCount($f, 'messages');
-        $msgnums= range(1, $count);
+        $check= imap_check($this->_hdl[0]);
+        if (FALSE === $check) {
+          throw new MessagingException(
+            'Retrieving message count from "'.$f->name.'" failed',
+            $this->_errors()
+          );
+        }
+        $msgnums= range(1, $check->Nmsgs);
       } else {
         $msgnums= array();
         for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
@@ -422,7 +429,7 @@
             'Retrieving message count [SA_'.strtoupper($attr).'] failed',
             $this->_errors()
           );
-        }            
+        }
       }
       
       return $info->$attr;
