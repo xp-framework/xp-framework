@@ -279,7 +279,17 @@
       
       return $this->parts[$id];
     }
-    
+
+    /**
+     * Get all parts
+     *
+     * @return  peer.mail.MimePart[]
+     */
+    public function getParts() {
+      $this->_parts();
+      return $this->parts;
+    }
+
     /**
      * Get structure from folder
      *
