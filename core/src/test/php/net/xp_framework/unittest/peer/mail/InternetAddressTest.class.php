@@ -1,31 +1,20 @@
-<?php namespace net\xp_framework\unittest\peer;
+<?php namespace net\xp_framework\unittest\peer\mail;
 
 use unittest\TestCase;
 use peer\mail\InternetAddress;
 
-
 /**
  * Testcase for InternetAddress class
- *
- * @purpose  Testcase
  */
 class InternetAddressTest extends TestCase {
 
-  /**
-   * Test construction
-   *
-   */
   #[@test]
-  public function createAddress() {
+  public function create_with_address() {
     $address= new InternetAddress('kiesel@example.com');
     $this->assertEquals('kiesel', $address->localpart);
     $this->assertEquals('example.com', $address->domain);
   }
   
-  /**
-   * Test fromString
-   *
-   */
   #[@test, @values(array(
   #  'Alex Kiesel <kiesel@example.com>',
   #  'kiesel@example.com (Alex Kiesel)',
@@ -34,69 +23,49 @@ class InternetAddressTest extends TestCase {
   #  '=?utf-8?Q?Alex_Kiesel?= <kiesel@example.com>',
   #  '=?utf-8?B?QWxleCBLaWVzZWw?= <kiesel@example.com>',
   #))]
-  public function testFromString($string) {
+  public function parse_from_string($string) {
     $address= InternetAddress::fromString($string);
     $this->assertEquals('Alex Kiesel', $address->personal);
     $this->assertEquals('kiesel', $address->localpart);
     $this->assertEquals('example.com', $address->domain);
   }
 
-  /**
-   * Test fromString
-   *
-   */
   #[@test]
-  public function testFromStringNoPersonal() {
+  public function parse_from_string_without_personal() {
     $address= InternetAddress::fromString('kiesel@example.com');
     $this->assertEquals('kiesel', $address->localpart);
     $this->assertEquals('example.com', $address->domain);
   }
 
-  /**
-   * Test escaping
-   *
-   */
   #[@test]
-  public function colonIsEscaped() {
+  public function colons_are_escaped_in_output() {
     $this->assertEquals(
       '=?iso-8859-1?Q?I=3A=3ADev?= <idev@example.com>',
       create(new InternetAddress('idev@example.com', 'I::Dev'))->toString()
     );
   }
 
-  /**
-   * Test escaping
-   *
-   */
   #[@test]
-  public function umlautsAreEscaped() {
+  public function umlaut_are_escaped_in_output() {
     $this->assertEquals(
       '=?iso-8859-1?Q?M=FCcke?= <muecke@example.com>',
       create(new InternetAddress('muecke@example.com', 'Mücke'))->toString()
     );
   }
   
-  /**
-   * Test escaping
-   *
-   */
   #[@test]
-  public function spaceIsEscaped() {
+  public function space_characters_are_escaped_in_output() {
     $this->assertEquals(
       '=?iso-8859-1?Q?Alex_Kiesel?= <kiesel@example.com>', 
       create(new InternetAddress('kiesel@example.com', 'Alex Kiesel'))->toString()
     );
   }
   
-  /**
-   * Test getAddress() method
-   *
-   */
   #[@test]
-  public function addressInRawFormat() {
+  public function get_address_in_raw_format() {
     $this->assertEquals(
       'kiesel@example.com', 
-      create(new InternetAddress('kiesel@example.com', 'Alex Kiese'))->getAddress()
+      create(new InternetAddress('kiesel@example.com', 'Alex Kiesel'))->getAddress()
     );
   }    
 }
