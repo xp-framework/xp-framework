@@ -848,30 +848,21 @@
             break;
 
           case T_COMMENT:
-            if ('#' === $tokens[$i][1]{0}) {      // Annotations
+            if ('#' === $tokens[$i][1]{0}) {      // Annotations, #[@test]
               if ('[' === $tokens[$i][1]{1}) {
                 $parsed= substr($tokens[$i][1], 2);
               } else {
                 $parsed.= substr($tokens[$i][1], 1);
-              }
-              if (']' == substr(rtrim($tokens[$i][1]), -1)) {
-                $annotations= self::parseAnnotations(
-                  trim($parsed, " \t\n\r"), 
-                  $context,
-                  $imports,
-                  isset($tokens[$i][2]) ? $tokens[$i][2] : -1
-                );
-                $parsed= '';
               }
             }
             break;
 
           case T_CLASS:
           case T_INTERFACE:
-            if ('' !== $parsed) raise(
-              'lang.ClassFormatException', 
-              'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$context.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
-            );
+            if ($parsed) {
+              $annotations= self::parseAnnotations($parsed, $context, $imports, isset($tokens[$i][2]) ? $tokens[$i][2] : -1);
+              $parsed= '';
+            }
             $details['class']= array(
               DETAIL_COMMENT      => trim(preg_replace('/\n\s+\* ?/', "\n", "\n".substr(
                 $comment, 
@@ -884,11 +875,12 @@
             $comment= NULL;
             break;
 
-          case T_VARIABLE:
+          case T_VARIABLE:                      // Have a member variable
             if (!$members) break;
-
-            // Have a member variable
-            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$context.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
+            if ($parsed) {
+              $annotations= self::parseAnnotations($parsed, $context, $imports, isset($tokens[$i][2]) ? $tokens[$i][2] : -1);
+              $parsed= '';
+            }
             $name= substr($tokens[$i][1], 1);
             $details[0][$name]= array(
               DETAIL_ANNOTATIONS => $annotations[0]
@@ -898,7 +890,10 @@
 
           case T_FUNCTION:
             if (T_STRING !== $tokens[$i+ 2][0]) break;    // A closure, `function($params) { return TRUE; }`
-            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$context.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
+            if ($parsed) {
+              $annotations= self::parseAnnotations($parsed, $context, $imports, isset($tokens[$i][2]) ? $tokens[$i][2] : -1);
+              $parsed= '';
+            }
             $members= FALSE;
             $i+= 2;
             $m= $tokens[$i][1];

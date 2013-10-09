@@ -350,4 +350,17 @@ class ClassDetailsTest extends TestCase {
       }
     ');
   }
+
+  #[@test]
+  public function short_array_syntax_in_arrays_of_arrays() {
+    $actual= \lang\XPClass::parseDetails('<?php
+      #[@values([
+      #  [1, 2],
+      #  [3, 4]
+      #])]
+      class Test extends Object {
+      }
+    ');
+    $this->assertEquals(array(array(1, 2), array(3, 4)), $actual['class'][DETAIL_ANNOTATIONS]['values']);
+  }
 }
