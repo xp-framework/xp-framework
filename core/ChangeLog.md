@@ -15,6 +15,7 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed recipient parsing when receiving emails from IMAP servers - (@thekid)
 * Fixed InternetAddress::fromString() no to return surrounding quotes around
   realnames, e.g. `"Alex Kiesel" <kiesel@example.com>` - (@thekid)
 * Fixed "Uninitialized string offset: 1" from XPClass::parseDetails() when

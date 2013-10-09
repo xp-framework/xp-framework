@@ -426,7 +426,7 @@
      */
     public function setHeaderString($str) {
       $this->subject= $this->contenttype= '';
-      
+
       $t= strtok($str, "\n\r");
       while ($t) {
         if (("\t" != $t{0}) && (' ' != $t{0})) @list($k, $t)= explode(': ', $t, 2);
@@ -447,15 +447,24 @@
           case HEADER_TO:
           case HEADER_CC:
           case HEADER_BCC:
-            try {
+            if ('' !== trim($t)) {
               $k= strtolower($k);
-              if ('' != trim($t)) {
-                $this->addRecipient($k, InternetAddress::fromString($t));
-              }
-            } catch (FormatException $e) {
-              $this->addRecipient($k, new InternetAddress(array(NULL, NULL), $t));
-              
-              // Fall through
+              $offset= 0;
+              do {
+                if ('"' === $t{$offset}) {
+                  $quote= strpos($t, '"', $offset + 1);
+                  $span= strcspn($t, ',', $offset + $quote) + $quote;
+                } else {
+                  $span= strcspn($t, ',', $offset);
+                }
+                $recipient= substr($t, $offset, $span);
+                try {
+                  $this->addRecipient($k, InternetAddress::fromString($recipient));
+                } catch (FormatException $e) {
+                  $this->addRecipient($k, new InternetAddress(array(NULL, NULL), $t));
+                }
+                $offset+= $span + strspn($t, ', ', $offset + $span);
+              } while ($offset < strlen($t));
             }
             break;
             
