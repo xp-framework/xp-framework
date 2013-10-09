@@ -15,6 +15,8 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed InternetAddress::fromString() no to return surrounding quotes around
+  realnames, e.g. `"Alex Kiesel" <kiesel@example.com>` - (@thekid)
 * Fixed "Uninitialized string offset: 1" from XPClass::parseDetails() when
   parsing code with closures using "use" in their declaration - (@thekid)
 * Fixed img.util.ExifData to trim excess whitespace / NUL characters from

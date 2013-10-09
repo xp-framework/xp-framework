@@ -26,20 +26,30 @@ class InternetAddressTest extends TestCase {
    * Test fromString
    *
    */
+  #[@test, @values(array(
+  #  'Alex Kiesel <kiesel@example.com>',
+  #  'kiesel@example.com (Alex Kiesel)',
+  #  '"Alex Kiesel" <kiesel@example.com>',
+  #  '=?iso-8859-1?Q?Alex_Kiesel?= <kiesel@example.com>',
+  #  '=?utf-8?Q?Alex_Kiesel?= <kiesel@example.com>',
+  #  '=?utf-8?B?QWxleCBLaWVzZWw?= <kiesel@example.com>',
+  #))]
+  public function testFromString($string) {
+    $address= InternetAddress::fromString($string);
+    $this->assertEquals('Alex Kiesel', $address->personal);
+    $this->assertEquals('kiesel', $address->localpart);
+    $this->assertEquals('example.com', $address->domain);
+  }
+
+  /**
+   * Test fromString
+   *
+   */
   #[@test]
-  public function testFromString() {
-    $strings= array(
-      'Alex Kiesel <kiesel@example.com>',
-      'kiesel@example.com (Alex Kiesel)',
-      '"Alex Kiesel" <kiesel@example.com>',
-      'kiesel@example.com',
-      '=?iso-8859-1?Q?Alex_Kiesel?= <kiesel@example.com>'
-    );
-    foreach ($strings as $string) {
-      $address= InternetAddress::fromString($string);
-      $this->assertEquals('kiesel', $address->localpart);
-      $this->assertEquals('example.com', $address->domain);
-    }
+  public function testFromStringNoPersonal() {
+    $address= InternetAddress::fromString('kiesel@example.com');
+    $this->assertEquals('kiesel', $address->localpart);
+    $this->assertEquals('example.com', $address->domain);
   }
 
   /**
