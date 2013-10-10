@@ -46,7 +46,7 @@
       $headers= '';
       $headers.= 'Content-Disposition: form-data; name="'.$this->name.'"; filename="'.$this->filename.'"'.self::CRLF;
       $headers.= 'Content-Type: '.$this->contentType.self::CRLF;
-      $headers.= 'Content-Length: '.strlen($bytes);
+      $headers.= 'Content-Length: '.strlen($bytes).self::CRLF;
 
       // Return payload      
       return $headers.self::CRLF.$bytes;
