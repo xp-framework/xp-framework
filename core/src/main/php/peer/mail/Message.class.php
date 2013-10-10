@@ -418,6 +418,25 @@
       
       return isset($this->_headerlookup[$header]) ? $this->_headerlookup[$header] : NULL;
     }
+
+    /**
+     * Decode header if necessary
+     *
+     * @param  string $header
+     * @return string
+     */
+    protected function decode($header) {
+      if (preg_match('/^=\?([^\?]+)\?([QB])\?([^\?]+)\?=$/', $header, $matches)) {
+        if ('Q' === $matches[2]) {
+          return iconv($matches[1], xp::ENCODING, quoted_printable_decode($matches[3]));
+        } else if ('B' === $matches[2]) {
+          return base64_decode($matches[3]);
+        } else {
+          throw new FormatException('Cannot decode header "'.$header.'"');
+        }
+      }
+      return $header;
+    }
     
     /**
      * Set headers from string
@@ -430,7 +449,7 @@
       $t= strtok($str, "\n\r");
       while ($t) {
         if (("\t" != $t{0}) && (' ' != $t{0})) @list($k, $t)= explode(': ', $t, 2);
-        
+
         switch (ucfirst($k)) {
           case HEADER_FROM:
             try {
@@ -473,7 +492,7 @@
             break;
             
           case HEADER_SUBJECT:
-            $this->subject.= $t;
+            $this->subject.= $this->decode($t);
             break;
             
           case HEADER_CONTENTTYPE: 
@@ -497,7 +516,7 @@
             break;
           
           default:
-            $this->_setHeader($k, $t, "\n");
+            $this->_setHeader($k, $this->decode($t), "\n");
             break;
         }
         $t= strtok("\n\r");
