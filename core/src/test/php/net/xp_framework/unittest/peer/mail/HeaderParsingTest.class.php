@@ -82,4 +82,28 @@ class HeaderParsingTest extends \unittest\TestCase {
       $this->parse($header)->getRecipients($type)
     );
   }
+
+  #[@test]
+  public function subject() {
+    $this->assertEquals(
+      'Hello World',
+      $this->parse('Subject: Hello World')->getSubject()
+    );
+  }
+
+  #[@test]
+  public function quoted_printable_iso_encoded_subject() {
+    $this->assertEquals(
+      'Hallo',
+      $this->parse('Subject: =?iso-8859-1?Q?Hallo?=')->getSubject()
+    );
+  }
+
+  #[@test]
+  public function quoted_printable_utf8_encoded_subject() {
+    $this->assertEquals(
+      "H\xe4llo",
+      $this->parse('Subject: =?utf-8?Q?Hällo?=')->getSubject()
+    );
+  }
 }
