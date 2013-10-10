@@ -3,8 +3,17 @@
 use peer\mail\Message;
 use peer\mail\InternetAddress;
 
+/**
+ * Tests the Message::setHeaderString() method
+ */
 class HeaderParsingTest extends \unittest\TestCase {
 
+  /**
+   * Parse a string containing message headers
+   *
+   * @param  string $str
+   * @return peer.mail.Message
+   */
   protected function parse($str) {
     $m= new Message();
     $m->setHeaderString($str."\n\n");
