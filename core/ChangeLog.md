@@ -30,6 +30,8 @@ XP Framework ChangeLog
 
 ### Features
 
+* Added peer.http.FileData class for use in peer.http.FormRequestData. Makes
+  it easier to code file uploading - (@thekid)
 * Added possibility for remote.protocol.Serializer to read from input streams
   (@thekid)
 
