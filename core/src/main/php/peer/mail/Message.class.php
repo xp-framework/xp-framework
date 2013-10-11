@@ -448,75 +448,76 @@
 
       $t= strtok($str, "\n\r");
       while ($t) {
-        if (("\t" != $t{0}) && (' ' != $t{0})) @list($k, $t)= explode(': ', $t, 2);
+        if (("\t" === $t{0}) || (' ' === $t{0})) {
+          $value= substr($t, 1);
+        } else {
+          $value= NULL;
+          sscanf($t, "%[^:]: %[^\r]", $k, $value);
+        }
 
         switch (ucfirst($k)) {
           case HEADER_FROM:
+            if ('' === $value) break;
             try {
-              if ('' != trim($t)) {
-                $this->setFrom(InternetAddress::fromString($t));
-              }
+              $this->setFrom(InternetAddress::fromString($value));
             } catch (FormatException $e) {
-              $this->setFrom(new InternetAddress(array(NULL, NULL), $t));
-                            
-              // Fall through
+              $this->setFrom(new InternetAddress(array(NULL, NULL), $value));
             }
             break;
             
           case HEADER_TO:
           case HEADER_CC:
           case HEADER_BCC:
-            if ('' !== trim($t)) {
-              $k= strtolower($k);
-              $offset= 0;
-              do {
-                if ('"' === $t{$offset}) {
-                  $quote= strpos($t, '"', $offset + 1);
-                  $span= strcspn($t, ',', $offset + $quote) + $quote;
-                } else {
-                  $span= strcspn($t, ',', $offset);
-                }
-                $recipient= substr($t, $offset, $span);
-                try {
-                  $this->addRecipient($k, InternetAddress::fromString($recipient));
-                } catch (FormatException $e) {
-                  $this->addRecipient($k, new InternetAddress(array(NULL, NULL), $t));
-                }
-                $offset+= $span + strspn($t, ', ', $offset + $span);
-              } while ($offset < strlen($t));
-            }
+            if ('' === $value) break;
+            $k= strtolower($k);
+            $offset= 0;
+            do {
+              if ('"' === $value{$offset}) {
+                $quote= strpos($value, '"', $offset + 1);
+                $span= strcspn($value, ',', $offset + $quote) + $quote;
+              } else {
+                $span= strcspn($value, ',', $offset);
+              }
+              $recipient= substr($value, $offset, $span);
+              try {
+                $this->addRecipient($k, InternetAddress::fromString($recipient));
+              } catch (FormatException $e) {
+                $this->addRecipient($k, new InternetAddress(array(NULL, NULL), $value));
+              }
+              $offset+= $span + strspn($value, ', ', $offset + $span);
+            } while ($offset < strlen($value));
             break;
             
           case HEADER_MIMEVER:
-            $this->mimever= $t;
+            $this->mimever= $value;
             break;
             
           case HEADER_SUBJECT:
-            $this->subject.= $this->decode($t);
+            $this->subject.= ($this->subject ? ' ' : '').$this->decode($value);
             break;
             
           case HEADER_CONTENTTYPE: 
-            $this->contenttype.= $t;
+            $this->contenttype.= $value;
             break;
 
           case HEADER_ENCODING: 
-            $this->encoding= $t;
+            $this->encoding= $value;
             break;
             
           case HEADER_DATE:
-            $this->setDate($t);
+            $this->setDate($value);
             break;
           
           case HEADER_PRIORITY:
-            $this->priority= (int)$t;
+            $this->priority= (int)$value;
             break;
 
           case HEADER_MESSAGEID:
-            $this->message_id= $t;
+            $this->message_id= $value;
             break;
           
           default:
-            $this->_setHeader($k, $this->decode($t), "\n");
+            $this->_setHeader($k, $this->decode($value), ' ');
             break;
         }
         $t= strtok("\n\r");

@@ -106,4 +106,15 @@ class HeaderParsingTest extends \unittest\TestCase {
       $this->parse('Subject: =?utf-8?Q?Hällo?=')->getSubject()
     );
   }
+
+  #[@test, @values([
+  #  "Subject: =?utf-8?Q?Hällo?=\n\t=?utf-8?Q?Wörld?=",
+  #  "Subject: =?utf-8?Q?Hällo?=\n =?utf-8?Q?Wörld?="
+  #])]
+  public function quoted_printable_multiline_subject($subject) {
+    $this->assertEquals(
+      "H\xe4llo W\xf6rld",
+      $this->parse($subject)->getSubject()
+    );
+  }
 }

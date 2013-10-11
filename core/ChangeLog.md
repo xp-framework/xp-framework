@@ -15,7 +15,8 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
-* Fixed recipient parsing when receiving emails from IMAP servers - (@thekid)
+* Fixed encoded multi-line headers and recipient parsing when receiving emails 
+  using the "cclient" (ext/imap) library - (@thekid)
 * Fixed InternetAddress::fromString() no to return surrounding quotes around
   realnames, e.g. `"Alex Kiesel" <kiesel@example.com>` - (@thekid)
 * Fixed "Uninitialized string offset: 1" from XPClass::parseDetails() when
