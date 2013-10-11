@@ -16,35 +16,44 @@ class MessageTest extends \unittest\TestCase {
     $this->fixture= new Message();
   }
 
-  #[@test]
-  public function getRecipient_for_single_recipient() {
+  /**
+   * Returns recipient types
+   *
+   * @return string[]
+   */
+  protected function recipientTypes() {
+    return array('to', 'cc', 'bcc');
+  }
+
+  #[@test, @values('recipientTypes')]
+  public function getRecipient_for_single_recipient($type) {
     $r= new InternetAddress('thekid@example.com');
-    $this->fixture->addRecipient(TO, $r);
-    $this->assertEquals($r, $this->fixture->getRecipient(TO));
+    $this->fixture->addRecipient($type, $r);
+    $this->assertEquals($r, $this->fixture->getRecipient($type));
   }
 
-  #[@test]
-  public function getRecipient_for_multiple_recipients() {
+  #[@test, @values('recipientTypes')]
+  public function getRecipient_for_multiple_recipients($type) {
     $r1= new InternetAddress('thekid@example.com');
     $r2= new InternetAddress('alex@example.com');
-    $this->fixture->addRecipient(TO, $r1);
-    $this->fixture->addRecipient(TO, $r2);
-    $this->assertEquals($r1, $this->fixture->getRecipient(TO));
-    $this->assertEquals($r2, $this->fixture->getRecipient(TO));
+    $this->fixture->addRecipient($type, $r1);
+    $this->fixture->addRecipient($type, $r2);
+    $this->assertEquals($r1, $this->fixture->getRecipient($type));
+    $this->assertEquals($r2, $this->fixture->getRecipient($type));
   }
 
-  #[@test]
-  public function getRecipients_initially_returns_empty_array() {
-    $this->assertEquals(array(), $this->fixture->getRecipients(TO));
+  #[@test, @values('recipientTypes')]
+  public function getRecipients_initially_returns_empty_array($type) {
+    $this->assertEquals(array(), $this->fixture->getRecipients($type));
   }
 
-  #[@test]
-  public function getRecipients_returns_added_recipients() {
+  #[@test, @values('recipientTypes')]
+  public function getRecipients_returns_added_recipients($type) {
     $r1= new InternetAddress('thekid@example.com');
     $r2= new InternetAddress('alex@example.com');
-    $this->fixture->addRecipient(TO, $r1);
-    $this->fixture->addRecipient(TO, $r2);
-    $this->assertEquals(array($r1, $r2), $this->fixture->getRecipients(TO));
+    $this->fixture->addRecipient($type, $r1);
+    $this->fixture->addRecipient($type, $r2);
+    $this->assertEquals(array($r1, $r2), $this->fixture->getRecipients($type));
   }
 
   #[@test]
