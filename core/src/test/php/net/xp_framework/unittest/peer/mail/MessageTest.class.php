@@ -77,4 +77,18 @@ class MessageTest extends \unittest\TestCase {
     $this->fixture->setBody('Hello World');
     $this->assertEquals('Hello World', $this->fixture->getBody());
   }
+
+  #[@test]
+  public function base64_encoded_body() {
+    $this->fixture->setBody('SGVsbG8gV29ybGQ=');
+    $this->fixture->setEncoding('base64');
+    $this->assertEquals('Hello World', $this->fixture->getBody(true));
+  }
+
+  #[@test]
+  public function quoted_printable_encoded_body() {
+    $this->fixture->setBody('Hello_World');
+    $this->fixture->setEncoding('quoted-printable');
+    $this->assertEquals('Hello World', $this->fixture->getBody(true));
+  }
 }

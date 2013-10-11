@@ -272,16 +272,26 @@
      * has'nt been fetched yet, it'll be retrieved from the storage underlying
      * the folder.
      *
+     * @param   decode default FALSE
      * @return  string
      */
-    public function getBody() {
-      if (
-        (NULL === $this->folder) ||
-        (NULL !== $this->body)
-      ) return $this->body;
-      
-      // We have a folder and the body is NULL (indicating we haven't fetched this message)
-      return ($this->body= $this->folder->getMessagePart($this->uid, '1'));
+    public function getBody($decode= FALSE) {
+      if ((NULL !== $this->folder) && (NULL === $this->body)) {
+        $this->body= $this->folder->getMessagePart($this->uid, '1');
+      }
+
+      if ($decode) {
+        if ('base64' === $this->encoding) {
+          return Base64::decode($this->body);
+        } else if ('quoted-printable' === $this->encoding) {
+          return QuotedPrintable::decode($this->body);
+        } else if ('8bit' === $this->encoding || '' === $this->encoding) {
+          return $this->body;
+        } else {
+          throw new FormatException('Unknown encoding '.$this->encoding);
+        }
+      }
+      return $this->body;
     }
 
     /**
