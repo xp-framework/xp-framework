@@ -94,8 +94,8 @@ class HeaderParsingTest extends \unittest\TestCase {
   #[@test]
   public function quoted_printable_iso_encoded_subject() {
     $this->assertEquals(
-      'Hallo',
-      $this->parse('Subject: =?iso-8859-1?Q?Hallo?=')->getSubject()
+      'Hello World',
+      $this->parse('Subject: =?iso-8859-1?Q?Hello_World?=')->getSubject()
     );
   }
 

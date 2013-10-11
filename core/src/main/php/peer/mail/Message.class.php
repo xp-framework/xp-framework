@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.mail.InternetAddress', 'util.Date');
+  uses('peer.mail.InternetAddress', 'util.Date', 'text.encode.Base64', 'text.encode.QuotedPrintable');
 
   // Flags
   define('MAIL_FLAG_ANSWERED',      0x0001);
@@ -428,9 +428,9 @@
     protected function decode($header) {
       if (preg_match('/^=\?([^\?]+)\?([QB])\?([^\?]+)\?=$/', $header, $matches)) {
         if ('Q' === $matches[2]) {
-          return iconv($matches[1], xp::ENCODING, quoted_printable_decode($matches[3]));
+          return iconv($matches[1], xp::ENCODING, QuotedPrintable::decode($matches[3]));
         } else if ('B' === $matches[2]) {
-          return base64_decode($matches[3]);
+          return Base64::decode($matches[3]);
         } else {
           throw new FormatException('Cannot decode header "'.$header.'"');
         }
