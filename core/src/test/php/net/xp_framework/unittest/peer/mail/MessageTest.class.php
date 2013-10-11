@@ -1,5 +1,6 @@
 <?php namespace net\xp_framework\unittest\peer\mail;
 
+use util\Date;
 use peer\mail\Message;
 use peer\mail\InternetAddress;
 
@@ -81,6 +82,50 @@ class MessageTest extends \unittest\TestCase {
       $this->fixture->getHeaderString()
     );
   }
+
+  #[@test]
+  public function subject_accessors() {
+    $this->fixture->setSubject('Hello World');
+    $this->assertEquals('Hello World', $this->fixture->getSubject());
+  }
+
+  #[@test]
+  public function message_id_accessors() {
+    $this->fixture->setMessageId('1234');
+    $this->assertEquals('1234', $this->fixture->getMessageId());
+  }
+
+  #[@test]
+  public function date_accessors() {
+    $d= Date::now();
+    $this->fixture->setDate($d);
+    $this->assertEquals($d, $this->fixture->getDate());
+  }
+
+  #[@test]
+  public function encoding_accessors() {
+    $this->fixture->setEncoding('8bit');
+    $this->assertEquals('8bit', $this->fixture->getEncoding());
+  }
+
+  #[@test]
+  public function charset_accessors() {
+    $this->fixture->setCharset('utf-8');
+    $this->assertEquals('utf-8', $this->fixture->getCharset());
+  }
+
+  #[@test]
+  public function content_type_accessors() {
+    $this->fixture->setContentType('text/plain');
+    $this->assertEquals('text/plain', $this->fixture->getContentType());
+  }
+
+  #[@test]
+  public function mime_version_accessors() {
+    $this->fixture->setMimeVersion('1.0');
+    $this->assertEquals('1.0', $this->fixture->getMimeVersion());
+  }
+
   #[@test]
   public function unencoded_body() {
     $this->fixture->setBody('Hello World');
