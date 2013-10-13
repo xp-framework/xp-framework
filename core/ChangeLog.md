@@ -13,6 +13,10 @@ XP Framework ChangeLog
 * Converted proprietary classes in "xp" package as well as unittest classes
   to namespaces / new coding standards - (@thekid)
 
+### RFCs
+
+* Implemented RFC #272: Unittest actions. See pull request #318 - (@thekid)
+
 ### Bugfixes
 
 * Fixed encoded multi-line headers and recipient parsing when receiving emails 
