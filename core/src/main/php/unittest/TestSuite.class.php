@@ -224,6 +224,21 @@
     }
 
     /**
+     * Returns values
+     *
+     * @param  var annotatable
+     * @param  string impl The interface which must've been implemented
+     * @return unittest.TestAction
+     */
+    protected function actionFor($annotatable, $impl) {
+      if ($annotatable->hasAnnotation('action')) {
+        $action= $annotatable->getAnnotation('action');
+        if (XPClass::forName($impl)->isInstance($action)) return $action;
+      }
+      return NULL;
+    }
+
+    /**
      * Run a test case.
      *
      * @param   unittest.TestCase test
@@ -231,7 +246,8 @@
      * @throws  lang.MethodNotImplementedException
      */
     protected function runInternal($test, $result) {
-      $method= $test->getClass()->getMethod($test->name);
+      $class= $test->getClass();
+      $method= $class->getMethod($test->name);
       $this->notifyListeners('testStarted', array($test));
       
       // Check for @ignore
@@ -278,6 +294,27 @@
         $values= array(array());
       }
 
+      // Check for @actions, initialize setUp and tearDown call chains
+      $actions= array();
+      if ($action= $this->actionFor($class, 'unittest.TestAction')) {
+        $actions[]= $action;
+      }
+      if ($action= $this->actionFor($method, 'unittest.TestAction')) {
+        $actions[]= $action;
+      }
+      $setUp= function($test) use($actions) {
+        foreach ($actions as $action) {
+          $action->beforeTest($test);
+        }
+        $test->setUp();
+      };
+      $tearDown= function($test) use($actions) {
+        $test->tearDown();
+        foreach ($actions as $action) {
+          $action->afterTest($test);
+        }
+      };
+
       $timer= new Timer();
       foreach ($values as $args) {
         $t= $variation ? new TestVariation($test, $args) : $test;
@@ -286,7 +323,7 @@
 
         // Setup test
         try {
-          $test->setUp();
+          $setUp($test);
         } catch (PrerequisitesNotMetError $e) {
           $timer->stop();
           $this->notifyListeners('testSkipped', array(
@@ -315,7 +352,7 @@
           $method->invoke($test, is_array($args) ? $args : array($args));
         } catch (TargetInvocationException $x) {
           $timer->stop();
-          $test->tearDown();
+          $tearDown($test);
           $e= $x->getCause();
 
           // Was that an expected exception?
@@ -371,7 +408,7 @@
         }
 
         $timer->stop();
-        $test->tearDown();
+        $tearDown($test);
         
         // Check expected exception
         if ($expected) {
@@ -449,6 +486,9 @@
      * @param  lang.XPClass class
      */
     protected function beforeClass($class) {
+      if ($action= $this->actionFor($class, 'unittest.TestClassAction')) {
+        $action->beforeTestClass($class);
+      }
       foreach ($class->getMethods() as $m) {
         if (!$m->hasAnnotation('beforeClass')) continue;
         try {
@@ -476,6 +516,9 @@
         try {
           $m->invoke(NULL, array());
         } catch (TargetInvocationException $ignored) { }
+      }
+      if ($action= $this->actionFor($class, 'unittest.TestClassAction')) {
+        $action->afterTestClass($class);
       }
     }
 
