@@ -2,6 +2,7 @@
 
 use unittest\TestCase;
 use lang\Process;
+use unittest\actions\IsPlatform;
 
 /**
  * TestCase for lang.Process' resolve() method
@@ -9,45 +10,17 @@ use lang\Process;
  * @see      xp://lang.Process
  */
 class ProcessResolveTest extends TestCase {
-  protected
-    $origDir  = NULL;
+  protected $origDir;
 
   /**
-   * Setup test. Verifies this test is for a certain platform
-   *
+   * Setup test. Backs up current directory.
    */
   public function setUp() {
     $this->origDir= getcwd();
-
-    $m= $this->getClass()->getMethod($this->name);
-    if (!$m->hasAnnotation('platform')) return;
-
-    // Determine platform
-      if (getenv('ANDROID_ROOT')) {
-      $os= 'ANDROID';
-    } else {
-      $os= PHP_OS;
-    }
-    
-    // This testcase is platform-specific - the platform annotation may be 
-      // written as "WIN" (meaning this works only on operating systems whose
-      // names contain "WIN" - e.g. Windows)  or as "!BSD" (this means this 
-      // test will not run on OSes with "BSD" in their names but on any other)
-      $platform= $m->getAnnotation('platform');
-    if ('!' === $platform{0}) {
-      $r= !preg_match('/'.substr($platform, 1).'/i', $os);
-    } else {
-      $r= preg_match('/'.$platform.'/i', $os);
-    }
-    
-    if (!$r) {
-      throw new \unittest\PrerequisitesNotMetError('Test not intended for this platform', NULL, $platform);
-    }
   }
   
   /**
-   * Tear down test.
-   *
+   * Tear down test. Returns the previous working directory.
    */
   public function tearDown() {
     chdir($this->origDir);
@@ -57,58 +30,54 @@ class ProcessResolveTest extends TestCase {
    * Replaces backslashes in the specified path by the new separator. If $skipDrive is set
    * to TRUE, the leading drive letter definition (e.g. 'C:') is removed from the new path.
    *
-   * @param  string  path
-   * @param  string  newSeparator
-   * @param  bool skipDrive
+   * @param  string $path
+   * @param  string $newSeparator
+   * @param  bool $skipDrive
    * @return string
    */
   private function replaceBackslashSeparator($path, $newSeparator, $skipDrive) {
     $parts= explode('\\', $path);
     if (preg_match('/[a-z]:/i', $parts[0]) != 0 && $skipDrive) array_shift($parts);
-
     return implode($newSeparator, $parts);
   }
 
-  #[@test, @platform('^WIN')]
+  #[@test, @action(new IsPlatform('WIN'))]
   public function resolveFullyQualifiedWithDriverLetter() {
     $this->assertTrue(is_executable(Process::resolve(getenv('WINDIR').'\\EXPLORER.EXE')));
   }
 
-  #[@test, @platform('^WIN')]
+  #[@test, @action(new IsPlatform('WIN'))]
   public function resolveFullyQualifiedWithDriverLetterWithoutExtension() {
     $this->assertTrue(is_executable(Process::resolve(getenv('WINDIR').'\\EXPLORER')));
   }
 
-  #[@test, @platform('^WIN')]
+  #[@test, @action(new IsPlatform('WIN'))]
   public function resolveFullyQualifiedWithBackSlash() {
     $path= '\\'.$this->replaceBackslashSeparator(getenv('WINDIR').'\\EXPLORER.EXE', '\\', TRUE);
-
     chdir('C:');
     $this->assertTrue(is_executable(Process::resolve($path)));
   }
 
-  #[@test, @platform('^WIN')]
+  #[@test, @action(new IsPlatform('WIN'))]
   public function resolveFullyQualifiedWithSlash() {
     $path= '/'.$this->replaceBackslashSeparator(getenv('WINDIR').'\\EXPLORER.EXE', '/', TRUE);
-
     chdir('C:');
     $this->assertTrue(is_executable(Process::resolve($path)));
   }
 
-  #[@test, @platform('^WIN')]
+  #[@test, @action(new IsPlatform('WIN'))]
   public function resolveFullyQualifiedWithoutExtension() {
     $path='\\'.$this->replaceBackslashSeparator(getenv('WINDIR').'\\EXPLORER', '\\', TRUE);
-
     chdir('C:');
     $this->assertTrue(is_executable(Process::resolve($path)));
   }
 
-  #[@test, @platform('^WIN')]
+  #[@test, @action(new IsPlatform('WIN'))]
   public function resolveCommandInPath() {
     $this->assertTrue(is_executable(Process::resolve('explorer.exe')));
   }
 
-  #[@test, @platform('^WIN')]
+  #[@test, @action(new IsPlatform('WIN'))]
   public function resolveCommandInPathWithoutExtension() {
     $this->assertTrue(is_executable(Process::resolve('explorer')));
   }
@@ -118,7 +87,7 @@ class ProcessResolveTest extends TestCase {
     Process::resolve('/');
   }
 
-  #[@test, @platform('^WIN'), @expect('io.IOException')]
+  #[@test, @action(new IsPlatform('WIN')), @expect('io.IOException')]
   public function resolveBackslashDirectory() {
     Process::resolve('\\');
   }
@@ -138,19 +107,19 @@ class ProcessResolveTest extends TestCase {
     Process::resolve('/@@non-existant@@');
   }
 
-  #[@test, @platform('!(^WIN|^ANDROID)')]
+  #[@test, @action(new IsPlatform('!(WIN|ANDROID)'))]
   public function resolveFullyQualifiedOnPosix() {
     $fq= '/bin/ls';
     $this->assertEquals($fq, Process::resolve($fq));
   }
 
-  #[@test, @platform('ANDROID')]
+  #[@test, @action(new IsPlatform('ANDROID'))]
   public function resolveFullyQualifiedOnAndroid() {
     $fq= getenv('ANDROID_ROOT').'/framework/core.jar';
     $this->assertEquals($fq, Process::resolve($fq));
   }
 
-  #[@test, @platform('!(^WIN|^ANDROID)')]
+  #[@test, @action(new IsPlatform('!(WIN|ANDROID)'))]
   public function resolve() {
     $this->assertEquals('/bin/ls', Process::resolve('ls'));
   }
