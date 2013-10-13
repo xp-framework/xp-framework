@@ -137,7 +137,7 @@
     public function toString($charset= xp::ENCODING) {
       return (
         empty($this->personal) ? '' : 
-        QuotedPrintable::encode($this->personal, $charset).' '
+        QuotedPrintable::encode(iconv(xp::ENCODING, $charset, $this->personal), $charset).' '
       ).'<'.$this->localpart.'@'.$this->domain.'>';
     }
   }

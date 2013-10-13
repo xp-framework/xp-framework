@@ -52,6 +52,22 @@ class InternetAddressTest extends TestCase {
       create(new InternetAddress('muecke@example.com', 'Mücke'))->toString()
     );
   }
+
+  #[@test]
+  public function umlaut_are_escaped_and_iso_encoded_in_output() {
+    $this->assertEquals(
+      '=?iso-8859-1?Q?M=FCcke?= <muecke@example.com>',
+      create(new InternetAddress('muecke@example.com', 'Mücke'))->toString('iso-8859-1')
+    );
+  }
+
+  #[@test]
+  public function umlaut_are_escaped_and_utf8_encoded_in_output() {
+    $this->assertEquals(
+      '=?utf-8?Q?M=C3=BCcke?= <muecke@example.com>',
+      create(new InternetAddress('muecke@example.com', 'Mücke'))->toString('utf-8')
+    );
+  }
   
   #[@test]
   public function space_characters_are_escaped_in_output() {
