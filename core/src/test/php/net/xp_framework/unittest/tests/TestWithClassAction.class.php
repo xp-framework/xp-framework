@@ -1,21 +1,14 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$
+<?php namespace net\xp_framework\unittest\tests;
+
+/**
+ * This class is used in the TestClassActionTest 
  */
- 
-  uses('unittest.TestCase');
+#[@action(new RecordClassActionInvocation('run'))]
+class TestWithClassAction extends \unittest\TestCase {
+  public static $run= array();
 
-  /**
-   * This class is used in the TestClassActionTest 
-   */
-  #[@action('net.xp_framework.unittest.tests.RecordClassActionInvocation')]
-  class TestWithClassAction extends TestCase {
-    public static $run= array();
-
-    #[@test]
-    public function fixture() {
-      self::$run[]= 'test';
-    }
+  #[@test]
+  public function fixture() {
+    self::$run[]= 'test';
   }
-?>
+}

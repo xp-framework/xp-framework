@@ -231,30 +231,11 @@
      * @return unittest.TestAction
      */
     protected function actionFor($annotatable, $impl) {
-      if (!$annotatable->hasAnnotation('action')) return NULL;
-
-      // Parse annotation formats
-      $annotation= $annotatable->getAnnotation('action');
-      $args= NULL;
-      if (is_array($annotation)) {
-        $class= XPClass::forName($annotation['class']);
-        if (isset($annotation['args'])) {
-          $args= $annotation['args'];
-        }
-      } else {
-        $class= XPClass::forName($annotation);
+      if ($annotatable->hasAnnotation('action')) {
+        $action= $annotatable->getAnnotation('action');
+        if (XPClass::forName($impl)->isInstance($action)) return $action;
       }
-
-      // If the class is a subclass of the implementation, instantiate
-      // it (optionally using determined arguments) and return; otherwise
-      // return NULL so the calling code won't add it.
-      if (!$class->isSubclassOf($impl)) {
-        return NULL; 
-      } else if ($args) {
-        return $class->getConstructor()->newInstance($args);
-      } else {
-        return $class->newInstance();
-      }
+      return NULL;
     }
 
     /**

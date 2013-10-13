@@ -1,11 +1,12 @@
 <?php namespace net\xp_framework\unittest\security;
 
 use security\SecureString;
+use unittest\actions\ExtensionAvailable;
 
 /**
  * Testcase for openssl backed security.SecureString implementation
  */
-#[@action(class= 'unittest.actions.ExtensionAvailable', args= array('openssl'))]
+#[@action(new ExtensionAvailable('openssl'))]
 class OpenSSLSecureStringTest extends SecureStringTest {
 
   /**

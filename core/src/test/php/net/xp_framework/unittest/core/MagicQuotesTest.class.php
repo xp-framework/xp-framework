@@ -1,6 +1,7 @@
 <?php namespace net\xp_framework\unittest\core;
 
 use unittest\TestCase;
+use unittest\actions\RuntimeVersion;
 use lang\Runtime;
 
 /**
@@ -48,7 +49,7 @@ class MagicQuotesTest extends TestCase {
    * Before PHP 5.3, the XP Framework is the only one that has a problem
    * with magic quotes.
    */
-  #[@test, @action(class= 'unittest.actions.RuntimeVersion', args= array('<5.3.0'))]
+  #[@test, @action(new RuntimeVersion('<5.3.0'))]
   public function xpFrameworkRefusesToStart() {
     $r= $this->run();
     $this->assertEquals(255, $r[0], 'exitcode');
@@ -59,7 +60,7 @@ class MagicQuotesTest extends TestCase {
    * As of PHP 5.3+, magic_quotes_gpc = On raises a deprecation warning 
    * to standard error. 
    */
-  #[@test, @action(class= 'unittest.actions.RuntimeVersion', args= array('>=5.3.4,<5.4.0'))]
+  #[@test, @action(new RuntimeVersion('>=5.3.4,<5.4.0'))]
   public function xpFrameworkRefusesToStartAndDeprecationWarning() {
     $r= $this->run();
     $this->assertEquals(255, $r[0], 'exitcode');
@@ -71,7 +72,7 @@ class MagicQuotesTest extends TestCase {
    * As of PHP 5.4, magic quotes have been removed and enabling them will
    * cause PHP to issue a fatal error.
    */
-  #[@test, @action(class= 'unittest.actions.RuntimeVersion', args= array('>=5.4.0'))]
+  #[@test, @action(new RuntimeVersion('>=5.4.0'))]
   public function phpRefusesToStart() {
     $r= $this->run();
     $this->assertEquals(1, $r[0], 'exitcode');

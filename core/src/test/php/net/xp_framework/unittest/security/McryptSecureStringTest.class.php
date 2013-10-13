@@ -1,11 +1,12 @@
 <?php namespace net\xp_framework\unittest\security;
 
 use security\SecureString;
+use unittest\actions\ExtensionAvailable;
 
 /**
  * Testcase for mcrypt backed security.SecureString implementation
  */
-#[@action(class= 'unittest.actions.ExtensionAvailable', args= array('mcrypt'))]
+#[@action(new ExtensionAvailable('mcrypt'))]
 class McryptSecureStringTest extends SecureStringTest {
 
   /**
