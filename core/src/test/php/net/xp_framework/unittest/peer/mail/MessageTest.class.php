@@ -49,11 +49,19 @@ class MessageTest extends \unittest\TestCase {
   }
 
   #[@test, @values('recipientTypes')]
-  public function getRecipients_returns_added_recipients($type) {
+  public function getRecipients_returns_recipients_added_via_addRecipient($type) {
     $r1= new InternetAddress('thekid@example.com');
     $r2= new InternetAddress('alex@example.com');
     $this->fixture->addRecipient($type, $r1);
     $this->fixture->addRecipient($type, $r2);
+    $this->assertEquals(array($r1, $r2), $this->fixture->getRecipients($type));
+  }
+
+  #[@test, @values('recipientTypes')]
+  public function getRecipients_returns_recipients_added_via_addRecipients($type) {
+    $r1= new InternetAddress('thekid@example.com');
+    $r2= new InternetAddress('alex@example.com');
+    $this->fixture->addRecipients($type, array($r1, $r2));
     $this->assertEquals(array($r1, $r2), $this->fixture->getRecipients($type));
   }
 
