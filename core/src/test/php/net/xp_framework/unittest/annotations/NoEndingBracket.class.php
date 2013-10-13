@@ -1,17 +1,11 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\annotations;
+
+/**
+ * Tests the XP Framework's annotations
  *
- * $Id$ 
+ * @see  xp://net.xp_framework.unittest.annotations.BrokenAnnotationTest
  */
+#[@attribute
+class NoEndingBracket extends \lang\Object {
 
-  $package= 'net.xp_framework.unittest.annotations';
-
-  /**
-   * Uses by BrokenAnnotationTest
-   *
-   */
-  #[@attribute
-  class net·xp_framework·unittest·annotations·NoEndingBracket extends Object {
-    
-  }
-?>
+}

@@ -1,140 +1,133 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$
- */
+<?php namespace net\xp_framework\unittest\scriptlet\workflow;
 
-  uses(
-    'unittest.TestCase',
-    'scriptlet.xml.workflow.AbstractXMLScriptlet',
-    'scriptlet.xml.workflow.AbstractState',
-    'net.xp_framework.unittest.scriptlet.workflow.mock.MockRequest',
-    'net.xp_framework.unittest.scriptlet.workflow.mock.MockResponse'
-  );
+use unittest\TestCase;
+use scriptlet\xml\workflow\AbstractXMLScriptlet;
+use scriptlet\xml\workflow\AbstractState;
+use net\xp_framework\unittest\scriptlet\workflow\mock\MockRequest;
+use net\xp_framework\unittest\scriptlet\workflow\mock\MockResponse;
+
+/**
+ * Scriptlet/Workflow API test case
+ *
+ * @see   xp://scriptlet.xml.workflow.AbstractXMLScriptlet
+ * @see   xp://scriptlet.xml.workflow.AbstractState
+ */
+class WorkflowApiTest extends TestCase {
+  protected $scriptlet  = null;
+
+  /**
+   * Setup method.
+   *
+   */
+  public function setUp() {
+    $this->scriptlet= new AbstractXMLScriptlet($this->getClass()->getPackage()->getName());
+    $this->scriptlet->init();
+  }
+
+  /**
+   * Teardown method.
+   *
+   */
+  public function tearDown() {
+    $this->scriptlet->finalize();
+  }
   
   /**
-   * Scriptlet/Workflow API test case
+   * Process a request
    *
-   * @see   xp://scriptlet.xml.workflow.AbstractXMLScriptlet
-   * @see   xp://scriptlet.xml.workflow.AbstractState
+   * @param   net.xp_framework.unittest.scriptlet.mock.MockRequest
+   * @return  net.xp_framework.unittest.scriptlet.mock.MockResponse
    */
-  class WorkflowApiTest extends TestCase {
-    protected $scriptlet  = NULL;
+  public function process($request) {
+    $request->initialize();
+    $response= new MockResponse();
+    $this->scriptlet->processWorkflow($request, $response);
+    return $response;
+  }
+
+  /**
+   * Tests that a state's setup() and process() methods are called.
+   *
+   */
+  #[@test]
+  public function setupAndProcessCalled() {
+    $request= new MockRequest($this->scriptlet->package, ucfirst($this->name), '{
+      public $called= array();
+      
+      public function setup($request, $response, $context) {
+        parent::setup($request, $response, $context);
+        $this->called["setup"]= TRUE;
+      }
+
+      public function process($request, $response, $context) {
+        $this->called["process"]= TRUE;
+      }
+    }');
+    $this->process($request);      
+    $this->assertTrue($request->state->called['setup']);
+    $this->assertTrue($request->state->called['process']);
+  }
   
-    /**
-     * Setup method.
-     *
-     */
-    public function setUp() {
-      $this->scriptlet= new AbstractXMLScriptlet($this->getClass()->getPackage()->getName());
-      $this->scriptlet->init();
-    }
-
-    /**
-     * Teardown method.
-     *
-     */
-    public function tearDown() {
-      $this->scriptlet->finalize();
-    }
-    
-    /**
-     * Process a request
-     *
-     * @param   net.xp_framework.unittest.scriptlet.mock.MockRequest
-     * @return  net.xp_framework.unittest.scriptlet.mock.MockResponse
-     */
-    public function process($request) {
-      $request->initialize();
-      $response= new MockResponse();
-      $this->scriptlet->processWorkflow($request, $response);
-      return $response;
-    }
-  
-    /**
-     * Tests that a state's setup() and process() methods are called.
-     *
-     */
-    #[@test]
-    public function setupAndProcessCalled() {
-      $request= new MockRequest($this->scriptlet->package, ucfirst($this->name), '{
-        public $called= array();
-        
-        public function setup($request, $response, $context) {
-          parent::setup($request, $response, $context);
-          $this->called["setup"]= TRUE;
-        }
-
-        public function process($request, $response, $context) {
-          $this->called["process"]= TRUE;
-        }
-      }');
-      $this->process($request);      
-      $this->assertTrue($request->state->called['setup']);
-      $this->assertTrue($request->state->called['process']);
-    }
-    
-    /**
-     * Tests IllegalAccessException thrown in state setup
-     *
-     */
-    #[@test]
-    public function illegalAccessInStateSetup() {
-      $request= new MockRequest($this->scriptlet->package, ucfirst($this->name), '{
-        public function setup($request, $response, $context) {
-          parent::setup($request, $response, $context);
-          throw new IllegalAccessException("Access denied");
-        }
-      }');
-      try {
-        $this->process($request);
-        $this->fail('Expected exception not caught', NULL, 'ScriptletException');
-      } catch (ScriptletException $expected) {
-        $this->assertEquals(403, $expected->statusCode);
-        $this->assertClass($expected->getCause(), 'lang.IllegalAccessException');
+  /**
+   * Tests IllegalAccessException thrown in state setup
+   *
+   */
+  #[@test]
+  public function illegalAccessInStateSetup() {
+    $request= new MockRequest($this->scriptlet->package, ucfirst($this->name), '{
+      public function setup($request, $response, $context) {
+        parent::setup($request, $response, $context);
+        throw new IllegalAccessException("Access denied");
       }
-    }
-
-    /**
-     * Tests IllegalAccessException thrown in state setup
-     *
-     */
-    #[@test]
-    public function illegalStateInStateSetup() {
-      $request= new MockRequest($this->scriptlet->package, ucfirst($this->name), '{
-        public function setup($request, $response, $context) {
-          parent::setup($request, $response, $context);
-          throw new IllegalStateException("Misconfigured");
-        }
-      }');
-      try {
-        $this->process($request);
-        $this->fail('Expected exception not caught', NULL, 'ScriptletException');
-      } catch (ScriptletException $expected) {
-        $this->assertEquals(500, $expected->statusCode);
-        $this->assertClass($expected->getCause(), 'lang.IllegalStateException');
-      }
-    }
-
-    /**
-     * Tests IllegalArgumentException thrown in state setup
-     *
-     */
-    #[@test]
-    public function illegalArgumentInStateSetup() {
-      $request= new MockRequest($this->scriptlet->package, ucfirst($this->name), '{
-        public function setup($request, $response, $context) {
-          parent::setup($request, $response, $context);
-          throw new IllegalArgumentException("Query string format");
-        }
-      }');
-      try {
-        $this->process($request);
-        $this->fail('Expected exception not caught', NULL, 'ScriptletException');
-      } catch (ScriptletException $expected) {
-        $this->assertEquals(406, $expected->statusCode);
-        $this->assertClass($expected->getCause(), 'lang.IllegalArgumentException');
-      }
+    }');
+    try {
+      $this->process($request);
+      $this->fail('Expected exception not caught', null, 'ScriptletException');
+    } catch (\scriptlet\ScriptletException $expected) {
+      $this->assertEquals(403, $expected->statusCode);
+      $this->assertClass($expected->getCause(), 'lang.IllegalAccessException');
     }
   }
-?>
+
+  /**
+   * Tests IllegalAccessException thrown in state setup
+   *
+   */
+  #[@test]
+  public function illegalStateInStateSetup() {
+    $request= new MockRequest($this->scriptlet->package, ucfirst($this->name), '{
+      public function setup($request, $response, $context) {
+        parent::setup($request, $response, $context);
+        throw new IllegalStateException("Misconfigured");
+      }
+    }');
+    try {
+      $this->process($request);
+      $this->fail('Expected exception not caught', null, 'ScriptletException');
+    } catch (\scriptlet\ScriptletException $expected) {
+      $this->assertEquals(500, $expected->statusCode);
+      $this->assertClass($expected->getCause(), 'lang.IllegalStateException');
+    }
+  }
+
+  /**
+   * Tests IllegalArgumentException thrown in state setup
+   *
+   */
+  #[@test]
+  public function illegalArgumentInStateSetup() {
+    $request= new MockRequest($this->scriptlet->package, ucfirst($this->name), '{
+      public function setup($request, $response, $context) {
+        parent::setup($request, $response, $context);
+        throw new IllegalArgumentException("Query string format");
+      }
+    }');
+    try {
+      $this->process($request);
+      $this->fail('Expected exception not caught', null, 'ScriptletException');
+    } catch (\scriptlet\ScriptletException $expected) {
+      $this->assertEquals(406, $expected->statusCode);
+      $this->assertClass($expected->getCause(), 'lang.IllegalArgumentException');
+    }
+  }
+}

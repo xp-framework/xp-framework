@@ -1,27 +1,22 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\tests;
  
-  uses('net.xp_framework.unittest.tests.BeforeAndAfterClassTest');
+
+
+/**
+ * Tests @beforeClass and @afterClass methods using run()
+ *
+ * @see   xp://unittest.TestSuite
+ */
+class BeforeAndAfterClassWithRunTest extends BeforeAndAfterClassTest {
 
   /**
-   * Tests @beforeClass and @afterClass methods using run()
+   * Runs a test and returns the outcome
    *
-   * @see   xp://unittest.TestSuite
+   * @param   unittest.TestCase test
+   * @return  unittest.TestOutcome
    */
-  class BeforeAndAfterClassWithRunTest extends BeforeAndAfterClassTest {
-
-    /**
-     * Runs a test and returns the outcome
-     *
-     * @param   unittest.TestCase test
-     * @return  unittest.TestOutcome
-     */
-    protected function runTest($test) {
-      $this->suite->addTest($test);
-      return $this->suite->run();
-    }
+  protected function runTest($test) {
+    $this->suite->addTest($test);
+    return $this->suite->run();
   }
-?>
+}

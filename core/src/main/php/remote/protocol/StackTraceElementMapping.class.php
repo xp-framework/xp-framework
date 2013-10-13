@@ -25,12 +25,12 @@
     public function valueOf($serializer, $serialized, $context= array()) {
       $size= $serialized->consumeSize();
       $details= array();
-      $serialized->offset++;  // Opening "{"
+      $serialized->consume('{');
       for ($i= 0; $i < $size; $i++) {
         $detail= $serializer->valueOf($serialized, $context);
         $details[$detail]= $serializer->valueOf($serialized, $context);
       }
-      $serialized->offset++;  // Closing "}"
+      $serialized->consume('}');
       
       return new RemoteStackTraceElement(
         $details['file'],

@@ -341,42 +341,49 @@
     { $yyVal= array_merge($yyVals[-2+$yyTop], array($yyVals[0+$yyTop])); } break;
 
     case 16:  #line 57 "src/main/jay/webservices/json/json.jay"
-    { $yyVal= $yyVals[-1+$yyTop]; } break;
+    {
+      if (xp::errorAt(__FILE__)) {
+        $e= new FormatException('Cannot decode string '.create(new Bytes($yyVals[-2+$yyTop]))->toString().' to '.$this->targetEncoding);
+        xp::gc(__FILE__);
+        throw $e;
+      }
+      $yyVal= $yyVals[-1+$yyTop];
+    } break;
 
-    case 17:  #line 58 "src/main/jay/webservices/json/json.jay"
+    case 17:  #line 65 "src/main/jay/webservices/json/json.jay"
     { $yyVal= ''; } break;
 
-    case 19:  #line 63 "src/main/jay/webservices/json/json.jay"
+    case 19:  #line 70 "src/main/jay/webservices/json/json.jay"
     { $yyVal= $yyVals[-1+$yyTop].$yyVals[0+$yyTop]; } break;
 
-    case 20:  #line 67 "src/main/jay/webservices/json/json.jay"
+    case 20:  #line 74 "src/main/jay/webservices/json/json.jay"
     { $yyVal= iconv('utf-8', $this->targetEncoding, $yyVals[0+$yyTop]); } break;
 
-    case 21:  #line 68 "src/main/jay/webservices/json/json.jay"
+    case 21:  #line 75 "src/main/jay/webservices/json/json.jay"
     { $yyVal= '"'; } break;
 
-    case 22:  #line 69 "src/main/jay/webservices/json/json.jay"
+    case 22:  #line 76 "src/main/jay/webservices/json/json.jay"
     { $yyVal= "\\"; } break;
 
-    case 23:  #line 70 "src/main/jay/webservices/json/json.jay"
+    case 23:  #line 77 "src/main/jay/webservices/json/json.jay"
     { $yyVal= "/"; } break;
 
-    case 24:  #line 71 "src/main/jay/webservices/json/json.jay"
+    case 24:  #line 78 "src/main/jay/webservices/json/json.jay"
     { $yyVal= "\b"; } break;
 
-    case 25:  #line 72 "src/main/jay/webservices/json/json.jay"
+    case 25:  #line 79 "src/main/jay/webservices/json/json.jay"
     { $yyVal= "\f"; } break;
 
-    case 26:  #line 73 "src/main/jay/webservices/json/json.jay"
+    case 26:  #line 80 "src/main/jay/webservices/json/json.jay"
     { $yyVal= "\n"; } break;
 
-    case 27:  #line 74 "src/main/jay/webservices/json/json.jay"
+    case 27:  #line 81 "src/main/jay/webservices/json/json.jay"
     { $yyVal= "\r"; } break;
 
-    case 28:  #line 75 "src/main/jay/webservices/json/json.jay"
+    case 28:  #line 82 "src/main/jay/webservices/json/json.jay"
     { $yyVal= "\t"; } break;
 
-    case 29:  #line 76 "src/main/jay/webservices/json/json.jay"
+    case 29:  #line 83 "src/main/jay/webservices/json/json.jay"
     {
                                 $yyVal= iconv(
                                   'ucs-4be',
@@ -385,21 +392,21 @@
                                 );
                               } break;
 
-    case 30:  #line 86 "src/main/jay/webservices/json/json.jay"
+    case 30:  #line 93 "src/main/jay/webservices/json/json.jay"
     { $yyVal= TRUE; } break;
 
-    case 31:  #line 87 "src/main/jay/webservices/json/json.jay"
+    case 31:  #line 94 "src/main/jay/webservices/json/json.jay"
     { $yyVal= FALSE; } break;
 
-    case 32:  #line 88 "src/main/jay/webservices/json/json.jay"
+    case 32:  #line 95 "src/main/jay/webservices/json/json.jay"
     { $yyVal= NULL; } break;
 
-    case 33:  #line 89 "src/main/jay/webservices/json/json.jay"
+    case 33:  #line 96 "src/main/jay/webservices/json/json.jay"
     { $yyVal= doubleval($yyVals[0+$yyTop]); } break;
 
-    case 34:  #line 90 "src/main/jay/webservices/json/json.jay"
+    case 34:  #line 97 "src/main/jay/webservices/json/json.jay"
     { $yyVal= intval($yyVals[0+$yyTop]); } break;
-#line 403 "-"
+#line 410 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];
@@ -429,7 +436,7 @@
       }
     }
 
-#line 93 "src/main/jay/webservices/json/json.jay"
+#line 100 "src/main/jay/webservices/json/json.jay"
 
   protected $targetEncoding= xp::ENCODING;
 
@@ -451,6 +458,6 @@
   public function getTargetEncoding() {
     return $this->targetEncoding;
   }
-#line 455 "-"
+#line 462 "-"
   }
 ?>

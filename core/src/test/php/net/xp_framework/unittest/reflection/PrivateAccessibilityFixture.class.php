@@ -1,116 +1,111 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\reflection;
+
+/**
+ * Fixture class for accessibility tests
  *
- * $Id$ 
+ * @see      xp://net.xp_framework.unittest.reflection.PrivateAccessibilityTest
  */
+class PrivateAccessibilityFixture extends \lang\Object {
+  private $target= 'Target';
+  private static $staticTarget= 'Target';
 
   /**
-   * Fixture class for accessibility tests
+   * Constructor
    *
-   * @see      xp://net.xp_framework.unittest.reflection.PrivateAccessibilityTest
    */
-  class PrivateAccessibilityFixture extends Object {
-    private $target= 'Target';
-    private static $staticTarget= 'Target';
+  private function __construct() { }
 
-    /**
-     * Constructor
-     *
-     */
-    private function __construct() { }
-
-    /**
-     * Target method
-     *
-     * @return  string
-     */
-    private function target() { 
-      return 'Invoked';
-    }
+  /**
+   * Target method
+   *
+   * @return  string
+   */
+  private function target() { 
+    return 'Invoked';
+  }
  
-    /**
-     * Target method
-     *
-     * @return  string
-     */
-    private static function staticTarget() { 
-      return 'Invoked';
-    }
+  /**
+   * Target method
+   *
+   * @return  string
+   */
+  private static function staticTarget() { 
+    return 'Invoked';
+  }
 
-    /**
-     * Entry point: Invoke constructor
-     *
-     * @param   lang.XPClass
-     * @return  net.xp_framework.unittest.reflection.PrivateAccessibilityFixture
-     */
-    public static function construct(XPClass $class) {
-      return $class->getConstructor()->newInstance(array());
-    }
+  /**
+   * Entry point: Invoke constructor
+   *
+   * @param   lang.XPClass
+   * @return  net.xp_framework.unittest.reflection.PrivateAccessibilityFixture
+   */
+  public static function construct(\lang\XPClass $class) {
+    return $class->getConstructor()->newInstance(array());
+  }
 
-    /**
-     * Entry point: Invoke target method
-     *
-     * @param   lang.XPClass
-     * @return  string
-     */
-    public static function invoke(XPClass $class) {
-      return $class->getMethod('target')->invoke(new self());
-    }
+  /**
+   * Entry point: Invoke target method
+   *
+   * @param   lang.XPClass
+   * @return  string
+   */
+  public static function invoke(\lang\XPClass $class) {
+    return $class->getMethod('target')->invoke(new self());
+  }
 
-    /**
-     * Entry point: Invoke staticTarget method
-     *
-     * @param   lang.XPClass
-     * @return  string
-     */
-    public static function invokeStatic(XPClass $class) {
-      return $class->getMethod('staticTarget')->invoke(NULL);
-    }
+  /**
+   * Entry point: Invoke staticTarget method
+   *
+   * @param   lang.XPClass
+   * @return  string
+   */
+  public static function invokeStatic(\lang\XPClass $class) {
+    return $class->getMethod('staticTarget')->invoke(null);
+  }
 
-    /**
-     * Entry point: Read target member
-     *
-     * @param   lang.XPClass
-     * @return  string
-     */
-    public static function read(XPClass $class) {
-      return $class->getField('target')->get(new self());
-    }
+  /**
+   * Entry point: Read target member
+   *
+   * @param   lang.XPClass
+   * @return  string
+   */
+  public static function read(\lang\XPClass $class) {
+    return $class->getField('target')->get(new self());
+  }
 
-    /**
-     * Entry point: Read staticTarget member
-     *
-     * @param   lang.XPClass
-     * @return  string
-     */
-    public static function readStatic(XPClass $class) {
-      return $class->getField('staticTarget')->get(NULL);
-    }
+  /**
+   * Entry point: Read staticTarget member
+   *
+   * @param   lang.XPClass
+   * @return  string
+   */
+  public static function readStatic(\lang\XPClass $class) {
+    return $class->getField('staticTarget')->get(null);
+  }
 
-    /**
-     * Entry point: Write target member, then read it back
-     *
-     * @param   lang.XPClass
-     * @return  string
-     */
-    public static function write(XPClass $class) {
-      with ($s= new self(), $f= $class->getField('target')); {
-        $f->set($s, 'Modified');
-        return $f->get($s);
-      }
-    }
-
-    /**
-     * Entry point: Write target member, then read it back
-     *
-     * @param   lang.XPClass
-     * @return  string
-     */
-    public static function writeStatic(XPClass $class) {
-      with ($f= $class->getField('staticTarget')); {
-        $f->set(NULL, 'Modified');
-        return $f->get(NULL);
-      }
+  /**
+   * Entry point: Write target member, then read it back
+   *
+   * @param   lang.XPClass
+   * @return  string
+   */
+  public static function write(\lang\XPClass $class) {
+    with ($s= new self(), $f= $class->getField('target')); {
+      $f->set($s, 'Modified');
+      return $f->get($s);
     }
   }
-?>
+
+  /**
+   * Entry point: Write target member, then read it back
+   *
+   * @param   lang.XPClass
+   * @return  string
+   */
+  public static function writeStatic(\lang\XPClass $class) {
+    with ($f= $class->getField('staticTarget')); {
+      $f->set(null, 'Modified');
+      return $f->get(null);
+    }
+  }
+}

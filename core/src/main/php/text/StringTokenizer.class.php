@@ -63,6 +63,7 @@
      * @param   string str
      */
     public function pushBack($str) {
+      $this->_ofs= min($this->_ofs, $this->_len);
       $this->source= (
         substr($this->source, 0, $this->_ofs).
         $str.implode('', $this->_stack).

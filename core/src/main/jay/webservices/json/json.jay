@@ -54,7 +54,14 @@ arraycontent:
 ;
 
 string:
-    '"' word '"' { $$= $2; }
+    '"' word '"' {
+      if (xp::errorAt(__FILE__)) {
+        $e= new FormatException('Cannot decode string '.create(new Bytes($1))->toString().' to '.$this->targetEncoding);
+        xp::gc(__FILE__);
+        throw $e;
+      }
+      $$= $2;
+    }
   | '"' '"' { $$= ''; }
 ;
 

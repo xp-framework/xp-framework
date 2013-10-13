@@ -94,6 +94,7 @@
         throw new SQLConnectException('sqlite+3:// connecting to remote database not supported', $this->dsn);
       }
 
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECT, $reconnect));
       $database= urldecode($this->dsn->getDatabase());
       try {
         $this->handle= new SQLite3($database, SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE);
@@ -102,7 +103,7 @@
       }
       
       $this->getFormatter()->dialect->registerCallbackFunctions($this->handle);
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECTED, $reconnect));
 
       return TRUE;
     }
@@ -142,7 +143,7 @@
     public function identity($field= NULL) {
       if (!$this->handle instanceof SQLite3) throw new SQLStateException('Not connected');
       $i= $this->handle->lastInsertRowID();
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::IDENTITY, $i));
       return $i;
     }
 

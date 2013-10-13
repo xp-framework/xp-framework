@@ -1,34 +1,26 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\core;
+
+/**
+ * Destroyable
  *
- * $Id$ 
+ * @see      xp://net.xp_framework.unittest.core.DestructorTest
  */
+class Destroyable extends \lang\Object {
+  public $callback= NULL;
 
   /**
-   * Destroyable
+   * Set Callback
    *
-   * @see      xp://net.xp_framework.unittest.core.DestructorTest
-   * @purpose  Test class
+   * @param   net.xp_framework.unittest.core.DestructionCallback callback
    */
-  class Destroyable extends Object {
-    public
-      $callback= NULL;
-
-    /**
-     * Set Callback
-     *
-     * @param   &net.xp_framework.unittest.core.DestructionCallback callback
-     */
-    public function setCallback($callback) {
-      $this->callback= $callback;
-    }
-  
-    /**
-     * Destructor
-     *
-     */
-    public function __destruct() {
-      $this->callback->onDestruction($this);
-    }
+  public function setCallback($callback) {
+    $this->callback= $callback;
   }
-?>
+
+  /**
+   * Destructor
+   */
+  public function __destruct() {
+    $this->callback->onDestruction($this);
+  }
+}

@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.mail.InternetAddress', 'util.Date');
+  uses('peer.mail.InternetAddress', 'util.Date', 'text.encode.Base64', 'text.encode.QuotedPrintable');
 
   // Flags
   define('MAIL_FLAG_ANSWERED',      0x0001);
@@ -64,7 +64,7 @@
    * @see      rfc://2049
    * @see      xp://peer.mail.MimeMessage
    * @see      xp://peer.mail.transport.Transport
-   * @test     xp://net.xp_framework.unittest.peer.MessageTest
+   * @test     xp://net.xp_framework.unittest.peer.mail.MessageTest
    * @purpose  Provide a basic e-mail message (single-part)
    */
   class Message extends Object {
@@ -272,16 +272,26 @@
      * has'nt been fetched yet, it'll be retrieved from the storage underlying
      * the folder.
      *
+     * @param   decode default FALSE
      * @return  string
      */
-    public function getBody() {
-      if (
-        (NULL === $this->folder) ||
-        (NULL !== $this->body)
-      ) return $this->body;
-      
-      // We have a folder and the body is NULL (indicating we haven't fetched this message)
-      return ($this->body= $this->folder->getMessagePart($this->uid, '1'));
+    public function getBody($decode= FALSE) {
+      if ((NULL !== $this->folder) && (NULL === $this->body)) {
+        $this->body= $this->folder->getMessagePart($this->uid, '1');
+      }
+
+      if ($decode) {
+        if ('base64' === $this->encoding) {
+          return Base64::decode($this->body);
+        } else if ('quoted-printable' === $this->encoding) {
+          return QuotedPrintable::decode($this->body);
+        } else if ('8bit' === $this->encoding || '' === $this->encoding) {
+          return $this->body;
+        } else {
+          throw new FormatException('Unknown encoding '.$this->encoding);
+        }
+      }
+      return $this->body;
     }
 
     /**
@@ -418,6 +428,25 @@
       
       return isset($this->_headerlookup[$header]) ? $this->_headerlookup[$header] : NULL;
     }
+
+    /**
+     * Decode header if necessary
+     *
+     * @param  string $header
+     * @return string
+     */
+    protected function decode($header) {
+      if (preg_match('/^=\?([^\?]+)\?([QB])\?([^\?]+)\?=$/', $header, $matches)) {
+        if ('Q' === $matches[2]) {
+          return iconv($matches[1], xp::ENCODING, QuotedPrintable::decode($matches[3]));
+        } else if ('B' === $matches[2]) {
+          return Base64::decode($matches[3]);
+        } else {
+          throw new FormatException('Cannot decode header "'.$header.'"');
+        }
+      }
+      return $header;
+    }
     
     /**
      * Set headers from string
@@ -426,69 +455,79 @@
      */
     public function setHeaderString($str) {
       $this->subject= $this->contenttype= '';
-      
+
       $t= strtok($str, "\n\r");
       while ($t) {
-        if (("\t" != $t{0}) && (' ' != $t{0})) @list($k, $t)= explode(': ', $t, 2);
-        
+        if (("\t" === $t{0}) || (' ' === $t{0})) {
+          $value= substr($t, 1);
+        } else {
+          $value= NULL;
+          sscanf($t, "%[^:]: %[^\r]", $k, $value);
+        }
+
         switch (ucfirst($k)) {
           case HEADER_FROM:
+            if ('' === $value) break;
             try {
-              if ('' != trim($t)) {
-                $this->setFrom(InternetAddress::fromString($t));
-              }
+              $this->setFrom(InternetAddress::fromString($value));
             } catch (FormatException $e) {
-              $this->setFrom(new InternetAddress(array(NULL, NULL), $t));
-                            
-              // Fall through
+              $this->setFrom(new InternetAddress(array(NULL, NULL), $value));
             }
             break;
             
           case HEADER_TO:
           case HEADER_CC:
           case HEADER_BCC:
-            try {
-              $k= strtolower($k);
-              if ('' != trim($t)) {
-                $this->addRecipient($k, InternetAddress::fromString($t));
+            if ('' === $value) break;
+            $k= strtolower($k);
+            $offset= 0;
+            do {
+              if ('"' === $value{$offset}) {
+                $quote= strpos($value, '"', $offset + 1);
+                $span= strcspn($value, ',', $offset + $quote) + $quote;
+              } else {
+                $span= strcspn($value, ',', $offset);
               }
-            } catch (FormatException $e) {
-              $this->addRecipient($k, new InternetAddress(array(NULL, NULL), $t));
-              
-              // Fall through
-            }
+              $recipient= substr($value, $offset, $span);
+              try {
+                $this->addRecipient($k, InternetAddress::fromString($recipient));
+              } catch (FormatException $e) {
+                $this->addRecipient($k, new InternetAddress(array(NULL, NULL), $value));
+              }
+              $offset+= $span + strspn($value, ', ', $offset + $span);
+            } while ($offset < strlen($value));
             break;
             
           case HEADER_MIMEVER:
-            $this->mimever= $t;
+            $this->mimever= $value;
             break;
             
           case HEADER_SUBJECT:
-            $this->subject.= $t;
+            $this->subject.= ($this->subject ? ' ' : '').$this->decode($value);
             break;
             
           case HEADER_CONTENTTYPE: 
-            $this->contenttype.= $t;
+            $this->contenttype.= $value;
             break;
 
           case HEADER_ENCODING: 
-            $this->encoding= $t;
+            $this->encoding= $value;
             break;
             
           case HEADER_DATE:
-            $this->setDate($t);
+            $this->setDate($value);
             break;
           
           case HEADER_PRIORITY:
-            $this->priority= (int)$t;
+            $this->priority= (int)$value;
             break;
 
           case HEADER_MESSAGEID:
-            $this->message_id= $t;
+            $this->message_id= $value;
             break;
           
           default:
-            $this->_setHeader($k, $t, "\n");
+            $this->_setHeader($k, $this->decode($value), ' ');
             break;
         }
         $t= strtok("\n\r");

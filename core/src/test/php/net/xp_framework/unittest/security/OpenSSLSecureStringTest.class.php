@@ -1,25 +1,17 @@
-<?php
-/* This class is part of the XP Framework
- *
- * $Id$
- */
+<?php namespace net\xp_framework\unittest\security;
 
-  uses(
-    'net.xp_framework.unittest.security.SecureStringTest',
-    'security.SecureString'
-  );
+use security\SecureString;
+
+/**
+ * Testcase for openssl backed security.SecureString implementation
+ */
+#[@action(class= 'unittest.actions.ExtensionAvailable', args= array('openssl'))]
+class OpenSSLSecureStringTest extends SecureStringTest {
 
   /**
-   * Testcase for openssl backed security.SecureString implementation
+   * Use OPENSSL backing
    */
-  #[@action(class= 'unittest.actions.ExtensionAvailable', args= array('openssl'))]
-  class OpenSSLSecureStringTest extends SecureStringTest {
-
-    /**
-     * Sets up tests and forces SecureString to use OPENSSL backing
-     */
-    public function setUp() {
-      SecureString::useBacking(SecureString::BACKING_OPENSSL);
-    }
+  public function setUp() {
+    SecureString::useBacking(SecureString::BACKING_OPENSSL);
   }
-?>
+}

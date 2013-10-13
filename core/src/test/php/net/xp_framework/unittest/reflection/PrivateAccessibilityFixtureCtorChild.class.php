@@ -1,26 +1,21 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\reflection;
 
-  uses('net.xp_framework.unittest.reflection.PrivateAccessibilityFixture');
+
+
+/**
+ * Fixture class for accessibility tests
+ *
+ * @see      xp://net.xp_framework.unittest.reflection.PrivateAccessibilityTest
+ */
+class PrivateAccessibilityFixtureCtorChild extends PrivateAccessibilityFixture {
 
   /**
-   * Fixture class for accessibility tests
+   * Entry point: Invoke constructor
    *
-   * @see      xp://net.xp_framework.unittest.reflection.PrivateAccessibilityTest
+   * @param   lang.XPClass
+   * @return  net.xp_framework.unittest.reflection.PrivateAccessibilityFixture
    */
-  class PrivateAccessibilityFixtureCtorChild extends PrivateAccessibilityFixture {
-
-    /**
-     * Entry point: Invoke constructor
-     *
-     * @param   lang.XPClass
-     * @return  net.xp_framework.unittest.reflection.PrivateAccessibilityFixture
-     */
-    public static function construct(XPClass $class) {
-      return $class->getConstructor()->newInstance(array());
-    }
+  public static function construct(\lang\XPClass $class) {
+    return $class->getConstructor()->newInstance(array());
   }
-?>
+}

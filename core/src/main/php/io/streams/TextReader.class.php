@@ -18,7 +18,7 @@
     protected $buf = '';
     protected $bom = 0;
     protected $charset = NULL;
-  
+
     /**
      * Constructor. Creates a new TextReader on an underlying input
      * stream with a given charset.
@@ -29,18 +29,18 @@
     public function __construct(InputStream $stream, $charset= NULL) {
       parent::__construct($stream);
       $this->in= Streams::readableFd($stream);
-      
+
       if (NULL === $charset) {
         $charset= $this->detectCharset();
       }
-      
+
       if (!stream_filter_append($this->in, 'convert.iconv.'.$charset.'/'.xp::ENCODING, STREAM_FILTER_READ)) {
         throw new IOException('Could not append stream filter');
       }
 
       $this->charset= $charset;
     }
-    
+
     /**
      * Returns the character set used
      *
@@ -49,7 +49,7 @@
     public function charset() {
       return $this->charset;
     }
-    
+
     /**
      * Reset to bom. 
      *
@@ -59,7 +59,7 @@
       fseek($this->in, $this->bom, SEEK_SET);
       $this->buf= '';
     }
-    
+
     /**
      * Detect charset of stream
      *
@@ -69,31 +69,31 @@
      */
     protected function detectCharset() {
       $c= $this->read(2);
-      
+
       // Check for UTF-16 (BE)
       if ("\376\377" === $c) {
         $this->bom= 2;
         return 'utf-16be';
       }
-      
+
       // Check for UTF-16 (LE)
       if ("\377\376" === $c) {
         $this->bom= 2;
         return 'utf-16le';
       }
-      
+
       // Check for UTF-8 BOM
       if ("\357\273" === $c && "\357\273\277" === ($c.= $this->read(1))) {
         $this->bom= 3;
         return 'utf-8';
       }
-      
+
       // Fall back to ISO-8859-1
-      $this->buf= $c;
+      $this->buf= (string)$c;
       $this->bom= 0;
       return 'iso-8859-1';
     }
-  
+
     /**
      * Read a number of characters
      *
@@ -120,8 +120,8 @@
 
       if ('' === $this->buf) return NULL;
 
-      $chunk= $this->buf;
-      $this->buf= '';
+      $chunk= substr($this->buf, 0, $size);
+      $this->buf= (string)substr($this->buf, $size);
       return $chunk;
     }
     

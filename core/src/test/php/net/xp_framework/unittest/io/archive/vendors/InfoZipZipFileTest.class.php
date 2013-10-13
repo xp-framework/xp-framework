@@ -1,25 +1,20 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\io\archive\vendors;
+
+
+
+/**
+ * Tests ZIP file implementation with ZIP files created by the
+ * "zip" command line utility (Info-ZIP)
  *
- * $Id$ 
  */
-
-  uses('net.xp_framework.unittest.io.archive.vendors.ZipFileVendorTest');
-
+class InfoZipZipFileTest extends ZipFileVendorTest {
+  
   /**
-   * Tests ZIP file implementation with ZIP files created by the
-   * "zip" command line utility (Info-ZIP)
+   * Returns vendor name
    *
+   * @return  string
    */
-  class InfoZipZipFileTest extends ZipFileVendorTest {
-    
-    /**
-     * Returns vendor name
-     *
-     * @return  string
-     */
-    protected function vendorName() {
-      return 'infozip';
-    }
+  protected function vendorName() {
+    return 'infozip';
   }
-?>
+}

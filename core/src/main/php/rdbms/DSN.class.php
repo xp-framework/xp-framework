@@ -184,6 +184,25 @@
     }
 
     /**
+     * Returns a new DSN equal to this except for a NULLed password
+     *
+     * @return  self
+     */
+    public function withoutPassword() {
+      $clone= clone $this;
+      $clone->url->setPassword(NULL);
+      return $clone;
+    }
+
+    /**
+     * Clone callback method; clone embedded URL, too, so we're safe to change it
+     * without changing the original
+     */
+    public function __clone() {
+      $this->url= clone $this->url;
+    }
+
+    /**
      * Checks whether an object is equal to this DSN
      *
      * @param   lang.Generic cmp

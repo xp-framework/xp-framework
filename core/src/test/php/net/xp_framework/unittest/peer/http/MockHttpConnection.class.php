@@ -1,38 +1,34 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\peer\http;
+
+use peer\http\HttpConnection;
+
+
+/**
+ * Mock HTTP connection
  *
- * $Id$
+ * @test     xp://peer.http.HttpConnection
+ * @purpose  Mock connection
  */
+class MockHttpConnection extends HttpConnection {
+  var
+    $lastRequest= null;
 
-  uses('peer.http.HttpConnection');
-  
   /**
-   * Mock HTTP connection
+   * Returns last request
    *
-   * @test     xp://peer.http.HttpConnection
-   * @purpose  Mock connection
+   * @return peer.http.HttpRequest
    */
-  class MockHttpConnection extends HttpConnection {
-    var
-      $lastRequest= NULL;
-  
-    /**
-     * Returns last request
-     *
-     * @return peer.http.HttpRequest
-     */
-    public function getLastRequest() {
-      return $this->lastRequest;
-    }
-
-    /**
-     * Send a HTTP request
-     *
-     * @param   peer.http.HttpRequest
-     * @return  peer.http.HttpResponse response object
-     */
-    public function send(HttpRequest $r) {
-      $this->lastRequest= $r;
-    }
+  public function getLastRequest() {
+    return $this->lastRequest;
   }
-?>
+
+  /**
+   * Send a HTTP request
+   *
+   * @param   peer.http.HttpRequest
+   * @return  peer.http.HttpResponse response object
+   */
+  public function send(\peer\http\HttpRequest $r) {
+    $this->lastRequest= $r;
+  }
+}

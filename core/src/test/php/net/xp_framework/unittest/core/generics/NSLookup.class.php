@@ -10,16 +10,16 @@ use lang\Generic;
 #[@generic(self= 'K, V', parent= 'K, V')]
 class NSLookup extends NSAbstractDictionary {
   protected $elements= array();
-  
+
   /**
-   * Put a key/value pairt
+   * Put a key/value pair
    *
    * @param   K key
    * @param   V value
    */
   #[@generic(params= 'K, V')]
   public function put($key, $value) {
-    $offset= $key instanceof Generic ? $key->hashCode() : serialize($key);
+    $offset= $key instanceof \lang\Generic ? $key->hashCode() : serialize($key);
     $this->elements[$offset]= $value;
   } 
 
@@ -32,9 +32,9 @@ class NSLookup extends NSAbstractDictionary {
    */
   #[@generic(params= 'K', return= 'V')]
   public function get($key) {
-    $offset= $key instanceof Generic ? $key->hashCode() : serialize($key);
+    $offset= $key instanceof \lang\Generic ? $key->hashCode() : serialize($key);
     if (!isset($this->elements[$offset])) {
-      throw new NoSuchElementException('No such key '.xp::stringOf($key));
+      throw new \util\NoSuchElementException('No such key '.\xp::stringOf($key));
     }
     return $this->elements[$offset];
   }

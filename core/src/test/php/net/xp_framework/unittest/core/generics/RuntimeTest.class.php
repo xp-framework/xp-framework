@@ -1,93 +1,52 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\core\generics;
+
+use unittest\TestCase;
+use lang\types\String;
+use lang\types\Integer;
+
+/**
+ * TestCase for generic behaviour at runtime.
  *
- * $Id$ 
+ * @see   xp://collections.Lookup
  */
-
-  $package= 'net.xp_framework.unittest.core.generics';
-
-  uses(
-    'unittest.TestCase',
-    'net.xp_framework.unittest.core.generics.Lookup',
-    'lang.types.String',
-    'lang.types.Integer'
-  );
-
+class RuntimeTest extends TestCase {
+  protected $fixture= null;
+  
   /**
-   * TestCase for generic behaviour at runtime.
-   *
-   * @see   xp://collections.Lookup
-   */
-  class net·xp_framework·unittest·core·generics·RuntimeTest extends TestCase {
-    protected $fixture= NULL;
-    
-    /**
-     * Creates fixture, a Lookup with String and TestCase as component
-     * types.
-     *
-     */  
-    public function setUp() {
-      $this->fixture= create('new net.xp_framework.unittest.core.generics.Lookup<String, TestCase>()');
-    }
-
-    /**
-     * Test class name
-     */
-    #[@test]
-    public function name() {
-      $this->assertTrue(class_exists(
-        'net·xp_framework·unittest·core·generics·Lookup··String¸TestCase',
-        FALSE
-      ));
-    }
-
-    /**
-     * Test class alias
-     */
-    #[@test]
-    public function alias() {
-      $this->assertTrue(class_exists(
-        'net\\xp_framework\\unittest\\core\\generics\\Lookup··String¸TestCase',
-        FALSE
-      ));
-    }
-
-    /**
-     * Test put() method succeeds with correct types
-     *
-     */
-    #[@test]
-    public function putStringAndThis() {
-      $this->fixture->put(new String($this->name), $this);
-    }
-
-    /**
-     * Test put() and get() roundtrip
-     *
-     */
-    #[@test]
-    public function putAndGetRoundTrip() {
-      $key= new String($this->name);
-      $this->fixture->put($key, $this);
-      $this->assertEquals($this, $this->fixture->get($key));
-    }
-
-    /**
-     * Test put() method raises an error with incorrect key type
-     *
-     */
-    #[@test, @expect('lang.IllegalArgumentException')]
-    public function keyTypeIncorrect() {
-      $this->fixture->put(new Integer(1), $this);
-    }
-
-    /**
-     * Test put() method raises an error with incorrect v aluetype
-     *
-     */
-    #[@test, @expect('lang.IllegalArgumentException')]
-    public function valueTypeIncorrect() {
-      $this->fixture->put(new String($this->name), new Object());
-    }
+   * Creates fixture, a Lookup with String and TestCase as component
+   * types.
+   */  
+  public function setUp() {
+    $this->fixture= create('new net.xp_framework.unittest.core.generics.Lookup<String, TestCase>()');
   }
-?>
+
+  #[@test]
+  public function name() {
+    $this->assertTrue(class_exists(
+      'net\\xp_framework\\unittest\\core\\generics\\Lookup··String¸TestCase',
+      false
+    ));
+  }
+
+  #[@test]
+  public function putStringAndThis() {
+    $this->fixture->put(new String($this->name), $this);
+  }
+
+  #[@test]
+  public function putAndGetRoundTrip() {
+    $key= new String($this->name);
+    $this->fixture->put($key, $this);
+    $this->assertEquals($this, $this->fixture->get($key));
+  }
+
+  #[@test, @expect('lang.IllegalArgumentException')]
+  public function keyTypeIncorrect() {
+    $this->fixture->put(new Integer(1), $this);
+  }
+
+  #[@test, @expect('lang.IllegalArgumentException')]
+  public function valueTypeIncorrect() {
+    $this->fixture->put(new String($this->name), new \lang\Object());
+  }
+}

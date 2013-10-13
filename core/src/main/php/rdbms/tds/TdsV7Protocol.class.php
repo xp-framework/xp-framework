@@ -99,7 +99,7 @@
       $records[self::XT_NVARCHAR]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field, $records) {
           $len= $stream->getShort();
-          return 0xFFFF === $len ? NULL : iconv("ucs-2le", "iso-8859-1", $stream->read($len));
+          return 0xFFFF === $len ? NULL : iconv("ucs-2le", xp::ENCODING, $stream->read($len));
         }
       }');
       return $records;
@@ -171,7 +171,7 @@
       $data= '';
       foreach ($params as $name => $param) {
         if ($param[0]) {
-          $chunk= iconv('iso-8859-1', 'ucs-2le', $param[1]);
+          $chunk= iconv(xp::ENCODING, 'ucs-2le', $param[1]);
           $length= strlen($param[1]);
         } else {
           $chunk= $param[1];
@@ -202,7 +202,7 @@
      * @return  var
      */
     public function query($sql) {
-      $this->stream->write(self::MSG_QUERY, iconv('iso-8859-1', 'ucs-2le', $sql));
+      $this->stream->write(self::MSG_QUERY, iconv(xp::ENCODING, 'ucs-2le', $sql));
       $token= $this->read();
 
       do {

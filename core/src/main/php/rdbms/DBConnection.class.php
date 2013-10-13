@@ -55,13 +55,31 @@
       
       // Add observers
       foreach ($observers as $observer => $param) {
-        $this->addObserver(XPClass::forName($observer)->getMethod('instanceFor')->invoke(NULL, array($param)));
+        $class= XPClass::forName($observer);
+
+        // Check if class implements BoundLogObserver: in that case use factory method to acquire instance
+        if (XPClass::forName('util.log.BoundLogObserver')->isAssignableFrom($class)) {
+          $this->addObserver($class->getMethod('instanceFor')->invoke(NULL, array($param)));
+
+        // Otherwise, just use the constructor
+        } else {
+          $this->addObserver($class->newInstance($param));
+        }
       }
 
       // Time zone handling
       if ($tz= $dsn->getProperty('timezone', FALSE)) {
         $this->tz= new TimeZone($tz);
       }
+    }
+
+    /**
+     * Retrieve DSN
+     *
+     * @return rdbms.DSN
+     */
+    public function getDSN() {
+      return $this->dsn;
     }
     
     /**
@@ -253,9 +271,9 @@
       $args= func_get_args();
       $sql= call_user_func_array(array($this, 'prepare'), $args);
 
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::QUERY, $sql));
       $result= $this->query0($sql);
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $result));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::QUERYEND, $result));
       return $result;
     }
 
@@ -270,9 +288,9 @@
       $args= func_get_args();
       $sql= call_user_func_array(array($this, 'prepare'), $args);
 
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::QUERY, $sql));
       $result= $this->query0($sql, FALSE);
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $result));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::QUERYEND, $result));
       return $result;
     }
     

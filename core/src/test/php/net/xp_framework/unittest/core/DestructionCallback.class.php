@@ -1,23 +1,17 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\core;
+
+/**
+ * Denotes a class is a callback for a Destroyable
  *
- * $Id$ 
+ * @see  xp://net.xp_framework.unittest.core.Destroyable
  */
+interface DestructionCallback {
 
   /**
-   * Denotes a class is a callback for a Destroyable
+   * Callback for Destroyable class
    *
-   * @see      xp://net.xp_framework.unittest.core.Destroyable
-   * @purpose  Test class
+   * @param   lang.Object object
    */
-  interface DestructionCallback {
+  public function onDestruction($object);
 
-    /**
-     * Callback for Destroyable class
-     *
-     * @param   &lang.Object object
-     */
-    public function onDestruction($object);
-  
-  }
-?>
+}

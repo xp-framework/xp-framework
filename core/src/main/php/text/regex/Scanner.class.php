@@ -48,7 +48,7 @@
               }
               $seq= substr($pattern, $i+ 1, $p- $i- 1);
               for ($j= 0, $t= strlen($seq); $j < $t; $j++) {
-                if ($j < $t- 1 && '-' === $seq{$j+ 1}) {
+                if ($j < $t - 2 && '-' === $seq{$j+ 1}) {
                   $match.= implode('', range($seq{$j}, $seq{$j+ 2}));
                   $j+= 2;
                 } else {

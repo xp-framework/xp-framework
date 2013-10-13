@@ -1,35 +1,30 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$
- */
+<?php namespace net\xp_framework\unittest\webservices\rest;
 
-  $package= 'net.xp_framework.unittest.webservices.rest';
+
+
+/**
+ * Issues
+ *
+ */
+abstract class ConstructorFixture extends \lang\Object {
+  public $id= 0;
 
   /**
-   * Issues
-   *
+   * Check whether another object is equal to this
+   * 
+   * @param   var cmp
+   * @return  bool
    */
-  abstract class net·xp_framework·unittest·webservices·rest·ConstructorFixture extends Object {
-    public $id= 0;
-
-    /**
-     * Check whether another object is equal to this
-     * 
-     * @param   var cmp
-     * @return  bool
-     */
-    public function equals($cmp) {
-      return $cmp instanceof self && $cmp->id === $this->id;
-    }
-
-    /**
-     * Creates a string representation
-     *
-     * @return  string
-     */
-    public function toString() {
-      return $this->getClassName().'@'.$this->id;
-    }
+  public function equals($cmp) {
+    return $cmp instanceof self && $cmp->id === $this->id;
   }
-?>
+
+  /**
+   * Creates a string representation
+   *
+   * @return  string
+   */
+  public function toString() {
+    return $this->getClassName().'@'.$this->id;
+  }
+}

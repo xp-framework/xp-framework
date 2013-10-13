@@ -1,59 +1,54 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\xml;
+
+/**
+ * Test class for Marshaller / Unmarshaller tests. Used by
+ * DialogType.
  *
- * $Id$ 
+ * @see      xp://net.xp_framework.unittest.xml.DialogType
+ * @purpose  Test class
  */
+class ButtonType extends \lang\Object {
+  public
+    $id       = '',
+    $caption  = '';
 
   /**
-   * Test class for Marshaller / Unmarshaller tests. Used by
-   * DialogType.
+   * Set ID
    *
-   * @see      xp://net.xp_framework.unittest.xml.DialogType
-   * @purpose  Test class
+   * @param   string id
    */
-  class ButtonType extends Object {
-    public
-      $id       = '',
-      $caption  = '';
-
-    /**
-     * Set ID
-     *
-     * @param   string id
-     */
-    #[@xmlmapping(element= '@id')]
-    public function setId($id) {
-      $this->id= $id;
-    }
-
-    /**
-     * Get ID
-     *
-     * @return  string id
-     */
-    #[@xmlfactory(element= '@id')]
-    public function getId() {
-      return $this->id;
-    }
-
-    /**
-     * Set caption
-     *
-     * @param   string caption
-     */
-    #[@xmlmapping(element= '.')]
-    public function setCaption($caption) {
-      $this->caption= $caption;
-    }
-
-    /**
-     * Get caption
-     *
-     * @param   string caption
-     */
-    #[@xmlfactory(element= '.')]
-    public function getCaption() {
-      return $this->caption;
-    }  
+  #[@xmlmapping(element= '@id')]
+  public function setId($id) {
+    $this->id= $id;
   }
-?>
+
+  /**
+   * Get ID
+   *
+   * @return  string id
+   */
+  #[@xmlfactory(element= '@id')]
+  public function getId() {
+    return $this->id;
+  }
+
+  /**
+   * Set caption
+   *
+   * @param   string caption
+   */
+  #[@xmlmapping(element= '.')]
+  public function setCaption($caption) {
+    $this->caption= $caption;
+  }
+
+  /**
+   * Get caption
+   *
+   * @param   string caption
+   */
+  #[@xmlfactory(element= '.')]
+  public function getCaption() {
+    return $this->caption;
+  }  
+}

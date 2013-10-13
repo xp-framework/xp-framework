@@ -210,27 +210,31 @@
         'video',
         'unknown'
       );
+      static $encodings= array(
+        '7bit',
+        '8bit',
+        'binary',
+        'base64',
+        'quoted-printable',
+        NULL
+      );
       
       for ($i= 0, $s= sizeof($p); $i < $s; $i++) {
         $pid= sprintf('%s%d', $id, $i+ 1);
-        
+
         if (empty($p[$i]->parts)) {
-          $part= new MimePart(
-            NULL,
-            NULL,
-            $this->_lookupattr(@$p[$i]->parameters, 'CHARSET'),
-            $this->_lookupattr(@$p[$i]->dparameters, 'NAME')
-          );
+          $part= new MimePart();
         } else {
           $part= new MultiPart();
         }
+        $part->setName($this->_lookupattr(@$p[$i]->dparameters, 'NAME'));
+        $part->setEncoding($encodings[$p[$i]->encoding]);
         $part->setContentType($types[$p[$i]->type].'/'.strtolower($p[$i]->subtype));
-        $part->setDisposition($p[$i]->ifdisposition 
-          ? MIME_DISPOSITION_ATTACHMENT 
-          : MIME_DISPOSITION_INLINE
-        );
-        if (FALSE !== ($f= $this->_lookupattr ($p[$i]->dparameters, 'FILENAME')))
+        $part->setCharset($this->_lookupattr(@$p[$i]->parameters, 'CHARSET') ?: '');
+        $part->setDisposition($p[$i]->ifdisposition ? MIME_DISPOSITION_ATTACHMENT : MIME_DISPOSITION_INLINE);
+        if (FALSE !== ($f= $this->_lookupattr(@$p[$i]->dparameters, 'FILENAME'))) {
           $part->setFilename($f);
+        }
 
         $part->id= $pid;
         
@@ -249,7 +253,6 @@
           
           // Multipart -> part.0 are the headers
           $part->parts[0]->setHeaderString($this->folder->getMessagePart($this->uid, $pid.'.0'));
-
         } else {
           $part->body= $this->folder->getMessagePart($this->uid, $pid);
         }
@@ -279,7 +282,17 @@
       
       return $this->parts[$id];
     }
-    
+
+    /**
+     * Get all parts
+     *
+     * @return  peer.mail.MimePart[]
+     */
+    public function getParts() {
+      $this->_parts();
+      return $this->parts;
+    }
+
     /**
      * Get structure from folder
      *

@@ -1,38 +1,33 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\reflection;
+
+/**
+ * Abstract base class
  *
- * $Id$ 
+ * @see      xp://net.xp_framework.unittest.reflection.ReflectionTest
+ * @purpose  Test class
  */
+abstract class AbstractTestClass extends \lang\Object {
+  protected
+    #[@type('lang.Object')]
+    $inherited= null;
 
   /**
-   * Abstract base class
+   * Constructor
    *
-   * @see      xp://net.xp_framework.unittest.reflection.ReflectionTest
-   * @purpose  Test class
    */
-  abstract class AbstractTestClass extends Object {
-    protected
-      #[@type('lang.Object')]
-      $inherited= NULL;
+  public function __construct() {}
+  
+  /**
+   * Retrieve date
+   *
+   * @return  util.Date
+   */    
+  abstract public function getDate();
 
-    /**
-     * Constructor
-     *
-     */
-    public function __construct() {}
-    
-    /**
-     * Retrieve date
-     *
-     * @return  util.Date
-     */    
-    abstract public function getDate();
-
-    /**
-     * NOOP.
-     *
-     */    
-    public function clearDate() {
-    }
-  } 
-?>
+  /**
+   * NOOP.
+   *
+   */    
+  public function clearDate() {
+  }
+} 

@@ -1,17 +1,10 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\core;
 
-  namespace net\xp_framework\unittest\core;
+/**
+* Fixture for namespaces tests
+*
+* @see   xp://net.xp_framework.unittest.core.NamespacedClassesTest
+*/
+class UnloadedNamespacedClass extends \lang\Object {
 
-  /**
-   * Fixture for namespaces tests
-   *
-   * @see   xp://net.xp_framework.unittest.core.NamespacedClassesTest
-   */
-  class UnloadedNamespacedClass extends \lang\Object {
-    
-  }
-?>
+}

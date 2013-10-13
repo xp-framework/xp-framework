@@ -1,77 +1,69 @@
-<?php
-/* This Package is part of the XP framework
- *
- * $Id$
+<?php namespace xp\unittest\sources;
+
+use lang\reflect\Package;
+use lang\reflect\Modifiers;
+
+/**
+ * Source that load tests from a package
  */
-
-  uses('xp.unittest.sources.AbstractSource', 'lang.reflect.Package');
-
-  $package= 'xp.unittest.sources';
+class PackageSource extends AbstractSource {
+  protected
+    $package    = null,
+    $recursive  = false;
+  
+  /**
+   * Constructor
+   *
+   * @param   lang.reflect.Package package
+   * @param   bool recursive default FALSE
+   */
+  public function __construct(Package $package, $recursive= false) {
+    $this->package= $package;
+    $this->recursive= $recursive;
+  }
+  
+  /**
+   * Returns a list of all classes inside a given package
+   *
+   * @param   lang.reflect.Package 
+   * @param   bool recursive whether to include subpackages
+   * @return  lang.XPClass[]
+   */
+  protected static function testClassesIn(Package $package, $recursive) {
+    $r= array();
+    foreach ($package->getClasses() as $class) {
+      if (
+        !$class->isSubclassOf('unittest.TestCase') ||
+        Modifiers::isAbstract($class->getModifiers())
+      ) continue;
+      $r[]= $class;
+    }
+    if ($recursive) foreach ($package->getPackages() as $package) {
+      $r= array_merge($r, self::testClassesIn($package, $recursive));
+    }
+    return $r;
+  }
 
   /**
-   * Source that load tests from a package
+   * Get all test cases
    *
-   * @purpose  Source implementation
+   * @param   var[] arguments
+   * @return  unittest.TestCase[]
    */
-  class xp·unittest·sources·PackageSource extends xp·unittest·sources·AbstractSource {
-    protected
-      $package    = NULL,
-      $recursive  = FALSE;
-    
-    /**
-     * Constructor
-     *
-     * @param   lang.reflect.Package package
-     * @param   bool recursive default FALSE
-     */
-    public function __construct(Package $package, $recursive= FALSE) {
-      $this->package= $package;
-      $this->recursive= $recursive;
+  public function testCasesWith($arguments) {
+    $tests= array();
+    foreach (self::testClassesIn($this->package, $this->recursive) as $class) {
+      $tests= array_merge($tests, $this->testCasesInClass($class, $arguments));
     }
-    
-    /**
-     * Returns a list of all classes inside a given package
-     *
-     * @param   lang.reflect.Package 
-     * @param   bool recursive whether to include subpackages
-     * @return  lang.XPClass[]
-     */
-    protected static function testClassesIn(Package $package, $recursive) {
-      $r= array();
-      foreach ($package->getClasses() as $class) {
-        if (
-          !$class->isSubclassOf('unittest.TestCase') ||
-          Modifiers::isAbstract($class->getModifiers())
-        ) continue;
-        $r[]= $class;
-      }
-      if ($recursive) foreach ($package->getPackages() as $package) {
-        $r= array_merge($r, self::testClassesIn($package, $recursive));
-      }
-      return $r;
-    }
-
-    /**
-     * Get all test cases
-     *
-     * @param   var[] arguments
-     * @return  unittest.TestCase[]
-     */
-    public function testCasesWith($arguments) {
-      $tests= array();
-      foreach (self::testClassesIn($this->package, $this->recursive) as $class) {
-        $tests= array_merge($tests, $this->testCasesInClass($class, $arguments));
-      }
-      return $tests;
-    }
-    
-    /**
-     * Creates a string representation of this source
-     *
-     * @return  string
-     */
-    public function toString() {
-      return $this->getClassName().'['.$this->package->getName().($this->recursive ? '.**' : '.*').']';
-    }
+    return $tests;
   }
-?>
+  
+  /**
+   * Creates a string representation of this source
+   *
+   * @return  string
+   */
+  public function toString() {
+    return $this->getClassName().'['.$this->package->getName().($this->recursive ? '.**' : '.*').']';
+  }
+}

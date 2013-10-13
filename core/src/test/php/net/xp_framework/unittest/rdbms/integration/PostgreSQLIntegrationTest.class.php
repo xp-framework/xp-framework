@@ -1,35 +1,30 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\rdbms\integration;
+
+
+
+/**
+ * PostgreSQL integration test
  *
- * $Id$ 
+ * @ext       pgsql
  */
-
-  uses('net.xp_framework.unittest.rdbms.integration.RdbmsIntegrationTest');
-
+class PostgreSQLIntegrationTest extends RdbmsIntegrationTest {
+  
   /**
-   * PostgreSQL integration test
+   * Retrieve dsn
    *
-   * @ext       pgsql
+   * @return  string
    */
-  class PostgreSQLIntegrationTest extends RdbmsIntegrationTest {
-    
-    /**
-     * Retrieve dsn
-     *
-     * @return  string
-     */
-    public function _dsn() {
-      return 'pgsql';
-    }
-    
-    /**
-     * Create autoincrement table
-     *
-     * @param   string name
-     */
-    protected function createAutoIncrementTable($name) {
-      $this->removeTable($name);
-      $this->db()->query('create table %c (pk serial primary key, username varchar(30))', $name);
-    }
+  public function _dsn() {
+    return 'pgsql';
   }
-?>
+  
+  /**
+   * Create autoincrement table
+   *
+   * @param   string name
+   */
+  protected function createAutoIncrementTable($name) {
+    $this->removeTable($name);
+    $this->db()->query('create table %c (pk serial primary key, username varchar(30))', $name);
+  }
+}

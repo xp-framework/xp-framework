@@ -1,30 +1,23 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\core\extensions;
+
+/**
+ * Throwable extension methods
  *
- * $Id$ 
+ * @see   https://gist.github.com/2168311
+ * @see   xp://net.xp_framework.unittest.core.extensions.ExtensionInvocationTest
  */
-  
-  $package= 'net.xp_framework.unittest.core.extensions';
+class ThrowableExtensions extends \lang\Object {
+
+  static function __import($scope) {
+    \xp::extensions(__CLASS__, $scope);
+  }
 
   /**
-   * Throwable extension methods
+   * Clears stacktrace
    *
-   * @see   https://gist.github.com/2168311
-   * @see   xp://net.xp_framework.unittest.core.extensions.ExtensionInvocationTest
+   * @param   lang.Throwable self
    */
-  class net·xp_framework·unittest·core·extensions·ThrowableExtensions extends Object {
-
-    static function __import($scope) {
-      xp::extensions(__CLASS__, $scope);
-    }
-
-    /**
-     * Clears stacktrace
-     *
-     * @param   lang.Throwable self
-     */
-    public static function clearStackTrace(Throwable $self) {
-      $self->trace= array();
-    }
+  public static function clearStackTrace(\lang\Throwable $self) {
+    $self->trace= array();
   }
-?>
+}

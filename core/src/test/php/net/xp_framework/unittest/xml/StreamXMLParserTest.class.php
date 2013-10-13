@@ -1,35 +1,28 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\xml;
+
+use xml\parser\StreamInputSource;
+use io\streams\MemoryInputStream;
+
+
+/**
+ * Tests XML parser API with io.streams.InputStream source
  *
- * $Id$
+ * @see      xp://net.xp_framework.unittest.xml.AbstractXMLParserTest
  */
-
-  uses(
-    'net.xp_framework.unittest.xml.AbstractXMLParserTest', 
-    'xml.parser.StreamInputSource',
-    'io.streams.MemoryInputStream'
-  );
-
+class StreamXMLParserTest extends AbstractXMLParserTest {
+  
   /**
-   * Tests XML parser API with io.streams.InputStream source
+   * Returns an XML document by prepending the XML declaration to 
+   * the given string and returning it.
    *
-   * @see      xp://net.xp_framework.unittest.xml.AbstractXMLParserTest
+   * @param   string str
+   * @param   bool decl default TRUE
+   * @return  xml.parser.InputSource XML the source XML
    */
-  class StreamXMLParserTest extends AbstractXMLParserTest {
-    
-    /**
-     * Returns an XML document by prepending the XML declaration to 
-     * the given string and returning it.
-     *
-     * @param   string str
-     * @param   bool decl default TRUE
-     * @return  xml.parser.InputSource XML the source XML
-     */
-    protected function source($str, $decl= TRUE) {
-      return new StreamInputSource(
-        new MemoryInputStream(($decl ? '<?xml version="1.0" encoding="utf-8"?>' : '').$str),
-        $this->name.' test'
-      );
-    }
+  protected function source($str, $decl= true) {
+    return new StreamInputSource(
+      new MemoryInputStream(($decl ? '<?xml version="1.0" encoding="utf-8"?>' : '').$str),
+      $this->name.' test'
+    );
   }
-?>
+}

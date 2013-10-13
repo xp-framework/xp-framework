@@ -1,34 +1,27 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\text;
 
-  uses(
-    'net.xp_framework.unittest.text.AbstractTokenizerTest',
-    'io.streams.TextReader',
-    'io.streams.MemoryInputStream',
-    'text.TextTokenizer'
-  );
+use io\streams\TextReader;
+use io\streams\MemoryInputStream;
+use text\TextTokenizer;
+
+
+/**
+ * Test string tokenizing.
+ *
+ * @see      xp://text.TextTokenizer
+ * @purpose  TestCase
+ */
+class TextTokenizerTest extends AbstractTokenizerTest {
 
   /**
-   * Test string tokenizing.
+   * Retrieve a tokenizer instance
    *
-   * @see      xp://text.TextTokenizer
-   * @purpose  TestCase
+   * @param   string source
+   * @param   string delimiters default ' '
+   * @param   bool returnDelims default FALSE
+   * @return  text.Tokenizer
    */
-  class TextTokenizerTest extends AbstractTokenizerTest {
-  
-    /**
-     * Retrieve a tokenizer instance
-     *
-     * @param   string source
-     * @param   string delimiters default ' '
-     * @param   bool returnDelims default FALSE
-     * @return  text.Tokenizer
-     */
-    protected function tokenizerInstance($source, $delimiters= ' ', $returnDelims= FALSE) {
-      return new TextTokenizer(new TextReader(new MemoryInputStream($source)), $delimiters, $returnDelims);
-    }
+  protected function tokenizerInstance($source, $delimiters= ' ', $returnDelims= false) {
+    return new TextTokenizer(new TextReader(new MemoryInputStream($source)), $delimiters, $returnDelims);
   }
-?>
+}

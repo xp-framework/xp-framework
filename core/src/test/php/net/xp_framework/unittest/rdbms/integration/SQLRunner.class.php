@@ -1,42 +1,36 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\rdbms\integration;
+
+use rdbms\DriverManager;
+use util\cmd\Console;
+
+
+/**
+ * SQL Runner used inside deadlock tests
  *
- * $Id$ 
+ * @see   xp://net.xp_framework.unittest.rdbms.integration.AbstractDeadlockTest
  */
-
-  uses(
-    'rdbms.DriverManager',
-    'util.cmd.Console'
-  );
-
+class SQLRunner extends \lang\Object {
+  
   /**
-   * SQL Runner used inside deadlock tests
+   * Entry point
    *
-   * @see   xp://net.xp_framework.unittest.rdbms.integration.AbstractDeadlockTest
+   * @param   string[] args
    */
-  class SQLRunner extends Object {
-    
-    /**
-     * Entry point
-     *
-     * @param   string[] args
-     */
-    public static function main(array $args) {
-      $db= DriverManager::getConnection($args[0]);
-      try {
-        $db->connect();
-        $tran= $db->begin(new Transaction('process'));
+  public static function main(array $args) {
+    $db= DriverManager::getConnection($args[0]);
+    try {
+      $db->connect();
+      $tran= $db->begin(new \rdbms\Transaction('process'));
 
-        Console::$out->writeLine('! Started');
-        while ($sql= Console::$in->readLine()) {
-          $db->query($sql);
-          Console::$out->writeLine('+ OK');
-        }
-        
-        $tran->commit();
-      } catch (SQLException $e) {
-        Console::$out->writeLine('- ', $e->getClassName());
+      Console::$out->writeLine('! Started');
+      while ($sql= Console::$in->readLine()) {
+        $db->query($sql);
+        Console::$out->writeLine('+ OK');
       }
+      
+      $tran->commit();
+    } catch (\rdbms\SQLException $e) {
+      Console::$out->writeLine('- ', $e->getClassName());
     }
   }
-?>
+}

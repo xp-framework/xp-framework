@@ -3,6 +3,93 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+### Heads up!
+
+* Switched annotation parser in lang.XPClass to a more robust implementation
+  based on token_get_all(). This also fixes previously undefined behaviour
+  with class constants, and gives more verbose error messages for malformed
+  annotations, both without having a negative impact on performance or 
+  memory usage. See pull request #328 - (@thekid)
+* Converted proprietary classes in "xp" package as well as unittest classes
+  to namespaces / new coding standards - (@thekid)
+
+### Bugfixes
+
+* Fixed encoded multi-line headers and recipient parsing when receiving emails 
+  using the "cclient" (ext/imap) library - (@thekid)
+* Fixed InternetAddress::fromString() no to return surrounding quotes around
+  realnames, e.g. `"Alex Kiesel" <kiesel@example.com>` - (@thekid)
+* Fixed "Uninitialized string offset: 1" from XPClass::parseDetails() when
+  parsing code with closures using "use" in their declaration - (@thekid)
+* Fixed img.util.ExifData to trim excess whitespace / NUL characters from
+  maker software - (@thekid)
+* Fixed issue #329: REST errors are text/html but should be text/json - (@thekid)
+* Fixed typo in exception message in lang.XPClass::getConstant() - (@thekid)
+* Fixed lang.XPClass::parseAnnotations() to support combined long and short
+  array syntaxes in annotations, either way around - (@thekid)
+* Fixed lang.XPClass::createGenericType() for namespaced code - (@thekid)
+
+### Features
+
+* Added optional "decode" parameter to peer.mail.Message::getBody()  - (@thekid)
+* Added peer.http.FileData class for use in peer.http.FormRequestData. Makes
+  it easier to code file uploading - (@thekid)
+* Added possibility for remote.protocol.Serializer to read from input streams
+  (@thekid)
+
+
+## 5.9.8 / 2013-09-06
+
+### RFCs
+
+* Added forward-compatibility patches to several places for RFC 146: 
+  Unicode - (@thekid, @kiesel)
+* Implemented RFC 275: Map class URIs to classes. See pull request #327
+  (@thekid)
+
+### Bugfixes
+
+* Fixed lang.Thread class behaving unexpectedly when its target method 
+  raises an exception - (@kiesel, @thekid).
+* Fixed webservices.rest.Payload::equals() method for arrays - (@thekid)
+* Fixed issue #325: Serialization of 'Closure' is not allowed - (@thekid)
+* Fixed io.streams.TextReader class not reading first chunk correctly when
+  character set auto-detection fell back to iso-8859-1 - (@thekid)
+* Fixed StreamTokenizer::pushBack() not working correctly if previously
+  read all the way to the end - (@thekid)
+* Fixed issue #324 - Encoding not handled correctly in JsonDecoder; the
+  bug here is that it doesn't raise an exception for malformed input!
+  (@thekid)
+
+
+## 5.9.7 / 2013-07-24
+
+### Heads up!
+
+* Changed reflection API to only return `void` return if explicitely
+  stated in apidocs. See pull request #322
+  (@iigorr, @thekid)
+
+### Bugfixes
+
+* Fixed issue #321 - REST Handler does not return anything unless @return
+  is defined (@thekid)
+* Fixed request body detection to not rely on `Content-Type` but to check
+  for the presence of `Content-Length` or `Transfer-Encoding`, conforming
+  to RFC #2616 (see section 4.3) - see issue #319 (@thekid)
+
+### Features
+
+* Added `**` operator to text.doclet.Doclet - (@kiesel)
+* Made doclet only analyze classes in `sourcePath`, excluding
+  `classPath` - (@kiesel)
+* Added rdbms.ProfilingObserver to measure overall SQL performance -
+  see pull request #314
+  (@kiesel)
+
+
+## 5.9.6 / 2013-07-12
+
 ### Bugfixes
 
 * Fixed image writers not writing image data to the underlying stream fully

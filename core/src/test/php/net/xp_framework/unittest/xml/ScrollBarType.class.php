@@ -1,16 +1,11 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\xml;
 
-  /**
-   * Test class for Marshaller / Unmarshaller tests
-   *
-   * @see      xp://net.xp_framework.unittest.xml.MarshallerTest
-   * @see      rfc://0040
-   */
-  #[@xmlfactory(element = 'scroll')]
-  class ScrollBarType extends Object {
-  }
-?>
+/**
+ * Test class for Marshaller / Unmarshaller tests
+ *
+ * @see      xp://net.xp_framework.unittest.xml.MarshallerTest
+ * @see      rfc://0040
+ */
+#[@xmlfactory(element = 'scroll')]
+  class ScrollBarType extends \lang\Object {
+}

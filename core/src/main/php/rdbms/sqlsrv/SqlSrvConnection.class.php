@@ -65,6 +65,7 @@
       if (is_resource($this->handle)) return TRUE;  // Already connected
       if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECT, $reconnect));
       $spec= $this->dsn->getHost();
       if (-1 != ($port= $this->dsn->getPort(-1))) {
          $spec.= ', '.$port;
@@ -81,7 +82,7 @@
         throw new SQLConnectException($this->errors(), $this->dsn);
       }
       
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECTED, $reconnect));
       return TRUE;
     }
     
@@ -123,7 +124,7 @@
      */
     public function identity($field= NULL) {
       $i= $this->query('select @@identity as i')->next('i');
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::IDENTITY, $i));
       return $i;
     }
 

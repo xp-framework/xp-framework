@@ -1,26 +1,22 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\peer\server;
 
-  uses('net.xp_framework.unittest.peer.server.TestingProtocol', 'peer.server.protocol.SocketAcceptHandler');
+use peer\server\protocol\SocketAcceptHandler;
+
+
+/**
+ * AcceptTestingProtocol handles socket accepts
+ *
+ */
+class AcceptTestingProtocol extends TestingProtocol implements SocketAcceptHandler {
 
   /**
-   * AcceptTestingProtocol handles socket accepts
+   * Handle accept
    *
+   * @param   peer.Socket socket
+   * @return  bool
    */
-  class AcceptTestingProtocol extends net·xp_framework·unittest·peer·server·TestingProtocol implements SocketAcceptHandler {
-
-    /**
-     * Handle accept
-     *
-     * @param   peer.Socket socket
-     * @return  bool
-     */
-    public function handleAccept($socket) { 
-      Console::$err->writeLine('ACCEPT ', $this->hashOf($socket));
-      return TRUE;
-    }
+  public function handleAccept($socket) { 
+    \util\cmd\Console::$err->writeLine('ACCEPT ', $this->hashOf($socket));
+    return true;
   }
-?>
+}

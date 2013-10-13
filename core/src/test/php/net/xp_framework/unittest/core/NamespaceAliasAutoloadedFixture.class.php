@@ -1,14 +1,9 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\core;
+
+/**
+ * Tests the XP Framework's optional namespace support
  *
- * $Id$
  */
+class NamespaceAliasAutoloadedFixture extends \lang\Object {
 
-  /**
-   * Tests the XP Framework's optional namespace support
-   *
-   */
-  class NamespaceAliasAutoloadedFixture extends Object {
-
-  }
-?>
+}
