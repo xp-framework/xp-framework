@@ -13,6 +13,8 @@
    * on operating systems whose names contain "WIN" - e.g. Windows)  or as 
    * "!*BSD" (this means this test will not run on OSes with "BSD" in their 
    * names but on any other)
+   *
+   * @test  xp://net.xp_framework.unittest.tests.IsPlatformTest
    */
   class IsPlatform extends Object implements TestAction {
     protected $platform= '';

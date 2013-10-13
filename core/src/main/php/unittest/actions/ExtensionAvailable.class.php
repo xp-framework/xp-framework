@@ -9,6 +9,7 @@
   /**
    * Only runs this testcase if a given PHP extension is available
    *
+   * @test  xp://net.xp_framework.unittest.tests.ExtensionAvailableTest
    * @see   xp://lang.Runtime#extensionAvailable
    */
   class ExtensionAvailable extends Object implements TestAction {
