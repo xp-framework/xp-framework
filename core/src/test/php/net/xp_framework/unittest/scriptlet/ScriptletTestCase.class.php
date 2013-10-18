@@ -33,14 +33,6 @@ abstract class ScriptletTestCase extends TestCase {
   }
 
   /**
-   * Destroy session
-   *
-   */
-  public function tearDown() {
-    session_id(null);
-  }
-
-  /**
    * Cleanup temporary directory
    *
    */
