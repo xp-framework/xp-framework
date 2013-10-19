@@ -1,7 +1,9 @@
 <?php namespace net\xp_framework\unittest\peer\sockets;
 
+use unittest\actions\ExtensionAvailable;
+use unittest\actions\Actions;
+use net\xp_framework\unittest\StartServer;
 use peer\BSDSocket;
-
 
 /**
  * TestCase
@@ -9,19 +11,12 @@ use peer\BSDSocket;
  * @ext      sockets
  * @see      xp://peer.BSDSocket
  */
+#[@action([
+#  new ExtensionAvailable('sockets'),
+#  new StartServer('net.xp_framework.unittest.peer.sockets.TestingServer', 'connected', 'shutdown')
+#])]
 class BSDSocketTest extends AbstractSocketTest {
 
-  /**
-   * Setup this test case
-   *
-   */
-  public function setUp() {
-    if (!\lang\Runtime::getInstance()->extensionAvailable('sockets')) {
-      throw new \unittest\PrerequisitesNotMetError('Sockets extension not available', null, array('ext/sockets'));
-    }
-    parent::setUp();
-  }
-  
   /**
    * Creates a new client socket
    *
