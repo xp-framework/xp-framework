@@ -1,5 +1,6 @@
 <?php namespace net\xp_framework\unittest\peer\ftp;
 
+use net\xp_framework\unittest\StartServer;
 use unittest\TestCase;
 use io\streams\MemoryInputStream;
 use io\streams\MemoryOutputStream;
@@ -13,118 +14,56 @@ use peer\ftp\FtpConnection;
  *
  * @see      xp://peer.ftp.FtpConnection
  */
+#[@action(new StartServer('net.xp_framework.unittest.peer.ftp.TestingServer', 'connected', 'shutdown'))]
 class IntegrationTest extends TestCase {
-  protected static
-    $serverProcess = null,
-    $bindAddress   = null;
-
-  protected
-    $conn          = null;
+  public static $bindAddress= null;
+  protected $conn= null;
 
   /**
-   * Sets up test case
+   * Callback for when server is connected
    *
+   * @param  string $bindAddress
    */
-  #[@beforeClass]
-  public static function startFtpServer() {
-
-    // Arguments to server process
-    $args= array(
-      'debugServerProtocolToFile' => null,   
-    );
-
-    // Start server process
-    self::$serverProcess= Runtime::getInstance()->newInstance(
-      null, 
-      'class', 
-      'net.xp_framework.unittest.peer.ftp.TestingServer',
-      array_values($args)
-    );
-    self::$serverProcess->in->close();
-
-    // Check if startup succeeded
-    $status= self::$serverProcess->out->readLine();
-    if (1 != sscanf($status, '+ Service %[0-9.:]', self::$bindAddress)) {
-      try {
-        self::shutdownFtpServer();
-      } catch (\lang\IllegalStateException $e) {
-        $status.= $e->getMessage();
-      }
-      throw new \unittest\PrerequisitesNotMetError('Cannot start FTP server: '.$status, null);
-    }
+  public static function connected($bindAddress) {
+    self::$bindAddress= $bindAddress;
   }
 
   /**
-   * Shut down FTP server
-   *
+   * Callback for when server should be shut down
    */
-  #[@afterClass]
-  public static function shutdownFtpServer() {
-
-    // Tell the FTP server to shut down
-    try {
-      $c= new FtpConnection('ftp://test:test@'.self::$bindAddress);
-      $c->connect();
-      $c->sendCommand('SHUTDOWN');
-      $c->close();
-    } catch (\lang\Throwable $ignored) {
-      // Fall through, below should terminate the process anyway
-    }
-
-    $status= self::$serverProcess->out->readLine();
-    if (!strlen($status) || '+' != $status{0}) {
-      while ($l= self::$serverProcess->out->readLine()) {
-        $status.= $l;
-      }
-      while ($l= self::$serverProcess->err->readLine()) {
-        $status.= $l;
-      }
-      self::$serverProcess->close();
-      throw new \lang\IllegalStateException($status);
-    }
-    self::$serverProcess->close();
+  public static function shutdown() {
+    $c= new FtpConnection('ftp://test:test@'.self::$bindAddress);
+    $c->connect();
+    $c->sendCommand('SHUTDOWN');
+    $c->close();
   }
 
   /**
    * Sets up test case
-   *
    */
   public function setUp() {
     $this->conn= new FtpConnection('ftp://test:test@'.self::$bindAddress.'?passive=1&timeout=1');
   }
 
   /**
-   * Sets up test case
-   *
+   * Tears down test case
    */
   public function tearDown() {
     $this->conn->close();
   }
 
-  /**
-   * Test connecting and logging in
-   *
-   */
   #[@test]
   public function connect() {
     $this->conn->connect();
   }
 
-  /**
-   * Test connecting and logging in with incorrect credentials
-   *
-   */
   #[@test, @expect('peer.AuthenticationException')]
-  public function incorrectCredentials() {
+  public function incorrect_credentials() {
     create(new FtpConnection('ftp://test:INCORRECT@'.self::$bindAddress.'?timeout=1'))->connect();
   }
 
-  /**
-   * Test retrieving root directory
-   *
-   */
   #[@test]
-  public function rootDir() {
+  public function retrieve_root_dir() {
     $this->conn->connect();
     with ($root= $this->conn->rootDir()); {
       $this->assertClass($root, 'peer.ftp.FtpDir');
@@ -132,12 +71,8 @@ class IntegrationTest extends TestCase {
     }
   }
 
-  /**
-   * Test retrieving root directory's contents
-   *
-   */
   #[@test]
-  public function entries() {
+  public function retrieve_root_dir_entries() {
     $this->conn->connect();
     $entries= $this->conn->rootDir()->entries();
     $this->assertClass($entries, 'peer.ftp.FtpEntryList');

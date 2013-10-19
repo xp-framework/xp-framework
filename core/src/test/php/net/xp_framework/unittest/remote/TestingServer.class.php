@@ -63,7 +63,7 @@ class TestingServer extends \lang\Object {
           $res= "net/xp_framework/unittest/remote/deploy/beans.test.CalculatorBean.xar";
 
           with ($d= new Deployment($res)); {
-            $d->setClassLoader(new ArchiveClassLoader(new Archive(ClassLoader::getDefault()->getResourceAsStream($res))));
+            $d->setClassLoader(new \lang\archive\ArchiveClassLoader(new \lang\archive\Archive(\lang\ClassLoader::getDefault()->getResourceAsStream($res))));
             $d->setImplementation("beans.test.CalculatorBeanImpl");
             $d->setInterface("beans.test.Calculator");
             $d->setDirectoryName("xp/test/Calculator");

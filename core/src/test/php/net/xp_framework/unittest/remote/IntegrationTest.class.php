@@ -1,7 +1,6 @@
 <?php namespace net\xp_framework\unittest\remote;
 
-
-
+use net\xp_framework\unittest\StartServer;
 use unittest\TestCase;
 use lang\Process;
 use lang\Runtime;
@@ -9,16 +8,14 @@ use peer\Socket;
 use lang\archive\Archive;
 use remote\Remote;
 
-
 /**
  * TestCase for Remote API
  *
  * @see      xp://remote.Remote
- * @purpose  Unittest
  */
+#[@action(new StartServer('net.xp_framework.unittest.remote.TestingServer', 'connected', 'shutdown'))]
 class IntegrationTest extends TestCase {
   protected static
-    $serverProcess        = null,
     $bindAddress          = array(null, -1),
     $clientClassesLoader  = null;
 
@@ -26,38 +23,29 @@ class IntegrationTest extends TestCase {
     $remote= null;
 
   /**
-   * Sets up test case
+   * Callback for when server is connected
    *
+   * @param  string $bindAddress
+   */
+  public static function connected($bindAddress) {
+    self::$bindAddress= explode(':', $bindAddress);
+  }
+
+  /**
+   * Callback for when server should be shut down
+   */
+  public static function shutdown() {
+    $s= new Socket(self::$bindAddress[0], self::$bindAddress[1]);
+    $s->connect();
+    $s->write(pack('Nc4Na*', DEFAULT_PROTOCOL_MAGIC_NUMBER, 1, 0, 61, false, 0, null));
+    $s->close();
+  }
+
+  /**
+   * Sets up test class
    */
   #[@beforeClass]
-  public static function startApplicationServer() {
-
-    // Arguments to server process
-    $args= array(
-      'debugServerProtocolToFile' => null,   
-    );
-
-    // Start server process
-    self::$serverProcess= Runtime::getInstance()->newInstance(
-      null, 
-      'class', 
-      'net.xp_framework.unittest.remote.TestingServer',
-      array_values($args)
-    );
-    self::$serverProcess->in->close();
-
-    // Check if startup succeeded
-    $status= self::$serverProcess->out->readLine();
-    if (2 != sscanf($status, '+ Service %[0-9.]:%d', self::$bindAddress[0], self::$bindAddress[1])) {
-      try {
-        self::shutdownApplicationServer();
-      } catch (\lang\IllegalStateException $e) {
-        $status.= $e->getMessage();
-      }
-      throw new \unittest\PrerequisitesNotMetError('Cannot start EASC server: '.$status, null);
-    }
-
-    // Add classloader with CalculatorBean client classes
+  public static function registerClientClasses() {
     $a= \lang\XPClass::forName(\xp::nameOf(__CLASS__))
       ->getPackage()
       ->getPackage('deploy')
@@ -67,42 +55,15 @@ class IntegrationTest extends TestCase {
   }
   
   /**
-   * Shut down application server
-   *
+   * Tears down test class
    */
   #[@afterClass]
-  public static function shutdownApplicationServer() {
+  public static function removeClientClassLoader() {
     self::$clientClassesLoader && \lang\ClassLoader::removeLoader(self::$clientClassesLoader);
-  
-    // Send shutdown message (this is not supported by live servers
-    // but functionality added via EascMessageFactory::setHandler())
-    try {
-      $s= new Socket(self::$bindAddress[0], self::$bindAddress[1]);
-      $s->connect();
-      $s->write(pack('Nc4Na*', DEFAULT_PROTOCOL_MAGIC_NUMBER, 1, 0, 61, false, 0, null));
-      $s->close();
-    } catch (\lang\Throwable $e) {
-      // Fall through, below should terminate the process anyway
-    }
-
-    $status= self::$serverProcess->out->readLine();
-    if (!strlen($status) || '+' != $status{0}) {
-      while ($l= self::$serverProcess->out->readLine()) {
-        $status.= $l;
-      }
-      while ($l= self::$serverProcess->err->readLine()) {
-        $status.= $l;
-      }
-      self::$serverProcess->close();
-      throw new \lang\IllegalStateException($status);
-    }
-
-    self::$serverProcess->close();
   }
   
   /**
    * Sets up this unittest
-   *
    */
   public function setUp() {
     try {
@@ -112,31 +73,19 @@ class IntegrationTest extends TestCase {
     }
   }
   
-  /**
-   * Test lookup
-   *
-   */
   #[@test]
-  public function lookupCalculator() {
+  public function lookup_calculator() {
     $calc= $this->remote->lookup('xp/test/Calculator');
     $this->assertSubclass($calc, 'beans.test.Calculator');
   }
 
-  /**
-   * Test lookup
-   *
-   */
   #[@test, @expect('remote.RemoteException')]
-  public function lookupNonExistant() {
+  public function lookup_non_existant() {
     $this->remote->lookup(':DOES_NOT_EXIST');
   }
 
-  /**
-   * Test calling a method
-   *
-   */
   #[@test]
-  public function addMethod() {
+  public function call_add_method() {
     $this->assertEquals(3, $this->remote->lookup('xp/test/Calculator')->add(1, 2));
   }
 
