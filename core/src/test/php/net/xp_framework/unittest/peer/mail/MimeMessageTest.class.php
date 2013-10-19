@@ -14,7 +14,9 @@ class MimeMessageTest extends AbstractMessageTest {
    * @return  peer.mail.Message
    */
   protected function newFixture() {
-    return new MimeMessage();
+    $fixture= new MimeMessage();
+    $fixture->setBoundary('------=_Part_4711Test');
+    return $fixture;
   }
 
   #[@test]
@@ -23,7 +25,7 @@ class MimeMessageTest extends AbstractMessageTest {
     $this->assertEquals(
       "Mime-Version: 1.0\n".
       "X-Common-Header: test\n".
-      "Content-Type: multipart/mixed; boundary=\"".$this->fixture->getBoundary()."\";\n".
+      "Content-Type: multipart/mixed; boundary=\"------=_Part_4711Test\";\n".
       "\tcharset=\"iso-8859-1\"\n".
       "X-Priority: 3 (Normal)\n".
       "Date: ".$this->fixture->getDate()->toString('r')."\n",
@@ -33,8 +35,8 @@ class MimeMessageTest extends AbstractMessageTest {
 
   #[@test]
   public function boundary_accessors() {
-    $this->fixture->setBoundary('----=_Part_4711Test');
-    $this->assertEquals('----=_Part_4711Test', $this->fixture->getBoundary());
+    $this->fixture->setBoundary('----=_Part_0815Test');
+    $this->assertEquals('----=_Part_0815Test', $this->fixture->getBoundary());
   }
 
   #[@test]
@@ -89,7 +91,6 @@ class MimeMessageTest extends AbstractMessageTest {
 
   #[@test]
   public function getBody_for_two_parts() {
-    $this->fixture->setBoundary('------=_Part_4711Test');
     $this->fixture->addPart(new MimePart('Test', 'text/plain'));
     $this->fixture->addPart(new MimePart('GIF89aXXXX', 'image/gif', '8bit', 'test.gif'));
     $this->assertEquals(
@@ -106,6 +107,98 @@ class MimeMessageTest extends AbstractMessageTest {
       "Content-Disposition: attachment; filename=\"test.gif\"\n".
       "\n".
       "GIF89aXXXX\n".
+      "\n".
+      "--------=_Part_4711Test--\n",
+      $this->fixture->getBody()
+    );
+  }
+
+  #[@test]
+  public function one_text_part() {
+    $this->fixture->addPart(new MimePart('Part #1', 'text/plain'));
+
+    $this->assertEquals(
+      "Mime-Version: 1.0\n".
+      "Content-Type: text/plain;\n".
+      "\tcharset=\"iso-8859-1\"\n".
+      "X-Priority: 3 (Normal)\n".
+      "Date: ".$this->fixture->getDate()->toString('r')."\n",
+      $this->fixture->getHeaderString()
+    );
+    $this->assertEquals('Part #1', $this->fixture->getBody());
+  }
+
+  #[@test]
+  public function one_image_part() {
+    $this->fixture->addPart(new MimePart('Part #1', 'image/gif'));
+    
+    $this->assertEquals(
+      "Mime-Version: 1.0\n".
+      "Content-Type: image/gif;\n".
+      "\tcharset=\"iso-8859-1\"\n".
+      "X-Priority: 3 (Normal)\n".
+      "Date: ".$this->fixture->getDate()->toString('r')."\n",
+      $this->fixture->getHeaderString()
+    );
+    $this->assertEquals('Part #1', $this->fixture->getBody());
+  }
+
+  #[@test]
+  public function two_text_parts() {
+    $this->fixture->addPart(new MimePart('Part #1', 'text/plain'));
+    $this->fixture->addPart(new MimePart('Part #2', 'text/plain'));
+    
+    $this->assertEquals(
+      "Mime-Version: 1.0\n".
+      "Content-Type: multipart/mixed; boundary=\"------=_Part_4711Test\";\n".
+      "\tcharset=\"iso-8859-1\"\n".
+      "X-Priority: 3 (Normal)\n".
+      "Date: ".$this->fixture->getDate()->toString('r')."\n",
+      $this->fixture->getHeaderString()
+    );
+    $this->assertEquals(
+      "This is a multi-part message in MIME format.\n".
+      "\n".
+      "--------=_Part_4711Test\n".
+      "Content-Type: text/plain; charset=\"iso-8859-1\"\n".
+      "\n".
+      "Part #1\n".
+      "\n".
+      "--------=_Part_4711Test\n".
+      "Content-Type: text/plain; charset=\"iso-8859-1\"\n".
+      "\n".
+      "Part #2\n".
+      "\n".
+      "--------=_Part_4711Test--\n",
+      $this->fixture->getBody()
+    );
+  }
+
+  #[@test]
+  public function two_image_parts() {
+    $this->fixture->addPart(new MimePart('Part #1', 'image/gif'));
+    $this->fixture->addPart(new MimePart('Part #2', 'image/gif'));
+    
+    $this->assertEquals(
+      "Mime-Version: 1.0\n".
+      "Content-Type: multipart/mixed; boundary=\"------=_Part_4711Test\";\n".
+      "\tcharset=\"iso-8859-1\"\n".
+      "X-Priority: 3 (Normal)\n".
+      "Date: ".$this->fixture->getDate()->toString('r')."\n",
+      $this->fixture->getHeaderString()
+    );
+    $this->assertEquals(
+      "This is a multi-part message in MIME format.\n".
+      "\n".
+      "--------=_Part_4711Test\n".
+      "Content-Type: image/gif; charset=\"iso-8859-1\"\n".
+      "\n".
+      "Part #1\n".
+      "\n".
+      "--------=_Part_4711Test\n".
+      "Content-Type: image/gif; charset=\"iso-8859-1\"\n".
+      "\n".
+      "Part #2\n".
       "\n".
       "--------=_Part_4711Test--\n",
       $this->fixture->getBody()

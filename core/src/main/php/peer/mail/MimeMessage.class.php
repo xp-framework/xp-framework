@@ -77,7 +77,7 @@
    *   $message->setContentType('multipart/related; type="multipart/alternative"');
    * </code>
    *
-   * @test     xp://net.xp_framework.unittest.peer.MimeMessageTest
+   * @test     xp://net.xp_framework.unittest.peer.mail.MimeMessageTest
    * @purpose  MimeMessage class
    */
   class MimeMessage extends Message {
