@@ -359,7 +359,8 @@
      * @return  peer.mail.MimePart
      */
     public function setBody($str) {
-      return $this->addPart(new MimePart($str, 'text/plain', $this->encoding));
+      $this->parts= array(new MimePart($str, 'text/plain', $this->encoding));
+      return $this->parts[0];
     }
   }
 ?>

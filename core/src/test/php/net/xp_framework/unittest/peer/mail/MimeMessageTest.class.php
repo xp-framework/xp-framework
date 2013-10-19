@@ -67,4 +67,17 @@ class MimeMessageTest extends AbstractMessageTest {
     $part2= $this->fixture->addPart(new MimePart());
     $this->assertEquals(array($part1, $part2), array($this->fixture->getPart(0), $this->fixture->getPart(1)));
   }
+
+  #[@test]
+  public function setBody_sets_first_part() {
+    $this->fixture->setBody('Test');
+    $this->assertEquals(new MimePart('Test', 'text/plain'), $this->fixture->getPart(0));
+  }
+
+  #[@test]
+  public function setBody_removes_previously_added_parts() {
+    $this->fixture->addPart(new MimePart());
+    $this->fixture->setBody('Test');
+    $this->assertEquals(new MimePart('Test', 'text/plain'), $this->fixture->getPart(0));
+  }
 }
