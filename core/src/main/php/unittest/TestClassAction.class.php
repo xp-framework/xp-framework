@@ -16,6 +16,7 @@
      * invoked, and before any methods annotated with beforeTest.
      *
      * @param  lang.XPClass $c
+     * @return void
      * @throws unittest.PrerequisitesNotMetError
      */
     public function beforeTestClass(XPClass $c);
@@ -25,7 +26,8 @@
      * executed, and after any methods annotated with afterTest
      *
      * @param  lang.XPClass $c
+     * @return void
      */
-    public function afterTestClass(XPClass $t);
+    public function afterTestClass(XPClass $c);
   }
 ?>

@@ -16,6 +16,7 @@
      * the setUp() method is called.
      *
      * @param  unittest.TestCase $t
+     * @return void
      * @throws unittest.PrerequisitesNotMetError
      */
     public function beforeTest(TestCase $t);
@@ -25,6 +26,7 @@
      * less of its outcome, after the tearDown() call has run.
      *
      * @param  unittest.TestCase $t
+     * @return void
      */
     public function afterTest(TestCase $t);
   }
