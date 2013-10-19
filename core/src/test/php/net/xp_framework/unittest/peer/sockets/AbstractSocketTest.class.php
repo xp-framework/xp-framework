@@ -4,18 +4,33 @@ use unittest\TestCase;
 use peer\Socket;
 use lang\Runtime;
 
-
 /**
  * TestCase
  *
  * @see      xp://peer.Socket
  */
 abstract class AbstractSocketTest extends TestCase {
-  protected static 
-    $serverProcess = null,
-    $bindAddress   = array(null, -1);
-
+  protected static $bindAddress= array(null, -1);
   protected $fixture= null;
+
+  /**
+   * Callback for when server is connected
+   *
+   * @param  string $bindAddress
+   */
+  public static function connected($bindAddress) {
+    self::$bindAddress= explode(':', $bindAddress);
+  }
+
+  /**
+   * Callback for when server should be shut down
+   */
+  public static function shutdown() {
+    $c= new Socket(self::$bindAddress[0], self::$bindAddress[1]);
+    $c->connect();
+    $c->write("HALT\n");
+    $c->close();
+  }
   
   /**
    * Creates a new client socket
@@ -28,7 +43,6 @@ abstract class AbstractSocketTest extends TestCase {
 
   /**
    * Setup this test case
-   *
    */
   public function setUp() {
     $this->fixture= $this->newSocket(self::$bindAddress[0], self::$bindAddress[1]);
@@ -36,71 +50,11 @@ abstract class AbstractSocketTest extends TestCase {
 
   /**
    * Tears down this test case
-   *
    */
   public function tearDown() {
     $this->fixture->isConnected() && $this->fixture->close();
   }
-
-  /**
-   * Starts server in background
-   *
-   */
-  #[@beforeClass]
-  public static function startServer() {
-
-    // Start server process
-    with ($rt= Runtime::getInstance()); {
-      self::$serverProcess= $rt->getExecutable()->newInstance(array_merge(
-        $rt->startupOptions()->asArguments(),
-        array($rt->bootstrapScript('class')),
-        array('net.xp_framework.unittest.peer.sockets.TestingServer')
-      ));
-    }
-    self::$serverProcess->in->close();
-
-    // Check if startup succeeded
-    $status= self::$serverProcess->out->readLine();
-    if (2 != sscanf($status, '+ Service %[0-9.]:%d', self::$bindAddress[0], self::$bindAddress[1])) {
-      try {
-        self::shutdownServer();
-      } catch (\lang\IllegalStateException $e) {
-        $status.= $e->getMessage();
-      }
-      throw new \unittest\PrerequisitesNotMetError('Cannot start server: '.$status, null);
-    }
-  }
-
-  /**
-   * Shut down socket server
-   *
-   */
-  #[@afterClass]
-  public static function shutdownServer() {
-
-    // Tell the server to shut down
-    try {
-      $c= new Socket(self::$bindAddress[0], self::$bindAddress[1]);
-      $c->connect();
-      $c->write("HALT\n");
-      $c->close();
-    } catch (\lang\Throwable $ignored) {
-      // Fall through, below should terminate the process anyway
-    }
-    $status= self::$serverProcess->out->readLine();
-    if (!strlen($status) || '+' != $status{0}) {
-      while ($l= self::$serverProcess->out->readLine()) {
-        $status.= $l;
-      }
-      while ($l= self::$serverProcess->err->readLine()) {
-        $status.= $l;
-      }
-      self::$serverProcess->close();
-      throw new \lang\IllegalStateException($status);
-    }
-    self::$serverProcess->close();
-  }
-
+  
   /**
    * Test
    *
