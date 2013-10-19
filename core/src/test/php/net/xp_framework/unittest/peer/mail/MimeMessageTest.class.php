@@ -86,4 +86,29 @@ class MimeMessageTest extends AbstractMessageTest {
     $this->fixture->setBody('Test');
     $this->assertEquals(new MimePart('Test', 'text/plain'), $this->fixture->getPart(0));
   }
+
+  #[@test]
+  public function getBody_for_two_parts() {
+    $this->fixture->setBoundary('------=_Part_4711Test');
+    $this->fixture->addPart(new MimePart('Test', 'text/plain'));
+    $this->fixture->addPart(new MimePart('GIF89aXXXX', 'image/gif', '8bit', 'test.gif'));
+    $this->assertEquals(
+      "This is a multi-part message in MIME format.\n".
+      "\n".
+      "--------=_Part_4711Test\n".
+      "Content-Type: text/plain; charset=\"iso-8859-1\"\n".
+      "\n".
+      "Test\n".
+      "\n".
+      "--------=_Part_4711Test\n".
+      "Content-Type: image/gif; name=test.gif\n".
+      "Content-Transfer-Encoding: 8bit\n".
+      "Content-Disposition: attachment; filename=\"test.gif\"\n".
+      "\n".
+      "GIF89aXXXX\n".
+      "\n".
+      "--------=_Part_4711Test--\n",
+      $this->fixture->getBody()
+    );
+  }
 }
