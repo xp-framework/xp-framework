@@ -32,6 +32,12 @@ class MimeMessageTest extends AbstractMessageTest {
   }
 
   #[@test]
+  public function boundary_accessors() {
+    $this->fixture->setBoundary('----=_Part_4711Test');
+    $this->assertEquals('----=_Part_4711Test', $this->fixture->getBoundary());
+  }
+
+  #[@test]
   public function add_part_returns_added_part() {
     $part= new MimePart();
     $this->assertEquals($part, $this->fixture->addPart($part));
