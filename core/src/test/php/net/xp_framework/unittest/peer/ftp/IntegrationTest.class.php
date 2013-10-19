@@ -8,12 +8,10 @@ use lang\Process;
 use lang\Runtime;
 use peer\ftp\FtpConnection;
 
-
 /**
  * TestCase for FTP API.
  *
  * @see      xp://peer.ftp.FtpConnection
- * @purpose  Unittest
  */
 class IntegrationTest extends TestCase {
   protected static
