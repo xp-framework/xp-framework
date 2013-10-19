@@ -228,14 +228,22 @@
      *
      * @param  var annotatable
      * @param  string impl The interface which must've been implemented
-     * @return unittest.TestAction
+     * @return var[]
      */
-    protected function actionFor($annotatable, $impl) {
+    protected function actionsFor($annotatable, $impl) {
+      $r= array();
       if ($annotatable->hasAnnotation('action')) {
         $action= $annotatable->getAnnotation('action');
-        if (XPClass::forName($impl)->isInstance($action)) return $action;
+        $type= XPClass::forName($impl);
+        if (is_array($action)) {
+          foreach ($action as $a) {
+            if ($type->isInstance($a)) $r[]= $a;
+          }
+        } else {
+          if ($type->isInstance($action)) $r[]= $action;
+        }
       }
-      return NULL;
+      return $r;
     }
 
     /**
@@ -295,13 +303,10 @@
       }
 
       // Check for @actions, initialize setUp and tearDown call chains
-      $actions= array();
-      if ($action= $this->actionFor($class, 'unittest.TestAction')) {
-        $actions[]= $action;
-      }
-      if ($action= $this->actionFor($method, 'unittest.TestAction')) {
-        $actions[]= $action;
-      }
+      $actions= array_merge(
+        $this->actionsFor($class, 'unittest.TestAction'),
+        $this->actionsFor($method, 'unittest.TestAction')
+      );
       $setUp= function($test) use($actions) {
         foreach ($actions as $action) {
           $action->beforeTest($test);
@@ -486,7 +491,7 @@
      * @param  lang.XPClass class
      */
     protected function beforeClass($class) {
-      if ($action= $this->actionFor($class, 'unittest.TestClassAction')) {
+      foreach ($this->actionsFor($class, 'unittest.TestClassAction') as $action) {
         $action->beforeTestClass($class);
       }
       foreach ($class->getMethods() as $m) {
@@ -517,7 +522,7 @@
           $m->invoke(NULL, array());
         } catch (TargetInvocationException $ignored) { }
       }
-      if ($action= $this->actionFor($class, 'unittest.TestClassAction')) {
+      foreach ($this->actionsFor($class, 'unittest.TestClassAction') as $action) {
         $action->afterTestClass($class);
       }
     }

@@ -126,4 +126,23 @@ class TestActionTest extends \unittest\TestCase {
     $this->assertInstanceOf('unittest.TestPrerequisitesNotMet', $outcome);
     $this->assertEquals(array('Test'), $outcome->reason->prerequisites);
   }
+
+  #[@test]
+  public function multiple_actions() {
+    $test= newinstance('unittest.TestCase', array('fixture'), '{
+      public $one= array(), $two= array();
+
+      #[@test, @action([
+      #  new \net\xp_framework\unittest\tests\RecordActionInvocation("one"),
+      #  new \net\xp_framework\unittest\tests\RecordActionInvocation("two")
+      #])]
+      public function fixture() {
+      }
+    }');
+    $this->suite->runTest($test);
+    $this->assertEquals(
+      array('one' => array('before', 'after'), 'two' => array('before', 'after')),
+      array('one' =>  $test->one, 'two' => $test->two)
+    );
+  }
 }
