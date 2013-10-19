@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('util.Objects');
+
   // Content-Disposition
   define('MIME_DISPOSITION_INLINE',     'inline');
   define('MIME_DISPOSITION_UNKNOWN',     '');
@@ -317,6 +319,27 @@
       }
 
       return $h;
+    }
+
+    /**
+     * Returns whether a given value is equal to this mime part
+     *
+     * @param  var $cmp
+     * @return bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self &&
+        $this->contenttype === $cmp->contenttype &&
+        $this->charset === $cmp->charset &&
+        $this->encoding === $cmp->encoding &&
+        $this->disposition === $cmp->disposition &&
+        $this->name === $cmp->name &&
+        $this->filename === $cmp->filename &&
+        $this->id === $cmp->id &&
+        $this->body === $cmp->body &&
+        Objects::equal($this->headers, $cmp->headers)
+      );
     }
   }
 ?>
