@@ -238,14 +238,17 @@
      * @param   decode default FALSE
      * @return  string
      */
-    public function getBody($d= FALSE) {
-      if ($d && !empty ($this->encoding)) switch ($this->getEncoding()) {
-        case MIME_ENC_BASE64:
-          return base64_decode ($this->body);
-        case MIME_ENC_QPRINT:
-          return quoted_printable_decode ($this->body);
-        case MIME_ENC_8BIT:
+    public function getBody($decode= FALSE) {
+      if ($decode) {
+        if ('base64' === $this->encoding) {
+          return Base64::decode($this->body);
+        } else if ('quoted-printable' === $this->encoding) {
+          return QuotedPrintable::decode($this->body);
+        } else if ('8bit' === $this->encoding || '' === $this->encoding) {
           return $this->body;
+        } else {
+          throw new FormatException('Unknown encoding '.$this->encoding);
+        }
       }
       return $this->body;
     }

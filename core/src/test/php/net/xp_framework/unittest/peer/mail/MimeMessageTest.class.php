@@ -1,11 +1,11 @@
 <?php namespace net\xp_framework\unittest\peer\mail;
 
-use peer\mail\Message;
+use peer\mail\MimeMessage;
 
 /**
- * Tests Message class
+ * Tests MimeMessage class
  */
-class MessageTest extends AbstractMessageTest {
+class MimeMessageTest extends AbstractMessageTest {
 
   /**
    * Returns a new fixture
@@ -13,22 +13,20 @@ class MessageTest extends AbstractMessageTest {
    * @return  peer.mail.Message
    */
   protected function newFixture() {
-    return new Message();
+    return new MimeMessage();
   }
 
   #[@test]
   public function default_headers_returned_by_getHeaderString() {
     $this->fixture->setHeader('X-Common-Header', 'test');
     $this->assertEquals(
-      "X-Common-Header: test\n".
-      "Content-Type: text/plain;\n".
-      "\tcharset=\"iso-8859-1\"\n".
       "Mime-Version: 1.0\n".
-      "Content-Transfer-Encoding: 8bit\n".
+      "X-Common-Header: test\n".
+      "Content-Type: multipart/mixed; boundary=\"".$this->fixture->getBoundary()."\";\n".
+      "\tcharset=\"iso-8859-1\"\n".
       "X-Priority: 3 (Normal)\n".
       "Date: ".$this->fixture->getDate()->toString('r')."\n",
       $this->fixture->getHeaderString()
     );
   }
-
 }

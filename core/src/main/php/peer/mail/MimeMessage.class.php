@@ -328,13 +328,13 @@
     /**
      * Get message body.
      *
-     * @see     xp://peer.mail.Message#getBody
+     * @param   decode default FALSE
      * @return  string
      */
-    public function getBody() {
+    public function getBody($decode= FALSE) {
       $this->_parts();
-      
-      if ($this->isSimpleMimePart()) return $this->parts[0]->getBody();
+
+      if ($this->isSimpleMimePart()) return $this->parts[0]->getBody($decode);
       
       $size= sizeof($this->parts);
       $body= "This is a multi-part message in MIME format.\n\n";
@@ -359,7 +359,7 @@
      * @return  peer.mail.MimePart
      */
     public function setBody($str) {
-      return $this->addPart(new MimePart($str, 'text/plain'));
+      return $this->addPart(new MimePart($str, 'text/plain', $this->encoding));
     }
   }
 ?>

@@ -83,21 +83,6 @@ abstract class AbstractMessageTest extends \unittest\TestCase {
   }
 
   #[@test]
-  public function default_headers_returned_by_getHeaderString() {
-    $this->fixture->setHeader('X-Common-Header', 'test');
-    $this->assertEquals(
-      "X-Common-Header: test\n".
-      "Content-Type: text/plain;\n".
-      "\tcharset=\"iso-8859-1\"\n".
-      "Mime-Version: 1.0\n".
-      "Content-Transfer-Encoding: 8bit\n".
-      "X-Priority: 3 (Normal)\n".
-      "Date: ".$this->fixture->getDate()->toString('r')."\n",
-      $this->fixture->getHeaderString()
-    );
-  }
-
-  #[@test]
   public function subject_accessors() {
     $this->fixture->setSubject('Hello World');
     $this->assertEquals('Hello World', $this->fixture->getSubject());
@@ -148,15 +133,15 @@ abstract class AbstractMessageTest extends \unittest\TestCase {
 
   #[@test]
   public function base64_encoded_body() {
-    $this->fixture->setBody('SGVsbG8gV29ybGQ=');
     $this->fixture->setEncoding('base64');
+    $this->fixture->setBody('SGVsbG8gV29ybGQ=');
     $this->assertEquals('Hello World', $this->fixture->getBody(true));
   }
 
   #[@test]
   public function quoted_printable_encoded_body() {
-    $this->fixture->setBody('Hello_World');
     $this->fixture->setEncoding('quoted-printable');
+    $this->fixture->setBody('Hello_World');
     $this->assertEquals('Hello World', $this->fixture->getBody(true));
   }
 }
