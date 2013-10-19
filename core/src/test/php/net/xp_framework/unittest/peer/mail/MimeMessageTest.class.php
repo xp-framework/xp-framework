@@ -1,6 +1,7 @@
 <?php namespace net\xp_framework\unittest\peer\mail;
 
 use peer\mail\MimeMessage;
+use peer\mail\MimePart;
 
 /**
  * Tests MimeMessage class
@@ -28,5 +29,42 @@ class MimeMessageTest extends AbstractMessageTest {
       "Date: ".$this->fixture->getDate()->toString('r')."\n",
       $this->fixture->getHeaderString()
     );
+  }
+
+  #[@test]
+  public function add_part_returns_added_part() {
+    $part= new MimePart();
+    $this->assertEquals($part, $this->fixture->addPart($part));
+  }
+
+  #[@test]
+  public function getParts_initially_returns_empty_array() {
+    $this->assertEquals(array(), $this->fixture->getParts());
+  }
+
+  #[@test]
+  public function getParts_returns_added_part() {
+    $part= $this->fixture->addPart(new MimePart());
+    $this->assertEquals(array($part), $this->fixture->getParts());
+  }
+
+  #[@test]
+  public function getParts_returns_added_parts() {
+    $part1= $this->fixture->addPart(new MimePart());
+    $part2= $this->fixture->addPart(new MimePart());
+    $this->assertEquals(array($part1, $part2), $this->fixture->getParts());
+  }
+
+  #[@test]
+  public function getPart_returns_added_part() {
+    $part= $this->fixture->addPart(new MimePart());
+    $this->assertEquals($part, $this->fixture->getPart(0));
+  }
+
+  #[@test]
+  public function getPart_returns_added_parts() {
+    $part1= $this->fixture->addPart(new MimePart());
+    $part2= $this->fixture->addPart(new MimePart());
+    $this->assertEquals(array($part1, $part2), array($this->fixture->getPart(0), $this->fixture->getPart(1)));
   }
 }
