@@ -15,6 +15,8 @@ XP Framework ChangeLog
 
 ### RFCs
 
+* Implemented RFC #269: REST: Marshalling and serialization. See also pull
+  request #307 and issue #306 - (@thekid)
 * Implemented RFC #272: Unittest actions. See pull request #318 - (@thekid)
   http://news.planet-xp.net/article/552/2013/10/14/
 
