@@ -10,6 +10,7 @@ use lang\types\Double;
 use lang\types\Float;
 use lang\types\Boolean;
 use lang\types\ArrayList;
+use lang\types\Character;
 use webservices\rest\RestMarshalling;
 
 /**
@@ -44,7 +45,7 @@ class RestMarshallerTest extends TestCase {
 
   #[@test]
   public function char_wrapper_object() {
-    $this->assertEquals('A', $this->fixture->marshal(new \lang\types\Character('A')));
+    $this->assertEquals('A', $this->fixture->marshal(new Character('A')));
   }
 
   #[@test]
