@@ -8,6 +8,7 @@ use lang\types\Short;
 use lang\types\Byte;
 use lang\types\Double;
 use lang\types\Float;
+use lang\types\Boolean;
 use lang\types\ArrayList;
 use webservices\rest\RestMarshalling;
 
@@ -98,12 +99,12 @@ class RestMarshallerTest extends TestCase {
 
   #[@test]
   public function bool_wrapper_object_true() {
-    $this->assertEquals(true, $this->fixture->marshal(\lang\types\Boolean::$TRUE));
+    $this->assertEquals(true, $this->fixture->marshal(Boolean::$TRUE));
   }
 
   #[@test]
   public function bool_wrapper_object_false() {
-    $this->assertEquals(false, $this->fixture->marshal(\lang\types\Boolean::$FALSE));
+    $this->assertEquals(false, $this->fixture->marshal(Boolean::$FALSE));
   }
 
   #[@test]
