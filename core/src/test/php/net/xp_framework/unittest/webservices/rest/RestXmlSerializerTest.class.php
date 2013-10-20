@@ -19,7 +19,7 @@ class RestXmlSerializerTest extends TestCase {
   public function setUp() {
     $this->fixture= new RestXmlSerializer();
   }
-  
+
   /**
    * Assertion helper
    *
@@ -30,11 +30,51 @@ class RestXmlSerializerTest extends TestCase {
   protected function assertXmlEquals($expected, $actual) {
     $this->assertEquals('<?xml version="1.0" encoding="UTF-8"?>'."\n".$expected, $actual);
   }
-  
+
+  #[@test]
+  public function null() {
+    $this->assertXmlEquals(
+      '<root></root>',
+      $this->fixture->serialize(null)
+    );
+  }
+
+  #[@test, @values(['', 'Test'])]
+  public function strings($str) {
+    $this->assertXmlEquals(
+      '<root>'.$str.'</root>',
+      $this->fixture->serialize($str)
+    );
+  }
+
+  #[@test, @values([-1, 0, 1, 4711])]
+  public function integers($int) {
+    $this->assertXmlEquals(
+      '<root>'.$int.'</root>',
+      $this->fixture->serialize($int)
+    );
+  }
+
+  #[@test, @values([-1.0, 0.0, 1.0, 47.11])]
+  public function decimals($decimal) {
+    $this->assertXmlEquals(
+      '<root>'.$decimal.'</root>',
+      $this->fixture->serialize($decimal)
+    );
+  }
+
+  #[@test, @values([false, true])]
+  public function booleans($bool) {
+    $this->assertXmlEquals(
+      '<root>'.$bool.'</root>',
+      $this->fixture->serialize($bool)
+    );
+  }
+
   #[@test]
   public function empty_array() {
     $this->assertXmlEquals(
-      '<root></root>', 
+      '<root></root>',
       $this->fixture->serialize(array())
     );
   }
@@ -42,7 +82,7 @@ class RestXmlSerializerTest extends TestCase {
   #[@test]
   public function int_array() {
     $this->assertXmlEquals(
-      '<root><root>1</root><root>2</root><root>3</root></root>', 
+      '<root><root>1</root><root>2</root><root>3</root></root>',
       $this->fixture->serialize(array(1, 2, 3))
     );
   }
@@ -52,6 +92,14 @@ class RestXmlSerializerTest extends TestCase {
     $this->assertXmlEquals(
       '<root><root>a</root><root>b</root><root>c</root></root>',
       $this->fixture->serialize(array('a', 'b', 'c'))
+    );
+  }
+
+  #[@test]
+  public function string_map() {
+    $this->assertXmlEquals(
+      '<root><a>One</a><b>Two</b><c>Three</c></root>',
+      $this->fixture->serialize(array('a' => 'One', 'b' => 'Two', 'c' => 'Three'))
     );
   }
 }
