@@ -32,7 +32,7 @@ class RestXmlSerializerTest extends TestCase {
   }
   
   #[@test]
-  public function emptyArray() {
+  public function empty_array() {
     $this->assertXmlEquals(
       '<root></root>', 
       $this->fixture->serialize(array())
@@ -40,10 +40,18 @@ class RestXmlSerializerTest extends TestCase {
   }
 
   #[@test]
-  public function intArray() {
+  public function int_array() {
     $this->assertXmlEquals(
       '<root><root>1</root><root>2</root><root>3</root></root>', 
       $this->fixture->serialize(array(1, 2, 3))
+    );
+  }
+
+  #[@test]
+  public function string_array() {
+    $this->assertXmlEquals(
+      '<root><root>a</root><root>b</root><root>c</root></root>',
+      $this->fixture->serialize(array('a', 'b', 'c'))
     );
   }
 }
