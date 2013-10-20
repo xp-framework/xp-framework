@@ -102,4 +102,12 @@ class RestXmlSerializerTest extends TestCase {
       $this->fixture->serialize(array('a' => 'One', 'b' => 'Two', 'c' => 'Three'))
     );
   }
+
+  #[@test]
+  public function date() {
+    $this->assertXmlEquals(
+      '<root><value>2012-12-31 18:00:00+0100</value><__id></__id></root>',
+      $this->fixture->serialize(new Date('2012-12-31 18:00:00', new TimeZone('Europe/Berlin')))
+    );
+  }
 }

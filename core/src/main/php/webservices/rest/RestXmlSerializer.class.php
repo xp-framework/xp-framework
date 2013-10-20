@@ -40,7 +40,9 @@
         $root= 'root';
       }
 
-      if ($payload instanceof Generic || is_array($payload)) {
+      if ($payload instanceof Generic) {
+        $t->root= Node::fromObject($payload, $root);
+      } else if (is_array($payload)) {
         $t->root= Node::fromArray($payload, $root);
       } else {
         $t->root= new Node($root, $payload);
