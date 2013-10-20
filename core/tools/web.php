@@ -50,6 +50,5 @@
   }
   bootstrap(scanpath($paths, $webroot).$include);
   
-  uses('xp.scriptlet.Runner');
-  exit(xp·scriptlet·Runner::main(array($webroot, $configd, $_SERVER['SERVER_PROFILE'], $_SERVER['SCRIPT_URL'])));
+  exit(\xp\scriptlet\Runner::main(array($webroot, $configd, $_SERVER['SERVER_PROFILE'], $_SERVER['SCRIPT_URL'])));
 ?>

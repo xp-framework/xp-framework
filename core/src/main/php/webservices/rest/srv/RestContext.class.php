@@ -25,6 +25,7 @@
    * The context of a rest call
    *
    * @test  xp://net.xp_framework.unittest.webservices.rest.srv.RestContextTest
+   * @test  xp://net.xp_framework.unittest.webservices.rest.srv.RestContextHandleTest
    */
   class RestContext extends Object implements Traceable {
     protected $mappers;

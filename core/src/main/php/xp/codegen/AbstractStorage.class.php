@@ -1,61 +1,52 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace xp\codegen;
 
-  uses('xp.codegen.StorageAddress');
+/**
+ * Storage for generation
+ */
+abstract class AbstractStorage extends \lang\Object {
+  
+  /**
+   * Get URI
+   *
+   * @return  string
+   */
+  public abstract function getUri();
 
   /**
-   * Storage for generation
+   * Store data
    *
-   * @purpose  Abstract base class
+   * @param   string name
+   * @param   string data
    */
-  abstract class AbstractStorage extends Object {
-    
-    /**
-     * get URI
-     *
-     * @return  string
-     */
-    public abstract function getUri();
+  protected abstract function store($name, $data);
 
-    /**
-     * Store data
-     *
-     * @param   string name
-     * @param   string data
-     */
-    protected abstract function store($name, $data);
-
-    /**
-     * Fetch data
-     *
-     * @param   string name
-     * @return  string data
-     */
-    protected abstract function fetch($name);
-    
-    /**
-     * Write data
-     *
-     * @param   string name
-     * @param   string data
-     * @return  xp.codegen.StorageAddress
-     */
-    public function write($name, $data) {
-      $this->store($name, $data);
-      return new StorageAddress($this, $name);
-    }
-
-    /**
-     * Read data
-     *
-     * @param   string name
-     * @return  string data
-     */
-    public function read($name) {
-      return $this->fetch($name);
-    }
+  /**
+   * Fetch data
+   *
+   * @param   string name
+   * @return  string data
+   */
+  protected abstract function fetch($name);
+  
+  /**
+   * Write data
+   *
+   * @param   string name
+   * @param   string data
+   * @return  xp.codegen.StorageAddress
+   */
+  public function write($name, $data) {
+    $this->store($name, $data);
+    return new StorageAddress($this, $name);
   }
-?>
+
+  /**
+   * Read data
+   *
+   * @param   string name
+   * @return  string data
+   */
+  public function read($name) {
+    return $this->fetch($name);
+  }
+}

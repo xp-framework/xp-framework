@@ -2,7 +2,6 @@
 
 /**
  * List of elements
- *
  */
 #[@generic(self= 'T')]
 class NSListOf extends \lang\Object {

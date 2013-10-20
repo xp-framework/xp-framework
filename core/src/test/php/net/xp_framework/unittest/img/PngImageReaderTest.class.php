@@ -1,48 +1,42 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\img;
 
-  uses(
-    'unittest.TestCase',
-    'img.Image',
-    'img.io.PngStreamReader',
-    'io.Stream',
-    'io.FileUtil',
-    'io.streams.MemoryInputStream'
-  );
+use unittest\TestCase;
+use img\Image;
+use img\io\PngStreamReader;
+use io\Stream;
+use io\FileUtil;
+use io\streams\MemoryInputStream;
+
+
+/**
+ * Tests reading PNG images
+ *
+ * @see   xp://img.io.JpegStreamReader
+ */
+class PngImageReaderTest extends TestCase {
 
   /**
-   * Tests reading PNG images
-   *
-   * @see   xp://img.io.JpegStreamReader
+   * Setup this test, checking prerequisites.
    */
-  class PngImageReaderTest extends TestCase {
-
-    /**
-     * Setup this test, checking prerequisites.
-     */
-    public function setUp() {
-      if (!Runtime::getInstance()->extensionAvailable('gd')) {
-        throw new PrerequisitesNotMetError('GD extension not available');
-      }
-      if (!(imagetypes() & IMG_PNG)) {
-        throw new PrerequisitesNotMetError('PNG support not enabled');
-      }
+  public function setUp() {
+    if (!\lang\Runtime::getInstance()->extensionAvailable('gd')) {
+      throw new \unittest\PrerequisitesNotMetError('GD extension not available');
     }
-
-    #[@test]
-    public function read() {
-      $s= new MemoryInputStream(base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEX///+nxBvIAAAACklEQVQImWNgAAAAAgAB9HFkpgAAAABJRU5ErkJggg=='));
-      Image::loadFrom(new PngStreamReader($s));
-    }
-
-    #[@test]
-    public function read_bc() {
-      $s= new Stream();
-      FileUtil::setContents($s, base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEX///+nxBvIAAAACklEQVQImWNgAAAAAgAB9HFkpgAAAABJRU5ErkJggg=='));
-      Image::loadFrom(new StreamReader(ref($s)));
+    if (!(imagetypes() & IMG_PNG)) {
+      throw new \unittest\PrerequisitesNotMetError('PNG support not enabled');
     }
   }
-?>
+
+  #[@test]
+  public function read() {
+    $s= new MemoryInputStream(base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEX///+nxBvIAAAACklEQVQImWNgAAAAAgAB9HFkpgAAAABJRU5ErkJggg=='));
+    Image::loadFrom(new PngStreamReader($s));
+  }
+
+  #[@test]
+  public function read_bc() {
+    $s= new Stream();
+    FileUtil::setContents($s, base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEX///+nxBvIAAAACklEQVQImWNgAAAAAgAB9HFkpgAAAABJRU5ErkJggg=='));
+    Image::loadFrom(new \img\io\StreamReader(ref($s)));
+  }
+}

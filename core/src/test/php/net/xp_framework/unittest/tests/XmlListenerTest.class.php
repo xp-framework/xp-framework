@@ -1,256 +1,249 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\tests;
 
-  uses(
-    'unittest.TestCase',
-    'unittest.TestSuite',
-    'unittest.XmlTestListener',
-    'io.streams.MemoryOutputStream',
-    'io.streams.StringWriter',
-    'xml.Tree',
-    'net.xp_framework.unittest.tests.SimpleTestCase'
-  );
+use unittest\TestCase;
+use unittest\TestSuite;
+use unittest\XmlTestListener;
+use io\streams\MemoryOutputStream;
+use io\streams\StringWriter;
+use xml\Tree;
+
+
+/**
+ * TestCase for the XML test listener implementation
+ *
+ * @see      xp://unittest.XmlTestListener
+ */
+class XmlListenerTest extends TestCase {
+  protected $out= null;
+  protected $suite= null;
 
   /**
-   * TestCase for the XML test listener implementation
+   * Sets up test case
    *
-   * @see      xp://unittest.XmlTestListener
    */
-  class XmlListenerTest extends TestCase {
-    protected $out= NULL;
-    protected $suite= NULL;
+  public function setUp() {
+    $this->out= new MemoryOutputStream();
+    $this->suite= new TestSuite();
+    $this->suite->addListener(new XmlTestListener(new StringWriter($this->out)));
+  }
   
-    /**
-     * Sets up test case
-     *
-     */
-    public function setUp() {
-      $this->out= new MemoryOutputStream();
-      $this->suite= new TestSuite();
-      $this->suite->addListener(new XmlTestListener(new StringWriter($this->out)));
+  /**
+   * Test
+   *
+   */
+  #[@test]
+  public function outputInitiallyEmpty() {
+    $this->assertEquals('', $this->out->getBytes());
+  }
+  
+  /**
+   * Run tests and return XML generated
+   *
+   * @param   unittest.TestCase... tests
+   * @return  xml.Tree the output
+   * @throws  unittest.AssertionFailedError in case the generated XML is not well-formed
+   */
+  protected function runTests() {
+    foreach (func_get_args() as $test) {
+      $this->suite->addTest($test);
     }
+    $this->suite->run();
     
-    /**
-     * Test
-     *
-     */
-    #[@test]
-    public function outputInitiallyEmpty() {
-      $this->assertEquals('', $this->out->getBytes());
+    try {
+      return Tree::fromString($this->out->getBytes());
+    } catch (\xml\XMLFormatException $e) {
+      $this->fail('XML generated is not well-formed: '.$e->getMessage(), $this->out->getBytes(), null);
     }
+  }
+  
+  /**
+   * Assertion helper testing for a testsuite node
+   *
+   * @param   string name
+   * @param   [:string] attr
+   * @param   xml.Node n
+   * @throws  unittest.AssertionFailedError
+   */
+  protected function assertSuiteNode($name, $attr, $suite) {
+    $this->assertClass($suite, 'xml.Node');
+    $this->assertEquals('testsuite', $suite->getName());
+    $this->assertEquals($name, $suite->getAttribute('name'));
     
-    /**
-     * Run tests and return XML generated
-     *
-     * @param   unittest.TestCase... tests
-     * @return  xml.Tree the output
-     * @throws  unittest.AssertionFailedError in case the generated XML is not well-formed
-     */
-    protected function runTests() {
-      foreach (func_get_args() as $test) {
-        $this->suite->addTest($test);
-      }
-      $this->suite->run();
-      
-      try {
-        return Tree::fromString($this->out->getBytes());
-      } catch (XMLFormatException $e) {
-        $this->fail('XML generated is not well-formed: '.$e->getMessage(), $this->out->getBytes(), NULL);
-      }
+    foreach ($attr as $key => $value) {
+      $this->assertEquals($value, $suite->getAttribute($key), 'Attribute "'.$key.'"');
     }
+  }
+
+  /**
+   * Assertion helper testing for a testcase node
+   *
+   * @param   [:string] attr
+   * @param   xml.Node n
+   * @throws  unittest.AssertionFailedError
+   */
+  protected function assertCaseNode($attr, $suite) {
+    $this->assertClass($suite, 'xml.Node');
+    $this->assertEquals('testcase', $suite->getName());
     
-    /**
-     * Assertion helper testing for a testsuite node
-     *
-     * @param   string name
-     * @param   [:string] attr
-     * @param   xml.Node n
-     * @throws  unittest.AssertionFailedError
-     */
-    protected function assertSuiteNode($name, $attr, $suite) {
-      $this->assertClass($suite, 'xml.Node');
-      $this->assertEquals('testsuite', $suite->getName());
-      $this->assertEquals($name, $suite->getAttribute('name'));
+    foreach ($attr as $key => $value) {
+      $this->assertEquals($value, $suite->getAttribute($key), 'Attribute "'.$key.'"');
+    }
+  }
+
+  /**
+   * Test running a succeeding test
+   *
+   */
+  #[@test]
+  public function successfulTest() {
+    $t= $this->runTests(new SimpleTestCase('succeeds'));
+
+    $this->assertEquals('testsuites', $t->root()->getName());
+    with ($suite= @$t->root()->nodeAt(0)); {
+      $this->assertSuiteNode(
+        'net.xp_framework.unittest.tests.SimpleTestCase',
+        array('tests' => '1', 'errors' => '0', 'failures' => '0', 'skipped' => '0'),
+        $suite
+      );
       
-      foreach ($attr as $key => $value) {
-        $this->assertEquals($value, $suite->getAttribute($key), 'Attribute "'.$key.'"');
-      }
-    }
-
-    /**
-     * Assertion helper testing for a testcase node
-     *
-     * @param   [:string] attr
-     * @param   xml.Node n
-     * @throws  unittest.AssertionFailedError
-     */
-    protected function assertCaseNode($attr, $suite) {
-      $this->assertClass($suite, 'xml.Node');
-      $this->assertEquals('testcase', $suite->getName());
-      
-      foreach ($attr as $key => $value) {
-        $this->assertEquals($value, $suite->getAttribute($key), 'Attribute "'.$key.'"');
-      }
-    }
-
-    /**
-     * Test running a succeeding test
-     *
-     */
-    #[@test]
-    public function successfulTest() {
-      $t= $this->runTests(new SimpleTestCase('succeeds'));
-
-      $this->assertEquals('testsuites', $t->root()->getName());
-      with ($suite= @$t->root()->nodeAt(0)); {
-        $this->assertSuiteNode(
-          'net.xp_framework.unittest.tests.SimpleTestCase',
-          array('tests' => '1', 'errors' => '0', 'failures' => '0', 'skipped' => '0'),
-          $suite
-        );
-        
-        with ($case= @$suite->nodeAt(0)); {
-          $this->assertCaseNode(array('name' => 'succeeds'), $case);
-          $this->assertNotEquals(NULL, $case->getAttribute('time'));
-        }
-      }
-    }
-
-    /**
-     * Test running a skipped test
-     *
-     */
-    #[@test]
-    public function skippedTest() {
-      $t= $this->runTests(new SimpleTestCase('skipped'));
-
-      $this->assertEquals('testsuites', $t->root()->getName());
-      with ($suite= @$t->root()->nodeAt(0)); {
-        $this->assertSuiteNode(
-          'net.xp_framework.unittest.tests.SimpleTestCase',
-          array('tests' => '1', 'errors' => '0', 'failures' => '0', 'skipped' => '1'),
-          $suite
-        );
-        
-        with ($case= @$suite->nodeAt(0)); {
-          $this->assertCaseNode(array('name' => 'skipped'), $case);
-          $this->assertNotEquals(NULL, $case->getAttribute('time'));
-        }
-      }
-    }
-
-    /**
-     * Test running a failing test
-     *
-     */
-    #[@test]
-    public function failingTest() {
-      $t= $this->runTests(new SimpleTestCase('fails'));
-
-      $this->assertEquals('testsuites', $t->root()->getName());
-      with ($suite= @$t->root()->nodeAt(0)); {
-        $this->assertSuiteNode(
-          'net.xp_framework.unittest.tests.SimpleTestCase',
-          array('tests' => '1', 'errors' => '0', 'failures' => '1', 'skipped' => '0'),
-          $suite
-        );
-
-        with ($case= @$suite->nodeAt(0)); {
-          $this->assertCaseNode(array('name' => 'fails'), $case);
-          $this->assertNotEquals(NULL, $case->getAttribute('time'));
-
-          with ($failure= @$case->nodeAt(0)); {
-            $this->assertClass($failure, 'xml.Node');
-            $this->assertEquals('failure', $failure->getName());
-            $this->assertNotEquals(NULL, $failure->getAttribute('message'));
-            $this->assertNotEquals(NULL, $failure->getContent());
-          }
-        }
-      }
-    }
-
-    /**
-     * Test running a failing test
-     *
-     */
-    #[@test]
-    public function errorTest() {
-      $t= $this->runTests(new SimpleTestCase('throws'));
-
-      $this->assertEquals('testsuites', $t->root()->getName());
-      with ($suite= @$t->root()->nodeAt(0)); {
-        $this->assertSuiteNode(
-          'net.xp_framework.unittest.tests.SimpleTestCase',
-          array('tests' => '1', 'errors' => '1', 'failures' => '0', 'skipped' => '0'),
-          $suite
-        );
-
-        with ($case= @$suite->nodeAt(0)); {
-          $this->assertCaseNode(array('name' => 'throws'), $case);
-          $this->assertNotEquals(NULL, $case->getAttribute('time'));
-
-          with ($failure= @$case->nodeAt(0)); {
-            $this->assertClass($failure, 'xml.Node');
-            $this->assertEquals('error', $failure->getName());
-            $this->assertNotEquals(NULL, $failure->getAttribute('message'));
-            $this->assertNotEquals(NULL, $failure->getContent());
-          }
-        }
-      }
-    }
-
-    /**
-     * Test running a failing test
-     *
-     */
-    #[@test]
-    public function warningTest() {
-      $t= $this->runTests(new SimpleTestCase('raisesAnError'));
-
-      $this->assertEquals('testsuites', $t->root()->getName());
-      with ($suite= @$t->root()->nodeAt(0)); {
-        $this->assertSuiteNode(
-          'net.xp_framework.unittest.tests.SimpleTestCase',
-          array('tests' => '1', 'errors' => '1', 'failures' => '0', 'skipped' => '0'),
-          $suite
-        );
-
-        with ($case= @$suite->nodeAt(0)); {
-          $this->assertCaseNode(array('name' => 'raisesAnError'), $case);
-          $this->assertNotEquals(NULL, $case->getAttribute('time'));
-
-          with ($failure= @$case->nodeAt(0)); {
-            $this->assertClass($failure, 'xml.Node');
-            $this->assertEquals('error', $failure->getName());
-            $this->assertNotEquals(NULL, $failure->getAttribute('message'));
-            $this->assertNotEquals(NULL, $failure->getContent());
-          }
-        }
-      }
-    }
-
-    /**
-     * Test running multiple tests
-     *
-     */
-    #[@test]
-    public function multipleTests() {
-      $t= $this->runTests(new SimpleTestCase('succeeds'), new SimpleTestCase('fails'));
-
-      $this->assertEquals('testsuites', $t->root()->getName());
-      with ($suite= @$t->root()->nodeAt(0)); {
-        $this->assertSuiteNode(
-          'net.xp_framework.unittest.tests.SimpleTestCase',
-          array('tests' => '2', 'errors' => '0', 'failures' => '1', 'skipped' => '0'),
-          $suite
-        );
-        $this->assertEquals(2, sizeof($suite->getChildren()));
-        $this->assertCaseNode(array('name' => 'succeeds'), $suite->nodeAt(0));
-        $this->assertCaseNode(array('name' => 'fails'), $suite->nodeAt(1));
+      with ($case= @$suite->nodeAt(0)); {
+        $this->assertCaseNode(array('name' => 'succeeds'), $case);
+        $this->assertNotEquals(null, $case->getAttribute('time'));
       }
     }
   }
-?>
+
+  /**
+   * Test running a skipped test
+   *
+   */
+  #[@test]
+  public function skippedTest() {
+    $t= $this->runTests(new SimpleTestCase('skipped'));
+
+    $this->assertEquals('testsuites', $t->root()->getName());
+    with ($suite= @$t->root()->nodeAt(0)); {
+      $this->assertSuiteNode(
+        'net.xp_framework.unittest.tests.SimpleTestCase',
+        array('tests' => '1', 'errors' => '0', 'failures' => '0', 'skipped' => '1'),
+        $suite
+      );
+      
+      with ($case= @$suite->nodeAt(0)); {
+        $this->assertCaseNode(array('name' => 'skipped'), $case);
+        $this->assertNotEquals(null, $case->getAttribute('time'));
+      }
+    }
+  }
+
+  /**
+   * Test running a failing test
+   *
+   */
+  #[@test]
+  public function failingTest() {
+    $t= $this->runTests(new SimpleTestCase('fails'));
+
+    $this->assertEquals('testsuites', $t->root()->getName());
+    with ($suite= @$t->root()->nodeAt(0)); {
+      $this->assertSuiteNode(
+        'net.xp_framework.unittest.tests.SimpleTestCase',
+        array('tests' => '1', 'errors' => '0', 'failures' => '1', 'skipped' => '0'),
+        $suite
+      );
+
+      with ($case= @$suite->nodeAt(0)); {
+        $this->assertCaseNode(array('name' => 'fails'), $case);
+        $this->assertNotEquals(null, $case->getAttribute('time'));
+
+        with ($failure= @$case->nodeAt(0)); {
+          $this->assertClass($failure, 'xml.Node');
+          $this->assertEquals('failure', $failure->getName());
+          $this->assertNotEquals(null, $failure->getAttribute('message'));
+          $this->assertNotEquals(null, $failure->getContent());
+        }
+      }
+    }
+  }
+
+  /**
+   * Test running a failing test
+   *
+   */
+  #[@test]
+  public function errorTest() {
+    $t= $this->runTests(new SimpleTestCase('throws'));
+
+    $this->assertEquals('testsuites', $t->root()->getName());
+    with ($suite= @$t->root()->nodeAt(0)); {
+      $this->assertSuiteNode(
+        'net.xp_framework.unittest.tests.SimpleTestCase',
+        array('tests' => '1', 'errors' => '1', 'failures' => '0', 'skipped' => '0'),
+        $suite
+      );
+
+      with ($case= @$suite->nodeAt(0)); {
+        $this->assertCaseNode(array('name' => 'throws'), $case);
+        $this->assertNotEquals(null, $case->getAttribute('time'));
+
+        with ($failure= @$case->nodeAt(0)); {
+          $this->assertClass($failure, 'xml.Node');
+          $this->assertEquals('error', $failure->getName());
+          $this->assertNotEquals(null, $failure->getAttribute('message'));
+          $this->assertNotEquals(null, $failure->getContent());
+        }
+      }
+    }
+  }
+
+  /**
+   * Test running a failing test
+   *
+   */
+  #[@test]
+  public function warningTest() {
+    $t= $this->runTests(new SimpleTestCase('raisesAnError'));
+
+    $this->assertEquals('testsuites', $t->root()->getName());
+    with ($suite= @$t->root()->nodeAt(0)); {
+      $this->assertSuiteNode(
+        'net.xp_framework.unittest.tests.SimpleTestCase',
+        array('tests' => '1', 'errors' => '1', 'failures' => '0', 'skipped' => '0'),
+        $suite
+      );
+
+      with ($case= @$suite->nodeAt(0)); {
+        $this->assertCaseNode(array('name' => 'raisesAnError'), $case);
+        $this->assertNotEquals(null, $case->getAttribute('time'));
+
+        with ($failure= @$case->nodeAt(0)); {
+          $this->assertClass($failure, 'xml.Node');
+          $this->assertEquals('error', $failure->getName());
+          $this->assertNotEquals(null, $failure->getAttribute('message'));
+          $this->assertNotEquals(null, $failure->getContent());
+        }
+      }
+    }
+  }
+
+  /**
+   * Test running multiple tests
+   *
+   */
+  #[@test]
+  public function multipleTests() {
+    $t= $this->runTests(new SimpleTestCase('succeeds'), new SimpleTestCase('fails'));
+
+    $this->assertEquals('testsuites', $t->root()->getName());
+    with ($suite= @$t->root()->nodeAt(0)); {
+      $this->assertSuiteNode(
+        'net.xp_framework.unittest.tests.SimpleTestCase',
+        array('tests' => '2', 'errors' => '0', 'failures' => '1', 'skipped' => '0'),
+        $suite
+      );
+      $this->assertEquals(2, sizeof($suite->getChildren()));
+      $this->assertCaseNode(array('name' => 'succeeds'), $suite->nodeAt(0));
+      $this->assertCaseNode(array('name' => 'fails'), $suite->nodeAt(1));
+    }
+  }
+}

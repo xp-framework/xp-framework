@@ -2,11 +2,10 @@
 
 /**
  * Lookup map
- *
  */
 #[@generic(self= 'K, V')]
 interface NSIDictionary {
- 
+   
   /**
    * Put a key/value pair
    *

@@ -1,53 +1,47 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\img;
 
-  uses(
-    'unittest.TestCase',
-    'io.Stream',
-    'io.FileUtil',
-    'img.Image',
-    'io.streams.MemoryOutputStream'
-  );
+use unittest\TestCase;
+use io\Stream;
+use io\FileUtil;
+use img\Image;
+use io\streams\MemoryOutputStream;
+
+
+/**
+ * Tests writing images
+ *
+ * @see  xp://img.io.ImageWriter
+ */
+abstract class AbstractImageWriterTest extends TestCase {
+  protected $image= null;
 
   /**
-   * Tests writing images
+   * Returns the image type to test for
    *
-   * @see  xp://img.io.ImageWriter
+   * @return string
    */
-  abstract class AbstractImageWriterTest extends TestCase {
-    protected $image= NULL;
+  protected abstract function imageType();
 
-    /**
-     * Returns the image type to test for
-     *
-     * @return string
-     */
-    protected abstract function imageType();
-
-    /**
-     * Setup this test. Creates a 1x1 pixel image filled with white.
-     */
-    public function setUp() {
-      if (!Runtime::getInstance()->extensionAvailable('gd')) {
-        throw new PrerequisitesNotMetError('GD extension not available');
-      }
-      $type= $this->imageType();
-      if (!(imagetypes() & constant('IMG_'.$type))) {
-        throw new PrerequisitesNotMetError($type.' support not enabled');
-      }
-      $this->image= Image::create(1, 1);
-      $this->image->fill($this->image->allocate(new Color('#ffffff')));
+  /**
+   * Setup this test. Creates a 1x1 pixel image filled with white.
+   */
+  public function setUp() {
+    if (!\lang\Runtime::getInstance()->extensionAvailable('gd')) {
+      throw new \unittest\PrerequisitesNotMetError('GD extension not available');
     }
-  
-    /**
-     * Tears down this test
-     *
-     */
-    public function tearDown() {
-      delete($this->image);
+    $type= $this->imageType();
+    if (!(imagetypes() & constant('IMG_'.$type))) {
+      throw new \unittest\PrerequisitesNotMetError($type.' support not enabled');
     }
+    $this->image= Image::create(1, 1);
+    $this->image->fill($this->image->allocate(new \img\Color('#ffffff')));
   }
-?>
+
+  /**
+   * Tears down this test
+   *
+   */
+  public function tearDown() {
+    delete($this->image);
+  }
+}

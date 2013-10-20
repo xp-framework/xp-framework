@@ -185,7 +185,7 @@
      */
     public function getString($length) {
       if (0 === $length) return NULL;
-      return iconv('ucs-2le', 'iso-8859-1//IGNORE', $this->read($length * 2));
+      return iconv('ucs-2le', xp::ENCODING.'//IGNORE', $this->read($length * 2));
     }
     
     /**

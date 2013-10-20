@@ -1,83 +1,60 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\core;
+
+use util\collections\Vector;
+use util\collections\HashTable;
+
+/**
+ * TestCase for create() core functionality. It has the following two purposes:
  *
- * $Id$ 
+ * 1) Create generics
+ * ```php
+ * $v= create('new util.collections.Vector<lang.types.String>');
+ * ```
+ *
+ * 2) Returning an object passed in, for use in fluent interfaces, e.g.
+ * ```php
+ * $c= create(new Criteria())->add('bz_id', 20000, EQUAL);
+ * ````
+ * 
+ * @see   http://news.xp-framework.net/article/184/2007/05/06/
  */
+class CreateTest extends \unittest\TestCase {
 
-  uses(
-    'unittest.TestCase',
-    'util.collections.Vector',
-    'util.collections.HashTable'
-  );
-
-  /**
-   * TestCase for create() core functionality
-   *
-   * @purpose  Unittest
-   */
-  class CreateTest extends TestCase {
-  
-    /**
-     * Test create() returns an object passed in, for use in fluent
-     * interfaces, e.g.
-     *
-     * <code>
-     *   $c= create(new Criteria())->add('bz_id', 20000, EQUAL);
-     * </code>
-     *
-     * @see   http://news.xp-framework.net/article/184/2007/05/06/
-     */
-    #[@test]
-    public function createReturnsObjects() {
-      $fixture= new Object();
-      $this->assertEquals($fixture, create($fixture));
-    }
-
-    /**
-     * Test create() using short class names
-     *
-     */
-    #[@test]
-    public function createWithShortNames() {
-      $h= create('new HashTable<String, String>');
-      $this->assertEquals(
-        array(XPClass::forName('lang.types.String'), XPClass::forName('lang.types.String')), 
-        $h->getClass()->genericArguments()
-      );
-    }
-
-    /**
-     * Test create() using short class names
-     *
-     */
-    #[@test]
-    public function createInvokesConstructor() {
-      $this->assertEquals(
-        new String('Hello'), 
-        create('new util.collections.Vector<lang.types.String>', array(new String('Hello')))->get(0)
-      );
-    }
-
-    /**
-     * Test create() using fully qualified class names
-     *
-     */
-    #[@test]
-    public function createWithQualifiedNames() {
-      $h= create('new util.collections.HashTable<lang.types.String, lang.types.String>');
-      $this->assertEquals(
-        array(XPClass::forName('lang.types.String'), XPClass::forName('lang.types.String')), 
-        $h->getClass()->genericArguments()
-      );
-    }
-
-    /**
-     * Test create() with non-generic classes
-     *
-     */
-    #[@test, @expect('lang.IllegalArgumentException')]
-    public function createWithNonGeneric() {
-      create('new lang.Object<String>');
-    }
+  #[@test]
+  public function createReturnsObjects() {
+    $fixture= new \lang\Object();
+    $this->assertEquals($fixture, create($fixture));
   }
-?>
+
+  #[@test]
+  public function createWithShortNames() {
+    \lang\XPClass::forName('util.collections.HashTable');
+    $h= create('new HashTable<String, String>');
+    $this->assertEquals(
+      array(\lang\XPClass::forName('lang.types.String'), \lang\XPClass::forName('lang.types.String')), 
+      $h->getClass()->genericArguments()
+    );
+  }
+
+  #[@test]
+  public function createInvokesConstructor() {
+    $this->assertEquals(
+      new \lang\types\String('Hello'), 
+      create('new util.collections.Vector<lang.types.String>', array(new \lang\types\String('Hello')))->get(0)
+    );
+  }
+
+  #[@test]
+  public function createWithQualifiedNames() {
+    $h= create('new util.collections.HashTable<lang.types.String, lang.types.String>');
+    $this->assertEquals(
+      array(\lang\XPClass::forName('lang.types.String'), \lang\XPClass::forName('lang.types.String')), 
+      $h->getClass()->genericArguments()
+    );
+  }
+
+  #[@test, @expect('lang.IllegalArgumentException')]
+  public function createWithNonGeneric() {
+    create('new lang.Object<String>');
+  }
+}

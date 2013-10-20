@@ -1,27 +1,23 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$
- */
+<?php namespace net\xp_framework\unittest\io\collections;
 
-  uses('io.collections.iterate.IterationFilter');
+use io\collections\iterate\IterationFilter;
+
+
+/**
+ * Accept-all filter
+ *
+ * @purpose  Iteration Filter
+ */
+class NullFilter extends \lang\Object implements IterationFilter {
 
   /**
-   * Accept-all filter
+   * Accepts an element
    *
-   * @purpose  Iteration Filter
+   * @param   &io.collections.IOElement element
+   * @return  bool
    */
-  class NullFilter extends Object implements IterationFilter {
-  
-    /**
-     * Accepts an element
-     *
-     * @param   &io.collections.IOElement element
-     * @return  bool
-     */
-    public function accept($element) {
-      return TRUE;
-    }
-  
-  } 
-?>
+  public function accept($element) {
+    return true;
+  }
+
+} 

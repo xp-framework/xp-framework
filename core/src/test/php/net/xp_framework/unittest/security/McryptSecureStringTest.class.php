@@ -1,26 +1,18 @@
-<?php
-/* This class is part of the XP Framework
- *
- * $Id$
- */
+<?php namespace net\xp_framework\unittest\security;
 
-  uses(
-    'net.xp_framework.unittest.security.SecureStringTest',
-    'security.SecureString'
-  );
+use security\SecureString;
+use unittest\actions\ExtensionAvailable;
+
+/**
+ * Testcase for mcrypt backed security.SecureString implementation
+ */
+#[@action(new ExtensionAvailable('mcrypt'))]
+class McryptSecureStringTest extends SecureStringTest {
 
   /**
-   * Testcase for mcrypt backed security.SecureString implementation
-   *
+   * Use MCRYPT backing
    */
-  class McryptSecureStringTest extends SecureStringTest {
-
-    public function setUp() {
-      if (!Runtime::getInstance()->extensionAvailable('mcrypt')) {
-        throw new PrerequisitesNotMetError('Needs extension "mcrypt"');
-      }
-
-      SecureString::useBacking(SecureString::BACKING_MCRYPT);
-    }
+  public function setUp() {
+    SecureString::useBacking(SecureString::BACKING_MCRYPT);
   }
-?>
+}

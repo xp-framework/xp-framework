@@ -1,22 +1,16 @@
-<?php
-/* This class is part of the XP Framework
- *
- * $Id$
- */
+<?php namespace net\xp_framework\unittest\security;
 
-  uses(
-    'net.xp_framework.unittest.security.SecureStringTest',
-    'security.SecureString'
-  );
+use security\SecureString;
+
+/**
+ * Testcase for plaintext backed security.SecureString implementation
+ */
+class PlainTextSecureStringTest extends SecureStringTest {
 
   /**
-   * Testcase for plaintext backed security.SecureString implementation
-   *
+   * Use PLAINTEXT backing
    */
-  class PlainTextSecureStringTest extends SecureStringTest {
-
-    public function setUp() {
-      SecureString::useBacking(SecureString::BACKING_PLAINTEXT);
-    }
+  public function setUp() {
+    SecureString::useBacking(SecureString::BACKING_PLAINTEXT);
   }
-?>
+}

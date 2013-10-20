@@ -1,18 +1,10 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\core\generics;
+
+/**
+ * Lookup map
  *
- * $Id$
  */
+#[@generic(self= 'V', parent= 'lang.Type, V')]
+class TypeLookup extends Lookup {
 
-  $package= 'net.xp_framework.unittest.core.generics';
-
-  uses('net.xp_framework.unittest.core.generics.Lookup');
-
-  /**
-   * Lookup map
-   *
-   */
-  #[@generic(self= 'V', parent= 'lang.Type, V')]
-  class net·xp_framework·unittest·core·generics·TypeLookup extends net·xp_framework·unittest·core·generics·Lookup {
-  }
-?>
+}

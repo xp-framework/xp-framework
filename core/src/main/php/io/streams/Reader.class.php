@@ -7,24 +7,23 @@
   uses('io.streams.InputStream', 'lang.Closeable');
 
   /**
-   * Servers as an bstract base class for all other readers. A reader 
-   * returns characters it reads from the underlying InputStream 
+   * Serves as an abstract base class for all other readers. A reader
+   * returns characters it reads from the underlying InputStream
    * implementation (which works with bytes - for single-byte character
    * sets, there is no difference, obviously).
-   *
    */
   abstract class Reader extends Object implements Closeable {
     protected $stream= NULL;
     
     /**
-     * Constructor. Creates a new Reader from an InputStream.
+     * Creates a new Reader from an InputStream.
      *
      * @param   io.streams.InputStream stream
      */
     public function __construct(InputStream $stream) {
       $this->stream= $stream;
     }
-    
+
     /**
      * Returns the underlying stream
      *

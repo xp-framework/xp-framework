@@ -251,12 +251,12 @@
      */
     public function getSource($indent= INDENT_WRAPPED, $encoding= xp::ENCODING, $inset= '') {
       $xml= $inset.'<'.$this->name;
-      $conv= 'iso-8859-1' != $encoding;
+      $conv= xp::ENCODING != $encoding;
       
       if ('string' == ($type= gettype($this->content))) {
         $content= $conv
-          ? iconv('iso-8859-1', $encoding, htmlspecialchars($this->content, ENT_COMPAT, 'iso-8859-1'))
-          : htmlspecialchars($this->content, ENT_COMPAT, 'iso-8859-1')
+          ? iconv(xp::ENCODING, $encoding, htmlspecialchars($this->content, ENT_COMPAT, xp::ENCODING))
+          : htmlspecialchars($this->content, ENT_COMPAT, xp::ENCODING)
         ;
       } else if ('float' == $type) {
         $content= ($this->content - floor($this->content) == 0)
@@ -265,12 +265,12 @@
         ;
       } else if ($this->content instanceof PCData) {
         $content= $conv
-          ? iconv('iso-8859-1', $encoding, $this->content->pcdata)
+          ? iconv(xp::ENCODING, $encoding, $this->content->pcdata)
           : $this->content->pcdata
         ;
       } else if ($this->content instanceof CData) {
         $content= '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $conv
-          ? iconv('iso-8859-1', $encoding, $this->content->cdata)
+          ? iconv(xp::ENCODING, $encoding, $this->content->cdata)
           : $this->content->cdata
         ).']]>';
       } else if ($this->content instanceof String) {
@@ -282,9 +282,9 @@
       if (INDENT_NONE === $indent) {
         foreach ($this->attribute as $key => $value) {
           $xml.= ' '.$key.'="'.htmlspecialchars(
-            $conv ? iconv('iso-8859-1', $encoding, $value) : $value,
+            $conv ? iconv(xp::ENCODING, $encoding, $value) : $value,
             ENT_COMPAT,
-            'iso-8859-1'
+            xp::ENCODING
           ).'"';
         }
         $xml.= '>'.$content;
@@ -297,9 +297,9 @@
           $sep= (sizeof($this->attribute) < 3) ? '' : "\n".$inset;
           foreach ($this->attribute as $key => $value) {
             $xml.= $sep.' '.$key.'="'.htmlspecialchars(
-              $conv ? iconv('iso-8859-1', $encoding, $value) : $value,
+              $conv ? iconv(xp::ENCODING, $encoding, $value) : $value,
               ENT_COMPAT,
-              'iso-8859-1'
+              xp::ENCODING
             ).'"';
           }
           $xml.= $sep;

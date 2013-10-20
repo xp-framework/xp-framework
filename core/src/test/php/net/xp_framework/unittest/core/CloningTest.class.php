@@ -1,68 +1,47 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\core;
+
+use unittest\TestCase;
+use lang\CloneNotSupportedException;
+
+/**
+ * Tests destructor functionality
  *
- * $Id$
+ * @purpose  Testcase
  */
+class CloningTest extends TestCase {
 
-  uses('unittest.TestCase', 'lang.CloneNotSupportedException');
-
-  /**
-   * Tests destructor functionality
-   *
-   * @purpose  Testcase
-   */
-  class CloningTest extends TestCase {
-
-    /**
-     * Tests cloning of xp::null() which shouldn't work
-     *
-     */
-    #[@test, @expect('lang.NullPointerException')]
-    public function cloningOfNulls() {
-      clone(xp::null());
-    }
-
-    /**
-     * Tests cloning of an object without a __clone interceptor
-     *
-     */
-    #[@test]
-    public function cloneOfObject() {
-      $original= new Object();
-      $this->assertFalse($original == clone($original));
-    }
-
-    /**
-     * Tests cloning of an object with a __clone interceptor
-     *
-     */
-    #[@test]
-    public function cloneInterceptorCalled() {
-      $original= newinstance('lang.Object', array(), '{
-        var $cloned= FALSE;
-
-        function __clone() {
-          $this->cloned= TRUE;
-        }
-      }');
-      $this->assertFalse($original->cloned);
-      $clone= clone($original);
-      $this->assertFalse($original->cloned);
-      $this->assertTrue($clone->cloned);
-    }
-
-    /**
-     * Tests cloning of an object whose __clone interceptor throws a 
-     * CloneNotSupportedException
-     *
-     */
-    #[@test, @expect('lang.CloneNotSupportedException')]
-    public function cloneInterceptorThrowsException() {
-      clone(newinstance('lang.Object', array(), '{
-        function __clone() {
-          throw new CloneNotSupportedException("I am *UN*Cloneable");
-        }
-      }'));
-    }
+  #[@test, @expect('lang.NullPointerException')]
+  public function cloningOfNulls() {
+    clone(\xp::null());
   }
-?>
+
+  #[@test]
+  public function cloneOfObject() {
+    $original= new \lang\Object();
+    $this->assertFalse($original == clone($original));
+  }
+
+  #[@test]
+  public function cloneInterceptorCalled() {
+    $original= newinstance('lang.Object', array(), '{
+      public $cloned= FALSE;
+
+      public function __clone() {
+        $this->cloned= true;
+      }
+    }');
+    $this->assertFalse($original->cloned);
+    $clone= clone($original);
+    $this->assertFalse($original->cloned);
+    $this->assertTrue($clone->cloned);
+  }
+
+  #[@test, @expect('lang.CloneNotSupportedException')]
+  public function cloneInterceptorThrowsException() {
+    clone(newinstance('lang.Object', array(), '{
+      public function __clone() {
+        throw new CloneNotSupportedException("I am *UN*Cloneable");
+      }
+    }'));
+  }
+}

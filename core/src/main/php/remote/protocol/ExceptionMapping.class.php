@@ -29,13 +29,13 @@
       $class= XPClass::forName($serializer->exceptionName($serialized->consumeString()));
 
       $size= $serialized->consumeSize();
-      $serialized->offset++;  // Opening "{"
+      $serialized->consume('{');
       $data= array();
       for ($i= 0; $i < $size; $i++) {
         $member= $serializer->valueOf($serialized, $context);
         $data[$member]= $serializer->valueOf($serialized, $context);
       }
-      $serialized->offset++; // Closing "}"
+      $serialized->consume('}');
       
       $instance= $class->newInstance($data['message']);
       unset($data['message']);

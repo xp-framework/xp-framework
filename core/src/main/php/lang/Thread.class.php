@@ -172,8 +172,15 @@
         $this->running= TRUE;
         $this->_id= getmypid();
         $this->_pid= $parent;
-        $this->getTarget()->run();
-        exit();
+        try {
+          exit($this->getTarget()->run());
+        } catch (SystemExit $e) {
+          if ($message= $e->getMessage()) echo $message, "\n";
+          exit($e->getCode());
+        } catch (Throwable $t) {
+          fputs(STDERR, 'Uncaught exception (in child #'.$this->_id.'): '.xp::stringOf($t));
+          exit(0xf0);
+        }
       }
     }
     
@@ -239,6 +246,7 @@
     /**
      * Subclasses of Thread should override this method.
      *
+     * @return  var
      */
     public function run() { }
   }

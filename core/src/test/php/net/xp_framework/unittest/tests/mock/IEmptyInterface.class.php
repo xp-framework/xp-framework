@@ -1,14 +1,9 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\tests\mock;
+
+/**
+ * Dummy interface used in other tests
  *
- * $Id$
  */
+interface IEmptyInterface {
 
-  /**
-   * Dummy interface used in other tests
-   *
-   */
-  interface IEmptyInterface {
-
-  }
-?>
+}

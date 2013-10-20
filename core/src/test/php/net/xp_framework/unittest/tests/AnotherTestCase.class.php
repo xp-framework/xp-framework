@@ -1,25 +1,21 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$
- */
+<?php namespace net\xp_framework\unittest\tests;
  
-  uses('unittest.TestCase');
+use unittest\TestCase;
+
+
+/**
+ * This class is used in the SuiteTest 
+ *
+ * @purpose  Unit Test
+ */
+class AnotherTestCase extends TestCase {
 
   /**
-   * This class is used in the SuiteTest 
+   * Always succeeds
    *
-   * @purpose  Unit Test
    */
-  class AnotherTestCase extends TestCase {
-
-    /**
-     * Always succeeds
-     *
-     */
-    #[@test]
-    public function succeeds() {
-      $this->assertTrue(TRUE);
-    }
+  #[@test]
+  public function succeeds() {
+    $this->assertTrue(true);
   }
-?>
+}

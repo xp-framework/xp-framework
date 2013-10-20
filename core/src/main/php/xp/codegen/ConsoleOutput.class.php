@@ -1,46 +1,39 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace xp\codegen;
 
-  uses('xp.codegen.AbstractOutput', 'io.streams.StringWriter');
+use io\streams\StringWriter;
+
+/**
+ * Output to console
+ */
+class ConsoleOutput extends AbstractOutput {
+  protected
+    $writer = null;
+    
+  /**
+   * Constructor
+   *
+   * @param   io.streams.StringWriter writer
+   */
+  public function __construct(StringWriter $writer) {
+    $this->writer= $writer;
+  }
 
   /**
-   * Output to console
+   * Store data
    *
-   * @purpose  AbstractOutput implementation
+   * @param   string name
+   * @param   string data
    */
-  class ConsoleOutput extends AbstractOutput {
-    protected
-      $writer = NULL;
-      
-    /**
-     * Constructor
-     *
-     * @param   io.streams.StringWriter writer
-     */
-    public function __construct(StringWriter $writer) {
-      $this->writer= $writer;
-    }
-
-    /**
-     * Store data
-     *
-     * @param   string name
-     * @param   string data
-     */
-    protected function store($name, $data) {
-      $this->writer->writeLine($data);
-    }
-
-    
-    /**
-     * Commit output
-     *
-     */
-    public function commit() {
-      // NOOP
-    }
+  protected function store($name, $data) {
+    $this->writer->writeLine($data);
   }
-?>
+
+  
+  /**
+   * Commit output
+   *
+   */
+  public function commit() {
+    // NOOP
+  }
+}

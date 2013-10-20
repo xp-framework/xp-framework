@@ -322,7 +322,7 @@
         return $this->_reflect->getConstant($constant);
       }
       
-      raise('lang.ElementNotFoundException', 'No such constants "'.$constant.'" in class '.$this->name);
+      raise('lang.ElementNotFoundException', 'No such constant "'.$constant.'" in class '.$this->name);
     }
 
     /**
@@ -587,206 +587,234 @@
      * Parses annotation string
      *
      * @param   string input
-     * @param   string context the class name, and optionally the line number.
+     * @param   string context the class name
+     * @return  [:string] imports
+     * @param   int line 
      * @return  [:var]
      * @throws  lang.ClassFormatException
      */
-    public static function parseAnnotations($input, $context) {
-      $input= trim($input, "[]# \t\n\r").']';
-      $offset= 0;
+    public static function parseAnnotations($input, $context, $imports= array(), $line= -1) {
+      static $states= array(
+        'annotation', 'annotation name', 'annotation value',
+        'annotation map key', 'annotation map value',
+        'multi-value'
+      );
+
+      $tokens= token_get_all('<?php '.trim($input, "[# \t\n\r"));
       $annotations= array(0 => array(), 1 => array());
-      $annotation= $value= NULL;
-      $length= strlen($input);
-      ob_start();
-      while ($offset < $length) {
-        $state= $input{$offset};
-        if ('@' === $state) {
-          $s= strcspn($input, ',(]', $offset);
-          $annotation= substr($input, $offset+ 1, $s- 1);
-          $offset+= $s;
-        } else if (']' === $state) {
-          if (NULL === $annotation) {
-            // Nothing
-          } else if (FALSE === ($p= strpos($annotation, ':'))) {
-            $annotations[0][$annotation]= $value;
+      $place= $context.(-1 === $line ? '' : ', line '.$line);
+
+      // Resolve classes
+      $resolve= function($type, $context, $imports) {
+        if ('self' === $type) {
+          return XPClass::forName($context);
+        } else if ('parent' === $type) {
+          return XPClass::forName($context)->getParentclass();
+        } else if (FALSE !== strpos($type, '.')) {
+          return XPClass::forName($type);
+        } else if (isset($imports[$type])) {
+          return XPClass::forName($imports[$type]);
+        } else if (isset(xp::$cn[$type])) {
+          return XPClass::forName(xp::$cn[$type]);
+        } else if (FALSE !== ($p= strrpos($context, '.'))) {
+          return XPClass::forName(substr($context, 0, $p + 1).$type);
+        } else {
+          return XPClass::forName($type);
+        }
+      };
+
+      // Class::CONSTANT vs. Class::$MEMBER
+      $memberOf= function($tokens, &$i, $class) use ($context) {
+        if (T_VARIABLE === $tokens[$i][0]) {
+          $field= $class->getField(substr($tokens[$i][1], 1));
+          $m= $field->getModifiers();
+          if ($m & MODIFIER_PUBLIC) {
+            return $field->get(NULL);
+          } else if (($m & MODIFIER_PROTECTED) && $class->isAssignableFrom($context)) {
+            return $field->setAccessible(TRUE)->get(NULL);
+          } else if (($m & MODIFIER_PRIVATE) && $class->getName() === $context) {
+            return $field->setAccessible(TRUE)->get(NULL);
           } else {
-            $target= rtrim(substr($annotation, 0, $p), ' ');
-            $annotation= ltrim(substr($annotation, $p+ 1), ' ');
-            isset($annotations[1][$target]) || $annotations[1][$target]= array();
-            $annotations[1][$target][$annotation]= $value;
-          }
-          break;
-        } else if ('(' === $state) {
-          $peek= substr($input, $offset+ 1, strcspn($input, '="\')', $offset));
-          if ('\'' === $peek{0} || '"' === $peek{0}) {
-            $p= $offset+ 2;
-            $q= $peek{0};
-            while (($s= strcspn($input, $q, $p)) !== 0) {
-              $p+= $s;
-              if ('\\' !== $input{$p- 1}) break;
-              $p++;   
-            }
-            if (!is_string($value= @eval('return '.substr($input, $offset+ 1, $p - $offset).';'))) {
-              raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
-            }
-            $offset= $p+ 1;
-          } else if ('[' === ($a= $peek{0}) || 'array(' === ($a= substr($peek, 0, 6))) {
-            $la= strlen($a);
-            $ba= '[' === $a ? '[]' : '()';
-            $b= 1;
-            $p= $offset+ $la+ 1;
-            while ($b > 0) {
-              $p+= strcspn($input, $ba.'"\'', $p);
-              if ($p >= $length) {
-                raise('lang.ClassFormatException', 'Parse error: Unterminated array in '.$context);
-              }
-              if ($ba{0} === $input{$p}) $b++; else if ($ba{1} === $input{$p}) $b--;else if ('\'' === $input{$p} || '"' === $input{$p}) {
-                $q= $input{$p};
-                $p++;
-                while (($s= strcspn($input, $q, $p)) !== 0) {
-                  $p+= $s;
-                  if ('\\' !== $input{$p- 1}) break;
-                  $p++;
-                }
-              }
-              $p++;
-            }
-            if ($p >= $length || !is_array($value= @eval('return array('.substr($input, $offset+ $la+ 1, $p- $offset- $la- 1- 1).');'))) {
-              raise('lang.ClassFormatException', 'Parse error: Malformed array in '.$context);
-            }
-            $offset= $p;
-          } else if ('=' !== $peek{strlen($peek)- 1}) {
-            $value= eval('return '.substr($peek, 0, -1).';');
-            $offset+= strlen($peek);
-          } else {
-            $value= array();
-            do {
-              $key= trim($peek, '= ');
-              $offset+= strlen($peek)+ 1;
-              $offset+= strspn($input, ' ', $offset);
-              if ($offset >= $length) {
-                break;
-              } else if ('[' === ($a= $input{$offset}) || 'array(' === ($a= substr($input, $offset, 6))) {
-                $la= strlen($a);
-                $ba= '[' === $a ? '[]' : '()';
-                $b= 1;
-                $p= $offset+ $la;
-                while ($b > 0) {
-                  $p+= strcspn($input, $ba.'"\'', $p);
-                  if ($p >= $length) {
-                    raise('lang.ClassFormatException', 'Parse error: Unterminated array in '.$context);
-                  }
-                  if ($ba{0} === $input{$p}) $b++; else if ($ba{1} === $input{$p}) $b--; else if ('\'' === $input{$p} || '"' === $input{$p}) {
-                    $q= $input{$p};
-                    $p++;
-                    while (($s= strcspn($input, $q, $p)) !== 0) {
-                      $p+= $s;
-                      if ('\\' !== $input{$p- 1}) break;
-                      $p++;
-                    }
-                  }
-                  $p++;
-                }
-                if (!is_array($value[$key]= @eval('return array('.substr($input, $offset+ $la, $p- $offset- $la- 1).');'))) {
-                  raise('lang.ClassFormatException', 'Parse error: Malformed array in '.$context);
-                }
-                $offset= $p;
-              } else if ('\'' === $input{$offset} || '"' === $input{$offset}) {
-                $p= $offset+ 1;
-                $q= $input{$offset};
-                while (($s= strcspn($input, $q, $p)) !== 0) {
-                  $p+= $s;
-                  if ('\\' !== $input{$p- 1}) break;
-                  $p++;   
-                }
-                if (!is_string($value[$key]= @eval('return '.substr($input, $offset, $p - $offset + 1).';'))) {
-                  raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
-                }
-                $offset= $p+ 1;
-              } else {
-                $s= strcspn($input, ',)', $offset);
-                $value[$key]= eval('return '.substr($input, $offset, $s).';');
-                $offset+= $s;
-              }
-              
-              // Find next key
-              $s= strcspn($input, '="\')', $offset);
-              $peek= substr($input, $offset+ 1, $s);
-            } while ($s);
-          }
-          if ($offset >= $length) {
-            raise('lang.ClassFormatException', 'Parse error: Expecting ] in '.$context);
-          }
-        } else if (')' === $state) {
-          if (FALSE === ($p= strpos($annotation, ':'))) {
-            $annotations[0][$annotation]= $value;
-          } else {
-            $target= rtrim(substr($annotation, 0, $p), ' ');
-            $annotation= ltrim(substr($annotation, $p+ 1), ' ');
-            isset($annotations[1][$target]) || $annotations[1][$target]= array();
-            $annotations[1][$target][$annotation]= $value;
-          }
-          $annotation= $value= NULL;
-          $s= strspn($input, ',]', $offset);
-          $offset+= $s + 1;
-        } else if (',' === $state) {
-          if (NULL !== $annotation && NULL !== $value) {    // BC
-            trigger_error('Deprecated usage of multi-value annotations in '.$context, E_USER_DEPRECATED);
-            $annotations[0][$annotation]= array($value);
-            do {
-              $s= strspn($input, ' "\')', $offset+ 1);
-              $offset+= $s;
-              if ('\'' === $input{$offset} || '"' === $input{$offset}) {
-                $p= $offset+ 1;
-                $q= $input{$offset};
-                while (($s= strcspn($input, $q, $p)) !== 0) {
-                  $p+= $s;
-                  if ('\\' !== $input{$p- 1}) break;
-                  $p++;
-                }
-                if (!is_string($value= @eval('return '.substr($input, $offset, $p - $offset+ 1).';'))) {
-                  raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
-                }
-                $offset= $p+ 1;
-                $annotations[0][$annotation][]= $value;
-              } else if (')' === $input{$offset}) {
-                break;
-              } else {
-                $s= strcspn($input, ',)', $offset);
-                $annotations[0][$annotation][]= eval('return '.substr($input, $offset, $s).';');
-                $offset+= $s;
-              }
-            } while ($offset <= $length);
-            $annotation= $value= NULL;
-            $s= strspn($input, ',]', $offset);
-            $offset+= $s + 1;
-            continue;
-          }
-          if (NULL === $annotation) {
-            // Nothing
-          } else if (FALSE === ($p= strpos($annotation, ':'))) {
-            $annotations[0][$annotation]= $value;
-          } else {
-            $target= rtrim(substr($annotation, 0, $p), ' ');
-            $annotation= ltrim(substr($annotation, $p+ 1), ' ');
-            isset($annotations[1][$target]) || $annotations[1][$target]= array();
-            $annotations[1][$target][$annotation]= $value;
-          }
-          $annotation= $value= NULL;
-          if (FALSE === ($offset= strpos($input, '@', $offset))) {
-            raise('lang.ClassFormatException', 'Parse error: Expecting @ in '.$context);
+            throw new IllegalAccessException(sprintf(
+              'Cannot access %s field %s::$%s',
+              implode(' ', Modifiers::namesOf($m)),
+              $class->getName(),
+              $field->getName()
+            ));
           }
         } else {
-          raise('lang.ClassFormatException', 'Parse error: Unknown state '.$state.' at position '.$offset.' in '.$context);
+          return $class->getConstant($tokens[$i][1]);
         }
+      };
+
+      // Parse a single value (recursively, if necessary)
+      $valueOf= function($tokens, &$i) use(&$valueOf, &$memberOf, &$resolve, $context, $imports) {
+        if ('-' ===  $tokens[$i][0]) {
+          $i++;
+          return -1 * $valueOf($tokens, $i);
+        } else if ('+' ===  $tokens[$i][0]) {
+          $i++;
+          return +1 * $valueOf($tokens, $i);
+        } else if (T_CONSTANT_ENCAPSED_STRING === $tokens[$i][0]) {
+          return eval('return '.$tokens[$i][1].';');
+        } else if (T_LNUMBER === $tokens[$i][0]) {
+          return (int)$tokens[$i][1];
+        } else if (T_DNUMBER === $tokens[$i][0]) {
+          return (double)$tokens[$i][1];
+        } else if ('[' === $tokens[$i] || T_ARRAY === $tokens[$i][0]) {
+          $value= array();
+          $element= NULL;
+          $key= 0;
+          $end= '[' === $tokens[$i] ? ']' : ')';
+          for ($i++, $s= sizeof($tokens); ; $i++) {
+            if ($i >= $s) {
+              throw new IllegalStateException('Parse error: Unterminated array');
+            } else if ($end === $tokens[$i]) {
+              $element && $value[$key]= $element[0];
+              break;
+            } else if ('(' === $tokens[$i]) {
+              // Skip
+            } else if (',' === $tokens[$i]) {
+              $element || raise('lang.IllegalStateException', 'Parse error: Malformed array - no value before comma');
+              $value[$key]= $element[0];
+              $element= NULL;
+              $key= sizeof($value);
+            } else if (T_DOUBLE_ARROW === $tokens[$i][0]) {
+              $key= $element[0];
+              $element= NULL;
+            } else if (T_WHITESPACE === $tokens[$i][0]) {
+              continue;
+            } else {
+              $element && raise('lang.IllegalStateException', 'Parse error: Malformed array - missing comma');
+              $element= array($valueOf($tokens, $i));
+            }
+          }
+          return $value;
+        } else if ('"' === $tokens[$i] || T_ENCAPSED_AND_WHITESPACE === $tokens[$i][0]) {
+          throw new IllegalStateException('Parse error: Unterminated string');
+        } else if (T_NS_SEPARATOR === $tokens[$i][0]) {
+          $type= '';
+          while (T_NS_SEPARATOR === $tokens[$i++][0]) {
+            $type.= '.'.$tokens[$i++][1];
+          }
+          return $memberOf($tokens, $i, XPClass::forName(substr($type, 1)));
+        } else if (T_STRING === $tokens[$i][0]) {     // constant vs. class::constant
+          if (T_DOUBLE_COLON === $tokens[$i + 1][0]) {
+            $i+= 2;
+            return $memberOf($tokens, $i, $resolve($tokens[$i - 2][1], $context, $imports));
+          } else if (defined($tokens[$i][1])) {
+            return constant($tokens[$i][1]);
+          } else {
+            raise('lang.ElementNotFoundException', 'Undefined constant "'.$tokens[$i][1].'"');
+          }
+        } else if (T_NEW === $tokens[$i][0]) {
+          $type= '';
+          while ('(' !== $tokens[$i++]) {
+            if (T_STRING === $tokens[$i][0]) $type.= '.'.$tokens[$i][1];
+          }
+          $class= $resolve(substr($type, 1), $context, $imports);
+          for ($args= array(), $arg= NULL, $s= sizeof($tokens); ; $i++) {
+            if (')' === $tokens[$i]) {
+              $arg && $args[]= $arg[0];
+              break;
+            } else if (',' === $tokens[$i]) {
+              $args[]= $arg[0];
+              $arg= NULL;
+            } else if (T_WHITESPACE !== $tokens[$i][0]) {
+              $arg= array($valueOf($tokens, $i));
+            }
+          }
+          return $class->hasConstructor() ? $class->getConstructor()->newInstance($args) : $class->newInstance();
+        } else {
+          throw new IllegalStateException(sprintf(
+            'Parse error: Unexpected %s',
+            is_array($tokens[$i]) ? token_name($tokens[$i][0]) : '"'.$tokens[$i].'"'
+          ));
+        }
+      };
+
+      // Parse tokens
+      try {
+        for ($state= 0, $i= 1, $s= sizeof($tokens); $i < $s; $i++) {
+          if (T_WHITESPACE === $tokens[$i][0]) {
+            continue;
+          } else if (0 === $state) {             // Initial state, expecting @attr or @$param: attr
+            if ('@' === $tokens[$i]) {
+              $annotation= $tokens[$i + 1][1];
+              $param= NULL;
+              $value= NULL;
+              $i++;
+              $state= 1;
+            } else {
+              throw new IllegalStateException('Parse error: Expecting "@"');
+            }
+          } else if (1 === $state) {              // Inside attribute, check for values
+            if ('(' === $tokens[$i]) {
+              $state= 2;
+            } else if (',' === $tokens[$i]) {
+              if ($param) {
+                $annotations[1][$param][$annotation]= $value;
+              } else {
+                $annotations[0][$annotation]= $value;
+              }
+              $state= 0;
+            } else if (']' === $tokens[$i]) {
+              if ($param) {
+                $annotations[1][$param][$annotation]= $value;
+              } else {
+                $annotations[0][$annotation]= $value;
+              }
+              return $annotations;
+            } else if (':' === $tokens[$i]) {
+              $param= $annotation;
+              $annotation= NULL;
+            } else if (T_STRING === $tokens[$i][0]) {
+              $annotation= $tokens[$i][1];
+            } else {
+              throw new IllegalStateException('Parse error: Expecting either "(", "," or "]"');
+            }
+          } else if (2 === $state) {              // Inside braces of @attr(...)
+            if (')' === $tokens[$i]) {
+              $state= 1;
+            } else if (',' === $tokens[$i]) {
+              trigger_error('Deprecated usage of multi-value annotations in '.$place, E_USER_DEPRECATED);
+              $value= (array)$value;
+              $state= 5;
+            } else if ($i + 2 < $s && ('=' === $tokens[$i + 1] || '=' === $tokens[$i + 2])) {
+              $key= $tokens[$i][1];
+              $value= array();
+              $state= 3;
+            } else {
+              $value= $valueOf($tokens, $i);
+            }
+          } else if (3 === $state) {              // Parsing key inside @attr(a= b, c= d)
+            if (')' === $tokens[$i]) {
+              $state= 1;
+            } else if (',' === $tokens[$i]) {
+              $key= null;
+            } else if ('=' === $tokens[$i]) {
+              $state= 4;
+            } else if (is_array($tokens[$i])) {
+              $key= $tokens[$i][1];
+            }
+          } else if (4 === $state) {              // Parsing value inside @attr(a= b, c= d)
+            $value[$key]= $valueOf($tokens, $i);
+            $state= 3;
+          } else if (5 === $state) {
+            if (')' === $tokens[$i]) {            // BC: Deprecated multi-value annotations
+              $value[]= $element;
+              $state= 1;
+            } else if (',' === $tokens[$i]) {
+              $value[]= $element;
+            } else {
+              $element= $valueOf($tokens, $i);
+            }
+          }
+        }
+      } catch (XPException $e) {
+        raise('lang.ClassFormatException', $e->getMessage().' in '.$place, $e);
       }
-      $error= ob_get_contents();
-      ob_end_clean();
-      if ($error) {
-        raise('lang.ClassFormatException', trim($error).' in '.$context);
-      }
-      
-      return $annotations;
+      raise('lang.ClassFormatException', 'Parse error: Unterminated '.$states[$state].' in '.$place);
     }
 
     /**
@@ -799,39 +827,42 @@
     public static function parseDetails($bytes, $context= '') {
       $details= array(array(), array());
       $annotations= array(0 => array(), 1 => array());
+      $imports= array();
       $comment= NULL;
       $members= TRUE;
       $parsed= '';
       $tokens= token_get_all($bytes);
       for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
         switch ($tokens[$i][0]) {
+          case T_USE:
+            if (isset($details['class'])) break;  // Inside class, e.g. function() use(...) {}
+            $type= '';
+            while (';' !== $tokens[++$i] && $i < $s) {
+              T_WHITESPACE === $tokens[$i][0] || $type.= $tokens[$i][1];
+            }
+            $imports[substr($type, strrpos($type, '\\')+ 1)]= strtr($type, '\\', '.');
+            break;
+
           case T_DOC_COMMENT:
             $comment= $tokens[$i][1];
             break;
 
           case T_COMMENT:
-            if ('#' === $tokens[$i][1]{0}) {      // Annotations
+            if ('#' === $tokens[$i][1]{0}) {      // Annotations, #[@test]
               if ('[' === $tokens[$i][1]{1}) {
                 $parsed= substr($tokens[$i][1], 2);
               } else {
                 $parsed.= substr($tokens[$i][1], 1);
-              }
-              if (']' == substr(rtrim($tokens[$i][1]), -1)) {
-                $annotations= self::parseAnnotations(
-                  trim($parsed, " \t\n\r"), 
-                  $context.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
-                );
-                $parsed= '';
               }
             }
             break;
 
           case T_CLASS:
           case T_INTERFACE:
-            if ('' !== $parsed) raise(
-              'lang.ClassFormatException', 
-              'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$context.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
-            );
+            if ($parsed) {
+              $annotations= self::parseAnnotations($parsed, $context, $imports, isset($tokens[$i][2]) ? $tokens[$i][2] : -1);
+              $parsed= '';
+            }
             $details['class']= array(
               DETAIL_COMMENT      => trim(preg_replace('/\n\s+\* ?/', "\n", "\n".substr(
                 $comment, 
@@ -844,11 +875,12 @@
             $comment= NULL;
             break;
 
-          case T_VARIABLE:
+          case T_VARIABLE:                      // Have a member variable
             if (!$members) break;
-
-            // Have a member variable
-            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$context.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
+            if ($parsed) {
+              $annotations= self::parseAnnotations($parsed, $context, $imports, isset($tokens[$i][2]) ? $tokens[$i][2] : -1);
+              $parsed= '';
+            }
             $name= substr($tokens[$i][1], 1);
             $details[0][$name]= array(
               DETAIL_ANNOTATIONS => $annotations[0]
@@ -858,13 +890,16 @@
 
           case T_FUNCTION:
             if (T_STRING !== $tokens[$i+ 2][0]) break;    // A closure, `function($params) { return TRUE; }`
-            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$context.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
+            if ($parsed) {
+              $annotations= self::parseAnnotations($parsed, $context, $imports, isset($tokens[$i][2]) ? $tokens[$i][2] : -1);
+              $parsed= '';
+            }
             $members= FALSE;
             $i+= 2;
             $m= $tokens[$i][1];
             $details[1][$m]= array(
               DETAIL_ARGUMENTS    => array(),
-              DETAIL_RETURNS      => NULL === $comment ? NULL : 'void',
+              DETAIL_RETURNS      => NULL,
               DETAIL_THROWS       => array(),
               DETAIL_COMMENT      => trim(preg_replace('/\n\s+\* ?/', "\n", "\n".substr(
                 $comment, 
@@ -1158,17 +1193,17 @@
                   } else if ('...' === substr($type, -3)) {
                     $src.= $j ? '$·args= array_slice(func_get_args(), '.$j.');' : '$·args= func_get_args();';
                     $src.= (
-                      ' if (!is(\''.substr($generic[$j], 0, -3).'[]\', $·args)) throw new IllegalArgumentException('.
+                      ' if (!is(\''.substr($generic[$j], 0, -3).'[]\', $·args)) throw new \lang\IllegalArgumentException('.
                       '"Vararg '.($j + 1).' passed to ".__METHOD__."'.
-                      ' must be of '.$type.', ".xp::stringOf($·args)." given"'.
+                      ' must be of '.$type.', ".\xp::stringOf($·args)." given"'.
                       ');'
                     );
                   } else {
                     $src.= (
                       ' if ('.(isset($default[$j]) ? '('.$default[$j].' !== '.$parameters[$j].') && ' : '').
-                      '!is(\''.$generic[$j].'\', '.$parameters[$j].')) throw new IllegalArgumentException('.
+                      '!is(\''.$generic[$j].'\', '.$parameters[$j].')) throw new \lang\IllegalArgumentException('.
                       '"Argument '.($j + 1).' passed to ".__METHOD__."'.
-                      ' must be of '.$type.', ".xp::typeOf('.$parameters[$j].')." given"'.
+                      ' must be of '.$type.', ".\xp::typeOf('.$parameters[$j].')." given"'.
                       ');'
                     );
                   }

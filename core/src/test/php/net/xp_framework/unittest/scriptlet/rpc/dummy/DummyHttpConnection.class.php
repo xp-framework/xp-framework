@@ -1,28 +1,21 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace net\xp_framework\unittest\scriptlet\rpc\dummy;
 
-  uses(
-    'peer.http.HttpConnection',
-    'net.xp_framework.unittest.scriptlet.rpc.dummy.DummyHttpRequest'
-  );
+use peer\http\HttpConnection;
+
+
+/**
+ * Dummy HTTP connection
+ *
+ * @purpose  Unittesting dummy
+ */
+class DummyHttpConnection extends HttpConnection {
 
   /**
-   * Dummy HTTP connection
+   * Create request
    *
-   * @purpose  Unittesting dummy
+   * @param   &peer.URL url
    */
-  class DummyHttpConnection extends HttpConnection {
-  
-    /**
-     * Create request
-     *
-     * @param   &peer.URL url
-     */
-    protected function _createRequest($url) {
-      $this->request= new DummyHttpRequest($url);
-    }
+  protected function _createRequest($url) {
+    $this->request= new DummyHttpRequest($url);
   }
-?>
+}

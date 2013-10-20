@@ -1,27 +1,22 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$
- */
+<?php namespace net\xp_framework\unittest\util;
 
-  uses('net.xp_framework.unittest.util.AbstractPropertiesTest');
+
+
+/**
+ * Testcase for util.Properties class.
+ *
+ * @see   xp://net.xp_framework.unittest.util.AbstractPropertiesTest
+ * @see   xp://util.Properties#fromString
+ */
+class StringBasedPropertiesTest extends AbstractPropertiesTest {
 
   /**
-   * Testcase for util.Properties class.
+   * Create a new properties object from a string source
    *
-   * @see   xp://net.xp_framework.unittest.util.AbstractPropertiesTest
-   * @see   xp://util.Properties#fromString
+   * @param   string source
+   * @return  util.Properties
    */
-  class StringBasedPropertiesTest extends AbstractPropertiesTest {
-  
-    /**
-     * Create a new properties object from a string source
-     *
-     * @param   string source
-     * @return  util.Properties
-     */
-    protected function newPropertiesFrom($source) {
-      return Properties::fromString($source);
-    }
+  protected function newPropertiesFrom($source) {
+    return \util\Properties::fromString($source);
   }
-?>
+}

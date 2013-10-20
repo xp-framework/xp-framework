@@ -1,60 +1,33 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\core;
+
+/**
+ * Tests typeof() functionality
  *
- * $Id$
  */
+class TypeOfTest extends \unittest\TestCase {
 
-  uses('unittest.TestCase');
-
-  /**
-   * Tests typeof() functionality
-   *
-   */
-  class TypeOfTest extends TestCase {
-
-    /**
-     * Test typeof(NULL)
-     *
-     */
-    #[@test]
-    public function null() {
-      $this->assertEquals(Type::$VOID, typeof(NULL));
-    }
-
-    /**
-     * Test typeof($this)
-     *
-     */
-    #[@test]
-    public function this() {
-      $this->assertEquals($this->getClass(), typeof($this));
-    }
-
-    /**
-     * Test typeof(string)
-     *
-     */
-    #[@test]
-    public function string() {
-      $this->assertEquals(Primitive::$STRING, typeof($this->name));
-    }
-
-    /**
-     * Test typeof(array)
-     *
-     */
-    #[@test]
-    public function intArray() {
-      $this->assertEquals(ArrayType::forName('var[]'), typeof(array(1, 2, 3)));
-    }
-
-    /**
-     * Test typeof(map)
-     *
-     */
-    #[@test]
-    public function intMap() {
-      $this->assertEquals(MapType::forName('[:var]'), typeof(array('one' => 1, 'two' => 2, 'three' => 3)));
-    }
+  #[@test]
+  public function null() {
+    $this->assertEquals(\lang\Type::$VOID, typeof(NULL));
   }
-?>
+
+  #[@test]
+  public function this() {
+    $this->assertEquals($this->getClass(), typeof($this));
+  }
+
+  #[@test]
+  public function string() {
+    $this->assertEquals(\lang\Primitive::$STRING, typeof($this->name));
+  }
+
+  #[@test]
+  public function intArray() {
+    $this->assertEquals(\lang\ArrayType::forName('var[]'), typeof(array(1, 2, 3)));
+  }
+
+  #[@test]
+  public function intMap() {
+    $this->assertEquals(\lang\MapType::forName('[:var]'), typeof(array('one' => 1, 'two' => 2, 'three' => 3)));
+  }
+}

@@ -51,6 +51,8 @@
       if (is_resource($this->handle)) return TRUE;  // Already connected
       if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECT, $reconnect));
+
       // Build connection string. In PostgreSQL, a dbname must _always_
       // be specified.
       $cs= 'dbname='.$this->dsn->getDatabase();
@@ -69,7 +71,7 @@
         throw new SQLConnectException(rtrim(pg_last_error()), $this->dsn);
       }
       
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::CONNECTED, $reconnect));
       
       return TRUE;
     }
@@ -108,7 +110,7 @@
     public function identity($field= NULL) {
       $q= $this->query('select currval(%s) as id', $field);
       $id= $q ? $q->next('id') : NULL;
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $id));
+      $this->_obs && $this->notifyObservers(new DBEvent(DBEvent::IDENTITY, $id));
       return $id;
     }
 

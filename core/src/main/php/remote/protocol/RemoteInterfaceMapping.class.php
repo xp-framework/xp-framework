@@ -31,9 +31,9 @@
      */
     public function valueOf($serializer, $serialized, $context= array()) {
       $oid= $serialized->consumeSize();
-      $serialized->offset++;    // '{'
+      $serialized->consume('{');
       $interface= $serializer->valueOf($serialized, $context);
-      $serialized->offset++;    // '}'
+      $serialized->consume('}');
 
       return Proxy::newProxyInstance(
         ClassLoader::getDefault(), 

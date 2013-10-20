@@ -1,46 +1,39 @@
-<?php
-/* This class is part of the XP framework
+<?php namespace net\xp_framework\unittest\webservices\rest;
+
+use webservices\rest\RestResponse;
+use webservices\rest\RestException;
+
+/**
+ * Fixture for CustomRestResponseTest
  *
- * $Id$ 
+ * @see   xp://webservices.rest.RestResponse
  */
+class CustomRestResponse extends RestResponse {
 
-  uses(
-    'webservices.rest.RestResponse', 
-    'net.xp_framework.unittest.webservices.rest.CustomRestException'
-  );
-  
   /**
-   * Fixture for CustomRestResponseTest
+   * Handle status
    *
-   * @see   xp://webservices.rest.RestResponse
+   * @param   int code
+   * @throws  webservices.rest.RestException
    */
-  class CustomRestResponse extends RestResponse {
-
-    /**
-     * Handle status
-     *
-     * @param   int code
-     * @throws  webservices.rest.RestException
-     */
-    protected function handleStatus($code) {
-      if ($code > 399) {
-        // TODO: $type= this($this->response->header('Content-Type'), 0);
-
-        $e= $this->reader->read(Type::$VAR, $this->input);
-        throw new CustomRestException($e, new RestException($code.': '.$this->response->message()));
-      }
+  protected function handleStatus($code) {
+    if ($code > 399) {
+      $e= $this->reader->read(\lang\Type::$VAR, $this->input);
+      throw new CustomRestException($e, new RestException($code.': '.$this->response->message()));
     }
+  }
 
-    /**
-     * Handle payload
-     * 
-     * @param   lang.Type target
-     * @return  var
-     */
-    protected function handlePayloadOf($target) {
-      if (204 === $this->response->statusCode()) return NULL;  // "No Content"
-
+  /**
+   * Handle payload
+   * 
+   * @param   lang.Type target
+   * @return  var
+   */
+  protected function handlePayloadOf($target) {
+    if (204 === $this->response->statusCode()) {
+      return null;  // "No Content"
+    } else {
       return parent::handlePayloadOf($target);
     }
   }
-?>
+}

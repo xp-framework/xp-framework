@@ -1,54 +1,45 @@
-<?php
-/* This class is part of the XP framework
- *
- * $Id$ 
- */
+<?php namespace xp\unittest\sources;
 
-  $package= 'xp.unittest.sources';
+/**
+ * Source
+ */
+abstract class AbstractSource extends \lang\Object {
 
   /**
-   * Source
+   * Get all test cases
    *
-   * @purpose  Abstract base class
+   * @param   lang.XPClass class
+   * @param   var[] arguments
+   * @return  unittest.TestCase[]
    */
-  abstract class xp·unittest·sources·AbstractSource extends Object {
-
-    /**
-     * Get all test cases
-     *
-     * @param   lang.XPClass class
-     * @param   var[] arguments
-     * @return  unittest.TestCase[]
-     */
-    public function testCasesInClass(XPClass $class, $arguments= NULL) {
-    
-      // Verify we were actually given a testcase class
-      if (!$class->isSubclassOf('unittest.TestCase')) {
-        throw new IllegalArgumentException('Given argument is not a TestCase class ('.xp::stringOf($class).')');
-      }
-      
-      // Add all tests cases
-      $r= array();
-      foreach ($class->getMethods() as $m) {
-        $m->hasAnnotation('test') && $r[]= $class->getConstructor()->newInstance(array_merge(
-          (array)$m->getName(TRUE), 
-          (array)$arguments
-        ));
-      }
-      
-      // Verify we actually added tests by doing this.
-      if (empty($r)) {
-        throw new NoSuchElementException('No tests found in '.$class->getName());
-      }
-      return $r;
+  public function testCasesInClass(\lang\XPClass $class, $arguments= null) {
+  
+    // Verify we were actually given a testcase class
+    if (!$class->isSubclassOf('unittest.TestCase')) {
+      throw new \lang\IllegalArgumentException('Given argument is not a TestCase class ('.\xp::stringOf($class).')');
     }
-
-    /**
-     * Get all test cases
-     *
-     * @param   var[] arguments
-     * @return  unittest.TestCase[]
-     */
-    public abstract function testCasesWith($arguments);
+    
+    // Add all tests cases
+    $r= array();
+    foreach ($class->getMethods() as $m) {
+      $m->hasAnnotation('test') && $r[]= $class->getConstructor()->newInstance(array_merge(
+        (array)$m->getName(true), 
+        (array)$arguments
+      ));
+    }
+    
+    // Verify we actually added tests by doing this.
+    if (empty($r)) {
+      throw new \util\NoSuchElementException('No tests found in '.$class->getName());
+    }
+    return $r;
   }
-?>
+
+  /**
+   * Get all test cases
+   *
+   * @param   var[] arguments
+   * @return  unittest.TestCase[]
+   */
+  public abstract function testCasesWith($arguments);
+}
