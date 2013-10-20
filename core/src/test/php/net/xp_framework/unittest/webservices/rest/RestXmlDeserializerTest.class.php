@@ -1,7 +1,7 @@
 <?php namespace net\xp_framework\unittest\webservices\rest;
 
 use webservices\rest\RestXmlDeserializer;
-
+use webservices\rest\RestXmlMap;
 
 /**
  * TestCase
@@ -20,26 +20,32 @@ class RestXmlDeserializerTest extends RestDeserializerTest {
   }
 
   /**
-   * Test
+   * Flattens a RestXmlMap into a map
    *
+   * @param  webservices.rest.RestXmlMap $in
+   * @return [:var]
    */
+  protected function flatten(RestXmlMap $in) {
+    $result= array();
+    foreach ($in as $key => $value) {
+      $result[$key]= $value;
+    }
+    return $result;
+  }
+
   #[@test]
   public function one_keyvalue_pair() {
     $this->assertEquals(
       array('name' => 'Timm'), 
-      $this->fixture->deserialize($this->input('<root><name>Timm</name></root>'), \lang\Type::forName('[:string]'))
+      $this->flatten($this->fixture->deserialize($this->input('<root><name>Timm</name></root>')))
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function two_keyvalue_pairs() {
     $this->assertEquals(
       array('name' => 'Timm', 'id' => '1549'), 
-      $this->fixture->deserialize($this->input('<root><name>Timm</name><id>1549</id></root>'), \lang\Type::forName('[:string]'))
+      $this->flatten($this->fixture->deserialize($this->input('<root><name>Timm</name><id>1549</id></root>')))
     );
   }
 }

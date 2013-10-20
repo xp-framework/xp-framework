@@ -6,6 +6,8 @@ use io\streams\MemoryInputStream;
 use webservices\rest\RestXmlDeserializer;
 use webservices\rest\RestJsonDeserializer;
 use webservices\rest\RestResponse;
+use webservices\rest\ResponseReader;
+use webservices\rest\RestMarshalling;
 
 /**
  * TestCase
@@ -38,7 +40,7 @@ class RestResponseTest extends TestCase {
         strlen($body),
         $body
       ))),
-      self::$deserializers[$content],
+      new ResponseReader(self::$deserializers[$content], new RestMarshalling()),
       \lang\Type::forName('[:var]')
     );
   }

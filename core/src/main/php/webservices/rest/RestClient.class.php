@@ -11,6 +11,7 @@
     'webservices.rest.RestRequest',
     'webservices.rest.RestResponse',
     'webservices.rest.RestFormat',
+    'webservices.rest.RestMarshalling',
     'webservices.rest.RestException'
   );
 
@@ -24,8 +25,10 @@
   class RestClient extends Object implements Traceable {
     protected $connection= NULL;
     protected $cat= NULL;
+    protected $serializers= array();
     protected $deserializers= array();
-    
+    protected $marshalling= NULL;
+
     /**
      * Creates a new Restconnection instance
      *
@@ -33,6 +36,7 @@
      */
     public function __construct($base= NULL) {
       if (NULL !== $base) $this->setBase($base);
+      $this->marshalling= new RestMarshalling();
     }
 
     /**
@@ -52,7 +56,7 @@
     public function setBase($base) {
       $this->setConnection(new HttpConnection($base));
     }
-    
+
     /**
      * Sets base and returns this connection
      *
@@ -63,7 +67,7 @@
       $this->setBase($base);
       return $this;
     }
-    
+
     /**
      * Get base
      *
@@ -72,7 +76,7 @@
     public function getBase() {
       return $this->connection ? $this->connection->getURL() : NULL;
     }
-    
+
     /**
      * Sets HTTP connection
      *
@@ -147,7 +151,7 @@
     public function setDeserializer($mediaType, $deserializer) {
       $this->deserializers[$mediaType]= $deserializer;
     }
-    
+
     /**
      * Returns a deserializer
      *
@@ -165,7 +169,37 @@
     }
 
     /**
+     * Sets deserializer
+     *
+     * @param   string mediaType e.g. "text/xml"
+     * @param   webservices.rest.Serializer serializer
+     */
+    public function setSerializer($mediaType, $serializer) {
+      $this->serializers[$mediaType]= $serializer;
+    }
+
+    /**
+     * Returns a serializer
+     *
+     * @param   string contentType
+     * @return  webservices.rest.RestSerializer
+     */
+    public function serializerFor($contentType) {
+      $mediaType= substr($contentType, 0, strcspn($contentType, ';'));
+      if (isset($this->serializers[$mediaType])) {
+        return $this->serializers[$mediaType];
+      } else {
+        $format= RestFormat::forMediaType($mediaType);
+        return RestFormat::$UNKNOWN->equals($format) ? NULL : $format->serializer();
+      }
+    }
+
+    /**
      * Execute a request
+     *
+     * <code>
+     *   $client->execute(new RestRequest('GET', '/'));
+     * </code>
      *
      * @param   var t either a string or a lang.Type - response type, defaults to webservices.rest.RestResponse
      * @param   webservices.rest.RestRequest request
@@ -196,8 +230,15 @@
       $send->addHeaders($request->headerList());
       $send->setMethod($request->getMethod());
       $send->setTarget($request->getTarget($this->connection->getUrl()->getPath('/')));
-      
-      if ($request->hasBody()) {
+
+      // Compose body
+      // * Serialize payloads using the serializer for the given mimetype
+      // * Use bodies as-is, e.g. file uploads
+      // * If no body and no payload is set, use parameters
+      if ($request->hasPayload()) {
+        $value= $this->marshalling->marshal($request->getPayload());
+        $send->setParameters($this->serializerFor($request->getContentType())->serialize($value));
+      } else if ($request->hasBody()) {
         $send->setParameters($request->getBody());
       } else {
         $send->setParameters($request->getParameters());
@@ -210,17 +251,13 @@
         throw new RestException('Cannot send request', $e);
       }
 
-      if ($type instanceof XPClass && $type->isSubclassOf('webservices.rest.RestResponse')) {
-        $rr= $type->newInstance(
-          $response,
-          $this->deserializerFor(this($response->header('Content-Type'), 0))
-        );
+      $reader= new ResponseReader($this->deserializerFor(this($response->header('Content-Type'), 0)), $this->marshalling);
+      if (NULL === $type) {
+        $rr= new RestResponse($response, $reader);
+      } else if ($type instanceof XPClass && $type->isSubclassOf('webservices.rest.RestResponse')) {
+        $rr= $type->newInstance($response, $reader);
       } else {
-        $rr= new RestResponse(
-          $response,
-          $this->deserializerFor(this($response->header('Content-Type'), 0)),
-          $type       // Deprecated: This should be done via $response->data($type)
-        );
+        $rr= new RestResponse($response, $reader, $type);   // Deprecated!
       }
 
       $this->cat && $this->cat->debug('<<<', $response->toString(), $rr->contentCopy());

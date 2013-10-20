@@ -4,28 +4,34 @@
  * $Id$ 
  */
 
-  uses(
-    'webservices.rest.RestDeserializer',
-    'webservices.json.JsonFactory'
-  );
+  uses('webservices.rest.RestDeserializer',  'webservices.json.JsonFactory');
 
   /**
    * A JSON deserializer
    *
+   * @see   xp://webservices.rest.RestDeserializer
+   * @test  xp://net.xp_framework.unittest.webservices.rest.RestJsonDeserializerTest
    */
   class RestJsonDeserializer extends RestDeserializer {
+    protected $json;
 
     /**
-     * Serialize
+     * Constructor. Initializes decoder member
+     */
+    public function __construct() {
+      $this->json= JsonFactory::create();
+    }
+
+    /**
+     * Deserialize
      *
      * @param   io.streams.InputStream in
-     * @param   lang.Type target
      * @return  var
      * @throws  lang.FormatException
      */
-    public function deserialize($in, $target) {
+    public function deserialize($in) {
       try {
-        return $this->convert($target, JsonFactory::create()->decodeFrom($in));
+        return $this->json->decodeFrom($in);
       } catch (JsonException $e) {
         throw new FormatException('Malformed JSON', $e);
       }

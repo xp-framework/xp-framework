@@ -1,7 +1,7 @@
 <?php namespace net\xp_framework\unittest\webservices\rest;
 
 use webservices\rest\RestResponse;
-
+use webservices\rest\RestException;
 
 /**
  * Fixture for CustomRestResponseTest
@@ -18,10 +18,8 @@ class CustomRestResponse extends RestResponse {
    */
   protected function handleStatus($code) {
     if ($code > 399) {
-      // TODO: $type= this($this->response->header('Content-Type'), 0);
-
-      $e= $this->deserializer->deserialize($this->input, \lang\Type::forName('[:var]'));
-      throw new CustomRestException($e, new \webservices\rest\RestException($code.': '.$this->response->message()));
+      $e= $this->reader->read(\lang\Type::$VAR, $this->input);
+      throw new CustomRestException($e, new RestException($code.': '.$this->response->message()));
     }
   }
 
@@ -32,8 +30,10 @@ class CustomRestResponse extends RestResponse {
    * @return  var
    */
   protected function handlePayloadOf($target) {
-    if (204 === $this->response->statusCode()) return null;  // "No Content"
-
-    return parent::handlePayloadOf($target);
+    if (204 === $this->response->statusCode()) {
+      return null;  // "No Content"
+    } else {
+      return parent::handlePayloadOf($target);
+    }
   }
 }

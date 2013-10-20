@@ -2,6 +2,7 @@
 
 use unittest\TestCase;
 use webservices\rest\RestFormat;
+use webservices\rest\RestXmlMap;
 use io\streams\MemoryInputStream;
 use io\streams\MemoryOutputStream;
 
@@ -50,6 +51,20 @@ class RestFormatTest extends TestCase {
   }
 
   /**
+   * Flattens a RestXmlMap into a map
+   *
+   * @param  webservices.rest.RestXmlMap $in
+   * @return [:var]
+   */
+  protected function flatten(RestXmlMap $in) {
+    $result= array();
+    foreach ($in as $key => $value) {
+      $result[$key]= $value;
+    }
+    return $result;
+  }
+
+  /**
    * Test XML
    * 
    */
@@ -57,7 +72,7 @@ class RestFormatTest extends TestCase {
   public function xml_deserialize() {
     $req= new MemoryInputStream('<?xml version="1.0" encoding="UTF-8"?>'."\n".'<root><name>Timm</name></root>');
     $v= RestFormat::$XML->read($req, \lang\MapType::forName('[:string]'));
-    $this->assertEquals(array('name' => 'Timm'), $v); 
+    $this->assertEquals(array('name' => 'Timm'), $this->flatten($v));
   }
 
   /**
@@ -68,7 +83,7 @@ class RestFormatTest extends TestCase {
   public function xml_deserialize_without_xml_declaration() {
     $req= new MemoryInputStream('<root><name>Timm</name></root>');
     $v= RestFormat::$XML->read($req, \lang\MapType::forName('[:string]'));
-    $this->assertEquals(array('name' => 'Timm'), $v); 
+    $this->assertEquals(array('name' => 'Timm'), $this->flatten($v)); 
   }
 
   /**

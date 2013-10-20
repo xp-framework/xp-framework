@@ -7,7 +7,7 @@
   uses(
     'peer.http.HttpConstants',
     'scriptlet.Preference',
-    'webservices.rest.TypeMarshaller',
+    'webservices.rest.RestMarshalling',
     'webservices.rest.RestFormat',
     'webservices.rest.srv.Response',
     'webservices.rest.srv.RestParamSource',
@@ -29,7 +29,7 @@
    */
   class RestContext extends Object implements Traceable {
     protected $mappers;
-    protected $marshallers;
+    protected $marshalling;
     protected $cat= NULL;
 
     /**
@@ -37,7 +37,7 @@
      */
     public function __construct() {
       $this->mappers= create('new HashTable<XPClass, ExceptionMapper>');
-      $this->marshallers= create('new HashTable<Type, TypeMarshaller>');
+      $this->marshalling= new RestMarshalling();
 
       // Default exception mappings
       $this->addExceptionMapping('lang.IllegalAccessException', new DefaultExceptionMapper(403));
@@ -80,22 +80,7 @@
      * @return webservices.rest.TypeMarshaller The added marshaller
      */
     public function addMarshaller($type, TypeMarshaller $m) {
-      $keys= $this->marshallers->keys();
-
-      // Add marshaller
-      $t= $type instanceof Type ? $type : Type::forName($type);
-      $this->marshallers[$t]= $m;
-
-      // Iterate over map keys before having altered the map, checking for
-      // any marshallers less specific than the added marshaller, and move
-      // them to the end. E.g. if a marshaller for Dates is added, it needs 
-      // to be in the map *before* the one for for Objects!
-      foreach ($keys as $type) {
-        if ($type->isAssignableFrom($t)) {
-          $this->marshallers->put($type, $this->marshallers->remove($type));
-        }
-      }
-      return $m;
+      return $this->marshalling->addMarshaller($type, $m);
     }
 
     /**
@@ -105,7 +90,7 @@
      * @return webservices.rest.TypeMarshaller The added marshaller
      */
     public function getMarshaller($type) {
-      return $this->marshallers[$type instanceof Type ? $type : Type::forName($type)];
+      return $this->marshalling->getMarshaller($type);
     }
 
     /**
@@ -140,12 +125,8 @@
     public function marshal(Payload $payload= NULL, $properties= array()) {
       if (NULL === $payload) return NULL;
 
-      foreach ($this->marshallers->keys() as $type) {
-        if (!$type->isInstance($payload->value)) continue;
-        $payload->value= $this->marshallers[$type]->marshal($payload->value);
-        break;
-      }
-      return NULL === $payload->value ? NULL : new Payload($payload->value, $properties);
+      $marshalled= $this->marshalling->marshal($payload->value);
+      return NULL === $marshalled ? NULL : new Payload($marshalled, $properties);
     }
 
     /**
@@ -156,10 +137,7 @@
      * @return webservices.rest.srv.Response
      */
     public function unmarshal(Type $target, $in) {
-      foreach ($this->marshallers->keys() as $type) {
-        if ($type->isAssignableFrom($target)) return $this->marshallers[$type]->unmarshal($target, $in);
-      }
-      return $in;
+      return $this->marshalling->unmarshal($target, $in);
     }
 
     /**
@@ -292,14 +270,14 @@
           $src= new RestParamSource(NULL, ParamReader::$BODY);
         }
 
-        if (NULL === ($arg= $src->reader->read($src->name, $parameter->getType(), $target, $request))) {
+        if (NULL === ($arg= $src->reader->read($src->name, $target, $request))) {
           if ($parameter->isOptional()) {
-            $arg= $src->reader->convert($parameter->getType(), $parameter->getDefaultValue());
+            $arg= $parameter->getDefaultValue();
           } else {
             throw new IllegalArgumentException('Parameter "'.$param.'" required but found in '.$src->toString());
           }
         }
-        $args[]= $arg;
+        $args[]= $this->unmarshal($parameter->getType(), $arg);
       }
       return $args;
     }
@@ -352,7 +330,6 @@
     public function equals($cmp) {
       return (
         $cmp instanceof self && 
-        $this->marshallers->equals($cmp->marshallers) && 
         $this->mappers->equals($cmp->mappers)
       );
     }

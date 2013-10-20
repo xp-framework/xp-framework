@@ -2,7 +2,8 @@
 
 use unittest\TestCase;
 use webservices\rest\srv\RestContext;
-
+use webservices\rest\srv\Response;
+use webservices\rest\Payload;
 
 /**
  * Test RestContext::handle() 
@@ -29,7 +30,7 @@ class RestContextHandleTest extends TestCase {
       public function fixture() { return "Hello World"; }
     }');
     $this->assertEquals(
-      \webservices\rest\srv\Response::status(200)->withPayload(new \webservices\rest\Payload('Hello World')),
+      Response::status(200)->withPayload(new Payload('Hello World')),
       $this->handle($handler)
     );
   }
@@ -41,7 +42,7 @@ class RestContextHandleTest extends TestCase {
       public function fixture() { return Response::created("/resource/4711"); }
     }');
     $this->assertEquals(
-      \webservices\rest\srv\Response::status(201)->withHeader('Location', '/resource/4711'),
+      Response::status(201)->withHeader('Location', '/resource/4711'),
       $this->handle($handler)
     );
   }
@@ -54,7 +55,7 @@ class RestContextHandleTest extends TestCase {
       public function fixture() { /* Intentionally empty */ }
     }');
     $this->assertEquals(
-      \webservices\rest\srv\Response::status(204),
+      Response::status(204),
       $this->handle($handler)
     );
   }
@@ -67,7 +68,7 @@ class RestContextHandleTest extends TestCase {
       public function fixture() { return "Something"; }
     }');
     $this->assertEquals(
-      \webservices\rest\srv\Response::status(204),
+      Response::status(204),
       $this->handle($handler)
     );
   }
@@ -79,7 +80,7 @@ class RestContextHandleTest extends TestCase {
       public function fixture() { return NULL; }
     }');
     $this->assertEquals(
-      \webservices\rest\srv\Response::status(200)->withPayload(null),
+      Response::status(200)->withPayload(null),
       $this->handle($handler)
     );
   }
@@ -91,7 +92,7 @@ class RestContextHandleTest extends TestCase {
       public function fixture() { return; }
     }');
     $this->assertEquals(
-      \webservices\rest\srv\Response::status(200)->withPayload(null),
+      Response::status(200)->withPayload(null),
       $this->handle($handler)
     );
   }
@@ -109,7 +110,7 @@ class RestContextHandleTest extends TestCase {
       }
     }');
     $this->assertEquals(
-      \webservices\rest\srv\Response::status(200)->withPayload(new \webservices\rest\Payload(array('name' => new \lang\types\String('example.com')))),
+      Response::status(200)->withPayload(new Payload(array('name' => 'example.com'))),
       $this->handle($handler, array(new \lang\types\String('example.com')))
     );
   }
@@ -137,7 +138,7 @@ class RestContextHandleTest extends TestCase {
       }
     }');
     $this->assertEquals(
-      \webservices\rest\srv\Response::error($status)->withPayload(new \webservices\rest\Payload(array('message' => 'Test'), array('name' => 'exception'))),
+      Response::error($status)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
       $this->handle($handler)
     );
   }

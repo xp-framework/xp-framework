@@ -5,7 +5,6 @@ use webservices\rest\RestXmlSerializer;
 use util\Date;
 use util\TimeZone;
 
-
 /**
  * TestCase
  *
@@ -16,92 +15,99 @@ class RestXmlSerializerTest extends TestCase {
 
   /**
    * Sets up test case
-   *
    */
   public function setUp() {
     $this->fixture= new RestXmlSerializer();
   }
-  
+
   /**
-   * Asserttion helper
+   * Assertion helper
    *
-   * @param   string expected
-   * @param   string actual
+   * @param   string $expected
+   * @param   string $actual
    * @throws  unittest.AssertionFailedError
    */
   protected function assertXmlEquals($expected, $actual) {
     $this->assertEquals('<?xml version="1.0" encoding="UTF-8"?>'."\n".$expected, $actual);
   }
-  
-  /**
-   * Test
-   *
-   */
+
   #[@test]
-  public function emptyArray() {
+  public function null() {
     $this->assertXmlEquals(
-      '<root></root>', 
+      '<root></root>',
+      $this->fixture->serialize(null)
+    );
+  }
+
+  #[@test, @values(['', 'Test'])]
+  public function strings($str) {
+    $this->assertXmlEquals(
+      '<root>'.$str.'</root>',
+      $this->fixture->serialize($str)
+    );
+  }
+
+  #[@test, @values([-1, 0, 1, 4711])]
+  public function integers($int) {
+    $this->assertXmlEquals(
+      '<root>'.$int.'</root>',
+      $this->fixture->serialize($int)
+    );
+  }
+
+  #[@test, @values([-1.0, 0.0, 1.0, 47.11])]
+  public function decimals($decimal) {
+    $this->assertXmlEquals(
+      '<root>'.$decimal.'</root>',
+      $this->fixture->serialize($decimal)
+    );
+  }
+
+  #[@test, @values([false, true])]
+  public function booleans($bool) {
+    $this->assertXmlEquals(
+      '<root>'.$bool.'</root>',
+      $this->fixture->serialize($bool)
+    );
+  }
+
+  #[@test]
+  public function empty_array() {
+    $this->assertXmlEquals(
+      '<root></root>',
       $this->fixture->serialize(array())
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
-  public function intArray() {
+  public function int_array() {
     $this->assertXmlEquals(
-      '<root><root>1</root><root>2</root><root>3</root></root>', 
+      '<root><root>1</root><root>2</root><root>3</root></root>',
       $this->fixture->serialize(array(1, 2, 3))
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
-  public function issueWithField() {
+  public function string_array() {
     $this->assertXmlEquals(
-      '<root><issueId>1</issueId><title>New issue</title></root>', 
-      $this->fixture->serialize(new IssueWithField(1, 'New issue'))
+      '<root><root>a</root><root>b</root><root>c</root></root>',
+      $this->fixture->serialize(array('a', 'b', 'c'))
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
-  public function issueWithGetter() {
+  public function string_map() {
     $this->assertXmlEquals(
-      '<root><issueId>1</issueId><title>New issue</title><createdAt></createdAt></root>', 
-      $this->fixture->serialize(new IssueWithGetter(1, 'New issue'))
+      '<root><a>One</a><b>Two</b><c>Three</c></root>',
+      $this->fixture->serialize(array('a' => 'One', 'b' => 'Two', 'c' => 'Three'))
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
-  public function issueWithGetterAndDate() {
+  public function date() {
     $this->assertXmlEquals(
-      '<root><issueId>1</issueId><title>New issue</title><createdAt>2012-03-19T08:37:00+00:00</createdAt></root>', 
-      $this->fixture->serialize(new IssueWithGetter(1, 'New issue', new Date('2012-03-19 08:37:00', TimeZone::getByName('GMT'))))
-    );
-  }
-
-  /**
-   * Test
-   *
-   */
-  #[@test]
-  public function issueWithUnderscoreFieldsAndGetter() {
-    $this->assertXmlEquals(
-      '<root><issue_id>1</issue_id><title>New issue</title><created_at></created_at></root>', 
-      $this->fixture->serialize(new IssueWithUnderscoreFieldsAndGetter(1, 'New issue'))
+      '<root><value>2012-12-31 18:00:00+0100</value><__id></__id></root>',
+      $this->fixture->serialize(new Date('2012-12-31 18:00:00', new TimeZone('Europe/Berlin')))
     );
   }
 }

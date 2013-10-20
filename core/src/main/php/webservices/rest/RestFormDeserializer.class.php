@@ -7,21 +7,21 @@
   uses('webservices.rest.RestDeserializer', 'text.StreamTokenizer');
 
   /**
-   * A deserializer
+   * A deserializer for form data
    *
+   * @see   xp://webservices.rest.RestDeserializer
    * @test  xp://net.xp_framework.unittest.webservices.rest.RestFormDeserializerTest
    */
   class RestFormDeserializer extends RestDeserializer {
 
     /**
-     * Serialize
+     * Deserialize
      *
      * @param   io.streams.InputStream in
-     * @param   lang.Type target
      * @return  var
      * @throws  lang.FormatException
      */
-    public function deserialize($in, $target) {
+    public function deserialize($in) {
       $st= new StreamTokenizer($in, '&');
       $map= array();
       while ($st->hasMoreTokens()) {
@@ -53,7 +53,7 @@
           $map[$key]= urldecode($value);
         }
       }
-      return $this->convert($target, $map);
+      return $map;
     }
   }
 ?>

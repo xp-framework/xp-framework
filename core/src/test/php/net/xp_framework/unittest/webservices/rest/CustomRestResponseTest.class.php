@@ -2,7 +2,8 @@
 
 use unittest\TestCase;
 use webservices\rest\RestJsonDeserializer;
-
+use webservices\rest\ResponseReader;
+use webservices\rest\RestMarshalling;
 
 /**
  * TestCase
@@ -26,26 +27,18 @@ class CustomRestResponseTest extends TestCase {
         strlen($body),
         $body
       ))),
-      new RestJsonDeserializer(),
+      new ResponseReader(new RestJsonDeserializer(), new RestMarshalling()),
       \lang\Type::forName('[:var]')
     );
   }
 
-  /**
-   * Test data()
-   *
-   */
   #[@test]
   public function ok() {
     $this->assertEquals(array(), $this->newResponse(200, '{ }')->data());
   }
 
-  /**
-   * Test data()
-   *
-   */
   #[@test]
-  public function customErrorHandling() {
+  public function custom_error_handling() {
     try {
       $this->newResponse(400, '{ "server.message" : "Operation timed out" }')->data();
       $this->fail('No exception caught', null, 'CustomRestException');
@@ -54,12 +47,8 @@ class CustomRestResponseTest extends TestCase {
     }
   }
 
-  /**
-   * Test data()
-   *
-   */
   #[@test]
-  public function customContentHandling() {
+  public function custom_statuscode_handling() {
     $this->assertEquals(null, $this->newResponse(204, '')->data());
   }
 }

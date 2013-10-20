@@ -7,10 +7,10 @@
   uses('webservices.rest.RestSerializer', 'xml.Tree');
 
   /**
-   * A serializer
+   * An XML serializer
    *
+   * @see   xp://webservices.rest.RestSerializer
    * @test  xp://net.xp_framework.unittest.webservices.rest.RestXmlSerializerTest
-   * @see   xp://webservices.rest.RestRequest#setPayload
    */
   class RestXmlSerializer extends RestSerializer {
 
@@ -40,10 +40,12 @@
         $root= 'root';
       }
 
-      if ($payload instanceof Generic || is_array($payload)) {
-        $t->root= Node::fromArray($this->convert($payload), $root);
+      if ($payload instanceof Generic) {
+        $t->root= Node::fromObject($payload, $root);
+      } else if (is_array($payload)) {
+        $t->root= Node::fromArray($payload, $root);
       } else {
-        $t->root= new Node($root, $this->convert($payload));
+        $t->root= new Node($root, $payload);
       }
       return $t->getDeclaration()."\n".$t->getSource(INDENT_NONE);
     }

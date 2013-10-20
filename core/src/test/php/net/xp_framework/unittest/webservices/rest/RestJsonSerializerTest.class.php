@@ -5,7 +5,6 @@ use webservices\rest\RestJsonSerializer;
 use util\Date;
 use util\TimeZone;
 
-
 /**
  * TestCase
  *
@@ -16,75 +15,61 @@ class RestJsonSerializerTest extends TestCase {
 
   /**
    * Sets up test case
-   *
    */
   public function setUp() {
     $this->fixture= new RestJsonSerializer();
   }
-  
-  /**
-   * Test
-   *
-   */
+
   #[@test]
-  public function emptyArray() {
+  public function null() {
+    $this->assertEquals('null', $this->fixture->serialize(null));
+  }
+
+  #[@test, @values(['', 'Test'])]
+  public function strings($str) {
+    $this->assertEquals('"'.$str.'"', $this->fixture->serialize($str));
+  }
+
+  #[@test, @values([-1, 0, 1, 4711])]
+  public function integers($int) {
+    $this->assertEquals(''.$int, $this->fixture->serialize($int));
+  }
+
+  #[@test, @values([-1.0, 0.0, 1.0, 47.11])]
+  public function decimals($decimal) {
+    $this->assertEquals(''.$decimal, $this->fixture->serialize($decimal));
+  }
+
+  #[@test]
+  public function boolean_true() {
+    $this->assertEquals('true', $this->fixture->serialize(true));
+  }
+
+  #[@test]
+  public function boolean_false() {
+    $this->assertEquals('false', $this->fixture->serialize(false));
+  }
+
+  #[@test]
+  public function empty_array() {
     $this->assertEquals('[ ]', $this->fixture->serialize(array()));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
-  public function intArray() {
+  public function int_array() {
     $this->assertEquals('[ 1 , 2 , 3 ]', $this->fixture->serialize(array(1, 2, 3)));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
-  public function issueWithField() {
-    $this->assertEquals(
-      '{ "issueId" : 1 , "title" : "New issue" }', 
-      $this->fixture->serialize(new IssueWithField(1, 'New issue'))
-    );
+  public function string_array() {
+    $this->assertEquals('[ "a" , "b" , "c" ]', $this->fixture->serialize(array('a', 'b', 'c')));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
-  public function issueWithGetter() {
+  public function string_map() {
     $this->assertEquals(
-      '{ "issueId" : 1 , "title" : "New issue" , "createdAt" : null }', 
-      $this->fixture->serialize(new IssueWithGetter(1, 'New issue'))
-    );
-  }
-
-  /**
-   * Test
-   *
-   */
-  #[@test]
-  public function issueWithGetterAndDate() {
-    $this->assertEquals(
-      '{ "issueId" : 1 , "title" : "New issue" , "createdAt" : "2012-03-19T08:37:00+00:00" }', 
-      $this->fixture->serialize(new IssueWithGetter(1, 'New issue', new Date('2012-03-19 08:37:00', TimeZone::getByName('GMT'))))
-    );
-  }
-
-  /**
-   * Test
-   *
-   */
-  #[@test]
-  public function issueWithUnderscoreFieldsAndGetter() {
-    $this->assertEquals(
-      '{ "issue_id" : 1 , "title" : "New issue" , "created_at" : null }', 
-      $this->fixture->serialize(new IssueWithUnderscoreFieldsAndGetter(1, 'New issue'))
+      '{ "a" : "One" , "b" : "Two" , "c" : "Three" }',
+      $this->fixture->serialize(array('a' => 'One', 'b' => 'Two', 'c' => 'Three'))
     );
   }
 }

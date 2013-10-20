@@ -3,7 +3,7 @@
 use unittest\TestCase;
 use webservices\rest\RestRequest;
 use webservices\rest\Payload;
-
+use peer\http\HttpConstants;
 
 /**
  * TestCase
@@ -12,20 +12,12 @@ use webservices\rest\Payload;
  */
 class RestRequestTest extends TestCase {
   
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function getResource() {
     $fixture= new RestRequest('/issues');
     $this->assertEquals('/issues', $fixture->getResource());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function setResource() {
     $fixture= new RestRequest();
@@ -33,10 +25,6 @@ class RestRequestTest extends TestCase {
     $this->assertEquals('/issues', $fixture->getResource());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function withResource() {
     $fixture= new RestRequest();
@@ -44,42 +32,26 @@ class RestRequestTest extends TestCase {
     $this->assertEquals('/issues', $fixture->getResource());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function getMethod() {
-    $fixture= new RestRequest(null, \peer\http\HttpConstants::GET);
-    $this->assertEquals(\peer\http\HttpConstants::GET, $fixture->getMethod());
+    $fixture= new RestRequest(null, HttpConstants::GET);
+    $this->assertEquals(HttpConstants::GET, $fixture->getMethod());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function setMethod() {
     $fixture= new RestRequest();
-    $fixture->setMethod(\peer\http\HttpConstants::GET);
-    $this->assertEquals(\peer\http\HttpConstants::GET, $fixture->getMethod());
+    $fixture->setMethod(HttpConstants::GET);
+    $this->assertEquals(HttpConstants::GET, $fixture->getMethod());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function withMethod() {
     $fixture= new RestRequest();
-    $this->assertEquals($fixture, $fixture->withMethod(\peer\http\HttpConstants::GET));
-    $this->assertEquals(\peer\http\HttpConstants::GET, $fixture->getMethod());
+    $this->assertEquals($fixture, $fixture->withMethod(HttpConstants::GET));
+    $this->assertEquals(HttpConstants::GET, $fixture->getMethod());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function setBody() {
     $request= new \peer\http\RequestData('{ "title" : "New issue" }');
@@ -88,10 +60,6 @@ class RestRequestTest extends TestCase {
     $this->assertEquals($request, $fixture->getBody());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function withBody() {
     $request= new \peer\http\RequestData('{ "title" : "New issue" }');
@@ -100,20 +68,12 @@ class RestRequestTest extends TestCase {
     $this->assertEquals($request, $fixture->getBody());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function hasNoBody() {
     $fixture= new RestRequest();
     $this->assertFalse($fixture->hasBody());
   }
 
-  /**
-   * Test 
-   *
-   */
   #[@test]
   public function hasBody() {
     $fixture= new RestRequest();
@@ -121,21 +81,13 @@ class RestRequestTest extends TestCase {
     $this->assertTrue($fixture->hasBody());
   }
 
-  /**
-   * Test payload
-   *
-   */
   #[@test]
-  public function hasBodyWithJsonPayload() {
+  public function hasPayloadWithJsonPayload() {
     $fixture= new RestRequest();
     $fixture->setPayload(array('title' => 'New issue'), new \webservices\rest\RestJsonSerializer());
-    $this->assertTrue($fixture->hasBody());
+    $this->assertTrue($fixture->hasPayload());
   }
 
-  /**
-   * Test payload
-   *
-   */
   #[@test]
   public function contentTypeWithJsonPayload() {
     $fixture= new RestRequest();
@@ -143,81 +95,49 @@ class RestRequestTest extends TestCase {
     $this->assertEquals('application/json; charset=utf-8', $fixture->getHeader('Content-Type'));
   }
 
-  /**
-   * Test payload
-   *
-   */
   #[@test]
-  public function getBodyWithJsonPayload() {
+  public function getPayloadWithJsonPayload() {
     $fixture= new RestRequest();
     $fixture->setPayload(array('title' => 'New issue'), new \webservices\rest\RestJsonSerializer());
-    $this->assertEquals('{ "title" : "New issue" }', $fixture->getBody()->data);
+    $this->assertEquals(array('title' => 'New issue'), $fixture->getPayload());
   }
 
-  /**
-   * Test payload
-   *
-   */
   #[@test]
-  public function getBodyWithJsonPayloadUsingRestFormat() {
+  public function getPayloadWithJsonPayloadUsingRestFormat() {
     $fixture= new RestRequest();
     $fixture->setPayload(array('title' => 'New issue'), \webservices\rest\RestFormat::$JSON);
-    $this->assertEquals('{ "title" : "New issue" }', $fixture->getBody()->data);
+    $this->assertEquals(array('title' => 'New issue'), $fixture->getPayload());
   }
 
-  /**
-   * Test setPayload()
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function setPayloadAndNull() {
     create(new RestRequest())->setPayload(null, null);
   }
 
-  /**
-   * Test withPayload()
-   *
-   */
   #[@test]
   public function withPayloadAndSerializer() {
     $fixture= new RestRequest();
     $this->assertEquals($fixture, $fixture->withPayload(null, new \webservices\rest\RestJsonSerializer()));
   }
 
-  /**
-   * Test withPayload()
-   *
-   */
   #[@test]
   public function withPayloadAndRestFormat() {
     $fixture= new RestRequest();
     $this->assertEquals($fixture, $fixture->withPayload(null, \webservices\rest\RestFormat::$JSON));
   }
 
-  /**
-   * Test withPayload()
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function withPayloadAndNull() {
     create(new RestRequest())->withPayload(null, null);
   }
 
-  /**
-   * Test payload
-   *
-   */
   #[@test]
-  public function hasBodyWithXmlPayload() {
+  public function hasPayloadWithXmlPayload() {
     $fixture= new RestRequest();
     $fixture->setPayload(array('title' => 'New issue'), new \webservices\rest\RestXmlSerializer());
-    $this->assertTrue($fixture->hasBody());
+    $this->assertTrue($fixture->hasPayload());
   }
 
-  /**
-   * Test payload
-   *
-   */
   #[@test]
   public function contentTypeWithXmlPayload() {
     $fixture= new RestRequest();
@@ -225,40 +145,20 @@ class RestRequestTest extends TestCase {
     $this->assertEquals('text/xml; charset=utf-8', $fixture->getHeader('Content-Type'));
   }
 
-  /**
-   * Test payload
-   *
-   */
   #[@test]
-  public function getBodyWithXmlPayload() {
+  public function getPayloadWithXmlPayload() {
     $fixture= new RestRequest();
     $fixture->setPayload(array('title' => 'New issue'), new \webservices\rest\RestXmlSerializer());
-    $this->assertEquals(
-      '<?xml version="1.0" encoding="UTF-8"?>'."\n".
-      '<root><title>New issue</title></root>', 
-      $fixture->getBody()->data
-    );
+    $this->assertEquals(array('title' => 'New issue'), $fixture->getPayload()); 
   }
 
-  /**
-   * Test payload
-   *
-   */
   #[@test]
-  public function getBodyWithXmlPayloadAndRootNode() {
+  public function getPayloadWithXmlPayloadAndRootNode() {
     $fixture= new RestRequest();
     $fixture->setPayload(new Payload(array('title' => 'New issue'), array('name' => 'issue')), new \webservices\rest\RestXmlSerializer());
-    $this->assertEquals(
-      '<?xml version="1.0" encoding="UTF-8"?>'."\n".
-      '<issue><title>New issue</title></issue>', 
-      $fixture->getBody()->data
-    );
+    $this->assertEquals(new Payload(array('title' => 'New issue'), array('name' => 'issue')), $fixture->getPayload()); 
   }
 
-  /**
-   * Test payload
-   *
-   */
   #[@test]
   public function setPayloadCalledTwice() {
     $fixture= new RestRequest();
@@ -267,20 +167,12 @@ class RestRequestTest extends TestCase {
     $this->assertEquals('application/json; charset=utf-8', $fixture->getHeader('Content-Type'));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function noParameters() {
     $fixture= new RestRequest();
     $this->assertEquals(array(), $fixture->getParameters());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function oneParameter() {
     $fixture= new RestRequest();
@@ -291,10 +183,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function twoParameters() {
     $fixture= new RestRequest('/issues');
@@ -306,20 +194,12 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function noSegments() {
     $fixture= new RestRequest();
     $this->assertEquals(array(), $fixture->getSegments());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function oneSegment() {
     $fixture= new RestRequest();
@@ -330,10 +210,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function twoSegments() {
     $fixture= new RestRequest('/issues');
@@ -345,40 +221,24 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function withSegmentReturnsThis() {
     $fixture= new RestRequest('/users/{user}');
     $this->assertEquals($fixture, $fixture->withSegment('user', 'thekid'));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function withParameterReturnsThis() {
     $fixture= new RestRequest('/issues');
     $this->assertEquals($fixture, $fixture->withParameter('filter', 'assigned'));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function targetWithoutParameters() {
     $fixture= new RestRequest('/issues');
     $this->assertEquals('/issues', $fixture->getTarget());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function targetWithSegmentParameter() {
     $fixture= new RestRequest('/users/{user}');
@@ -386,10 +246,6 @@ class RestRequestTest extends TestCase {
     $this->assertEquals('/users/thekid', $fixture->getTarget());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function targetWithTwoSegmentParameters() {
     $fixture= new RestRequest('/repos/{user}/{repo}');
@@ -398,10 +254,6 @@ class RestRequestTest extends TestCase {
     $this->assertEquals('/repos/thekid/xp-framework', $fixture->getTarget());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function targetWithSegmentParametersAndConstantsMixed() {
     $fixture= new RestRequest('/repos/{user}/{repo}/issues/{id}');
@@ -411,20 +263,12 @@ class RestRequestTest extends TestCase {
     $this->assertEquals('/repos/thekid/xp-framework/issues/1', $fixture->getTarget());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function noHeaders() {
     $fixture= new RestRequest();
     $this->assertEquals(array(), $fixture->getHeaders());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function oneHeader() {
     $fixture= new RestRequest();
@@ -435,10 +279,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function oneHeaderObject() {
     $fixture= new RestRequest();
@@ -449,10 +289,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function twoHeaders() {
     $fixture= new RestRequest('/issues');
@@ -464,10 +300,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function twoHeaderObjects() {
     $fixture= new RestRequest('/issues');
@@ -479,10 +311,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function headerListEmpty() {
     $fixture= new RestRequest('/issues');
@@ -492,10 +320,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function headerListWithOneHeader() {
     $fixture= new RestRequest('/issues');
@@ -506,10 +330,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test addHeader()
-   *
-   */
   #[@test]
   public function addHeaderReturnsAddedHeaderObject() {
     $h= new \peer\Header('Accept', 'text/xml');
@@ -517,40 +337,24 @@ class RestRequestTest extends TestCase {
     $this->assertEquals($h, $fixture->addHeader($h));
   }
 
-  /**
-   * Test addHeader()
-   *
-   */
   #[@test]
   public function addHeaderReturnsAddedHeader() {
     $fixture= new RestRequest('/issues');
     $this->assertEquals(new \peer\Header('Accept', 'text/xml'), $fixture->addHeader('Accept', 'text/xml'));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function relativeResourceWithEndingSlash() {
     $fixture= new RestRequest('issues');
     $this->assertEquals('/rest/api/v2/issues', $fixture->getTarget('/rest/api/v2/'));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function relativeResourceWithoutEndingSlash() {
     $fixture= new RestRequest('issues');
     $this->assertEquals('/rest/api/v2/issues', $fixture->getTarget('/rest/api/v2'));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function acceptOne() {
     $fixture= new RestRequest('/issues');
@@ -561,10 +365,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function accept() {
     $fixture= new RestRequest('/issues');
@@ -576,10 +376,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function acceptWithQ() {
     $fixture= new RestRequest('/issues');
@@ -591,10 +387,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test toString()
-   *
-   */
   #[@test]
   public function stringRepresentation() {
     $this->assertEquals(
@@ -604,10 +396,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test toString()
-   *
-   */
   #[@test]
   public function stringRepresentationWithUrl() {
     $this->assertEquals(
@@ -617,10 +405,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test toString()
-   *
-   */
   #[@test]
   public function stringRepresentationWithUrlAndMethod() {
     $this->assertEquals(
@@ -630,10 +414,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test toString()
-   *
-   */
   #[@test]
   public function stringRepresentationWithHeader() {
     $this->assertEquals(
@@ -644,10 +424,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test toString()
-   *
-   */
   #[@test]
   public function stringRepresentationWithAccept() {
     $this->assertEquals(
@@ -658,10 +434,6 @@ class RestRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test toString()
-   *
-   */
   #[@test]
   public function stringRepresentationWithHeaderAndAccept() {
     $this->assertEquals(
@@ -672,5 +444,4 @@ class RestRequestTest extends TestCase {
       create(new RestRequest())->withHeader('Referer', 'http://localhost')->withAccept('text/xml')->toString()
     );
   }
-
 }

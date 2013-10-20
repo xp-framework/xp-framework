@@ -9,10 +9,18 @@
   /**
    * A JSON serializer
    *
+   * @see   xp://webservices.rest.RestSerializer
    * @test  xp://net.xp_framework.unittest.webservices.rest.RestJsonSerializerTest
-   * @see   xp://webservices.rest.RestRequest#setPayload
    */
   class RestJsonSerializer extends RestSerializer {
+    protected $json;
+
+    /**
+     * Constructor. Initializes decoder member
+     */
+    public function __construct() {
+      $this->json= JsonFactory::create();
+    }
 
     /**
      * Return the Content-Type header's value
@@ -30,11 +38,10 @@
      * @return  string
      */
     public function serialize($payload) {
-      $encoder= JsonFactory::create();
       if ($payload instanceof Payload) {
-        return $encoder->encode($this->convert($payload->value));
+        return $this->json->encode($payload->value);
       } else {
-        return $encoder->encode($this->convert($payload));
+        return $this->json->encode($payload);
       }
     }
   }
