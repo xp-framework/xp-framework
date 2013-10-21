@@ -156,16 +156,22 @@
      * Returns a deserializer
      *
      * @param   string contentType
+     * @param   bool throw
      * @return  webservices.rest.RestDeserializer
+     * @throws  lang.IllegalArgumentException
      */
-    public function deserializerFor($contentType) {
+    public function deserializerFor($contentType, $throw= TRUE) {
       $mediaType= substr($contentType, 0, strcspn($contentType, ';'));
       if (isset($this->deserializers[$mediaType])) {
         return $this->deserializers[$mediaType];
       } else {
         $format= RestFormat::forMediaType($mediaType);
         if (RestFormat::$UNKNOWN->equals($format)) {
-          throw new IllegalArgumentException('No serializer for "'.$contentType.'"');
+          if ($throw) {
+            throw new IllegalArgumentException('No deserializer for "'.$contentType.'"');
+          } else {
+            return NULL;
+          }
         }
         return $format->deserializer();
       }
@@ -185,17 +191,22 @@
      * Returns a serializer
      *
      * @param   string contentType
+     * @param   bool throw
      * @return  webservices.rest.RestSerializer
-     * @throws  lang.IllegalArgumentException If [this condition is met]
+     * @throws  lang.IllegalArgumentException
      */
-    public function serializerFor($contentType) {
+    public function serializerFor($contentType, $throw= TRUE) {
       $mediaType= substr($contentType, 0, strcspn($contentType, ';'));
       if (isset($this->serializers[$mediaType])) {
         return $this->serializers[$mediaType];
       } else {
         $format= RestFormat::forMediaType($mediaType);
         if (RestFormat::$UNKNOWN->equals($format)) {
-          throw new IllegalArgumentException('No serializer for "'.$contentType.'"');
+          if ($throw) {
+            throw new IllegalArgumentException('No serializer for "'.$contentType.'"');
+          } else {
+            return NULL;
+          }
         }
         return $format->serializer();
       }
@@ -259,7 +270,7 @@
         throw new RestException('Cannot send request', $e);
       }
 
-      $reader= new ResponseReader($this->deserializerFor(this($response->header('Content-Type'), 0)), $this->marshalling);
+      $reader= new ResponseReader($this->deserializerFor(this($response->header('Content-Type'), 0), FALSE), $this->marshalling);
       if (NULL === $type) {
         $rr= new RestResponse($response, $reader);
       } else if ($type instanceof XPClass && $type->isSubclassOf('webservices.rest.RestResponse')) {

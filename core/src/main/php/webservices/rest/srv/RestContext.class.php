@@ -205,9 +205,6 @@
      * @return webservices.rest.srv.Response
      */
     public function handle($instance, $method, $args) {
-      foreach ($args as $i => $arg) {
-        $args[$i]= $this->unmarshal(typeof($arg), $arg);
-      }
 
       // HACK: Ungeneric XML-related
       $properties= array();
