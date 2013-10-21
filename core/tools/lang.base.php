@@ -588,9 +588,27 @@
   }
   // }}}
 
-  // {{{ proto void with(expr)
+  // {{{ proto void with(arg..., Closure)
   //     Syntactic sugar. Intentionally empty
   function with() {
+    $args= func_get_args();
+    if (($block= array_pop($args)) instanceof \Closure)  {
+      try {
+        call_user_func_array($block, $args);
+      } catch (\lang\Throwable $e) {
+        // Fall through
+      } ensure($e); {
+        foreach ($args as $arg) {
+          if (!($arg instanceof \lang\Closeable)) continue;
+          try {
+            $arg->close();
+          } catch (\lang\Throwable $ignored) {
+            // 
+          }
+        }
+        if ($e) throw($e);
+      }
+    }
   }
   // }}}
   
