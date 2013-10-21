@@ -246,12 +246,13 @@
      */
     public function argumentsFor($target, $request) {
       $args= array();
+      $input= XPClass::forName('webservices.rest.srv.Input');
       foreach ($target['target']->getParameters() as $parameter) {
         $param= $parameter->getName();
         $type= $parameter->getType();
 
         // Input
-        if ($type->isSubclassOf('webservices.rest.srv.Input')) {
+        if ($input->isAssignableFrom($type)) {
           $args[]= $type->newInstance($request);
         } else {
 
