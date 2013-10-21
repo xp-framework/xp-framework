@@ -248,33 +248,40 @@
       $args= array();
       foreach ($target['target']->getParameters() as $parameter) {
         $param= $parameter->getName();
+        $type= $parameter->getType();
 
-        // Extract arguments according to definition. In case we don't have an explicit
-        // source for an argument, look up according to the following rules:
-        //
-        // * If we have a segment named exactly like the parameter, use it
-        // * If there is no incoming payload, check the parameters
-        // * If there is an incoming payload, use that.
-        //
-        // Handle explicitely configured sources first.
-        if (isset($target['params'][$param])) {
-          $src= $target['params'][$param];
-        } else if (isset($target['segments'][$param])) {
-          $src= new RestParamSource($param, ParamReader::$PATH);
-        } else if (NULL === $target['input']) {
-          $src= new RestParamSource($param, ParamReader::$PARAM);
+        // Input
+        if ($type->isSubclassOf('webservices.rest.srv.Input')) {
+          $args[]= $type->newInstance($request);
         } else {
-          $src= new RestParamSource(NULL, ParamReader::$BODY);
-        }
 
-        if (NULL === ($arg= $src->reader->read($src->name, $target, $request))) {
-          if ($parameter->isOptional()) {
-            $arg= $parameter->getDefaultValue();
+          // Extract arguments according to definition. In case we don't have an explicit
+          // source for an argument, look up according to the following rules:
+          //
+          // * If we have a segment named exactly like the parameter, use it
+          // * If there is no incoming payload, check the parameters
+          // * If there is an incoming payload, use that.
+          //
+          // Handle explicitely configured sources first.
+          if (isset($target['params'][$param])) {
+            $src= $target['params'][$param];
+          } else if (isset($target['segments'][$param])) {
+            $src= new RestParamSource($param, ParamReader::$PATH);
+          } else if (NULL === $target['input']) {
+            $src= new RestParamSource($param, ParamReader::$PARAM);
           } else {
-            throw new IllegalArgumentException('Parameter "'.$param.'" required but found in '.$src->toString());
+            $src= new RestParamSource(NULL, ParamReader::$BODY);
           }
+
+          if (NULL === ($arg= $src->reader->read($src->name, $target, $request))) {
+            if ($parameter->isOptional()) {
+              $arg= $parameter->getDefaultValue();
+            } else {
+              throw new IllegalArgumentException('Parameter "'.$param.'" required but found in '.$src->toString());
+            }
+          }
+          $args[]= $this->unmarshal($type, $arg);
         }
-        $args[]= $this->unmarshal($parameter->getType(), $arg);
       }
       return $args;
     }
