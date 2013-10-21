@@ -143,7 +143,7 @@
      * Sets payload
      *
      * @param   var payload
-     * @param   var format either a RestFormat or a RestSerializer instance
+     * @param   var format either a string, a RestFormat or a RestSerializer instance
      */
     public function setPayload($payload, $format) {
       $this->payload= $payload;
@@ -152,8 +152,7 @@
       } else if ($format instanceof RestSerializer) {
         $this->contentType= $format->contentType();
       } else {
-        // TBD: Maybe just use the format as content type?
-        throw new IllegalArgumentException('Expected either a RestFormat or a RestSerializer instance, '.xp::typeOf($format).' given');
+        $this->contentType= $format;
       }
     }
 
@@ -185,6 +184,15 @@
      */
     public function getPayload() {
       return $this->payload;
+    }
+
+    /**
+     * Gets content type
+     *
+     * @return  string
+     */
+    public function getContentType() {
+      return $this->contentType;
     }
 
     /**

@@ -164,7 +164,10 @@
         return $this->deserializers[$mediaType];
       } else {
         $format= RestFormat::forMediaType($mediaType);
-        return RestFormat::$UNKNOWN->equals($format) ? NULL : $format->deserializer();
+        if (RestFormat::$UNKNOWN->equals($format)) {
+          throw new IllegalArgumentException('No serializer for "'.$contentType.'"');
+        }
+        return $format->deserializer();
       }
     }
 
@@ -183,6 +186,7 @@
      *
      * @param   string contentType
      * @return  webservices.rest.RestSerializer
+     * @throws  lang.IllegalArgumentException If [this condition is met]
      */
     public function serializerFor($contentType) {
       $mediaType= substr($contentType, 0, strcspn($contentType, ';'));
@@ -190,7 +194,10 @@
         return $this->serializers[$mediaType];
       } else {
         $format= RestFormat::forMediaType($mediaType);
-        return RestFormat::$UNKNOWN->equals($format) ? NULL : $format->serializer();
+        if (RestFormat::$UNKNOWN->equals($format)) {
+          throw new IllegalArgumentException('No serializer for "'.$contentType.'"');
+        }
+        return $format->serializer();
       }
     }
 
@@ -236,8 +243,9 @@
       // * Use bodies as-is, e.g. file uploads
       // * If no body and no payload is set, use parameters
       if ($request->hasPayload()) {
-        $value= $this->marshalling->marshal($request->getPayload());
-        $send->setParameters($this->serializerFor($request->getContentType())->serialize($value));
+        $send->setParameters(new RequestData($this->serializerFor($request->getContentType())->serialize(
+          $this->marshalling->marshal($request->getPayload())
+        )));
       } else if ($request->hasBody()) {
         $send->setParameters($request->getBody());
       } else {

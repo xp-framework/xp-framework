@@ -227,9 +227,90 @@ class RestClientTest extends TestCase {
    * Test "text/html" is not supported
    *
    */
-  #[@test]
+  #[@test, @expect('lang.IllegalArgumentException')]
   public function unknownDeserializer() {
     $this->assertNull($this->newFixture()->deserializerFor('text/html'));
+  }
+
+  /**
+   * Test "text/xml" is supported
+   *
+   */
+  #[@test]
+  public function textXmlSerializer() {
+    $this->assertInstanceOf(
+      'webservices.rest.RestSerializer',
+      $this->newFixture()->serializerFor('text/xml')
+    );
+  }
+
+  /**
+   * Test "application/xml" is supported
+   *
+   */
+  #[@test]
+  public function applicationXmlSerializer() {
+    $this->assertInstanceOf(
+      'webservices.rest.RestSerializer',
+      $this->newFixture()->serializerFor('application/xml')
+    );
+  }
+
+  /**
+   * Test "text/json" is supported
+   *
+   */
+  #[@test]
+  public function textJsonSerializer() {
+    $this->assertInstanceOf(
+      'webservices.rest.RestSerializer',
+      $this->newFixture()->serializerFor('text/json')
+    );
+  }
+
+  /**
+   * Test "text/x-json" is supported
+   *
+   */
+  #[@test]
+  public function textXJsonSerializer() {
+    $this->assertInstanceOf(
+      'webservices.rest.RestSerializer',
+      $this->newFixture()->serializerFor('text/x-json')
+    );
+  }
+
+  /**
+   * Test "text/javascript" is supported
+   *
+   */
+  #[@test]
+  public function textJavascriptSerializer() {
+    $this->assertInstanceOf(
+      'webservices.rest.RestSerializer',
+      $this->newFixture()->serializerFor('text/javascript')
+    );
+  }
+
+  /**
+   * Test "application/json" is supported
+   *
+   */
+  #[@test]
+  public function applicationJsonSerializer() {
+    $this->assertInstanceOf(
+      'webservices.rest.RestSerializer',
+      $this->newFixture()->serializerFor('application/json')
+    );
+  }
+
+  /**
+   * Test "text/html" is not supported
+   *
+   */
+  #[@test, @expect('lang.IllegalArgumentException')]
+  public function unknownSerializer() {
+    $this->assertNull($this->newFixture()->serializerFor('text/html'));
   }
 
   /**

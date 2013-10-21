@@ -109,9 +109,11 @@ class RestRequestTest extends TestCase {
     $this->assertEquals(array('title' => 'New issue'), $fixture->getPayload());
   }
 
-  #[@test, @expect('lang.IllegalArgumentException')]
+  #[@test]
   public function setPayloadAndNull() {
-    create(new RestRequest())->setPayload(null, null);
+    $fixture= new RestRequest();
+    $fixture->setPayload('Test', 'text/plain');
+    $this->assertEquals('text/plain', $fixture->getContentType());
   }
 
   #[@test]
@@ -126,9 +128,10 @@ class RestRequestTest extends TestCase {
     $this->assertEquals($fixture, $fixture->withPayload(null, \webservices\rest\RestFormat::$JSON));
   }
 
-  #[@test, @expect('lang.IllegalArgumentException')]
+  #[@test]
   public function withPayloadAndNull() {
-    create(new RestRequest())->withPayload(null, null);
+    $fixture= create(new RestRequest())->withPayload('Test', 'text/plain');
+    $this->assertEquals('text/plain', $fixture->getContentType());
   }
 
   #[@test]
