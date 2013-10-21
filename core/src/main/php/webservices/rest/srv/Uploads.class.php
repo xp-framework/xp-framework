@@ -19,7 +19,7 @@
      * @param  string $name
      * @return webservices.rest.srv.Upload[]
      */
-    public function named($name) {
+    public function eachNamed($name) {
       $r= array();
       $params= $this->request->getParam($name);
       foreach (isset($params['tmp_name']) ? array($params) : $params as $param) {
