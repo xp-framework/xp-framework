@@ -130,7 +130,7 @@
       if (!is_file($fn= $this->path.strtr($filename, '/', DIRECTORY_SEPARATOR))) {
         return raise('lang.ElementNotFoundException', 'Could not load resource '.$filename);
       }
-      return new File($fn);
+      return new \io\File($fn);   // Trigger autoloading!
     }
 
     /**
