@@ -359,6 +359,7 @@
             $this->_errors()
           );
         }
+        if (0 === $check->Nmsgs) return array();
         $msgnums= range(1, $check->Nmsgs);
       } else {
         $msgnums= array();
@@ -379,7 +380,7 @@
           $messages[]= $msg;
         }
       }
-      
+
       if (!empty($seq)) {
         if (FALSE === ($list= imap_fetch_overview($this->_hdl[0], substr($seq, 1)))) {
           throw new MessagingException(
