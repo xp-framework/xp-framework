@@ -57,7 +57,6 @@
       } else {
         $this->cache= $cache;
       }
-      
     }
       
     /**
@@ -74,6 +73,14 @@
      * @return  bool success
      */
     public function close() { }
+
+    /**
+     * Check whether a folder exists
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasFolder($name) { }
   
     /**
      * Get a folder
