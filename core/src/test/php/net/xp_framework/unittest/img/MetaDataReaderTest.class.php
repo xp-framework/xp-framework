@@ -6,7 +6,6 @@ use img\io\SOFNSegment;
 use img\io\CommentSegment;
 use img\io\XMPSegment;
 
-
 /**
  * TestCase for MetaDataReader class
  *
@@ -691,6 +690,21 @@ class MetaDataReaderTest extends TestCase {
   #[@test]
   public function gps_data() {
     $exif= this($this->extractFromFile('gps-embedded.jpg')->segmentsOf('img.io.ExifSegment'), 0);
-    $this->assertEquals(2, $exif->rawData('GPS_IFD_Pointer', 'GPSVersion'));
+    $this->assertEquals(
+      array(
+        'Version'      => '2/2/0/0',
+        'Latitude'     => '48/1/59/1/54669/1000',    // 48° 59' 54,669" North
+        'LatitudeRef'  => "N\0",
+        'Longitude'    => '8/1/23/1/10003/1000',     // 8° 23' 10,003" East
+        'LongitudeRef' => "E\0"
+      ),
+      array(
+        'Version'      => $exif->rawData('GPS_IFD_Pointer', 'GPSVersion'),
+        'Latitude'     => $exif->rawData('GPS_IFD_Pointer', 'GPSLatitude'),
+        'LatitudeRef'  => $exif->rawData('GPS_IFD_Pointer', 'GPSLatitudeRef'),
+        'Longitude'    => $exif->rawData('GPS_IFD_Pointer', 'GPSLongitude'),
+        'LongitudeRef' => $exif->rawData('GPS_IFD_Pointer', 'GPSLongitudeRef')
+      )
+    );
   }
 }
