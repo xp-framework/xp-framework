@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.mail.InternetAddress', 'util.Date', 'text.encode.Base64', 'text.encode.QuotedPrintable');
+  uses('peer.mail.InternetAddress', 'util.Date', 'text.encode.QuotedPrintable');
 
   // Flags
   define('MAIL_FLAG_ANSWERED',      0x0001);
@@ -282,9 +282,9 @@
 
       if ($decode) {
         if ('base64' === $this->encoding) {
-          return Base64::decode($this->body);
+          return base64_decode($this->body);
         } else if ('quoted-printable' === $this->encoding) {
-          return QuotedPrintable::decode($this->body);
+          return quoted_printable_decode($this->body);
         } else if ('8bit' === $this->encoding || '' === $this->encoding) {
           return $this->body;
         } else {
