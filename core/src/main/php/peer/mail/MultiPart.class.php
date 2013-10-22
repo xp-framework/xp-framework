@@ -107,7 +107,16 @@
       
       return $this->parts[$id];
     }
-    
+
+    /**
+     * Get all parts
+     *
+     * @return  peer.mail.MimePart[]
+     */
+    public function getParts() {
+      return $this->parts;
+    }
+
     /**
      * Get message body.
      *

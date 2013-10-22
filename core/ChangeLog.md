@@ -39,6 +39,7 @@ XP Framework ChangeLog
 
 ### Features
 
+* Added getParts() method to MultiPart and MimeMessage in peer.mail - (@thekid)
 * Added peer.mail.MailStore::hasFolder() method and implemented it for both
   mail stores, IMAP and Maildir - (@thekid)
 * Added optional "decode" parameter to peer.mail.Message::getBody()  - (@thekid)
