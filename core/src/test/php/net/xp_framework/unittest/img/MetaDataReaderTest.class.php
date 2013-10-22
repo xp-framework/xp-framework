@@ -694,16 +694,16 @@ class MetaDataReaderTest extends TestCase {
       array(
         'Version'      => '2/2/0/0',
         'Latitude'     => '48/1/59/1/54669/1000',    // 48° 59' 54,669" North
-        'LatitudeRef'  => "N\0",
+        'LatitudeRef'  => 'N',
         'Longitude'    => '8/1/23/1/10003/1000',     // 8° 23' 10,003" East
-        'LongitudeRef' => "E\0"
+        'LongitudeRef' => 'E'
       ),
       array(
         'Version'      => $exif->rawData('GPS_IFD_Pointer', 'GPSVersion'),
         'Latitude'     => $exif->rawData('GPS_IFD_Pointer', 'GPSLatitude'),
-        'LatitudeRef'  => $exif->rawData('GPS_IFD_Pointer', 'GPSLatitudeRef'),
+        'LatitudeRef'  => rtrim($exif->rawData('GPS_IFD_Pointer', 'GPSLatitudeRef')),
         'Longitude'    => $exif->rawData('GPS_IFD_Pointer', 'GPSLongitude'),
-        'LongitudeRef' => $exif->rawData('GPS_IFD_Pointer', 'GPSLongitudeRef')
+        'LongitudeRef' => rtrim($exif->rawData('GPS_IFD_Pointer', 'GPSLongitudeRef'))
       )
     );
   }
