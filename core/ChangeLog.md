@@ -39,6 +39,8 @@ XP Framework ChangeLog
 
 ### Features
 
+* Added peer.mail.MailStore::hasFolder() method and implemented it for both
+  mail stores, IMAP and Maildir - (@thekid)
 * Added optional "decode" parameter to peer.mail.Message::getBody()  - (@thekid)
 * Added peer.http.FileData class for use in peer.http.FormRequestData. Makes
   it easier to code file uploading - (@thekid)

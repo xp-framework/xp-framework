@@ -82,7 +82,18 @@
     public function close() {
       return $this->_folder->close();
     }
-    
+
+    /**
+     * Check whether a folder exists
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasFolder($name) {
+      $f= new Folder ($this->_folder->getURI().DIRECTORY_SEPARATOR.$name);
+      return $f->exists();
+    }
+
     /**
      * Opens a subfolder of the current folder and returns
      * an object of that mailbox.

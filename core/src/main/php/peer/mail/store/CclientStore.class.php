@@ -134,7 +134,21 @@
       
       return TRUE;
     }
-  
+
+    /**
+     * Check whether a folder exists
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasFolder($name) {
+      $r= imap_list($this->_hdl[0], $this->_hdl[1], $name);
+      if (imap_last_error()) {
+        throw new MessagingException('Listing folders failed', $this->_errors());
+      }
+      return !empty($r);
+    }
+
     /**
      * Get a folder. Note: Results from this method are cached.
      *
@@ -145,11 +159,7 @@
     public function getFolder($name) { 
       if (!$this->cache->has(SKEY_FOLDER.$name)) {
         if (FALSE === imap_list($this->_hdl[0], $this->_hdl[1], $name)) {
-          trigger_error('Folder: '.$name, E_USER_NOTICE);
-          throw new MessagingException(
-            'Retrieving folder failed',
-            $this->_errors()
-          );
+          throw new MessagingException('Retrieving folder "'.$name.'" failed', $this->_errors());
         }
         
         $folder= new MailFolder($this, $name);
