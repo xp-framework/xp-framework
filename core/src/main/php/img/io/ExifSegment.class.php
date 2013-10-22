@@ -305,6 +305,7 @@
       0xA40B => 'DeviceSettingDescription',
       0xA40C => 'SubjectDistanceRange',
       0xA420 => 'ImageUniqueID',
+      0xEA1C => 'Padding'
     );
 
     /**
@@ -491,10 +492,13 @@
         $offset+= 4;
 
         // Recursively extract Sub-IFDs and makernote
+        $t= NULL;
         if (isset($sub[$entry['tag']])) {
           $start= current(unpack($format[$entry['type']], substr($data, $read, $l)));
           $read= $start + $base;
           $entry['data']= self::readIFD($data, $read, $base, TRUE === $sub[$entry['tag']] ? self::$tag : $sub[$entry['tag']], $format);
+        } else if (0xEA1C === $entry['tag']) {
+          $entry['data']= NULL;
         } else if (0x927C === $entry['tag']) {
           $entry['data']= NULL;
           $makernote= substr($data, $read, $l);
