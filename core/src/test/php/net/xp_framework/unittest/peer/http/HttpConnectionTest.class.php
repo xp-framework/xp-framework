@@ -6,6 +6,7 @@ use peer\http\HttpConstants;
 use peer\http\RequestData;
 use util\log\LogCategory;
 use util\log\BufferedAppender;
+use util\log\layout\PatternLayout;
 
 /**
  * TestCase for HTTP connection
@@ -93,9 +94,9 @@ class HttpConnectionTest extends TestCase {
   #[@test]
   public function tracing() {
     $appender= new BufferedAppender();
-    $this->fixture->setTrace(create(new LogCategory('trace'))->withAppender($appender->withLayout(
-      new \util\log\layout\PatternLayout('%m')
-    )));
+    $this->fixture->setTrace(create(new LogCategory('trace'))->withAppender(
+      $appender->withLayout(new PatternLayout('%m'))
+    ));
     $this->fixture->get();
     $this->assertEquals(
       ">>> GET /path/of/file HTTP/1.1\r\nConnection: close\r\nHost: example.com:80\r\n\r\n".
