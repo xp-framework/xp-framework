@@ -8,7 +8,8 @@
     'peer.URL',
     'peer.http.HttpConstants',
     'peer.http.HttpTransport',
-    'peer.http.HttpProxy'
+    'peer.http.HttpProxy',
+    'util.log.Traceable'
   );
   
   /**
@@ -35,7 +36,7 @@
    * @test     xp://net.xp_framework.unittest.peer.HttpTest
    * @purpose  Provide
    */
-  class HttpConnection extends Object {
+  class HttpConnection extends Object implements Traceable {
     protected
       $url          = NULL,
       $transport    = NULL,
@@ -259,6 +260,15 @@
      */
     public function trace($arg= NULL, $headers= array()) {
       return $this->request(HttpConstants::TRACE, $arg, $headers);
+    }
+
+    /**
+     * Sets a logger category for debugging
+     *
+     * @param   util.log.LogCategory cat
+     */
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
   }
 ?>
