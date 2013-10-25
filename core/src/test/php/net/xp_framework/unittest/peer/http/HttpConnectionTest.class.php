@@ -87,6 +87,19 @@ class HttpConnectionTest extends TestCase {
   }
 
   #[@test]
+  public function create_and_send() {
+    with ($request= $this->fixture->create(new HttpRequest())); {
+      $request->setMethod('PROPPATCH');   // Webdav
+      $request->setTarget('/');
+      $this->fixture->send($request);
+    }
+    $this->assertEquals(
+      "PROPPATCH / HTTP/1.1\r\nConnection: close\r\nHost: example.com:80\r\nContent-Length: 0\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n",
+      $this->fixture->getLastRequest()->getRequestString()
+    );
+  }
+
+  #[@test]
   public function is_traceable() {
     $this->assertInstanceOf('util.log.Traceable', $this->fixture);
   }
