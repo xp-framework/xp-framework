@@ -130,10 +130,7 @@
      * @return  peer.http.HttpResponse response object
      */
     public function send(HttpRequest $request) {
-      $this->cat && $this->cat->info('>>> ', $request->getHeaderString());
-      $response= $this->transport->send($request, $this->_timeout, $this->_ctimeout);
-      $this->cat && $this->cat->info('<<< ', $response->getHeaderString());
-      return $response;
+      return $this->transport->send($request, $this->_timeout, $this->_ctimeout);
     }
 
     /**
