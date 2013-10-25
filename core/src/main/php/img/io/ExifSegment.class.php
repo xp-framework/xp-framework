@@ -30,12 +30,12 @@
     protected static $pack= array(
       'MM' => array(
         self::BYTE      => 'C1',
-        self::ASCII     => 'a1',
+        self::ASCII     => 'a*',
         self::USHORT    => 'n1',
         self::ULONG     => 'N1',
         self::URATIONAL => 'N2', 
         self::SBYTE     => 'c1',
-        self::UNDEFINED => 'a1',
+        self::UNDEFINED => 'a*',
         self::SHORT     => 'n1',
         self::LONG      => 'N1',
         self::RATIONAL  => 'N2',
@@ -44,12 +44,12 @@
       ),
       'II' => array(
         self::BYTE      => 'C1',
-        self::ASCII     => 'a1',
+        self::ASCII     => 'a*',
         self::USHORT    => 'v1',
         self::ULONG     => 'V1',
         self::URATIONAL => 'V2', 
         self::SBYTE     => 'c1',
-        self::UNDEFINED => 'a1',
+        self::UNDEFINED => 'a*',
         self::SHORT     => 'v1',
         self::LONG      => 'V1',
         self::RATIONAL  => 'V2',
@@ -518,8 +518,12 @@
           }
         } else if (isset($tags[$entry['tag']])) {
           $unpack= $format[$entry['type']];
-          $value= unpack($unpack{0}.((int)$unpack{1} * $entry['size']), substr($data, $read, $l));
-          $entry['data']= sizeof($value) > 1 ? implode('/', $value) : current($value);
+          if ('a*' === $unpack) {
+            $entry['data']= rtrim(substr($data, $read, $l), "\0");
+          } else {
+            $value= unpack($unpack{0}.((int)$unpack{1} * $entry['size']), substr($data, $read, $l));
+            $entry['data']= sizeof($value) > 1 ? implode('/', $value) : current($value);
+          }
         } else {
           $entry['data']= substr($data, $read, $l);
           $t= sprintf('UndefinedTag:0x%04X', $entry['tag']);

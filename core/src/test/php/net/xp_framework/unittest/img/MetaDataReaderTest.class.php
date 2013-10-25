@@ -701,9 +701,9 @@ class MetaDataReaderTest extends TestCase {
       array(
         'Version'      => $exif->rawData('GPS_IFD_Pointer', 'GPSVersion'),
         'Latitude'     => $exif->rawData('GPS_IFD_Pointer', 'GPSLatitude'),
-        'LatitudeRef'  => rtrim($exif->rawData('GPS_IFD_Pointer', 'GPSLatitudeRef')),
+        'LatitudeRef'  => $exif->rawData('GPS_IFD_Pointer', 'GPSLatitudeRef'),
         'Longitude'    => $exif->rawData('GPS_IFD_Pointer', 'GPSLongitude'),
-        'LongitudeRef' => rtrim($exif->rawData('GPS_IFD_Pointer', 'GPSLongitudeRef'))
+        'LongitudeRef' => $exif->rawData('GPS_IFD_Pointer', 'GPSLongitudeRef')
       )
     );
   }
