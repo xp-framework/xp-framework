@@ -63,7 +63,10 @@
       // ensure handle is closed
       curl_close($curl);
 
-      return new HttpResponse(new MemoryInputStream($response));
+      $this->cat && $this->cat->info('>>>', $request->getHeaderString());
+      $response= new HttpResponse(new MemoryInputStream($response));
+      $this->cat && $this->cat->info('<<<', $response->getHeaderString());
+      return $response;
     }
   }
 ?>

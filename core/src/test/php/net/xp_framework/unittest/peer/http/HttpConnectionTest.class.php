@@ -4,6 +4,8 @@ use unittest\TestCase;
 use peer\http\HttpRequest;
 use peer\http\HttpConstants;
 use peer\http\RequestData;
+use util\log\LogCategory;
+use util\log\BufferedAppender;
 
 /**
  * TestCase for HTTP connection
@@ -18,15 +20,6 @@ class HttpConnectionTest extends TestCase {
    */
   public function setUp() {
     $this->fixture= new MockHttpConnection(new \peer\URL('http://example.com:80/path/of/file'));
-  }
-
-  #[@test]
-  public function get() {
-    $this->fixture->get(array('var1' => 1, 'var2' => 2));
-    $this->assertEquals(
-      "GET /path/of/file?var1=1&var2=2 HTTP/1.1\r\nConnection: close\r\nHost: example.com:80\r\n\r\n",
-      $this->fixture->getLastRequest()->getRequestString()
-    );
   }
 
   #[@test]
@@ -95,5 +88,19 @@ class HttpConnectionTest extends TestCase {
   #[@test]
   public function is_traceable() {
     $this->assertInstanceOf('util.log.Traceable', $this->fixture);
+  }
+
+  #[@test]
+  public function tracing() {
+    $appender= new BufferedAppender();
+    $this->fixture->setTrace(create(new LogCategory('trace'))->withAppender($appender->withLayout(
+      new \util\log\layout\PatternLayout('%m')
+    )));
+    $this->fixture->get();
+    $this->assertEquals(
+      ">>> GET /path/of/file HTTP/1.1\r\nConnection: close\r\nHost: example.com:80\r\n\r\n".
+      "<<< HTTP/1.0 200 Testing OK\r\n\r\n",
+      $appender->getBuffer()
+    );
   }
 }

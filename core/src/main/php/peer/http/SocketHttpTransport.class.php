@@ -84,7 +84,10 @@
       $s->connect($connecttimeout);
       $s->write($request->getRequestString());
 
-      return new HttpResponse(new SocketInputStream($s));
+      $this->cat && $this->cat->info('>>>', $request->getHeaderString());
+      $response= new HttpResponse(new SocketInputStream($s));
+      $this->cat && $this->cat->info('<<<', $response->getHeaderString());
+      return $response;
     }
   }
 ?>
