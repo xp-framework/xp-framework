@@ -93,10 +93,8 @@ class HttpConnectionTest extends TestCase {
 
   #[@test]
   public function tracing() {
-    $appender= new BufferedAppender();
-    $this->fixture->setTrace(create(new LogCategory('trace'))->withAppender(
-      $appender->withLayout(new PatternLayout('%m'))
-    ));
+    $appender= create(new BufferedAppender())->withLayout(new PatternLayout('%m'));
+    $this->fixture->setTrace(create(new LogCategory('trace'))->withAppender($appender));
     $this->fixture->get();
     $this->assertEquals(
       ">>> GET /path/of/file HTTP/1.1\r\nConnection: close\r\nHost: example.com:80\r\n\r\n".
