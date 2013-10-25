@@ -41,14 +41,14 @@
 
   // Set up class path
   $paths= array();
-  list($use, $include)= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
-  foreach (explode(PATH_SEPARATOR, $use) as $path) {
-    $paths[]= ('~' == $path{0}
+  $scan= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
+  foreach (explode(PATH_SEPARATOR, $scan[0]) as $path) {
+    $paths[]= ('~' === $path{0}
       ? str_replace('~', $webroot, $path)
       : $path
     );
   }
-  bootstrap(scanpath($paths, $webroot).$include);
+  bootstrap(scanpath($paths, $webroot).(isset($scan[1]) ? $scan[1] : ''));
   
   exit(\xp\scriptlet\Runner::main(array($webroot, $configd, $_SERVER['SERVER_PROFILE'], $_SERVER['SCRIPT_URL'])));
 ?>

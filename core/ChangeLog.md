@@ -22,6 +22,7 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed issue #332 - Web runner useless warning - (@thekid)
 * Fixed issue #330 - REST client calls with payloads fail - (@thekid)
 * Fixed encoded multi-line headers and recipient parsing when receiving emails 
   using the "cclient" (ext/imap) library - (@thekid)
