@@ -1,5 +1,7 @@
 <?php namespace net\xp_framework\unittest\io\collections;
 
+use io\collections\IOCollection;
+
 /**
  * Unit tests for IOCollection class (basic functionality)
  *
@@ -14,16 +16,36 @@ class IOCollectionTest extends AbstractCollectionTest {
    * @return  io.IOElement 
    * @throws  unittest.AssertionFailedError if no elements are available
    */
-  protected function firstElement(\io\collections\IOCollection $collection) {
+  protected function firstElement(IOCollection $collection) {
     $collection->open();
     $first= $collection->next();
     $collection->close();
     $this->assertNotEquals(null, $first);
     return $first;
   }
-  
+
+  #[@test, @values(['.', './sub', './sub/sec'])]
+  public function getUri_adds_trailing_slash_to_collections($dir) {
+    $this->assertEquals($dir.'/', create(new MockCollection($dir))->getURI());
+  }
+
+  #[@test, @values(['./first.txt', './sub/sec/lang.base.php'])]
+  public function getUri_retuns_absolute_name_of_elements($file) {
+    $this->assertEquals($file, create(new MockElement($file))->getURI());
+  }
+
+  #[@test, @values(['.', './sub', './sub/sec'])]
+  public function getName_returns_relative_name_of_collections($dir) {
+    $this->assertEquals(basename($dir), create(new MockCollection($dir))->getName());
+  }
+
+  #[@test, @values(['./first.txt', './sub/sec/lang.base.php'])]
+  public function getUri_retuns_relatvie_name_of_elements($file) {
+    $this->assertEquals(basename($file), create(new MockElement($file))->getName());
+  }
+
   #[@test]
-  public function nextReturnsNull() {
+  public function next_returns_null_for_empty_collection() {
     $empty= new MockCollection('empty-dir');
     $empty->open();
     $this->assertNull($empty->next());
