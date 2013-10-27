@@ -53,13 +53,13 @@ class IOCollectionTest extends AbstractCollectionTest {
   }
 
   #[@test, @expect('lang.IllegalStateException')]
-  public function nextBeforeOpen() {
+  public function calling_next_before_opening_collection_raises_exception() {
     $c= new MockCollection('~');
     $c->next();
   }
 
   #[@test, @expect('lang.IllegalStateException')]
-  public function nextAfterClose() {
+  public function calling_next_after_closing_collection_raises_exception() {
     $c= new MockCollection('~');
     $c->open();
     $c->close();
@@ -67,7 +67,7 @@ class IOCollectionTest extends AbstractCollectionTest {
   }
 
   #[@test]
-  public function nextReturnsIOElements() {
+  public function next_returns_IOElement_instances() {
     $this->fixture->open();
     for ($i= 0; $e= $this->fixture->next(); $i++) {
       $this->assertInstanceOf('io.collections.IOElement', $e);
@@ -77,7 +77,7 @@ class IOCollectionTest extends AbstractCollectionTest {
   }
 
   #[@test]
-  public function nextReturnsNullAfterIteration() {
+  public function next_returns_null_after_iteration_completed() {
     $this->fixture->open();
     while ($this->fixture->next()) { 
       // Intentionally empty
@@ -87,7 +87,7 @@ class IOCollectionTest extends AbstractCollectionTest {
   }
 
   #[@test]
-  public function consecutiveIteration() {
+  public function consecutive_iteration_calls_with_open_and_close() {
     for ($i= 0; $i < 2; $i++) {
       $elements= 0;
       $this->fixture->open();
@@ -101,7 +101,7 @@ class IOCollectionTest extends AbstractCollectionTest {
   }
 
   #[@test]
-  public function consecutiveIterationWithRewind() {
+  public function consecutive_iteration_calls_with_rewind() {
     $this->fixture->open();
     for ($i= 0; $i < 2; $i++) {
       $elements= 0;
@@ -116,93 +116,93 @@ class IOCollectionTest extends AbstractCollectionTest {
   }
   
   #[@test]
-  public function inputStream() {
+  public function get_elements_input_stream() {
     with ($stream= $this->firstElement($this->fixture)->getInputStream()); {
-      $this->assertSubclass($stream, 'io.streams.InputStream');
+      $this->assertInstanceOf('io.streams.InputStream', $stream);
       $this->assertNotEquals(0, $stream->available());
       $this->assertEquals('File contents', $stream->read(13));
     }
   }
 
   #[@test, @expect('io.IOException')]
-  public function collectionInputStream() {
+  public function get_collections_input_stream() {
     $this->firstElement($this->newCollection('/', array($this->newCollection('/root'))))->getInputStream();
   }
 
   #[@test]
-  public function outputStream() {
+  public function get_elements_output_stream() {
     with ($stream= $this->firstElement($this->fixture)->getOutputStream()); {
-      $this->assertSubclass($stream, 'io.streams.OutputStream');
+      $this->assertInstanceOf('io.streams.OutputStream', $stream);
       $stream->write('File contents');
     }
   }
 
   #[@test, @expect('io.IOException')]
-  public function collectionOutputStream() {
+  public function get_collections_output_stream() {
     $this->firstElement($this->newCollection('/', array($this->newCollection('/root'))))->getOutputStream();
   }
  
   #[@test]
-  public function findExistingElement() {
+  public function find_existing_element() {
     $this->assertEquals(new MockElement('./first.txt'), $this->fixture->findElement('first.txt'));
   }
 
   #[@test]
-  public function findNonExistantElement() {
+  public function find_nonexistant_element() {
     $this->assertEquals(null, $this->fixture->findElement('doesnotexist.txt'));
   }
 
   #[@test]
-  public function newNonExistantElement() {
+  public function create_non_existant_element() {
     $created= $this->fixture->newElement('new.txt');
     $this->assertEquals(new MockElement('./new.txt'), $created);
     $this->assertEquals($created, $this->fixture->getElement('new.txt'));
   }
 
   #[@test, @expect('lang.IllegalArgumentException')]
-  public function newExistingElement() {
+  public function create_existing_element() {
     $this->fixture->newElement('first.txt');
   }
 
   #[@test]
-  public function getExistingElement() {
+  public function get_existing_element() {
     $this->assertEquals(new MockElement('./first.txt'), $this->fixture->getElement('first.txt'));
   }
 
   #[@test, @expect('util.NoSuchElementException')]
-  public function getNonExistantElement() {
+  public function get_nonexistant_element() {
     $this->fixture->getElement('doesnotexist.txt');
   }
 
   #[@test]
-  public function findExistingCollection() {
+  public function find_existing_collection() {
     $this->assertEquals(new MockCollection('./sub'), $this->fixture->findCollection('sub'));
   }
 
   #[@test]
-  public function findNonExistantCollection() {
+  public function find_nonexistant_collection() {
     $this->assertEquals(null, $this->fixture->findCollection('doesnotexist'));
   }
  
   #[@test]
-  public function getExistingCollection() {
+  public function get_existing_collection() {
     $this->assertEquals(new MockCollection('./sub'), $this->fixture->getCollection('sub'));
   }
 
   #[@test, @expect('util.NoSuchElementException')]
-  public function getNonExistantCollection() {
+  public function get_nonexistant_collection() {
     $this->fixture->getCollection('doesnotexist');
   }
 
   #[@test]
-  public function newNonExistantCollection() {
+  public function new_nonexistant_collection() {
     $created= $this->fixture->newCollection('newdir');
     $this->assertEquals(new MockCollection('./newdir'), $created);
     $this->assertEquals($created, $this->fixture->getCollection('newdir'));
   }
 
   #[@test, @expect('lang.IllegalArgumentException')]
-  public function newExistingCollection() {
+  public function new_existing_collection() {
     $this->fixture->newCollection('sub');
   }
 }
