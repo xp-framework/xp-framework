@@ -6,6 +6,21 @@
  * @see   xp://io.collections.IOCollection
  */
 class IOCollectionTest extends AbstractCollectionTest {
+
+  /**
+   * Returns first element in a given collection
+   *
+   * @param   io.IOCollection collection
+   * @return  io.IOElement 
+   * @throws  unittest.AssertionFailedError if no elements are available
+   */
+  protected function firstElement(\io\collections\IOCollection $collection) {
+    $collection->open();
+    $first= $collection->next();
+    $collection->close();
+    $this->assertNotEquals(null, $first);
+    return $first;
+  }
   
   #[@test]
   public function nextReturnsNull() {
@@ -33,7 +48,7 @@ class IOCollectionTest extends AbstractCollectionTest {
   public function nextReturnsIOElements() {
     $this->fixture->open();
     for ($i= 0; $e= $this->fixture->next(); $i++) {
-      $this->assertSubclass($e, 'io.collections.IOElement');
+      $this->assertInstanceOf('io.collections.IOElement', $e);
     }
     $this->assertEquals($this->sizes[$this->fixture->getURI()], $i);
     $this->fixture->close();
@@ -78,21 +93,6 @@ class IOCollectionTest extends AbstractCollectionTest {
     $this->fixture->close();
   }
   
-  /**
-   * Returns first element in a given collection
-   *
-   * @param   io.IOCollection collection
-   * @return  io.IOElement 
-   * @throws  unittest.AssertionFailedError if no elements are available
-   */
-  protected function firstElement(\io\collections\IOCollection $collection) {
-    $collection->open();
-    $first= $collection->next();
-    $collection->close();
-    $this->assertNotEquals(null, $first);
-    return $first;
-  }
-
   #[@test]
   public function inputStream() {
     with ($stream= $this->firstElement($this->fixture)->getInputStream()); {

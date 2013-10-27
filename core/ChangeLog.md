@@ -22,6 +22,7 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed issue #332 - Web runner useless warning - (@thekid)
 * Fixed issue #330 - REST client calls with payloads fail - (@thekid)
 * Fixed encoded multi-line headers and recipient parsing when receiving emails 
   using the "cclient" (ext/imap) library - (@thekid)
@@ -39,6 +40,9 @@ XP Framework ChangeLog
 
 ### Features
 
+* Added peer.http.HttpConnection::setTrace() for debugging HTTP requests and
+  response headers - (@thekid)
+* Added getParts() method to MultiPart and MimeMessage in peer.mail - (@thekid)
 * Added peer.mail.MailStore::hasFolder() method and implemented it for both
   mail stores, IMAP and Maildir - (@thekid)
 * Added optional "decode" parameter to peer.mail.Message::getBody()  - (@thekid)

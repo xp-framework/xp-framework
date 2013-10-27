@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.streams.Streams');
+  uses('io.streams.Streams', 'peer.http.FormData');
 
   /**
    * File Data; represents single parts of a multipart/form-data request

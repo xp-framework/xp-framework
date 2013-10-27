@@ -141,7 +141,7 @@ abstract class AbstractMessageTest extends \unittest\TestCase {
   #[@test]
   public function quoted_printable_encoded_body() {
     $this->fixture->setEncoding('quoted-printable');
-    $this->fixture->setBody('Hello_World');
-    $this->assertEquals('Hello World', $this->fixture->getBody(true));
+    $this->fixture->setBody('Hello World=3D');
+    $this->assertEquals('Hello World=', $this->fixture->getBody(true));
   }
 }

@@ -1,15 +1,14 @@
 <?php namespace net\xp_framework\unittest\io\collections;
 
 use io\collections\IOElement;
+use io\collections\IOCollection;
 use io\streams\MemoryInputStream;
 use io\streams\MemoryOutputStream;
-
 
 /**
  * Represents a Mock element
  *
- * @see      xp://net.xp_framework.unittest.io.collections.MockCollection
- * @purpose  Mock object
+ * @see    xp://net.xp_framework.unittest.io.collections.MockCollection
  */
 class MockElement extends \lang\Object implements IOElement {
   protected
@@ -105,7 +104,7 @@ class MockElement extends \lang\Object implements IOElement {
    *
    * @param   io.collections.IOCollection
    */
-  public function setOrigin(\io\collections\IOCollection $origin) {
+  public function setOrigin(IOCollection $origin) {
     $this->origin= $origin;
   }
 

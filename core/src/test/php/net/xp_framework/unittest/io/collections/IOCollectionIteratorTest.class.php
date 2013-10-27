@@ -22,67 +22,16 @@ use io\collections\iterate\AnyOfFilter;
 /**
  * Unit tests for I/O collection iterator classes
  *
- * @see      xp://io.collections.IOCollectionIterator
- * @see      xp://io.collections.FilteredIOCollectionIterator
- * @purpose  Unit test
+ * @see   xp://io.collections.IOCollectionIterator
+ * @see   xp://io.collections.FilteredIOCollectionIterator
  */
 class IOCollectionIteratorTest extends AbstractCollectionTest {
 
   /**
-   * Test IOCollectionIterator
-   *
-   */
-  #[@test]
-  public function iteration() {
-    for ($it= new IOCollectionIterator($this->fixture), $i= 0; $it->hasNext(); $i++) {
-      $element= $it->next();
-      $this->assertSubclass($element, 'io.collections.IOElement');
-    }
-    $this->assertEquals($this->sizes[$this->fixture->getURI()], $i);
-  }
-
-  /**
-   * Test IOCollectionIterator
-   *
-   */
-  #[@test]
-  public function recursiveIteration() {
-    for ($it= new IOCollectionIterator($this->fixture, true), $i= 0; $it->hasNext(); $i++) {
-      $element= $it->next();
-      $this->assertSubclass($element, 'io.collections.IOElement');
-    }
-    $this->assertEquals($this->total, $i);
-  }
-
-  /**
-   * Test use within foreach()
-   *
-   */
-  #[@test]
-  public function foreachLoop() {
-    foreach (new IOCollectionIterator($this->fixture) as $i => $e) {
-      $this->assertSubclass($e, 'io.collections.IOElement');
-    }
-    $this->assertEquals($this->sizes[$this->fixture->getURI()]- 1, $i);
-  }
-
-  /**
-   * Test use within foreach()
-   *
-   */
-  #[@test]
-  public function foreachLoopRecursive() {
-    foreach (new IOCollectionIterator($this->fixture, true) as $i => $e) {
-      $this->assertSubclass($e, 'io.collections.IOElement');
-    }
-    $this->assertEquals($this->total- 1, $i);
-  }
-
-  /**
    * Helper method
    *
-   * @param   io.collections.iterate.Filter filter
-   * @param   bool recursive default FALSE
+   * @param   io.collections.iterate.Filter $filter
+   * @param   bool $recursive default FALSE
    * @return  string[] an array of the elements' URIs
    */
   protected function filterFixtureWith($filter, $recursive= false) {
@@ -91,17 +40,45 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
       $it= new FilteredIOCollectionIterator($this->fixture, $filter, $recursive);
       $it->hasNext(); 
     ) {
-      $e= $it->next();
-      $this->assertSubclass($e, 'io.collections.IOElement');
-      $elements[]= $e->getURI();
+      $elements[]= $it->next()->getURI();
     }
     return $elements;
   }
 
-  /**
-   * Test FilteredIOCollectionIterator
-   *
-   */
+  #[@test]
+  public function iteration() {
+    for ($it= new IOCollectionIterator($this->fixture), $i= 0; $it->hasNext(); $i++) {
+      $element= $it->next();
+      $this->assertInstanceOf('io.collections.IOElement', $element);
+    }
+    $this->assertEquals($this->sizes[$this->fixture->getURI()], $i);
+  }
+
+  #[@test]
+  public function recursiveIteration() {
+    for ($it= new IOCollectionIterator($this->fixture, true), $i= 0; $it->hasNext(); $i++) {
+      $element= $it->next();
+      $this->assertInstanceOf('io.collections.IOElement', $element);
+    }
+    $this->assertEquals($this->total, $i);
+  }
+
+  #[@test]
+  public function foreachLoop() {
+    foreach (new IOCollectionIterator($this->fixture) as $i => $element) {
+      $this->assertInstanceOf('io.collections.IOElement', $element);
+    }
+    $this->assertEquals($this->sizes[$this->fixture->getURI()]- 1, $i);
+  }
+
+  #[@test]
+  public function foreachLoopRecursive() {
+    foreach (new IOCollectionIterator($this->fixture, true) as $i => $element) {
+      $this->assertInstanceOf('io.collections.IOElement', $element);
+    }
+    $this->assertEquals($this->total- 1, $i);
+  }
+
   #[@test]
   public function filteredIteration() {
     $this->assertEquals(
@@ -110,10 +87,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test FilteredIOCollectionIterator
-   *
-   */
   #[@test]
   public function filteredRecursiveIteration() {
     $this->assertEquals(
@@ -122,11 +95,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test NameMatchesFilter
-   *
-   * @see     xp://io.collections.iterate.NameMatchesFilter
-   */
   #[@test]
   public function nameMatches() {
     $this->assertEquals(
@@ -135,11 +103,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test NameMatchesFilter
-   *
-   * @see     xp://io.collections.iterate.NameMatchesFilter
-   */
   #[@test]
   public function nameMatchesRecursive() {
     $this->assertEquals(
@@ -148,11 +111,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test NameEqualsFilter
-   *
-   * @see     xp://io.collections.iterate.NameMatchesFilter
-   */
   #[@test]
   public function nameEquals() {
     $this->assertEquals(
@@ -161,11 +119,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test NameEqualsFilter
-   *
-   * @see     xp://io.collections.iterate.NameMatchesFilter
-   */
   #[@test]
   public function nameEqualsRecursive() {
     $this->assertEquals(
@@ -174,11 +127,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test extensionEqualsFilter
-   *
-   * @see     xp://io.collections.iterate.extensionMatchesFilter
-   */
   #[@test]
   public function extensionEquals() {
     $this->assertEquals(
@@ -187,11 +135,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test extensionEqualsFilter
-   *
-   * @see     xp://io.collections.iterate.extensionMatchesFilter
-   */
   #[@test]
   public function extensionEqualsRecursive() {
     $this->assertEquals(
@@ -200,11 +143,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test UriMatchesFilter
-   *
-   * @see     xp://io.collections.iterate.UriMatchesFilter
-   */
   #[@test]
   public function uriMatches() {
     $this->assertEquals(
@@ -213,11 +151,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test UriMatchesFilter
-   *
-   * @see     xp://io.collections.iterate.UriMatchesFilter
-   */
   #[@test]
   public function uriMatchesRecursive() {
     $this->assertEquals(
@@ -226,11 +159,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test UriMatchesFilter
-   *
-   * @see     xp://io.collections.iterate.UriMatchesFilter
-   */
   #[@test]
   public function uriMatchesDirectorySeparators() {
     with ($src= $this->addElement($this->fixture, new MockCollection('./sub/src'))); {
@@ -242,11 +170,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test UriMatchesFilter
-   *
-   * @see     xp://io.collections.iterate.UriMatchesFilter
-   */
   #[@test]
   public function uriMatchesPlatformDirectorySeparators() {
     $mockName= '.'.DIRECTORY_SEPARATOR.'sub'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'Generic.xp';
@@ -259,11 +182,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
   
-  /**
-   * Test SizeEqualsFilter
-   *
-   * @see     xp://io.collections.iterate.SizeEqualsFilter
-   */
   #[@test]
   public function zeroBytes() {
     $this->assertEquals(
@@ -272,11 +190,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test SizeBiggerThanFilter
-   *
-   * @see     xp://io.collections.iterate.SizeBiggerThanFilter
-   */
   #[@test]
   public function bigFiles() {
     $this->assertEquals(
@@ -285,11 +198,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test SizeBiggerThanFilter
-   *
-   * @see     xp://io.collections.iterate.SizeBiggerThanFilter
-   */
   #[@test]
   public function smallFiles() {
     $this->assertEquals(
@@ -298,11 +206,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test AccessedAfterFilter
-   *
-   * @see     xp://io.collections.iterate.AccessedAfterFilter
-   */
   #[@test]
   public function accessedAfter() {
     $this->assertEquals(
@@ -311,11 +214,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test AccessedBeforeFilter
-   *
-   * @see     xp://io.collections.iterate.AccessedBeforeFilter
-   */
   #[@test]
   public function accessedBefore() {
     $this->assertEquals(
@@ -324,11 +222,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test ModifiedAfterFilter
-   *
-   * @see     xp://io.collections.iterate.ModifiedAfterFilter
-   */
   #[@test]
   public function modifiedAfter() {
     $this->assertEquals(
@@ -337,11 +230,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test ModifiedBeforeFilter
-   *
-   * @see     xp://io.collections.iterate.ModifiedBeforeFilter
-   */
   #[@test]
   public function modifiedBefore() {
     $this->assertEquals(
@@ -350,11 +238,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test CreatedAfterFilter
-   *
-   * @see     xp://io.collections.iterate.CreatedAfterFilter
-   */
   #[@test]
   public function createdAfter() {
     $this->assertEquals(
@@ -363,11 +246,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test CreatedBeforeFilter
-   *
-   * @see     xp://io.collections.iterate.CreatedBeforeFilter
-   */
   #[@test]
   public function createdBefore() {
     $this->assertEquals(
@@ -376,11 +254,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test AllOfFilter
-   *
-   * @see     xp://io.collections.iterate.AllOfFilter
-   */
   #[@test]
   public function allOf() {
     $this->assertEquals(
@@ -392,11 +265,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test AnyOfFilter
-   *
-   * @see     xp://io.collections.iterate.AnyOfFilter
-   */
   #[@test]
   public function anyOf() {
     $this->assertEquals(
@@ -408,10 +276,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     );
   }
 
-  /**
-   * Test getOrigin()
-   *
-   */
   #[@test]
   public function originBasedOn() {
     $c= $this->newCollection('/home', array(
@@ -426,10 +290,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     }
   }
 
-  /**
-   * Test getOrigin()
-   *
-   */
   #[@test]
   public function originEqualsBase() {
     $c= $this->newCollection('/home', array(
@@ -444,10 +304,6 @@ class IOCollectionIteratorTest extends AbstractCollectionTest {
     }
   }
 
-  /**
-   * Test getOrigin()
-   *
-   */
   #[@test]
   public function originEquals() {
     $c= $this->newCollection('/home', array(

@@ -5,20 +5,17 @@ use io\TempFile;
 use lang\archive\Archive;
 use io\collections\ArchiveCollection;
 
-
 /**
  * TestCase
  *
- * @see      xp://io.collections.ArchiveCollection
+ * @see  xp://io.collections.ArchiveCollection
  */
 class ArchiveCollectionTest extends TestCase {
-  protected
-    $file     = null,
-    $archive  = null;
+  protected $file= null;
+  protected $archive= null;
 
   /**
    * Sets up test case (creates temporary xar archive)
-   *
    */
   public function setUp() {
     $this->file= new TempFile();
@@ -36,7 +33,6 @@ class ArchiveCollectionTest extends TestCase {
   
   /**
    * Tears down test case (removes temporary xar archive)
-   *
    */
   public function tearDown() {
     try {
@@ -59,10 +55,6 @@ class ArchiveCollectionTest extends TestCase {
     $this->assertEquals($name, substr($uri, -strlen($name)), $uri);
   }
   
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function entriesInBase() {
     $c= new ArchiveCollection($this->archive);
@@ -80,10 +72,6 @@ class ArchiveCollectionTest extends TestCase {
     }
   }
   
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function entriesInLang() {
     $c= new ArchiveCollection($this->archive, 'lang');
@@ -124,30 +112,18 @@ class ArchiveCollectionTest extends TestCase {
     return $first;
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function readTwice() {
     $c= new ArchiveCollection($this->archive);
     $this->assertEquals($this->firstElement($c), $this->firstElement($c));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function readLangTwice() {
     $c= new ArchiveCollection($this->archive, 'lang');
     $this->assertEquals($this->firstElement($c), $this->firstElement($c));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function readObjectEntry() {
     with ($first= $this->firstElement(new ArchiveCollection($this->archive, 'lang'))); {
@@ -158,28 +134,16 @@ class ArchiveCollectionTest extends TestCase {
     }
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect('io.IOException')]
   public function writeObjectEntry() {
     $this->firstElement(new ArchiveCollection($this->archive, 'lang'))->getOutputStream();
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect('io.IOException')]
   public function readLangEntry() {
     $this->firstElement(new ArchiveCollection($this->archive))->getInputStream();
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect('io.IOException')]
   public function writeLangEntry() {
     $this->firstElement(new ArchiveCollection($this->archive))->getOutputStream();

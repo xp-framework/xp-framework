@@ -1,5 +1,9 @@
 <?php namespace net\xp_framework\unittest\io\collections;
 
+use util\Date;
+use io\collections\IOElement;
+use io\collections\IOCollection;
+
 /**
  * This base class does not contain any test methods and is meant to
  * be a base class for other io.collections API tests
@@ -7,10 +11,9 @@
  * @see   xp://io.collections.IOCollection
  */
 abstract class AbstractCollectionTest extends \unittest\TestCase {
-  protected
-    $fixture = null,
-    $sizes   = array(),
-    $total   = 0;
+  protected $fixture = null;
+  protected $sizes   = array();
+  protected $total   = 0;
 
   /**
    * Assert an origin is based on a given origin.
@@ -26,11 +29,11 @@ abstract class AbstractCollectionTest extends \unittest\TestCase {
    * This asserts that IOElement (/var/log/messages)'s origin is based
    * on IOCollection(/).
    *
-   * @param   io.IOCollection base
-   * @param   io.IOCollection origin
+   * @param   io.IOCollection $base
+   * @param   io.IOCollection $origin
    * @throws  unittest.AssertionFailedError
    */
-  protected function assertOriginBasedOn(\io\collections\IOCollection $base, \io\collections\IOCollection $origin) {
+  protected function assertOriginBasedOn(IOCollection $base, IOCollection $origin) {
     $search= $origin;
     do {
       if ($search->equals($base)) return;
@@ -41,8 +44,8 @@ abstract class AbstractCollectionTest extends \unittest\TestCase {
   /**
    * Returns a collection 
    *
-   * @param   string name
-   * @param   io.collections.IOElement[] elements
+   * @param   string $name
+   * @param   io.collections.IOElement[] $elements
    * @return  io.collections.IOCollection
    */
   protected function newCollection($name, $elements= array()) {
@@ -60,7 +63,7 @@ abstract class AbstractCollectionTest extends \unittest\TestCase {
    * @param   io.collection.IOElement e
    * @return  io.collection.IOElement
    */
-  public function addElement(\io\collections\IOCollection $c, \io\collections\IOElement $e) {
+  public function addElement(IOCollection $c, IOElement $e) {
     $c->addElement($e);
     $this->total++;
     with ($key= $c->getURI()); {
@@ -71,7 +74,6 @@ abstract class AbstractCollectionTest extends \unittest\TestCase {
 
   /**
    * Setup method 
-   *
    */
   public function setUp() {
     $this->fixture= new MockCollection('.');
@@ -80,62 +82,62 @@ abstract class AbstractCollectionTest extends \unittest\TestCase {
     $this->addElement($this->fixture, new MockElement(
       './first.txt', 
       1200, 
-      \util\Date::fromString('Oct 10  2006'), // accessed
-      \util\Date::fromString('Dec 14  2005'), // modified
-      \util\Date::fromString('Oct 30  2005')  // created
+      Date::fromString('Oct 10  2006'), // accessed
+      Date::fromString('Dec 14  2005'), // modified
+      Date::fromString('Oct 30  2005')  // created
     ));
     $this->addElement($this->fixture, new MockElement(
       './second.txt', 
       333, 
-      \util\Date::fromString('Oct 10  2006'), // accessed
-      \util\Date::fromString('Dec 24  2005'), // modified
-      \util\Date::fromString('Oct 30  2005')  // created
+      Date::fromString('Oct 10  2006'), // accessed
+      Date::fromString('Dec 24  2005'), // modified
+      Date::fromString('Oct 30  2005')  // created
     ));
     $this->addElement($this->fixture, new MockElement(
       './third.jpg', 
       18882, 
-      \util\Date::fromString('Dec 11  2003'), // accessed
-      \util\Date::fromString('Dec 10  2003'), // modified
-      \util\Date::fromString('Dec 10  2003')  // created
+      Date::fromString('Dec 11  2003'), // accessed
+      Date::fromString('Dec 10  2003'), // modified
+      Date::fromString('Dec 10  2003')  // created
     ));
     $this->addElement($this->fixture, new MockElement(
       './zerobytes.png', 
       0, 
-      \util\Date::fromString('Dec 11  2003'), // accessed
-      \util\Date::fromString('Dec 10  2003'), // modified
-      \util\Date::fromString('Dec 10  2003')  // created
+      Date::fromString('Dec 11  2003'), // accessed
+      Date::fromString('Dec 10  2003'), // modified
+      Date::fromString('Dec 10  2003')  // created
     ));
 
     with ($sub= $this->addElement($this->fixture, new MockCollection('./sub'))); {
       $this->addElement($sub, new MockElement(
         './sub/IMG_6100.jpg', 
         531718, 
-        \util\Date::fromString('Mar  9  2006'), // accessed
-        \util\Date::fromString('Mar  9  2006'), // modified
-        \util\Date::fromString('Mar  9  2006')  // created
+        Date::fromString('Mar  9  2006'), // accessed
+        Date::fromString('Mar  9  2006'), // modified
+        Date::fromString('Mar  9  2006')  // created
       ));
       $this->addElement($sub, new MockElement(
         './sub/IMG_6100.txt', 
         5932, 
-        \util\Date::fromString('Mar 13  2006'), // accessed
-        \util\Date::fromString('Mar 13  2006'), // modified
-        \util\Date::fromString('Mar 13  2006')  // created
+        Date::fromString('Mar 13  2006'), // accessed
+        Date::fromString('Mar 13  2006'), // modified
+        Date::fromString('Mar 13  2006')  // created
       ));
 
       with ($sec= $this->addElement($this->fixture, new MockCollection('./sub/sec'))); {
         $this->addElement($sec, new MockElement(
           './sub/sec/lang.base.php', 
           16739, 
-          \util\Date::fromString('Oct 11  2006'), // accessed
-          \util\Date::fromString('Oct 11  2006'), // modified
-          \util\Date::fromString('Feb 21  2002')  // created
+          Date::fromString('Oct 11  2006'), // accessed
+          Date::fromString('Oct 11  2006'), // modified
+          Date::fromString('Feb 21  2002')  // created
         ));
         $this->addElement($sec, new MockElement(
           './sub/sec/__xp__.php', 
           8589, 
-          \util\Date::fromString('Oct  8  2006'), // accessed
-          \util\Date::fromString('Oct  8  2006'), // modified
-          \util\Date::fromString('Jul 23  2006')  // created
+          Date::fromString('Oct  8  2006'), // accessed
+          Date::fromString('Oct  8  2006'), // modified
+          Date::fromString('Jul 23  2006')  // created
         ));
       }
     }

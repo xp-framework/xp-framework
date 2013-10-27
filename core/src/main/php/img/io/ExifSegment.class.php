@@ -29,29 +29,29 @@
 
     protected static $pack= array(
       'MM' => array(
-        self::BYTE      => 'C',
+        self::BYTE      => 'C1',
         self::ASCII     => 'a*',
-        self::USHORT    => 'n',
-        self::ULONG     => 'N',
+        self::USHORT    => 'n1',
+        self::ULONG     => 'N1',
         self::URATIONAL => 'N2', 
-        self::SBYTE     => 'c',
+        self::SBYTE     => 'c1',
         self::UNDEFINED => 'a*',
-        self::SHORT     => 'n',
-        self::LONG      => 'N',
+        self::SHORT     => 'n1',
+        self::LONG      => 'N1',
         self::RATIONAL  => 'N2',
         self::FLOAT     => 'n2',
         self::DOUBLE    => 'N2'
       ),
       'II' => array(
-        self::BYTE      => 'C',
+        self::BYTE      => 'C1',
         self::ASCII     => 'a*',
-        self::USHORT    => 'v',
-        self::ULONG     => 'V',
+        self::USHORT    => 'v1',
+        self::ULONG     => 'V1',
         self::URATIONAL => 'V2', 
-        self::SBYTE     => 'c',
+        self::SBYTE     => 'c1',
         self::UNDEFINED => 'a*',
-        self::SHORT     => 'v',
-        self::LONG      => 'V',
+        self::SHORT     => 'v1',
+        self::LONG      => 'V1',
         self::RATIONAL  => 'V2',
         self::FLOAT     => 'n2',
         self::DOUBLE    => 'V2'
@@ -304,7 +304,7 @@
       0xA40A => 'Sharpness',
       0xA40B => 'DeviceSettingDescription',
       0xA40C => 'SubjectDistanceRange',
-      0xA420 => 'ImageUniqueID',
+      0xA420 => 'ImageUniqueID'
     );
 
     /**
@@ -491,10 +491,14 @@
         $offset+= 4;
 
         // Recursively extract Sub-IFDs and makernote
+        $t= NULL;
         if (isset($sub[$entry['tag']])) {
           $start= current(unpack($format[$entry['type']], substr($data, $read, $l)));
           $read= $start + $base;
           $entry['data']= self::readIFD($data, $read, $base, TRUE === $sub[$entry['tag']] ? self::$tag : $sub[$entry['tag']], $format);
+        } else if (0xEA1C === $entry['tag']) {
+          $entry['data']= NULL;
+          $t= 'Padding';
         } else if (0x927C === $entry['tag']) {
           $entry['data']= NULL;
           $makernote= substr($data, $read, $l);
@@ -512,13 +516,20 @@
             // DEBUG Console::writeLine($definitions['name'], ': ', $entry['data'], ' @ ', $read, ': ', new Bytes($makernote));
             break;
           }
+        } else if (isset($tags[$entry['tag']])) {
+          $unpack= $format[$entry['type']];
+          if ('a*' === $unpack) {
+            $entry['data']= rtrim(substr($data, $read, $l), "\0");
+          } else {
+            $value= unpack($unpack{0}.((int)$unpack{1} * $entry['size']), substr($data, $read, $l));
+            $entry['data']= sizeof($value) > 1 ? implode('/', $value) : current($value);
+          }
         } else {
-          $value= unpack($format[$entry['type']], substr($data, $read, $l));
-          $entry['data']= sizeof($value) > 1 ? implode('/', $value) : current($value);
+          $entry['data']= substr($data, $read, $l);
+          $t= sprintf('UndefinedTag:0x%04X', $entry['tag']);
         }
 
-        $t= isset($tags[$entry['tag']]) ? $tags[$entry['tag']] : sprintf('UndefinedTag:0x%04X', $entry['tag']);
-        $return[$t]= $entry;
+        $return[$t ?: $tags[$entry['tag']]]= $entry;
       }
 
       return $return;

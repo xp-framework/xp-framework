@@ -18,11 +18,9 @@
    * @test    xp://net.xp_framework.unittest.peer.http.HttpTransportTest
    */
   abstract class HttpTransport extends Object {
-    protected static
-      $transports = array();
-    
-    protected
-      $proxy      = NULL;
+    protected static $transports= array();
+    protected $proxy= NULL;
+    protected $cat= NULL;
     
     static function __static() {
       self::$transports['http']= XPClass::forName('peer.http.SocketHttpTransport');
@@ -101,6 +99,15 @@
         throw new IllegalArgumentException('Scheme "'.$scheme.'" unsupported');
       }
       return self::$transports[$scheme]->newInstance($url, $arg);
+    }
+
+    /**
+     * Sets a logger category for debugging
+     *
+     * @param   util.log.LogCategory cat
+     */
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
   }
 ?>

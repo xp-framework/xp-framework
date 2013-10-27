@@ -1,14 +1,13 @@
 <?php namespace net\xp_framework\unittest\io\collections;
 
+use io\collections\IOElement;
 use io\collections\IOCollection;
 use io\collections\RandomCollectionAccess;
-
 
 /**
  * IOCollection implementation
  *
- * @see      xp://io.collections.IOCollection
- * @purpose  Mock object
+ * @see    xp://io.collections.IOCollection
  */
 class MockCollection extends \lang\Object implements IOCollection {
   protected
@@ -186,7 +185,7 @@ class MockCollection extends \lang\Object implements IOCollection {
   public function newElement($name) {
     $qualified= $this->qualifiedName($name);
     foreach ($this->_elements as $element) {
-      if ($element instanceof \io\collections\IOElement && $qualified === $element->getURI()) {
+      if ($element instanceof IOElement && $qualified === $element->getURI()) {
         throw new \lang\IllegalArgumentException('Element already exists');
       }
     }
@@ -222,7 +221,7 @@ class MockCollection extends \lang\Object implements IOCollection {
   public function findElement($name) {
     $qualified= $this->qualifiedName($name);
     foreach ($this->_elements as $element) {
-      if ($element instanceof \io\collections\IOElement && $qualified === $element->getURI()) return $element;
+      if ($element instanceof IOElement && $qualified === $element->getURI()) return $element;
     }
     return null;
   }
@@ -277,7 +276,7 @@ class MockCollection extends \lang\Object implements IOCollection {
   public function removeElement($name) {
     $qualified= $this->qualifiedName($name);
     foreach ($this->_elements as $i => $element) {
-      if ($element instanceof \io\collections\IOElement && $qualified === $element->getURI()) {
+      if ($element instanceof IOElement && $qualified === $element->getURI()) {
         unset($this->_elements[$i]);
         break;
       }
