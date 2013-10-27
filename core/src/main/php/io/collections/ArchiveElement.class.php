@@ -7,16 +7,14 @@
   uses('io.collections.IOElement', 'lang.archive.Archive', 'io.streams.MemoryInputStream');
 
   /**
-   * Represents a file element
+   * Represents an element inside an archive
    *
-   * @see      xp://io.collections.ArchiveCollection
-   * @purpose  Interface
+   * @see    xp://io.collections.ArchiveCollection
    */
   class ArchiveElement extends Object implements IOElement {
-    protected
-      $archive = NULL,
-      $name    = '',
-      $origin  = NULL;
+    protected $archive = NULL;
+    protected $name    = '';
+    protected $origin  = NULL;
 
     /**
      * Constructor
@@ -28,6 +26,15 @@
       $archive->isOpen() || $archive->open(ARCHIVE_READ);
       $this->archive= $archive;
       $this->name= $name;
+    }
+
+    /**
+     * Returns this element's name
+     *
+     * @return  string
+     */
+    public function getName() {
+      return basename($this->name);
     }
 
     /**

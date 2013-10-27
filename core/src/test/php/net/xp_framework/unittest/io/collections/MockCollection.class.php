@@ -36,6 +36,15 @@ class MockCollection extends \lang\Object implements IOCollection {
     $this->_elements[]= $e;
     return $e;
   }
+
+  /**
+   * Returns this element's name
+   *
+   * @return  string
+   */
+  public function getName() {
+    return basename($this->uri);
+  }
     
   /**
    * Returns this element's URI
