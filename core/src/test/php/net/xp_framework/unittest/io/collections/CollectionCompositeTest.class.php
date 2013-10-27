@@ -18,7 +18,7 @@ class CollectionCompositeTest extends AbstractCollectionTest {
    * @throws  unittest.AssertionFailedError
    */
   protected function assertElement($uri, $element) {
-    $this->assertSubClass($element, 'io.collections.IOElement');
+    $this->assertInstanceOf('io.collections.IOElement', $element);
     $this->assertEquals($uri, $element->getURI());
   }
   
