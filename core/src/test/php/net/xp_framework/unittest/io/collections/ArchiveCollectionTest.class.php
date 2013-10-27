@@ -148,4 +148,34 @@ class ArchiveCollectionTest extends TestCase {
   public function writeLangEntry() {
     $this->firstElement(new ArchiveCollection($this->archive))->getOutputStream();
   }
+
+  #[@test]
+  public function collections_origin() {
+    $base= new ArchiveCollection($this->archive, 'lang');
+    $this->assertEquals($base, $this->firstElement($base)->getOrigin());
+  }
+
+  #[@test]
+  public function collections_name() {
+    $base= new ArchiveCollection($this->archive, 'lang');
+    $this->assertEquals('lang', $base->getName());
+  }
+
+  #[@test]
+  public function collections_uri() {
+    $base= new ArchiveCollection($this->archive, 'lang');
+    $this->assertXarUri('lang/', $base->getUri());
+  }
+
+  #[@test]
+  public function elements_name() {
+    $element= $this->firstElement(new ArchiveCollection($this->archive, 'lang'));
+    $this->assertEquals('Object.xp', $element->getName());
+  }
+
+  #[@test]
+  public function elements_uri() {
+    $element= $this->firstElement(new ArchiveCollection($this->archive, 'lang'));
+    $this->assertXarUri('lang/Object.xp', $element->getUri());
+  }
 }
