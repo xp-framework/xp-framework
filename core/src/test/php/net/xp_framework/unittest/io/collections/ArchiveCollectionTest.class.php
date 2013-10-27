@@ -61,8 +61,8 @@ class ArchiveCollectionTest extends TestCase {
     try {
       $c->open();
       $first= $c->next();
-      $this->assertSubclass($first, 'io.collections.IOCollection');
-      $this->assertXarUri('lang', $first->getURI());
+      $this->assertInstanceOf('io.collections.IOCollection', $first);
+      $this->assertXarUri('lang/', $first->getURI());
       $this->assertEquals(0, $first->getSize());
       $this->assertEquals(null, $c->next());
     } catch (\lang\Throwable $e) {
@@ -81,8 +81,8 @@ class ArchiveCollectionTest extends TestCase {
       $expect= array(
         'lang/Object.xp'    => 'io.collections.IOElement', 
         'lang/Type.xp'      => 'io.collections.IOElement',
-        'lang/reflect'      => 'io.collections.IOCollection',
-        'lang/types'        => 'io.collections.IOCollection',
+        'lang/reflect/'     => 'io.collections.IOCollection',
+        'lang/types/'       => 'io.collections.IOCollection',
         'lang/Runnable.xp'  => 'io.collections.IOElement',
       );
       for (reset($expect); $element= $c->next(), $name= key($expect); next($expect)) {
