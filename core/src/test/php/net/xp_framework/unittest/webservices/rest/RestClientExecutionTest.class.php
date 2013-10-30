@@ -61,10 +61,6 @@ class RestClientExecutionTest extends TestCase {
     return $fixture;
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function status() {
     $fixture= $this->fixtureWith(\peer\http\HttpConstants::STATUS_OK, '');
@@ -72,10 +68,6 @@ class RestClientExecutionTest extends TestCase {
     $this->assertEquals(\peer\http\HttpConstants::STATUS_OK, $response->status());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function content() {
     $fixture= $this->fixtureWith(\peer\http\HttpConstants::STATUS_NOT_FOUND, 'Error');
@@ -83,20 +75,12 @@ class RestClientExecutionTest extends TestCase {
     $this->assertEquals('Error', $response->content());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect('webservices.rest.RestException')]
   public function exception() {
     $fixture= $this->fixtureWith(new \peer\ConnectException('Cannot connect'));
     $fixture->execute(new \webservices\rest\RestRequest());
   }
   
-  /**
-   * Test data()
-   *
-   */
   #[@test]
   public function jsonContent() {
     $fixture= $this->fixtureWith(\peer\http\HttpConstants::STATUS_OK, '{ "title" : "Found a bug" }', array(
@@ -106,10 +90,6 @@ class RestClientExecutionTest extends TestCase {
     $this->assertEquals(array('title' => 'Found a bug'), $response->data());
   }
 
-  /**
-   * Test data()
-   *
-   */
   #[@test]
   public function xmlContent() {
     $fixture= $this->fixtureWith(\peer\http\HttpConstants::STATUS_OK, '<issue><title>Found a bug</title></issue>', array(
@@ -119,10 +99,6 @@ class RestClientExecutionTest extends TestCase {
     $this->assertEquals(array('title' => 'Found a bug'), $response->data(\lang\Type::forName('[:var]')));
   }
   
-  /**
-   * Test custom responses
-   *
-   */
   #[@test]
   public function customContent() {
     $fixture= $this->fixtureWith(\peer\http\HttpConstants::STATUS_NO_CONTENT, '', array(
@@ -134,10 +110,6 @@ class RestClientExecutionTest extends TestCase {
     $this->assertNull($response->data());
   }
 
-  /**
-   * Test data()
-   *
-   */
   #[@test]
   public function deprecatedExecuteOverloading() {
     $fixture= $this->fixtureWith(\peer\http\HttpConstants::STATUS_OK, '{ "title" : "Found a bug" }', array(

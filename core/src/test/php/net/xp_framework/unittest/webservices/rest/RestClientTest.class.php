@@ -21,11 +21,7 @@ class RestClientTest extends TestCase {
   protected function newFixture($base= null) {
     return new RestClient($base);
   }
-  
-  /**
-   * Test getBase()
-   *
-   */
+
   #[@test]
   public function stringBase() {
     $this->assertEquals(
@@ -34,19 +30,11 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test getBase()
-   *
-   */
   #[@test]
   public function nullBase() {
     $this->assertNull($this->newFixture()->getBase());
   }
 
-  /**
-   * Test getBase()
-   *
-   */
   #[@test]
   public function urlBase() {
     $this->assertEquals(
@@ -55,10 +43,6 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test setBase()
-   *
-   */
   #[@test]
   public function setBase() {
     $fixture= $this->newFixture();
@@ -66,10 +50,6 @@ class RestClientTest extends TestCase {
     $this->assertEquals(new \peer\URL(self::BASE_URL), $fixture->getBase());
   }
 
-  /**
-   * Test withBase()
-   *
-   */
   #[@test]
   public function withBase() {
     $fixture= $this->newFixture();
@@ -77,10 +57,6 @@ class RestClientTest extends TestCase {
     $this->assertEquals(new \peer\URL(self::BASE_URL), $fixture->getBase());
   }
 
-  /**
-   * Test setConnection()
-   *
-   */
   #[@test]
   public function setConnection() {
     $fixture= $this->newFixture();
@@ -88,73 +64,41 @@ class RestClientTest extends TestCase {
     $this->assertEquals(new \peer\URL(self::BASE_URL), $fixture->getBase());
   }
 
-  /**
-   * Test execute()
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function singleArgumentExecuteNull() {
     $this->newFixture()->execute(null);
   }
 
-  /**
-   * Test execute()
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function singleArgumentExecuteThis() {
     $this->newFixture()->execute($this);
   }
 
-  /**
-   * Test execute()
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function executeNullTypeNullRequest() {
     $this->newFixture()->execute(null, null);
   }
 
-  /**
-   * Test execute()
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function executeNullType() {
     $this->newFixture()->execute(null, new \webservices\rest\RestRequest());
   }
 
-  /**
-   * Test execute()
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function executeNullRequest() {
     $this->newFixture()->execute(\lang\Type::$VAR, null);
   }
 
-  /**
-   * Test execute()
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function executeThisRequest() {
     $this->newFixture()->execute(\lang\Type::$VAR, $this);
   }
 
-  /**
-   * Test execute()
-   *
-   */
   #[@test, @expect(class= 'lang.IllegalStateException', withMessage= 'No connection set')]
   public function executeWithoutBase() {
     $this->newFixture()->execute(\lang\Type::$VAR, new \webservices\rest\RestRequest());
   }
 
-  /**
-   * Test "text/xml" is supported
-   *
-   */
   #[@test]
   public function textXmlDeserializer() {
     $this->assertInstanceOf(
@@ -163,10 +107,6 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test "application/xml" is supported
-   *
-   */
   #[@test]
   public function applicationXmlDeserializer() {
     $this->assertInstanceOf(
@@ -175,10 +115,6 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test "text/json" is supported
-   *
-   */
   #[@test]
   public function textJsonDeserializer() {
     $this->assertInstanceOf(
@@ -187,10 +123,6 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test "text/x-json" is supported
-   *
-   */
   #[@test]
   public function textXJsonDeserializer() {
     $this->assertInstanceOf(
@@ -199,10 +131,6 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test "text/javascript" is supported
-   *
-   */
   #[@test]
   public function textJavascriptDeserializer() {
     $this->assertInstanceOf(
@@ -211,10 +139,6 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test "application/json" is supported
-   *
-   */
   #[@test]
   public function applicationJsonDeserializer() {
     $this->assertInstanceOf(
@@ -223,19 +147,11 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test "text/html" is not supported
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function unknownDeserializer() {
     $this->assertNull($this->newFixture()->deserializerFor('text/html'));
   }
 
-  /**
-   * Test "text/xml" is supported
-   *
-   */
   #[@test]
   public function textXmlSerializer() {
     $this->assertInstanceOf(
@@ -244,10 +160,6 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test "application/xml" is supported
-   *
-   */
   #[@test]
   public function applicationXmlSerializer() {
     $this->assertInstanceOf(
@@ -256,10 +168,6 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test "text/json" is supported
-   *
-   */
   #[@test]
   public function textJsonSerializer() {
     $this->assertInstanceOf(
@@ -268,10 +176,6 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test "text/x-json" is supported
-   *
-   */
   #[@test]
   public function textXJsonSerializer() {
     $this->assertInstanceOf(
@@ -280,10 +184,6 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test "text/javascript" is supported
-   *
-   */
   #[@test]
   public function textJavascriptSerializer() {
     $this->assertInstanceOf(
@@ -292,10 +192,6 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test "application/json" is supported
-   *
-   */
   #[@test]
   public function applicationJsonSerializer() {
     $this->assertInstanceOf(
@@ -304,19 +200,11 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test "text/html" is not supported
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function unknownSerializer() {
     $this->assertNull($this->newFixture()->serializerFor('text/html'));
   }
 
-  /**
-   * Test toString()
-   *
-   */
   #[@test]
   public function stringRepresentation() {
     $this->assertEquals(
@@ -325,10 +213,6 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Test toString()
-   *
-   */
   #[@test]
   public function stringRepresentationWithBase() {
     $this->assertEquals(
@@ -337,21 +221,6 @@ class RestClientTest extends TestCase {
     );
   }
 
-  /**
-   * Setting connect timeouts w/o connection object yields
-   * an IllegalStateException
-   *
-   */
-  #[@test, @expect('lang.IllegalStateException')]
-  public function setConnectTimeoutWithNoConnectionFails() {
-    $this->newFixture()->setConnectTimeout(31337);
-  }
-
-  /**
-   * Test set connect timeout values can be read
-   * later.
-   *
-   */
   #[@test]
   public function setConnectTimeout() {
     $fixture= $this->newFixture();
@@ -361,21 +230,11 @@ class RestClientTest extends TestCase {
     $this->assertEquals(31337, $fixture->getConnectTimeout());
   }
 
-  /**
-   * Setting timeouts w/o connection object yields
-   * an IllegalStateException
-   *
-   */
   #[@test, @expect('lang.IllegalStateException')]
   public function setTimeoutWithoutConnectionFails() {
     $this->newFixture()->setTimeout(31337);
   }
 
-  /**
-   * Test set timeout values can be read
-   * later.
-   *
-   */
   #[@test]
   public function setTimeout() {
     $fixture= $this->newFixture();
@@ -385,10 +244,6 @@ class RestClientTest extends TestCase {
     $this->assertEquals(31337, $fixture->getTimeout());
   }
 
-  /**
-   * Test connect timeouts are inherited from HttpConnection
-   *
-   */
   #[@test]
   public function inheritsAConnectionsDefaultConnectTimeout() {
     $fixture= $this->newFixture();
@@ -397,10 +252,6 @@ class RestClientTest extends TestCase {
     $this->assertEquals(2.0, $fixture->getConnectTimeout());
   }
 
-  /**
-   * Test timeouts are inherited from HttpConnection
-   *
-   */
   #[@test]
   public function inheritsAConnectionsDefaultTimeout() {
     $fixture= $this->newFixture();
