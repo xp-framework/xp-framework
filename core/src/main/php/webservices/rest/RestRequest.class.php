@@ -385,11 +385,7 @@
      * @return  string query
      */
     public function getTarget($base= '/') {
-      if ('/' === $this->resource{0}) {
-        $resource= $this->resource;       // Absolute
-      } else {
-        $resource= rtrim($base, '/').'/'.$this->resource;
-      }
+      $resource= rtrim($base, '/').'/'.ltrim($this->resource, '/');
       $l= strlen($resource);
       $target= '';
       $offset= 0;

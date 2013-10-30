@@ -5,6 +5,8 @@ XP Framework ChangeLog
 
 ### Heads up!
 
+* Changed REST client to always append resources to base path, whether
+  they're supplied in an absolute form or relative. See #334 - (@thekid)
 * Switched annotation parser in lang.XPClass to a more robust implementation
   based on token_get_all(). This also fixes previously undefined behaviour
   with class constants, and gives more verbose error messages for malformed
