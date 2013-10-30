@@ -266,6 +266,18 @@ class RestRequestTest extends TestCase {
     $this->assertEquals('/repos/thekid/xp-framework/issues/1', $fixture->getTarget());
   }
 
+  #[@test, @values(['/rest/api/v2/', '/rest/api/v2'])]
+  public function relativeResource($base) {
+    $fixture= new RestRequest('issues');
+    $this->assertEquals('/rest/api/v2/issues', $fixture->getTarget($base));
+  }
+
+  #[@test, @values(['/rest/api/v2/', '/rest/api/v2'])]
+  public function absoluteResource($base) {
+    $fixture= new RestRequest('/issues');
+    $this->assertEquals('/rest/api/v2/issues', $fixture->getTarget($base));
+  }
+
   #[@test]
   public function noHeaders() {
     $fixture= new RestRequest();
@@ -344,18 +356,6 @@ class RestRequestTest extends TestCase {
   public function addHeaderReturnsAddedHeader() {
     $fixture= new RestRequest('/issues');
     $this->assertEquals(new \peer\Header('Accept', 'text/xml'), $fixture->addHeader('Accept', 'text/xml'));
-  }
-
-  #[@test]
-  public function relativeResourceWithEndingSlash() {
-    $fixture= new RestRequest('issues');
-    $this->assertEquals('/rest/api/v2/issues', $fixture->getTarget('/rest/api/v2/'));
-  }
-
-  #[@test]
-  public function relativeResourceWithoutEndingSlash() {
-    $fixture= new RestRequest('issues');
-    $this->assertEquals('/rest/api/v2/issues', $fixture->getTarget('/rest/api/v2'));
   }
 
   #[@test]
