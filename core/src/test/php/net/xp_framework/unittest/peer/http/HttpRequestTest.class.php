@@ -3,15 +3,16 @@
 use unittest\TestCase;
 use peer\http\RequestData;
 use peer\http\FormRequestData;
+use peer\http\FileData;
+use peer\http\FormData;
 use peer\http\HttpRequest;
 use peer\http\HttpConstants;
-
 
 /**
  * TestCase for HTTP request construction
  *
- * @see      xp://peer.http.HttpRequest
- * @see      https://github.com/xp-framework/xp-framework/issues/335
+ * @see   xp://peer.http.HttpRequest
+ * @see   https://github.com/xp-framework/xp-framework/issues/335
  */
 class HttpRequestTest extends TestCase {
 
@@ -124,8 +125,35 @@ class HttpRequestTest extends TestCase {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setMethod(HttpConstants::POST);
     $r->setParameters(new FormRequestData(array(
-      new \peer\http\FormData('key', 'value'),
-      new \peer\http\FormData('xml', '<foo/>', 'text/xml')
+      new FormData('key', 'value'),
+      new FormData('xml', '<foo/>', 'text/xml')
+    )));
+
+    // Fetch randomly generated boundary
+    $this->assertTrue($r->parameters instanceof FormRequestData);
+    $boundary= $r->parameters->getBoundary();
+
+    $this->assertEquals(
+      "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+      "Content-Type: multipart/form-data; boundary=".$boundary."\r\nContent-Length: 265\r\n\r\n".
+      "--".$boundary."\r\nContent-Disposition: form-data; name=\"key\"\r\n".
+      "\r\nvalue\r\n".
+      "--".$boundary."\r\n".
+      "Content-Disposition: form-data; name=\"xml\"\r\n".
+      "Content-Type: text/xml\r\n".
+      "\r\n<foo/>\r\n".
+      "--".$boundary."--\r\n",
+      $r->getRequestString()
+    );
+  }
+
+  #[@test]
+  public function postUrlWithFileDataParams() {
+    $r= new HttpRequest(new \peer\URL('http://example.com/'));
+    $r->setMethod(HttpConstants::POST);
+    $r->setParameters(new FormRequestData(array(
+      new FileData('file', 'image.jpeg', new \io\streams\MemoryInputStream('JFIF...'), 'image/jpeg')
+      new FileData('file', 'attach.txt', new \io\streams\MemoryInputStream('Test'), 'text/plain')
     )));
 
     // Fetch randomly generated boundary
