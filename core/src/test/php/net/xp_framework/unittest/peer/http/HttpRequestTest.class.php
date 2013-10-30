@@ -11,14 +11,10 @@ use peer\http\HttpConstants;
  * TestCase for HTTP request construction
  *
  * @see      xp://peer.http.HttpRequest
- * @purpose  Unittest
+ * @see      https://github.com/xp-framework/xp-framework/issues/335
  */
 class HttpRequestTest extends TestCase {
 
-  /**
-   * Test HTTP GET
-   *
-   */
   #[@test]
   public function getSimpleUrl() {
     $r= new HttpRequest(new \peer\URL('http://example.com'));
@@ -29,10 +25,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP GET
-   *
-   */
   #[@test]
   public function portIncluded() {
     $r= new HttpRequest(new \peer\URL('http://example.com:8080'));
@@ -43,10 +35,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP GET
-   *
-   */
   #[@test]
   public function getUrlWithPath() {
     $r= new HttpRequest(new \peer\URL('http://example.com/path/to/images/index.html'));
@@ -57,10 +45,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP GET
-   *
-   */
   #[@test]
   public function getSupportsBasicAuth() {
     $r= new HttpRequest(new \peer\URL('http://user:pass@example.com/'));
@@ -71,10 +55,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP GET
-   *
-   */
   #[@test]
   public function getUrlWithFileOnly() {
     $r= new HttpRequest(new \peer\URL('http://example.com/index.html'));
@@ -85,10 +65,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP GET - parameters via URL
-   *
-   */
   #[@test]
   public function getUrlWithUrlParams() {
     $r= new HttpRequest(new \peer\URL('http://example.com/?a=b'));
@@ -99,10 +75,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP GET - parameters via setParameters(array<string, string>)
-   *
-   */
   #[@test]
   public function getUrlWithArrayParams() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -114,10 +86,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP GET - parameters via setParameters(string)
-   *
-   */
   #[@test]
   public function getUrlWithStringParams() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -129,10 +97,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP GET - parameters via setParameters(string)
-   *
-   */
   #[@test]
   public function getUrlWithStringContainingArrayParams() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -144,10 +108,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP GET - parameters via setParameters(RequestData)
-   *
-   */
   #[@test]
   public function getUrlWithRequestDataParams() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -159,10 +119,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function postUrlWithFormRequestDataParams() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -190,11 +146,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP GET - parameters via setParameters(array<string, string>)
-   * in combination with parameters passed in the constructor.
-   *
-   */
   #[@test]
   public function getUrlWithArrayAndUrlParams() {
     $r= new HttpRequest(new \peer\URL('http://example.com/?a=b'));
@@ -206,10 +157,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP GET - parameters via URL.
-   *
-   */
   #[@test]
   public function getUrlWithArrayFromUrlParams() {
     $r= new HttpRequest(new \peer\URL('http://example.com/?data[color]=green&data[size]=S'));
@@ -221,11 +168,6 @@ class HttpRequestTest extends TestCase {
   }
 
 
-  /**
-   * Test HTTP GET - parameters via setParameters(array<string, array>)
-   * in combination with parameters passed in the constructor.
-   *
-   */
   #[@test]
   public function getUrlWithArrayParameter() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -237,11 +179,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP GET - parameters via setParameters(string)
-   * in combination with parameters passed in the constructor.
-   *
-   */
   #[@test]
   public function getUrlWithStringAndUrlParams() {
     $r= new HttpRequest(new \peer\URL('http://example.com/?a=b'));
@@ -253,10 +190,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP POST
-   *
-   */
   #[@test]
   public function post() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -270,10 +203,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test associative arrays are handled correctly in POST requests
-   *
-   */
   #[@test]
   public function postUrlWithStringContainingArrayParams() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -287,10 +216,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test associative arrays are handled correctly in POST requests
-   *
-   */
   #[@test]
   public function postUrlWithArrayParams() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -304,10 +229,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP PUT
-   *
-   */
   #[@test]
   public function put() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -321,10 +242,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP TRACE
-   *
-   */
   #[@test]
   public function trace() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -338,10 +255,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP HEAD
-   *
-   */
   #[@test]
   public function head() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -353,10 +266,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP DELETE
-   *
-   */
   #[@test]
   public function delete() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -368,10 +277,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test HTTP OPTIONS
-   *
-   */
   #[@test]
   public function options() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -383,10 +288,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test setHeader() method
-   *
-   */
   #[@test]
   public function customHeader() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -397,10 +298,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test setHeader() method
-   *
-   */
   #[@test]
   public function customHeaderObject() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -411,10 +308,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test setHeader() method
-   *
-   */
   #[@test]
   public function customHeaderList() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -425,10 +318,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test addHeaders() method
-   *
-   */
   #[@test]
   public function customHeaders() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -439,10 +328,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test addHeaders() method
-   *
-   */
   #[@test]
   public function customHeadersObject() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -453,10 +338,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test addHeaders() method
-   *
-   */
   #[@test]
   public function customHeadersObjectList() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -467,10 +348,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test addHeaders() method
-   *
-   */
   #[@test]
   public function customHeadersList() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -481,10 +358,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test setHeader() method
-   *
-   */
   #[@test]
   public function duplicateHeader() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -496,10 +369,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test getHeaderString()
-   *
-   */
   #[@test]
   public function headerString() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -511,10 +380,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test getHeaderString()
-   *
-   */
   #[@test]
   public function headerStringDoesNotIncludeContent() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -526,10 +391,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test getHeaderString()
-   *
-   */
   #[@test]
   public function emptyPostBody() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -541,10 +402,6 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  /**
-   * Test getHeaderString()
-   *
-   */
   #[@test]
   public function oneByteBody() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
@@ -555,5 +412,4 @@ class HttpRequestTest extends TestCase {
       $r->getHeaderString()
     );
   }
-
 }
