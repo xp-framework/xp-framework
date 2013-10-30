@@ -218,6 +218,22 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
+  public function getUrl() {
+    $url= new \peer\URL('http://example.com/');
+    $r= new HttpRequest($url);
+    $this->assertEquals($url, $r->getUrl());
+  }
+
+  #[@test]
+  public function setUrl() {
+    $url= new \peer\URL('http://example.com/');
+    $r= new HttpRequest();
+    $r->setUrl($url);
+    $this->assertEquals($url, $r->getUrl());
+  }
+
+
+  #[@test]
   public function post() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setMethod(HttpConstants::POST);
