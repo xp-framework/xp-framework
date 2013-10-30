@@ -152,7 +152,7 @@ class HttpRequestTest extends TestCase {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setMethod(HttpConstants::POST);
     $r->setParameters(new FormRequestData(array(
-      new FileData('file', 'image.jpeg', new \io\streams\MemoryInputStream('JFIF...'), 'image/jpeg')
+      new FileData('file', 'image.jpeg', new \io\streams\MemoryInputStream('JFIF...'), 'image/jpeg'),
       new FileData('file', 'attach.txt', new \io\streams\MemoryInputStream('Test'), 'text/plain')
     )));
 
@@ -162,13 +162,12 @@ class HttpRequestTest extends TestCase {
 
     $this->assertEquals(
       "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
-      "Content-Type: multipart/form-data; boundary=".$boundary."\r\nContent-Length: 265\r\n\r\n".
-      "--".$boundary."\r\nContent-Disposition: form-data; name=\"key\"\r\n".
-      "\r\nvalue\r\n".
+      "Content-Type: multipart/form-data; boundary=".$boundary."\r\nContent-Length: 379\r\n\r\n".
+      "--".$boundary."\r\nContent-Disposition: form-data; name=\"file\"; filename=\"image.jpeg\"\r\nContent-Type: image/jpeg\r\nContent-Length: 7\r\n".
+      "\r\nJFIF...\r\n".
       "--".$boundary."\r\n".
-      "Content-Disposition: form-data; name=\"xml\"\r\n".
-      "Content-Type: text/xml\r\n".
-      "\r\n<foo/>\r\n".
+      "Content-Disposition: form-data; name=\"file\"; filename=\"attach.txt\"\r\nContent-Type: text/plain\r\nContent-Length: 4\r\n".
+      "\r\nTest\r\n".
       "--".$boundary."--\r\n",
       $r->getRequestString()
     );
