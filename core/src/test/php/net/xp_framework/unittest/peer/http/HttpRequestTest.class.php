@@ -232,6 +232,12 @@ class HttpRequestTest extends TestCase {
     $this->assertEquals($url, $r->getUrl());
   }
 
+  #[@test]
+  public function setting_target_changes_url() {
+    $r= new HttpRequest(new \peer\URL('http://example.com/'));
+    $r->setTarget('/test');
+    $this->assertEquals(new \peer\URL('http://example.com/test'), $r->getUrl());
+  }
 
   #[@test]
   public function post() {

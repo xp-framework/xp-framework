@@ -70,7 +70,8 @@
      * @param   string target
      */
     public function setTarget($target) {
-      $this->target= $target;
+      $this->url->setPath($target);
+      $this->target= $this->url->getPath('/');
     }
     
     /**
