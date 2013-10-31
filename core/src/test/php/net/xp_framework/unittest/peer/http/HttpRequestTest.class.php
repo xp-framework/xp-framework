@@ -17,7 +17,7 @@ use peer\http\HttpConstants;
 class HttpRequestTest extends TestCase {
 
   #[@test]
-  public function getSimpleUrl() {
+  public function get() {
     $r= new HttpRequest(new \peer\URL('http://example.com'));
     $r->setMethod(HttpConstants::GET);
     $this->assertEquals(
@@ -26,18 +26,18 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  #[@test]
-  public function portIncluded() {
-    $r= new HttpRequest(new \peer\URL('http://example.com:8080'));
+  #[@test, @values([80, 8080])]
+  public function get_url_with_non_port($port) {
+    $r= new HttpRequest(new \peer\URL('http://example.com:'.$port));
     $r->setMethod(HttpConstants::GET);
     $this->assertEquals(
-      "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com:8080\r\n\r\n",
+      "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com:".$port."\r\n\r\n",
       $r->getRequestString()
     );
   }
 
   #[@test]
-  public function getUrlWithPath() {
+  public function get_url_with_path() {
     $r= new HttpRequest(new \peer\URL('http://example.com/path/to/images/index.html'));
     $r->setMethod(HttpConstants::GET);
     $this->assertEquals(
@@ -47,7 +47,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function getSupportsBasicAuth() {
+  public function basic_auth_supported_by_default() {
     $r= new HttpRequest(new \peer\URL('http://user:pass@example.com/'));
     $r->setMethod(HttpConstants::GET);
     $this->assertEquals(
@@ -57,7 +57,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function getUrlWithFileOnly() {
+  public function get_url_with_file_only_path() {
     $r= new HttpRequest(new \peer\URL('http://example.com/index.html'));
     $r->setMethod(HttpConstants::GET);
     $this->assertEquals(
@@ -67,41 +67,61 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function getUrlWithUrlParams() {
-    $r= new HttpRequest(new \peer\URL('http://example.com/?a=b'));
+  public function get_url_with_empty_parameters() {
+    $r= new HttpRequest(new \peer\URL('http://example.com/?'));
     $r->setMethod(HttpConstants::GET);
     $this->assertEquals(
-      "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+      "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+      $r->getRequestString()
+    );
+  }
+
+  #[@test, @values(['a=b', 'a=b&c=d', 'data[color]=green&data[size]=S'])]
+  public function get_url_with_parameters_via_constructor($params) {
+    $r= new HttpRequest(new \peer\URL('http://example.com/?'.$params));
+    $r->setMethod(HttpConstants::GET);
+    $this->assertEquals(
+      "GET /?".$params." HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+      $r->getRequestString()
+    );
+  }
+
+  #[@test, @values(['a=b', 'a=b&c=d', 'data[color]=green&data[size]=S'])]
+  public function get_url_with_parameters_via_setParameters($params) {
+    $r= new HttpRequest(new \peer\URL('http://example.com/'));
+    $r->setMethod(HttpConstants::GET);
+    $r->setParameters($params);
+    $this->assertEquals(
+      "GET /?".$params." HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
       $r->getRequestString()
     );
   }
 
   #[@test]
-  public function getUrlWithArrayParams() {
+  public function get_url_with_empty_array_parameters() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setMethod(HttpConstants::GET);
-    $r->setParameters(array('a' => 'b'));
+    $r->setParameters(array());
     $this->assertEquals(
-      "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+      "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+      $r->getRequestString()
+    );
+  }
+
+  #[@test, @values([[['a' => 'b'], 'a=b'], [['a' => 'b', 'c' => 'd'], 'a=b&c=d']])]
+  public function get_url_with_array_parameters_via_setParameters($input, $representation) {
+    $r= new HttpRequest(new \peer\URL('http://example.com/'));
+    $r->setMethod(HttpConstants::GET);
+    $r->setParameters($input);
+    $this->assertEquals(
+      "GET /?".$representation." HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
       $r->getRequestString()
     );
   }
 
   #[@test]
-  public function getUrlWithStringParams() {
-    $r= new HttpRequest(new \peer\URL('http://example.com/'));
-    $r->setMethod(HttpConstants::GET);
-    $r->setParameters('a=b');
-    $this->assertEquals(
-      "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
-      $r->getRequestString()
-    );
-  }
-
-  #[@test]
-  public function getUrlWithStringContainingArrayParams() {
-    $r= new HttpRequest(new \peer\URL('http://example.com/'));
-    $r->setParameters('data[color]=green&data[size]=S');
+  public function get_url_with_array_parameters_via_url() {
+    $r= new HttpRequest(new \peer\URL('http://example.com/?data[color]=green&data[size]=S'));
     $r->setMethod(HttpConstants::GET);
     $this->assertEquals(
       "GET /?data[color]=green&data[size]=S HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
@@ -110,7 +130,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function getUrlWithRequestDataParams() {
+  public function get_url_with_RequestData_parameters() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setMethod(HttpConstants::GET);
     $r->setParameters(new RequestData('a=b&c=d'));
@@ -121,7 +141,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function postUrlWithFormRequestDataParams() {
+  public function post_url_with_RequestData_parameters() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setMethod(HttpConstants::POST);
     $r->setParameters(new FormRequestData(array(
@@ -130,9 +150,7 @@ class HttpRequestTest extends TestCase {
     )));
 
     // Fetch randomly generated boundary
-    $this->assertTrue($r->parameters instanceof FormRequestData);
     $boundary= $r->parameters->getBoundary();
-
     $this->assertEquals(
       "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
       "Content-Type: multipart/form-data; boundary=".$boundary."\r\nContent-Length: 265\r\n\r\n".
@@ -148,7 +166,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function postUrlWithFileDataParams() {
+  public function post_url_with_FileData_parameters() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setMethod(HttpConstants::POST);
     $r->setParameters(new FormRequestData(array(
@@ -157,9 +175,7 @@ class HttpRequestTest extends TestCase {
     )));
 
     // Fetch randomly generated boundary
-    $this->assertTrue($r->parameters instanceof FormRequestData);
     $boundary= $r->parameters->getBoundary();
-
     $this->assertEquals(
       "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
       "Content-Type: multipart/form-data; boundary=".$boundary."\r\nContent-Length: 379\r\n\r\n".
@@ -173,11 +189,11 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  #[@test]
-  public function getUrlWithArrayAndUrlParams() {
+  #[@test, @values([['a=b'], [['a' => 'b']]])]
+  public function get_url_with_parameters_from_constructor_and_setParameters($params) {
     $r= new HttpRequest(new \peer\URL('http://example.com/?a=b'));
     $r->setMethod(HttpConstants::GET);
-    $r->setParameters(array('a' => 'b'));
+    $r->setParameters($params);
     $this->assertEquals(
       "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
       $r->getRequestString()
@@ -185,18 +201,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function getUrlWithArrayFromUrlParams() {
-    $r= new HttpRequest(new \peer\URL('http://example.com/?data[color]=green&data[size]=S'));
-    $r->setMethod(HttpConstants::GET);
-    $this->assertEquals(
-      "GET /?data[color]=green&data[size]=S HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
-      $r->getRequestString()
-    );
-  }
-
-
-  #[@test]
-  public function getUrlWithArrayParameter() {
+  public function get_url_with_map_parameter() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setMethod(HttpConstants::GET);
     $r->setParameters(array('params' => array('target' => 'home', 'ssl' => 'true')));
@@ -207,25 +212,14 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function getUrlWithStringAndUrlParams() {
-    $r= new HttpRequest(new \peer\URL('http://example.com/?a=b'));
-    $r->setMethod(HttpConstants::GET);
-    $r->setParameters('a=b');
-    $this->assertEquals(
-      "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
-      $r->getRequestString()
-    );
-  }
-
-  #[@test]
-  public function getUrl() {
+  public function getUrl_returns_url_passed_to_constructor() {
     $url= new \peer\URL('http://example.com/');
     $r= new HttpRequest($url);
     $this->assertEquals($url, $r->getUrl());
   }
 
   #[@test]
-  public function setUrl() {
+  public function url_accessors() {
     $url= new \peer\URL('http://example.com/');
     $r= new HttpRequest();
     $r->setUrl($url);
@@ -252,23 +246,13 @@ class HttpRequestTest extends TestCase {
     );
   }
 
-  #[@test]
-  public function postUrlWithStringContainingArrayParams() {
+  #[@test, @values([
+  #  ['data[color]=green&data[size]=S'],
+  #  [['data' => ['color' => 'green', 'size' => 'S']]]
+  #])]
+  public function post_url_with_map_parameter($params) {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
-    $r->setParameters('data[color]=green&data[size]=S');
-    $r->setMethod(HttpConstants::POST);
-    $this->assertEquals(
-      "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
-      "Content-Length: 30\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
-      "data[color]=green&data[size]=S",
-      $r->getRequestString()
-    );
-  }
-
-  #[@test]
-  public function postUrlWithArrayParams() {
-    $r= new HttpRequest(new \peer\URL('http://example.com/'));
-    $r->setParameters(array('data' => array('color' => 'green', 'size' => 'S')));
+    $r->setParameters($params);
     $r->setMethod(HttpConstants::POST);
     $this->assertEquals(
       "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
@@ -338,7 +322,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function customHeader() {
+  public function with_custom_header() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setHeader('X-Binford', 6100);
     $this->assertEquals(
@@ -348,7 +332,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function customHeaderObject() {
+  public function with_custom_header_object() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setHeader('X-Binford', new \peer\Header('X-Binford', 6100));
     $this->assertEquals(
@@ -358,7 +342,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function customHeaderList() {
+  public function with_custom_header_list() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setHeader('X-Binford', array(6100, 'More Power'));
     $this->assertEquals(
@@ -368,7 +352,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function customHeaders() {
+  public function with_custom_headers() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->addHeaders(array('X-Binford' => 6100));
     $this->assertEquals(
@@ -378,7 +362,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function customHeadersObject() {
+  public function with_custom_headers_as_map() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->addHeaders(array('X-Binford' => new \peer\Header('X-Binford', 6100)));
     $this->assertEquals(
@@ -388,7 +372,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function customHeadersObjectList() {
+  public function with_custom_header_objects() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->addHeaders(array(new \peer\Header('X-Binford', 6100)));
     $this->assertEquals(
@@ -398,7 +382,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function customHeadersList() {
+  public function with_custom_headers_list() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->addHeaders(array('X-Binford' => array(6100, 'Even more power')));
     $this->assertEquals(
@@ -408,7 +392,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function duplicateHeader() {
+  public function with_duplicate_header() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setHeader('X-Binford', 6100);
     $r->setHeader('X-Binford', 61000);
@@ -419,7 +403,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function headerString() {
+  public function header_string() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setMethod(HttpConstants::GET);
     $r->setParameters('a=b');
@@ -430,7 +414,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function headerStringDoesNotIncludeContent() {
+  public function header_string_does_not_include_content() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setMethod(HttpConstants::POST);
     $r->setParameters('a=b');
@@ -441,7 +425,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function emptyPostBody() {
+  public function with_empty_post_body() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setMethod(HttpConstants::POST);
     $r->setParameters('');
@@ -452,7 +436,7 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function oneByteBody() {
+  public function with_1byte_body() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setMethod(HttpConstants::POST);
     $r->setParameters(new RequestData('1'));
