@@ -1,11 +1,11 @@
 <?php namespace net\xp_framework\unittest\security;
 
-
-
 /**
  * TestCase
  *
  * @see   xp://security.crypto.UnixCrypt
+ * @see   https://bugs.php.net/bug.php?id=55439
+ * @see   http://stackoverflow.com/questions/5258860/php-crypt-returning-wrong-answer
  */
 class MD5UnixCryptTest extends UnixCryptTest {
 
@@ -18,47 +18,26 @@ class MD5UnixCryptTest extends UnixCryptTest {
     return \security\crypto\UnixCrypt::$MD5;
   }
 
-  /**
-   * Test MD5 method
-   *
-   */
   #[@test]
   public function md5PhpNetExample() {
     $this->assertCryptedMatches('$1$rasmusle$', '$1$rasmusle$rISCgZzpwk3UhDidwXvin0', 'rasmuslerdorf');
   }
 
-  /**
-   * Test MD5 method
-   *
-   */
   #[@test]
   public function md5SaltTooLong() {
     $this->assertCryptedMatches('$1$0123456789AB', '$1$01234567$CEE8q9mw43U6PHo8uPcOW/');
   }
 
-  /**
-   * Test MD5 method
-   *
-   */
   #[@test]
   public function md5SaltTooShort() {
     $this->assertCryptedMatches('$1$_', '$1$_$.m3t.Z4nwsU9NHyuqbRAC1');
   }
 
-  /**
-   * Test MD5 method
-   *
-   */
   #[@test]
   public function md5SaltDoesNotEndWithDollar() {
     $this->assertCryptedMatches('$1$01234567_', '$1$01234567$CEE8q9mw43U6PHo8uPcOW/');
   }
 
-  /**
-   * Verify PHP Bug #55439
-   *
-   * @see   https://bugs.php.net/bug.php?id=55439
-   */
   #[@test]
   public function phpBug55439() {
     $this->assertEquals(
@@ -67,11 +46,6 @@ class MD5UnixCryptTest extends UnixCryptTest {
     );
   }
 
-  /**
-   * Verify correct functionality
-   *
-   * @see   http://stackoverflow.com/questions/5258860/php-crypt-returning-wrong-answer
-   */
   #[@test]
   public function incorrectBehaviourInWindowsPHP() {
     $this->assertEquals(
