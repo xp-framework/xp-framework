@@ -33,7 +33,6 @@
    *
    * @see      php://openssl_pkey_new
    * @ext      openssl
-   * @purpose  purpose
    */
   class KeyPair extends Object {
   
@@ -55,7 +54,7 @@
      * @param   int bits default 1024
      * @return  security.KeyPair
      */
-    public function generate($algorithm= 'md5', $type= OPENSSL_KEYTYPE_RSA, $bits= 1024) {
+    public static function generate($algorithm= 'md5', $type= OPENSSL_KEYTYPE_RSA, $bits= 1024) {
       if (FALSE === ($res= openssl_pkey_new(array(
         'digest_alg'        => $algorithm,
         'private_key_type'  => $type,
@@ -65,7 +64,7 @@
         throw new XPException('Could not generate keypair');
       }
       
-      $k= new KeyPair();
+      $k= new self();
       $k->_res= $res;
       return $k;
     }

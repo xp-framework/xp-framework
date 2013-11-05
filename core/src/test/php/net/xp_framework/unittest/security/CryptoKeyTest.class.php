@@ -13,6 +13,7 @@ use unittest\TestCase;
  * @see   xp://security.crypto.PublicKey
  * @see   xp://security.crypto.PrivateKey
  */
+#[@action(new \unittest\actions\ExtensionAvailable('openssl'))]
 class CryptoKeyTest extends TestCase {
   public
     $publickey    = null,
@@ -24,14 +25,6 @@ class CryptoKeyTest extends TestCase {
    *
    */
   public function setUp() {
-    if (!extension_loaded('openssl')) {
-      throw new \unittest\PrerequisitesNotMetError(
-        PREREQUISITE_LIBRARYMISSING, 
-        $cause= null, 
-        array('openssl')
-      );
-    }
-    
     if ($this->cert && $this->publickey && $this->privatekey) return;
     
     // Generate private & public key, using a self-signed certificate
