@@ -7,6 +7,7 @@ use lang\MapType;
 use lang\XPClass;
 use lang\ClassLoader;
 use util\Date;
+use util\TimeZone;
 use util\Money;
 use util\Currency;
 use lang\types\String;
@@ -153,7 +154,7 @@ class RestMarshallingTest extends \unittest\TestCase {
   public function marshal_date_instance() {
     $this->assertEquals(
       '2012-12-31T18:00:00+01:00',
-      $this->fixture->marshal(new \util\Date('2012-12-31 18:00:00', new \util\TimeZone('Europe/Berlin')))
+      $this->fixture->marshal(new Date('2012-12-31 18:00:00', new TimeZone('Europe/Berlin')))
     );
   }
 
@@ -161,7 +162,7 @@ class RestMarshallingTest extends \unittest\TestCase {
   public function marshal_date_array() {
     $this->assertEquals(
       array('2012-12-31T18:00:00+01:00'),
-      $this->fixture->marshal(array(new \util\Date('2012-12-31 18:00:00', new \util\TimeZone('Europe/Berlin'))))
+      $this->fixture->marshal(array(new Date('2012-12-31 18:00:00', new TimeZone('Europe/Berlin'))))
     );
   }
 
