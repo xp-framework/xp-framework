@@ -420,4 +420,18 @@ class ResponseTest extends TestCase {
       Response::status(200)->withCookie($user)->withCookie($lang)->cookies 
     );
   }
+
+  #[@test]
+  public function writeTo_fully_qualifies_path_in_location_header() {
+    $res= new \scriptlet\HttpScriptletResponse();
+    Response::see('/foo')->writeTo($res, new \peer\URL('http://example.com/'), null);
+    $this->assertEquals('Location: http://example.com/foo', $res->headers[0]);
+  }
+
+  #[@test]
+  public function writeTo_does_not_fully_qualify_url_in_location_header() {
+    $res= new \scriptlet\HttpScriptletResponse();
+    Response::see('http://localhost/')->writeTo($res, new \peer\URL('http://example.com/'), null);
+    $this->assertEquals('Location: http://localhost/', $res->headers[0]);
+  }
 }

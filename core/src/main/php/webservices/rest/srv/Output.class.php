@@ -72,7 +72,7 @@
 
       // Headers
       foreach ($this->headers as $name => $value) {
-        if ('Location' === $name) {
+        if ('Location' === $name && FALSE === strpos($value, '://')) {
           $url= clone $base;
           $response->setHeader($name, $url->setPath($value)->getURL());
         } else {
