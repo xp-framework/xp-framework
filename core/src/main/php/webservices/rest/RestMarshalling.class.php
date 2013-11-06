@@ -10,6 +10,8 @@
    * Marshalling takes care of converting the data to a simple output 
    * format consisting solely of primitives, arrays and maps; and vice
    * versa.
+   *
+   * @test  xp://net.xp_framework.unittest.webservices.rest.RestMarshallingTest
    */
   class RestMarshalling extends Object {
     protected $marshallers;
