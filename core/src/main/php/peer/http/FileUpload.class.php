@@ -9,7 +9,7 @@
   /**
    * File Data; represents single parts of a multipart/form-data request
    */
-  class FileData extends FormData {
+  class FileUpload extends FormData {
     const CRLF = "\r\n";
 
     protected

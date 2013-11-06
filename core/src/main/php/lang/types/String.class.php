@@ -324,7 +324,7 @@
     /**
      * Returns the bytes representing this string
      *
-     * @param   string charset default 'utf-8'
+     * @param   string charset default NULL
      * @return  lang.types.Bytes
      */
     public function getBytes($charset= NULL) {

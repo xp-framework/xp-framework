@@ -3,7 +3,7 @@
 use unittest\TestCase;
 use peer\http\RequestData;
 use peer\http\FormRequestData;
-use peer\http\FileData;
+use peer\http\FileUpload;
 use peer\http\FormData;
 use peer\http\HttpRequest;
 use peer\http\HttpConstants;
@@ -166,12 +166,12 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function post_url_with_FileData_parameters() {
+  public function post_url_with_FileUpload_parameters() {
     $r= new HttpRequest(new \peer\URL('http://example.com/'));
     $r->setMethod(HttpConstants::POST);
     $r->setParameters(new FormRequestData(array(
-      new FileData('file', 'image.jpeg', new \io\streams\MemoryInputStream('JFIF...'), 'image/jpeg'),
-      new FileData('file', 'attach.txt', new \io\streams\MemoryInputStream('Test'), 'text/plain')
+      new FileUpload('file', 'image.jpeg', new \io\streams\MemoryInputStream('JFIF...'), 'image/jpeg'),
+      new FileUpload('file', 'attach.txt', new \io\streams\MemoryInputStream('Test'), 'text/plain')
     )));
 
     // Fetch randomly generated boundary

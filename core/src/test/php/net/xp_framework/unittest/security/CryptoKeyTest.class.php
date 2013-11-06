@@ -7,15 +7,13 @@ use security\crypto\PublicKey;
 use security\crypto\PrivateKey;
 use unittest\TestCase;
 
-
 /**
  * Testcase for Public/Private key classes
  *
- * @ext       openssl
- * @see       xp://security.crypto.PublicKey
- * @see       xp://security.crypto.PrivateKey
- * @purpose   Testcase
+ * @see   xp://security.crypto.PublicKey
+ * @see   xp://security.crypto.PrivateKey
  */
+#[@action(new \unittest\actions\ExtensionAvailable('openssl'))]
 class CryptoKeyTest extends TestCase {
   public
     $publickey    = null,
@@ -27,14 +25,6 @@ class CryptoKeyTest extends TestCase {
    *
    */
   public function setUp() {
-    if (!extension_loaded('openssl')) {
-      throw new \unittest\PrerequisitesNotMetError(
-        PREREQUISITE_LIBRARYMISSING, 
-        $cause= null, 
-        array('openssl')
-      );
-    }
-    
     if ($this->cert && $this->publickey && $this->privatekey) return;
     
     // Generate private & public key, using a self-signed certificate
@@ -58,19 +48,11 @@ class CryptoKeyTest extends TestCase {
     $this->privatekey= $privatekey;
   }
   
-  /**
-   * Test validity of generated keys/certificate
-   *
-   */
   #[@test]
   public function generateKeys() {
     $this->assertTrue($this->cert->checkPrivateKey($this->privatekey));
   }
 
-  /**
-   * Test creation of signatures
-   *
-   */
   #[@test]
   public function testSignature() {
     $signature= $this->privatekey->sign('This is just some testdata');
@@ -79,36 +61,21 @@ class CryptoKeyTest extends TestCase {
     $this->assertFalse($this->publickey->verify('This is just fake testdata', $signature));
   }
   
-  /**
-   * Test public key encryption
-   *
-   */
   #[@test]
   public function testEncryptionWithPublickey() {
     $crypt= $this->publickey->encrypt('This is the secret data.');
-    
     $this->assertEquals('This is the secret data.', $this->privatekey->decrypt($crypt));
   }    
 
-  /**
-   * Test private key encryption
-   *
-   */
   #[@test]
   public function testEncryptionWithPrivatekey() {
     $crypt= $this->privatekey->encrypt('This is the secret data.');
-    
     $this->assertEquals('This is the secret data.', $this->publickey->decrypt($crypt));
   }
   
-  /**
-   * Test seals.
-   *
-   */
   #[@test]
   public function testSeals() {
     list($data, $key)= $this->publickey->seal('This is my secret data.');
-    
     $this->assertEquals($this->privatekey->unseal($data, $key));
   }    
 }
