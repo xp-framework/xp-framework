@@ -5,6 +5,12 @@ XP Framework ChangeLog
 
 ### Heads up!
 
+* Split responsibilities in REST APIs: Deserializers read from the stream
+  formats, e.g. XML or JSON, to data structures, while unmarshallers then
+  convert this to the target types, e.g. a value object. See RFC #269.
+  This deprecates `Rest(De)Serializer::convert()` which was a mix of both.
+  See https://github.com/xp-framework/xp-framework/pull/307#issuecomment-27854895
+  (@thekid, @iigorr)
 * Changed REST client to always append resources to base path, whether
   they're supplied in an absolute form or relative. See #334 - (@thekid)
 * Switched annotation parser in lang.XPClass to a more robust implementation
