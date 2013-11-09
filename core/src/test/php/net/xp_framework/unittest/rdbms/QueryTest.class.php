@@ -12,13 +12,10 @@ use net\xp_framework\unittest\rdbms\dataset\Person;
 /**
  * Test query class
  *
- * @see      xp://rdbms.Query
- * @purpose  Unit Test
+ * @see  xp://rdbms.Query
  */
+#[@action(new \net\xp_framework\unittest\rdbms\mock\RegisterMockConnection())]
 class QueryTest extends TestCase {
-  const
-    MOCK_CONNECTION_CLASS = 'net.xp_framework.unittest.rdbms.mock.MockConnection';
-
   private
     $qa= null,
     $qb= null,
@@ -26,15 +23,6 @@ class QueryTest extends TestCase {
     $qbs= 'select  job_id, name from JOBS.Person ',
     $qu= null;
     
-  /**
-   * Mock connection registration
-   *
-   */  
-  #[@beforeClass]
-  public static function registerMockConnection() {
-    \rdbms\DriverManager::register('mock', \lang\XPClass::forName(self::MOCK_CONNECTION_CLASS));
-  }
-  
   /**
    * Setup method
    *

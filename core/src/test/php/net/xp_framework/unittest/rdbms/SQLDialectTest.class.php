@@ -10,7 +10,6 @@ use rdbms\sybase\SybaseConnection;
 use rdbms\join\JoinTable;
 use rdbms\join\JoinRelation;
 
-
 /**
  * TestCase
  *

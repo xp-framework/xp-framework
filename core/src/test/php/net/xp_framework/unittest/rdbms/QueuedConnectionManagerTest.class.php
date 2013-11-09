@@ -2,7 +2,6 @@
 
 use rdbms\DSN;
 
-
 /**
  * Tests for connection managers with connections programmatically
  * registered.
@@ -10,6 +9,7 @@ use rdbms\DSN;
  * @see   xp://rdbms.ConnectionManager#queue
  * @see   xp://net.xp_framework.unittest.rdbms.ConnectionManagerTest
  */
+#[@action(new \net\xp_framework\unittest\rdbms\mock\RegisterMockConnection())]
 class QueuedConnectionManagerTest extends ConnectionManagerTest {
 
   /**

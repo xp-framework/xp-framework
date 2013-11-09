@@ -2,13 +2,13 @@
 
 use util\Properties;
 
-
 /**
  * Tests for configured connection managers
  *
  * @see   xp://rdbms.ConnectionManager#configure
  * @see   xp://net.xp_framework.unittest.rdbms.ConnectionManagerTest
  */
+#[@action(new \net\xp_framework\unittest\rdbms\mock\RegisterMockConnection())]
 class ConfiguredConnectionManagerTest extends ConnectionManagerTest {
 
   /**

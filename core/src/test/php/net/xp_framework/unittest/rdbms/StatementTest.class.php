@@ -8,29 +8,15 @@ use net\xp_framework\unittest\rdbms\dataset\Job;
 /**
  * Test Statement class
  *
- * @see      xp://rdbms.Statement
- * @purpose  Unit Test
+ * @see   xp://rdbms.Statement
  */
+#[@action(new \net\xp_framework\unittest\rdbms\mock\RegisterMockConnection())]
 class StatementTest extends TestCase {
-  const
-    MOCK_CONNECTION_CLASS = 'net.xp_framework.unittest.rdbms.mock.MockConnection';
-
-  public
-    $conn = null,
-    $peer = null;
-
-  /**
-   * Mock connection registration
-   *
-   */  
-  #[@beforeClass]
-  public static function registerMockConnection() {
-    DriverManager::register('mock', \lang\XPClass::forName(self::MOCK_CONNECTION_CLASS));
-  }
+  public $conn= null;
+  public $peer= null;
 
   /**
    * Setup method
-   *
    */
   public function setUp() {
     $this->conn= DriverManager::getConnection('mock://mock/JOBS?autoconnect=1');

@@ -3,27 +3,15 @@
 use unittest\TestCase;
 use rdbms\ConnectionManager;
 
-
 /**
  * ConnectionManager testcase
  *
  * @see   xp://rdbms.ConnectionManager
  */
 abstract class ConnectionManagerTest extends TestCase {
-  const MOCK_CONNECTION_CLASS = 'net.xp_framework.unittest.rdbms.mock.MockConnection';
-
-  /**
-   * Mock connection registration
-   *
-   */  
-  #[@beforeClass]
-  public static function registerMockConnection() {
-    \rdbms\DriverManager::register('mock', \lang\XPClass::forName(self::MOCK_CONNECTION_CLASS));
-  }
   
   /**
    * Empties connection manager pool
-   *
    */
   public function setUp() {
     ConnectionManager::getInstance()->pool= array();
@@ -54,7 +42,7 @@ abstract class ConnectionManagerTest extends TestCase {
   #[@test]
   public function acquireExistingConnectionViaGetByHost() {
     $cm= $this->instanceWith(array('mydb' => 'mock://user:pass@host/db?autoconnect=1'));
-    $this->assertInstanceOf(self::MOCK_CONNECTION_CLASS, $cm->getByHost('mydb', 0));
+    $this->assertInstanceOf('rdbms.DBConnection', $cm->getByHost('mydb', 0));
   }
   
   /**
@@ -74,7 +62,7 @@ abstract class ConnectionManagerTest extends TestCase {
   #[@test]
   public function acquireExistingConnectionViaGet() {
     $cm= $this->instanceWith(array('mydb' => 'mock://user:pass@host/db?autoconnect=1'));
-    $this->assertInstanceOf(self::MOCK_CONNECTION_CLASS, $cm->getByHost('mydb', 0));
+    $this->assertInstanceOf('rdbms.DBConnection', $cm->getByHost('mydb', 0));
   }
   
   /**

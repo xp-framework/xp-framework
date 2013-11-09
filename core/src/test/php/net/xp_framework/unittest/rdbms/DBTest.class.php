@@ -7,30 +7,12 @@ use net\xp_framework\unittest\rdbms\mock\MockResultSet;
 /**
  * Test rdbms API
  */
+#[@action(new \net\xp_framework\unittest\rdbms\mock\RegisterMockConnection())]
 class DBTest extends TestCase {
   protected $conn = null;
- 
-  /**
-   * Register mock connection
-   *
-   */  
-  #[@beforeClass]
-  public static function registerMockConnection() {
-    DriverManager::register('mock', \lang\XPClass::forName('net.xp_framework.unittest.rdbms.mock.MockConnection'));
-  }
-
-  /**
-   * Remove mock connection
-   *
-   */
-  #[@afterClass]
-  public static function removeMockConnection() {
-    DriverManager::remove('mock');
-  }
-   
+    
   /**
    * Setup function
-   *
    */
   public function setUp() {
     $this->conn= DriverManager::getConnection('mock://mock/MOCKDB');
@@ -39,7 +21,6 @@ class DBTest extends TestCase {
   
   /**
    * Tear down function
-   *
    */
   public function tearDown() {
     $this->conn->close();

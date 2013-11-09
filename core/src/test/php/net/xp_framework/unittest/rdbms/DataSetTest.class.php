@@ -16,21 +16,12 @@ use net\xp_framework\unittest\rdbms\mock\MockResultSet;
  *
  * @see      xp://rdbms.DataSet
  */
+#[@action(new \net\xp_framework\unittest\rdbms\mock\RegisterMockConnection())]
 class DataSetTest extends TestCase {
   const IRRELEVANT_NUMBER= -1;
 
   /**
-   * Mock connection registration
-   *
-   */  
-  #[@beforeClass]
-  public static function registerMockConnection() {
-    DriverManager::register('mock', \lang\XPClass::forName('net.xp_framework.unittest.rdbms.mock.MockConnection'));
-  }
-  
-  /**
    * Setup method
-   *
    */
   public function setUp() {
     Job::getPeer()->setConnection(DriverManager::getConnection('mock://mock/JOBS?autoconnect=1'));

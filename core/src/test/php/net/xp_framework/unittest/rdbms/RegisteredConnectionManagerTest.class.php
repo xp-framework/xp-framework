@@ -10,6 +10,7 @@ use rdbms\DriverManager;
  * @see   xp://rdbms.ConnectionManager#register
  * @see   xp://net.xp_framework.unittest.rdbms.ConnectionManagerTest
  */
+#[@action(new \net\xp_framework\unittest\rdbms\mock\RegisterMockConnection())]
 class RegisteredConnectionManagerTest extends ConnectionManagerTest {
 
   /**

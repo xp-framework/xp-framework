@@ -11,24 +11,13 @@ use net\xp_framework\unittest\rdbms\mock\MockResultSet;
  * TestCase
  *
  * @see      xp://rdbms.finder.Finder
- * @purpose  Unit test
  */
+#[@action(new \net\xp_framework\unittest\rdbms\mock\RegisterMockConnection())]
 class FinderTest extends TestCase {
-  const MOCK_CONNECTION_CLASS = 'net.xp_framework.unittest.rdbms.mock.MockConnection';
   protected $fixture = null;
 
   /**
-   * Mock connection registration
-   *
-   */  
-  #[@beforeClass]
-  public static function registerMockConnection() {
-    DriverManager::register('mock', \lang\XPClass::forName(self::MOCK_CONNECTION_CLASS));
-  }
-
-  /**
    * Setup method
-   *
    */
   public function setUp() {
     $this->fixture= new JobFinder();
