@@ -1,31 +1,22 @@
 <?php namespace net\xp_framework\unittest\xml;
 
-use unittest\TestCase;
 use xml\XSLCallback;
 use xml\DomXSLProcessor;
 use xml\Node;
 use util\Date;
 
-
 /**
  * TestCase for XSL callbacks
  *
- * @see      xp://xml.XSLCallback
- * @purpose  Unittest
+ * @see   xp://xml.XSLCallback
+ * @see   xp://xml.xslt.XSLDateCallback
+ * @see   xp://xml.xslt.XSLStringCallback
  */
-class XslCallbackTest extends TestCase {
-
-  /**
-   * Set up test
-   *
-   */
-  public function setUp() {
-    foreach (array('dom', 'xsl') as $ext) {
-      if (!extension_loaded($ext)) {
-        throw new \unittest\PrerequisitesNotMetError($ext.' extension not loaded');
-      }
-    }
-  }
+#[@action([
+#  new \unittest\actions\ExtensionAvailable('dom'),
+#  new \unittest\actions\ExtensionAvailable('xsl')
+#])]
+class XslCallbackTest extends \unittest\TestCase {
 
   /**
    * Runs a transformation
@@ -85,10 +76,6 @@ class XslCallbackTest extends TestCase {
     return '�bercoder='.$in;
   }
   
-  /**
-   * Test simple XSL callback method
-   *
-   */
   #[@test]
   public function callSayHello() {
     $this->assertEquals('Hello Test', $this->runTransformation(
@@ -98,10 +85,6 @@ class XslCallbackTest extends TestCase {
     ));
   }
 
-  /**
-   * Test simple XSL callback method
-   *
-   */
   #[@test]
   public function callUberCoderFromUtf8XmlAndUtf8Xsl() {
     $this->assertEquals('Übercoder=Übercoder', $this->runTransformation(
@@ -112,10 +95,6 @@ class XslCallbackTest extends TestCase {
     ));
   }
 
-  /**
-   * Test simple XSL callback method
-   *
-   */
   #[@test]
   public function callUberCoderFromIso88591XmlAndUtf8Xsl() {
     $this->assertEquals('Übercoder=Übercoder', $this->runTransformation(
@@ -126,10 +105,6 @@ class XslCallbackTest extends TestCase {
     ));
   }
 
-  /**
-   * Test simple XSL callback method
-   *
-   */
   #[@test]
   public function callUberCoderFromUtf8XmlAndIso88591Xsl() {
     $this->assertEquals('Übercoder=Übercoder', $this->runTransformation(
@@ -140,10 +115,6 @@ class XslCallbackTest extends TestCase {
     ));
   }
 
-  /**
-   * Test simple XSL callback method
-   *
-   */
   #[@test]
   public function callUberCoderFromIso88591XmlAndIso88591Xsl() {
     $this->assertEquals('Übercoder=Übercoder', $this->runTransformation(
@@ -154,11 +125,6 @@ class XslCallbackTest extends TestCase {
     ));
   }
 
-  /**
-   * Test simple XSL callback method and omitting sayHello()'s optional
-   * name argument
-   *
-   */
   #[@test]
   public function callSayHelloOmittingOptionalParameter() {
     $this->assertEquals('Hello World', $this->runTransformation(
@@ -168,38 +134,21 @@ class XslCallbackTest extends TestCase {
     ));
   }
 
-  /**
-   * Test calling function of not-registered callback
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function callOnNotRegisteredCallback() {
     $this->runTransformation('<irrelevant/>', 'not-registered::irrelevant', array());
   }
 
-  /**
-   * Test calling a method without xslmethod annotation
-   *
-   */
   #[@test, @expect('lang.ElementNotFoundException')]
   public function callNonXslMethod() {
     $this->runTransformation('<irrelevant/>', 'this::setUp', array());
   }
 
-  /**
-   * Test calling a non-existant method
-   *
-   */
   #[@test, @expect('lang.ElementNotFoundException')]
   public function callNonExistantMethod() {
     $this->runTransformation('<irrelevant/>', 'this::nonExistantMethod', array());
   }
 
-  /**
-   * Test xp.date::format
-   *
-   * @see      xp://xml.xslt.XSLDateCallback
-   */
   #[@test]
   public function dateFormatCallback() {
     $date= new Date('2009-09-20 21:33:00');
@@ -210,11 +159,6 @@ class XslCallbackTest extends TestCase {
     ));
   }
 
-  /**
-   * Test xp.date::format
-   *
-   * @see      xp://xml.xslt.XSLDateCallback
-   */
   #[@test]
   public function dateFormatCallbackWithTZ() {
     $date= new Date('2009-09-20 21:33:00');
@@ -226,11 +170,6 @@ class XslCallbackTest extends TestCase {
     ));
   }
 
-  /**
-   * Test xp.date::format
-   *
-   * @see      xp://xml.xslt.XSLDateCallback
-   */
   #[@test]
   public function dateFormatCallbackWithEmptyTZ() {
     $date= new Date('2009-09-20 21:33:00');
@@ -241,11 +180,6 @@ class XslCallbackTest extends TestCase {
     ));
   }
 
-  /**
-   * Test xp.date::format
-   *
-   * @see      xp://xml.xslt.XSLDateCallback
-   */
   #[@test]
   public function dateFormatCallbackWithoutTZ() {
     $date= new Date('2009-09-20 21:33:00');
@@ -256,11 +190,6 @@ class XslCallbackTest extends TestCase {
     ));
   }
 
-  /**
-   * Test xp.string::urlencode
-   *
-   * @see      xp://xml.xslt.XSLStringCallback
-   */
   #[@test]
   public function stringUrlencodeCallback() {
     $this->assertEquals('a+%26+b%3F', $this->runTransformation(
@@ -270,11 +199,6 @@ class XslCallbackTest extends TestCase {
     ));
   }
 
-  /**
-   * Test xp.string::urldecode
-   *
-   * @see      xp://xml.xslt.XSLStringCallback
-   */
   #[@test]
   public function stringUrldecodeCallback() {
     $this->assertEquals('a & b?', $this->runTransformation(
@@ -284,11 +208,6 @@ class XslCallbackTest extends TestCase {
     ));
   }
 
-  /**
-   * Test xp.string::replace
-   *
-   * @see      xp://xml.xslt.XSLStringCallback
-   */
   #[@test]
   public function stringReplaceCallback() {
     $this->assertEquals('Hello World!', $this->runTransformation(
@@ -298,11 +217,6 @@ class XslCallbackTest extends TestCase {
     ));
   }
 
-  /**
-   * Test xp.string::nl2br
-   *
-   * @see      xp://xml.xslt.XSLStringCallback
-   */
   #[@test]
   public function stringNl2BrCallback() {
     $this->assertEquals("Line 1<br />\nLine 2", $this->runTransformation(
