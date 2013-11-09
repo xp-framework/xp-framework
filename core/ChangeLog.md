@@ -3,6 +3,8 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 5.9.9 / 2013-11-09
+
 ### Heads up!
 
 * Split responsibilities in REST APIs: Deserializers read from the stream
