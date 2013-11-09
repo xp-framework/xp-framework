@@ -1,23 +1,18 @@
 <?php namespace net\xp_framework\unittest\tests;
  
-use unittest\TestCase;
-use unittest\TestSuite;
-
-
 /**
  * Tests @beforeClass and @afterClass methods
  *
  * @see   xp://unittest.TestSuite
  */
-abstract class BeforeAndAfterClassTest extends TestCase {
+abstract class BeforeAndAfterClassTest extends \unittest\TestCase {
   protected $suite= null;
     
   /**
    * Setup method. Creates a new test suite.
-   *
    */
   public function setUp() {
-    $this->suite= new TestSuite();
+    $this->suite= new \unittest\TestSuite();
   }
 
   /**
@@ -28,10 +23,6 @@ abstract class BeforeAndAfterClassTest extends TestCase {
    */
   protected abstract function runTest($test);
 
-  /**
-   * Tests @beforeClass methods
-   *
-   */
   #[@test]
   public function beforeClassMethodIsExecuted() {
     $t= newinstance('unittest.TestCase', array('fixture'), '{
@@ -49,10 +40,6 @@ abstract class BeforeAndAfterClassTest extends TestCase {
     $this->assertEquals(true, $t->getClass()->getField('initialized')->get(null));
   }
 
-  /**
-   * Tests @beforeClass methods
-   *
-   */
   #[@test]
   public function exceptionInBeforeClassSkipsTest() {
     $t= newinstance('unittest.TestCase', array('fixture'), '{
@@ -73,10 +60,6 @@ abstract class BeforeAndAfterClassTest extends TestCase {
     $this->assertEquals('Exception in beforeClass method prepareTestData', $r->reason->getMessage());
   }
 
-  /**
-   * Tests @beforeClass methods
-   *
-   */
   #[@test]
   public function failedPrerequisiteInBeforeClassSkipsTest() {
     $t= newinstance('unittest.TestCase', array('fixture'), '{
@@ -97,10 +80,6 @@ abstract class BeforeAndAfterClassTest extends TestCase {
     $this->assertEquals('Test data not available', $r->reason->getMessage());
   }
 
-  /**
-   * Tests @beforeClass methods
-   *
-   */
   #[@test]
   public function afterClassMethodIsExecuted() {
     $t= newinstance('unittest.TestCase', array('fixture'), '{
@@ -118,10 +97,6 @@ abstract class BeforeAndAfterClassTest extends TestCase {
     $this->assertEquals(true, $t->getClass()->getField('finalized')->get(null));
   }
 
-  /**
-   * Tests multiple @beforeClass methods
-   *
-   */
   #[@test]
   public function allBeforeClassMethodsAreExecuted() {
     $t= newinstance('unittest.TestCase', array('fixture'), '{
@@ -144,10 +119,6 @@ abstract class BeforeAndAfterClassTest extends TestCase {
     $this->assertEquals(array('data', 'conn'), $t->getClass()->getField('initialized')->get(null));
   }
 
-  /**
-   * Tests multiple @afterClass methods
-   *
-   */
   #[@test]
   public function allAfterClassMethodsAreExecuted() {
     $t= newinstance('unittest.TestCase', array('fixture'), '{
@@ -170,10 +141,6 @@ abstract class BeforeAndAfterClassTest extends TestCase {
     $this->assertEquals(array('conn', 'data'), $t->getClass()->getField('finalized')->get(null));
   }
 
-  /**
-   * Tests @beforeClass and @afterClass methods
-   *
-   */
   #[@test]
   public function afterClassMethodIsNotExecutedWhenPrerequisitesFail() {
     $t= newinstance('unittest.TestCase', array('fixture'), '{

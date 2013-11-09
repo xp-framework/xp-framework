@@ -3,7 +3,6 @@
 use unittest\TestCase;
 use unittest\AssertionFailedError;
 
-
 /**
  * TestCase
  *
@@ -25,10 +24,6 @@ class AssertionMessagesTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function differentIntegerPrimitives() {
     $this->assertMessageEquals(
@@ -37,10 +32,6 @@ class AssertionMessagesTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function differentBoolPrimitives() {
     $this->assertMessageEquals(
@@ -49,10 +40,6 @@ class AssertionMessagesTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function differentPrimitives() {
     $this->assertMessageEquals(
@@ -61,10 +48,6 @@ class AssertionMessagesTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function differentStrings() {
     $this->assertMessageEquals(
@@ -85,10 +68,6 @@ class AssertionMessagesTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function stringAndStringPrimitive() {
     $this->assertMessageEquals(
@@ -97,10 +76,6 @@ class AssertionMessagesTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function differentTypes() {
     $this->assertMessageEquals(
@@ -157,10 +132,6 @@ class AssertionMessagesTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function differentStringsWithCommonLeadingPart() {
     $prefix= str_repeat('*', 100);
@@ -170,10 +141,6 @@ class AssertionMessagesTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function differentStringsWithCommonTrailingPart() {
     $postfix= str_repeat('*', 100);
@@ -183,10 +150,6 @@ class AssertionMessagesTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function differentStringsWithCommonLeadingAndTrailingPart() {
     $prefix= str_repeat('<', 100);
@@ -197,10 +160,6 @@ class AssertionMessagesTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function prefixShorterThanContextLength() {
     $this->assertMessageEquals(
@@ -209,10 +168,6 @@ class AssertionMessagesTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function postfixShorterThanContextLength() {
     $this->assertMessageEquals(

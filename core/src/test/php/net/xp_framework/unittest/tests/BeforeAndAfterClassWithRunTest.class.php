@@ -1,6 +1,4 @@
 <?php namespace net\xp_framework\unittest\tests;
- 
-
 
 /**
  * Tests @beforeClass and @afterClass methods using run()
@@ -12,7 +10,7 @@ class BeforeAndAfterClassWithRunTest extends BeforeAndAfterClassTest {
   /**
    * Runs a test and returns the outcome
    *
-   * @param   unittest.TestCase test
+   * @param   unittest.TestCase $test
    * @return  unittest.TestOutcome
    */
   protected function runTest($test) {

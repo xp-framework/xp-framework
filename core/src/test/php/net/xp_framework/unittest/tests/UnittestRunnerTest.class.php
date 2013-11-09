@@ -1,24 +1,20 @@
 <?php namespace net\xp_framework\unittest\tests;
 
-use unittest\TestCase;
 use xp\unittest\Runner;
 use io\streams\MemoryOutputStream;
-
 
 /**
  * TestCase
  *
  * @see  xp://xp.unittest.Runner
  */
-class UnittestRunnerTest extends TestCase {
-  protected
-    $runner = null,
-    $out    = null,
-    $err    = null;
+class UnittestRunnerTest extends \unittest\TestCase {
+  protected $runner = null;
+  protected $out    = null;
+  protected $err    = null;
 
   /**
    * Sets up test case
-   *
    */
   public function setUp() {
     $this->runner= new Runner();
@@ -29,19 +25,15 @@ class UnittestRunnerTest extends TestCase {
   /**
    * Asserts a given output stream contains the given bytes       
    *
-   * @param   io.streams.MemoryOutputStream m
-   * @param   string bytes
+   * @param   io.streams.MemoryOutputStream $m
+   * @param   string $bytes
+   * @param   string $message
    * @throws  unittest.AssertionFailedError
    */
   protected function assertOnStream(MemoryOutputStream $m, $bytes, $message= 'Not contained') {
     strstr($m->getBytes(), $bytes) || $this->fail($message, $m->getBytes(), $bytes);
   }
 
-  /**
-   * Test self usage - that is, when unittest is invoked without any 
-   * arguments
-   *
-   */
   #[@test]
   public function selfUsage() {
     $return= $this->runner->run(array());
@@ -50,10 +42,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertEquals('', $this->out->getBytes());
   }
 
-  /**
-   * Test usage is displayed when "-?" is passed
-   *
-   */
   #[@test]
   public function helpParameter() {
     $return= $this->runner->run(array('-?'));
@@ -62,10 +50,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertEquals('', $this->out->getBytes());
   }
 
-  /**
-   * Test when invoked with no tests
-   *
-   */
   #[@test]
   public function noTests() {
     $return= $this->runner->run(array('-v'));
@@ -74,10 +58,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertEquals('', $this->out->getBytes());
   }
 
-  /**
-   * Test when invoked with a non-existant class
-   *
-   */
   #[@test]
   public function nonExistantClass() {
     $return= $this->runner->run(array('@@NON-EXISTANT@@'));
@@ -86,10 +66,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertEquals('', $this->out->getBytes());
   }
 
-  /**
-   * Test when invoked with a non-existant file
-   *
-   */
   #[@test]
   public function nonExistantFile() {
     $return= $this->runner->run(array('@@NON-EXISTANT@@'.\xp::CLASS_FILE_EXT));
@@ -98,10 +74,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertEquals('', $this->out->getBytes());
   }
 
-  /**
-   * Test when invoked with a non-existant package
-   *
-   */
   #[@test]
   public function nonExistantPackage() {
     $return= $this->runner->run(array('@@NON-EXISTANT@@.*'));
@@ -110,10 +82,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertEquals('', $this->out->getBytes());
   }
 
-  /**
-   * Test when invoked with a non-existant package
-   *
-   */
   #[@test]
   public function nonExistantPackageRecursive() {
     $return= $this->runner->run(array('@@NON-EXISTANT@@.**'));
@@ -122,10 +90,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertEquals('', $this->out->getBytes());
   }
 
-  /**
-   * Test when invoked with a non-existant properties
-   *
-   */
   #[@test]
   public function nonExistantProperties() {
     $return= $this->runner->run(array('@@NON-EXISTANT@@.ini'));
@@ -134,10 +98,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertEquals('', $this->out->getBytes());
   }
 
-  /**
-   * Test running a test class without tests inside
-   *
-   */
   #[@test]
   public function runEmptyTest() {
     $command= newinstance('unittest.TestCase', array($this->name), '{
@@ -148,10 +108,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertEquals('', $this->out->getBytes());
   }
 
-  /**
-   * Test running a class that is not a test case
-   *
-   */
   #[@test]
   public function runNonTest() {
     $return= $this->runner->run(array('lang.Object'));
@@ -160,10 +116,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertEquals('', $this->out->getBytes());
   }
 
-  /**
-   * Test running a succeeding test
-   *
-   */
   #[@test]
   public function runSucceedingTest() {
     $command= newinstance('unittest.TestCase', array('succeeds'), '{
@@ -178,10 +130,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertOnStream($this->out, 'OK: 1/1 run (0 skipped), 1 succeeded, 0 failed');
   }
 
-  /**
-   * Test running a colored test
-   *
-   */
   #[@test]
   public function runColoredTest($setting= '--color=on') {
     $command= newinstance('unittest.TestCase', array('succeeds'), '{
@@ -196,38 +144,22 @@ class UnittestRunnerTest extends TestCase {
     $this->assertOnStream($this->out, 'OK: 1/1 run (0 skipped), 1 succeeded, 0 failed');
   }
 
-  /**
-   * Test running a noncolored test
-   *
-   */
   #[@test]
   public function runNocolorTest() {
     $this->runColoredTest('--color=off');
   }
 
-  /**
-   * Test running a noncolored test
-   *
-   */
   #[@test]
   public function runAutocolorTest() {
     $this->runColoredTest('--color=auto');
   }
 
 
-  /**
-   * Test running a noncolored test
-   *
-   */
   #[@test]
   public function runShortAutocolorTest() {
     $this->runColoredTest('--color');
   }
 
-  /**
-   * Test running a noncolored test
-   *
-   */
   #[@test]
   public function runUnsupportedColorSettingTestFails() {
     $command= newinstance('unittest.TestCase', array('succeeds'), '{
@@ -241,10 +173,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertOnStream($this->err, '*** Unsupported argument for --color');
   }
 
-  /**
-   * Test running a failing test
-   *
-   */
   #[@test]
   public function runFailingTest() {
     $command= newinstance('unittest.TestCase', array('fails'), '{
@@ -259,10 +187,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertOnStream($this->out, 'FAIL: 1/1 run (0 skipped), 0 succeeded, 1 failed');
   }
 
-  /**
-   * Test "-e"(val) option with missing source
-   *
-   */
   #[@test]
   public function evaluateWithoutSource() {
     $return= $this->runner->run(array('-e'));
@@ -271,10 +195,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertEquals('', $this->out->getBytes());
   }
 
-  /**
-   * Test running a succeeding test with "-e"(val) option
-   *
-   */
   #[@test]
   public function evaluateSucceedingTest() {
     $return= $this->runner->run(array('-e', '$this->assertTrue(TRUE);'));
@@ -283,10 +203,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertOnStream($this->out, 'OK: 1/1 run (0 skipped), 1 succeeded, 0 failed');
   }
 
-  /**
-   * Test running a failing test with "-e"(val) option
-   *
-   */
   #[@test]
   public function evaluateFailingTest() {
     $return= $this->runner->run(array('-e', '$this->assertTrue(FALSE);'));
@@ -295,10 +211,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertOnStream($this->out, 'FAIL: 1/1 run (0 skipped), 0 succeeded, 1 failed');
   }
 
-  /**
-   * Test running a single test
-   *
-   */
   #[@test]
   public function runSingleTest() {
     $command= newinstance('unittest.TestCase', array('succeeds'), '{
@@ -312,10 +224,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertEquals('', $this->err->getBytes());
   }
 
-  /**
-   * Test running a single test
-   *
-   */
   #[@test]
   public function runSingleTestWrongSpec() {
     $command= newinstance('unittest.TestCase', array('succeeds'), '{
@@ -329,10 +237,6 @@ class UnittestRunnerTest extends TestCase {
     $this->assertOnStream($this->err, '*** Error: Test method does not exist: succeed()');
   }
 
-  /**
-   * Test running a single test
-   *
-   */
   #[@test]
   public function withListener() {
     $class= \lang\ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithListenerTestFixture', 'xp.unittest.DefaultListener', array(), '{
@@ -346,10 +250,6 @@ class UnittestRunnerTest extends TestCase {
     );
   }
 
-  /**
-   * Test listener options
-   *
-   */
   #[@test]
   public function withListenerOptions() {
     $class= \lang\ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithListenerOptionsTestFixture', 'xp.unittest.DefaultListener', array(), '{
@@ -367,10 +267,6 @@ class UnittestRunnerTest extends TestCase {
     );
   }
 
-  /**
-   * Test long listener option
-   *
-   */
   #[@test]
   public function withLongListenerOption() {
     $class= \lang\ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithLongListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
@@ -386,10 +282,6 @@ class UnittestRunnerTest extends TestCase {
     );
   }
 
-  /**
-   * Test long listener option
-   *
-   */
   #[@test]
   public function withNamedLongListenerOption() {
     $class= \lang\ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithNamedLongListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
@@ -405,10 +297,6 @@ class UnittestRunnerTest extends TestCase {
     );
   }
 
-  /**
-   * Test long listener option
-   *
-   */
   #[@test]
   public function withNamedLongListenerOptionShort() {
     $class= \lang\ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithNamedLongListenerOptionShortTestFixture', 'xp.unittest.DefaultListener', array(), '{
@@ -424,10 +312,6 @@ class UnittestRunnerTest extends TestCase {
     );
   }    
 
-  /**
-   * Test short listener option
-   *
-   */
   #[@test]
   public function withShortListenerOption() {
     $class= \lang\ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithShortListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
@@ -443,10 +327,6 @@ class UnittestRunnerTest extends TestCase {
     );
   }
 
-  /**
-   * Test short listener option
-   *
-   */
   #[@test]
   public function withNamedShortListenerOption() {
     $class= \lang\ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithNamedShortListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
@@ -462,10 +342,6 @@ class UnittestRunnerTest extends TestCase {
     );
   }
 
-  /**
-   * Test short listener option
-   *
-   */
   #[@test]
   public function withPositionalOptionListenerOption() {
     $class= \lang\ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithPositionalOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
@@ -480,5 +356,4 @@ class UnittestRunnerTest extends TestCase {
       $class->getField('options')->get(null)
     );
   }
-
 }

@@ -1,6 +1,5 @@
 <?php namespace net\xp_framework\unittest\tests;
  
-use unittest\TestCase;
 use unittest\TestSuite;
 use unittest\TestExpectationMet;
 use unittest\TestAssertionFailed;
@@ -9,13 +8,12 @@ use unittest\TestPrerequisitesNotMet;
 use unittest\TestNotRun;
 use unittest\TestWarning;
 
-
 /**
  * Test TestOutcome implementations
  *
  * @see      xp://unittest.TestOutcome
  */
-class TestOutcomeTest extends TestCase {
+class TestOutcomeTest extends \unittest\TestCase {
 
   /**
    * Creates fixtures
@@ -43,9 +41,6 @@ class TestOutcomeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests TestExpectationMet
-   */    
   #[@test, @values('fixtures')]
   public function string_representation_of_TestExpectationMet($test, $variant) {
     $this->assertStringRepresentation(
@@ -54,9 +49,6 @@ class TestOutcomeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests TestAssertionFailed
-   */    
   #[@test, @values('fixtures')]
   public function string_representation_of_TestAssertionFailed($test, $variant) {
     $assert= new \unittest\AssertionFailedError('Not equal', 1, 2);
@@ -66,9 +58,6 @@ class TestOutcomeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests TestError
-   */    
   #[@test, @values('fixtures')]
   public function string_representation_of_TestError($test, $variant) {
     $error= new \lang\Error('Out of memory');
@@ -78,9 +67,6 @@ class TestOutcomeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests TestPrerequisitesNotMet
-   */    
   #[@test, @values('fixtures')]
   public function string_representation_of_TestPrerequisitesNotMet($test, $variant) {
     $prerequisites= new \unittest\PrerequisitesNotMetError('Initialization failed');
@@ -90,9 +76,6 @@ class TestOutcomeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests TestNotRun
-   */    
   #[@test, @values('fixtures')]
   public function string_representation_of_TestNotRun($test, $variant) {
     $this->assertStringRepresentation(
@@ -101,9 +84,6 @@ class TestOutcomeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests TestWarning
-   */    
   #[@test, @values('fixtures')]
   public function string_representation_of_TestWarning($test, $variant) {
     $this->assertStringRepresentation(

@@ -6,12 +6,10 @@ use util\collections\HashTable;
 use lang\types\String;
 use lang\types\ArrayList;
 
-
 /**
  * TestCase
  *
- * @see      xp://unittest.TestListener
- * @purpose  Unittest
+ * @see   xp://unittest.TestListener
  */
 class ListenerTest extends TestCase implements \unittest\TestListener {
   protected
@@ -20,7 +18,6 @@ class ListenerTest extends TestCase implements \unittest\TestListener {
     
   /**
    * Setup method. Creates a new test suite.
-   *
    */
   public function setUp() {
     $this->invocations= create('new util.collections.HashTable<string, lang.types.ArrayList>()');
@@ -29,8 +26,7 @@ class ListenerTest extends TestCase implements \unittest\TestListener {
   }
 
   /**
-   * Setup method. Creates a new test suite.
-   *
+   * Remove listener again at tearDown.
    */
   public function tearDown() {
     $this->suite->removeListener($this);
@@ -120,10 +116,6 @@ class ListenerTest extends TestCase implements \unittest\TestListener {
     $this->invocations[__FUNCTION__]= new ArrayList($suite, $result);
   }
 
-  /**
-   * Tests running a single test that succeeds.
-   *
-   */    
   #[@test]
   public function notifiedOnSuccess() {
     with ($case= new SimpleTestCase('succeeds')); {
@@ -136,10 +128,6 @@ class ListenerTest extends TestCase implements \unittest\TestListener {
     }
   }    
 
-  /**
-   * Tests running a single test that fails.
-   *
-   */    
   #[@test]
   public function notifiedOnFailure() {
     with ($case= new SimpleTestCase('fails')); {
@@ -152,10 +140,6 @@ class ListenerTest extends TestCase implements \unittest\TestListener {
     }
   }    
 
-  /**
-   * Tests running a single test that throws an exception.
-   *
-   */    
   #[@test]
   public function notifiedOnException() {
     with ($case= new SimpleTestCase('throws')); {
@@ -168,10 +152,6 @@ class ListenerTest extends TestCase implements \unittest\TestListener {
     }
   }    
 
-  /**
-   * Tests running a single test that raises an error.
-   *
-   */    
   #[@test]
   public function notifiedOnError() {
     with ($case= new SimpleTestCase('raisesAnError')); {
@@ -184,11 +164,6 @@ class ListenerTest extends TestCase implements \unittest\TestListener {
     }
   }    
 
-  /**
-   * Tests running a single test that is skipped due to not-met
-   * prerequisites.
-   *
-   */    
   #[@test]
   public function notifiedOnSkipped() {
     with ($case= new SimpleTestCase('skipped')); {
@@ -201,11 +176,6 @@ class ListenerTest extends TestCase implements \unittest\TestListener {
     }
   }    
 
-  /**
-   * Tests running a single test that is ignored because it has
-   * an @ignore annotation.
-   *
-   */    
   #[@test]
   public function notifiedOnIgnored() {
     with ($case= new SimpleTestCase('ignored')); {

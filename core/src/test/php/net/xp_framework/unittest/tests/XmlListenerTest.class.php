@@ -1,39 +1,27 @@
 <?php namespace net\xp_framework\unittest\tests;
 
-use unittest\TestCase;
 use unittest\TestSuite;
 use unittest\XmlTestListener;
 use io\streams\MemoryOutputStream;
 use io\streams\StringWriter;
 use xml\Tree;
 
-
 /**
  * TestCase for the XML test listener implementation
  *
  * @see      xp://unittest.XmlTestListener
  */
-class XmlListenerTest extends TestCase {
+class XmlListenerTest extends \unittest\TestCase {
   protected $out= null;
   protected $suite= null;
 
   /**
    * Sets up test case
-   *
    */
   public function setUp() {
     $this->out= new MemoryOutputStream();
     $this->suite= new TestSuite();
     $this->suite->addListener(new XmlTestListener(new StringWriter($this->out)));
-  }
-  
-  /**
-   * Test
-   *
-   */
-  #[@test]
-  public function outputInitiallyEmpty() {
-    $this->assertEquals('', $this->out->getBytes());
   }
   
   /**
@@ -90,10 +78,11 @@ class XmlListenerTest extends TestCase {
     }
   }
 
-  /**
-   * Test running a succeeding test
-   *
-   */
+  #[@test]
+  public function outputInitiallyEmpty() {
+    $this->assertEquals('', $this->out->getBytes());
+  }
+
   #[@test]
   public function successfulTest() {
     $t= $this->runTests(new SimpleTestCase('succeeds'));
@@ -113,10 +102,6 @@ class XmlListenerTest extends TestCase {
     }
   }
 
-  /**
-   * Test running a skipped test
-   *
-   */
   #[@test]
   public function skippedTest() {
     $t= $this->runTests(new SimpleTestCase('skipped'));
@@ -136,10 +121,6 @@ class XmlListenerTest extends TestCase {
     }
   }
 
-  /**
-   * Test running a failing test
-   *
-   */
   #[@test]
   public function failingTest() {
     $t= $this->runTests(new SimpleTestCase('fails'));
@@ -166,10 +147,6 @@ class XmlListenerTest extends TestCase {
     }
   }
 
-  /**
-   * Test running a failing test
-   *
-   */
   #[@test]
   public function errorTest() {
     $t= $this->runTests(new SimpleTestCase('throws'));
@@ -196,10 +173,6 @@ class XmlListenerTest extends TestCase {
     }
   }
 
-  /**
-   * Test running a failing test
-   *
-   */
   #[@test]
   public function warningTest() {
     $t= $this->runTests(new SimpleTestCase('raisesAnError'));
@@ -226,10 +199,6 @@ class XmlListenerTest extends TestCase {
     }
   }
 
-  /**
-   * Test running multiple tests
-   *
-   */
   #[@test]
   public function multipleTests() {
     $t= $this->runTests(new SimpleTestCase('succeeds'), new SimpleTestCase('fails'));

@@ -1,41 +1,26 @@
 <?php namespace net\xp_framework\unittest\tests;
  
-use unittest\TestCase;
-use unittest\TestSuite;
-
-
 /**
  * Test TestSuite class methods
  *
- * @see      xp://unittest.TestSuite
- * @purpose  Unit Test
+ * @see    xp://unittest.TestSuite
  */
-class LimitTest extends TestCase {
-  public
-    $suite= null;
+class LimitTest extends \unittest\TestCase {
+  protected $suite= null;
     
   /**
    * Setup method. Creates a new test suite.
-   *
    */
   public function setUp() {
-    $this->suite= new TestSuite();
+    $this->suite= new \unittest\TestSuite();
   }
 
-  /**
-   * Tests running the test that times out
-   *
-   */    
   #[@test]
   public function timeouts() {
     $r= $this->suite->runTest(new SimpleTestCase('timeouts'));
     $this->assertEquals(1, $r->failureCount());
   }    
 
-  /**
-   * Tests running the test that doesn't timeout
-   *
-   */    
   #[@test]
   public function noTimeout() {
     $r= $this->suite->runTest(new SimpleTestCase('noTimeout'));

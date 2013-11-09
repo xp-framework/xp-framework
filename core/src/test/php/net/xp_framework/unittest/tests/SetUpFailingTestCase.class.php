@@ -1,15 +1,9 @@
 <?php namespace net\xp_framework\unittest\tests;
 
-use unittest\TestCase;
-
-
 /**
- * TestCase
- *
- * @see      reference
- * @purpose  purpose
+ * TestCase for which setUp() method fails.
  */
-class SetUpFailingTestCase extends TestCase {
+class SetUpFailingTestCase extends \unittest\TestCase {
 
   /**
    * Sets up test case - throw an exception not derived from
@@ -21,10 +15,6 @@ class SetUpFailingTestCase extends TestCase {
     throw new \lang\IllegalArgumentException('Something went wrong in setup.');
   }
 
-  /**
-   * Run empty test; this will invoke setUp() before
-   *
-   */
   #[@test]
   public function emptyTest() {
   }

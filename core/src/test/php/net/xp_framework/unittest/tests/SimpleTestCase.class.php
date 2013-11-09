@@ -1,24 +1,19 @@
 <?php namespace net\xp_framework\unittest\tests;
  
-use unittest\TestCase;
-
-
 /**
  * This class is used in the SuiteTest class' running* methods and
  * by the LimitTest methods
  *
- * @see      xp://net.xp_framework.unittest.tests.SuiteTest
- * @see      xp://net.xp_framework.unittest.tests.LimitTest
- * @purpose  Unit Test
+ * @see  xp://net.xp_framework.unittest.tests.SuiteTest
+ * @see  xp://net.xp_framework.unittest.tests.LimitTest
  */
-class SimpleTestCase extends TestCase {
+class SimpleTestCase extends \unittest\TestCase {
   public static 
     $init    = 0, 
     $dispose = 0;
     
   /**
    * Beforeclass method
-   *
    */
   #[@beforeClass]
   public static function init() {
@@ -30,7 +25,6 @@ class SimpleTestCase extends TestCase {
   
   /**
    * Afterclass method
-   *
    */
   #[@afterClass]
   public static function dispose() {
@@ -40,7 +34,6 @@ class SimpleTestCase extends TestCase {
   /**
    * Sets up this test. Throws a PrerequisitesNotMetError if the "skipped" 
    * test is run.
-   *
    */
   public function setUp() {
     if ('skipped' === $this->name) {
@@ -51,145 +44,81 @@ class SimpleTestCase extends TestCase {
     }
   }
 
-  /**
-   * Always succeeds
-   *
-   */
   #[@test]
   public function succeeds() {
     $this->assertTrue(true);
   }
 
-  /**
-   * Always fails
-   *
-   */
   #[@test]
   public function fails() {
     $this->assertTrue(false);
   }
 
-  /**
-   * Always fails
-   *
-   */
   #[@test]
   public function throws() {
     throw new \lang\IllegalArgumentException('');
   }
 
-  /**
-   * Always fails
-   *
-   */
   #[@test]
   public function raisesAnError() {
     $a.= '';
   }
 
-  /**
-   * Always fails
-   *
-   */
   #[@test]
   public function raisesAnErrorAndFails() {
     $a.= '';
     $this->assertTrue(false);
   }
 
-  /**
-   * Always fails
-   *
-   */
   #[@test]
   public function raisesAnErrorInSetup() {
   }
 
-  /**
-   * Always skipped
-   *
-   */
   #[@test]
   public function skipped() {
     $this->fail('Prerequisites not met, should not be executed');
   }
 
-  /**
-   * Always ignored
-   *
-   */
   #[@test, @ignore('For test purposes')]
   public function ignored() {
   }
 
-  /**
-   * Catches the expected exception 
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function catchExpected() {
     throw new \lang\IllegalArgumentException('');
   }
 
-  /**
-   * Catches the expected exception 
-   *
-   */
   #[@test, @expect('lang.XPException')]
   public function catchSubclassOfExpected() {
     throw new \lang\IllegalArgumentException('');
   }
 
-  /**
-   * Does not catch the expected exception 
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function expectedExceptionNotThrown() {
     throw new \lang\FormatException('');
   }
 
-  /**
-   * Catches the expected exception 
-   *
-   */
   #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'Hello')]
   public function catchExpectedWithMessage() {
     throw new \lang\IllegalArgumentException('Hello');
   }
 
-  /**
-   * Catches the expected exception
-   *
-   */
   #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'Hello')]
   public function catchExpectedWithWrongMessage() {
     throw new \lang\IllegalArgumentException('Another message');
   }
 
-  /**
-   * Catches the expected exception
-   *
-   */
   #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/message/')]
   public function catchExpectedWithPatternMessage() {
     throw new \lang\IllegalArgumentException('Another message');
   }
 
-  /**
-   * Catches the expected exception
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function catchExpectedWithWarning() {
     $a.= '';
     throw new \lang\IllegalArgumentException('');
   }
 
-  /**
-   * A test that timeouts
-   *
-   */
   #[@test, @limit(time= 0.010)]
   public function timeouts() {
     $start= gettimeofday();
@@ -199,27 +128,15 @@ class SimpleTestCase extends TestCase {
     } while ((1000000 * $now['sec']) + $now['usec'] < $end);
   }
 
-  /**
-   * A test that does not timeout
-   *
-   */
   #[@test, @limit(time= 1.0)]
   public function noTimeout() {
   }
 
-  /**
-   * Calls fail()
-   *
-   */
   #[@test]
   public function doFail() {
     $this->fail('Test');
   }
 
-  /**
-   * Calls skip()
-   *
-   */
   #[@test]
   public function doSkip() {
     $this->skip('Test');
