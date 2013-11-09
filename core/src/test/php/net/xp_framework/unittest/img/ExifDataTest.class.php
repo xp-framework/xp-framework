@@ -2,70 +2,40 @@
 
 use img\util\ExifData;
 
-
 /**
  * TestCase for IptcData class
  *
- * @see      xp://net.xp_framework.unittest.img.MetaDataTest
- * @see      xp://img.util.ExifData
- * @purpose  Unittest
+ * @see  xp://net.xp_framework.unittest.img.MetaDataTest
+ * @see  xp://img.util.ExifData
  */
+#[@action(new \unittest\actions\ExtensionAvailable('exif'))]
 class ExifDataTest extends MetaDataTest {
-
-  /**
-   * Sets up this unittest 
-   *
-   * @throws  unittest.PrerequisitesNotMetError
-   */
-  public function setUp() {
-    if (!extension_loaded('exif')) {
-      throw new \unittest\PrerequisitesNotMetError('EXIF extension not loaded');
-    }
-  }
 
   /**
    * Extract from file and return the instance
    *
-   * @param   io.File f
+   * @param   io.File $f
    * @return  lang.Generic the instance
    */
   protected function extractFromFile(\io\File $f) {
     return ExifData::fromFile($f);
   }
 
-  /**
-   * Test default value is returned if no Exif data is found
-   *
-   */
   #[@test]
   public function defaultValueIfNotFound() {
     $this->assertNull(ExifData::fromFile($this->resourceAsFile('iptc-only.jpg'), null));
   }
 
-  /**
-   * Test empty EXIF data
-   *
-   */
   #[@test]
   public function emptyExifData() {
     $this->assertEquals(0, ExifData::$EMPTY->getWidth());
   }
 
-  /**
-   * Test reading Exif data from a file which contains iptc-data
-   * only
-   *
-   */
   #[@test, @expect('lang.ElementNotFoundException')]
   public function fromFileWithIptcOnly() {
     $this->extractFromFile($this->resourceAsFile('iptc-only.jpg'));
   }
 
-  /**
-   * Test reading Exif data from a file which contains exif-data
-   * AND iptc-data
-   *
-   */
   #[@test]
   public function fromFileWithExifAndIptc() {
     $i= $this->extractFromFile($this->resourceAsFile('exif-and-iptc.jpg'));
@@ -73,11 +43,6 @@ class ExifDataTest extends MetaDataTest {
     $this->assertEquals(1, $i->getHeight());
   }
 
-  /**
-   * Test reading Exif data from a file which contains exif-data
-   * only
-   *
-   */
   #[@test]
   public function fromFileWithExifOnly() {
     $i= $this->extractFromFile($this->resourceAsFile('exif-only.jpg'));
@@ -85,11 +50,6 @@ class ExifDataTest extends MetaDataTest {
     $this->assertEquals(1, $i->getHeight());
   }
 
-  /**
-   * Test sample image "canon-ixus.jpg" from exif.org
-   *
-   * @see     http://exif.org/samples.html
-   */
   #[@test]
   public function exifSampleCanonIxus() {
     $i= $this->extractFromFile($this->resourceAsFile('canon-ixus.jpg', 'exif_org'));
@@ -110,11 +70,6 @@ class ExifDataTest extends MetaDataTest {
     $this->assertFalse($i->flashUsed());
   }
 
-  /**
-   * Test sample image "fujifilm-dx10.jpg" from exif.org
-   *
-   * @see     http://exif.org/samples.html
-   */
   #[@test]
   public function exifSampleFujifilmDx10() {
     $i= $this->extractFromFile($this->resourceAsFile('fujifilm-dx10.jpg', 'exif_org'));
@@ -135,11 +90,6 @@ class ExifDataTest extends MetaDataTest {
     $this->assertTrue($i->flashUsed());
   }
 
-  /**
-   * Test sample image "fujifilm-finepix40i.jpg" from exif.org
-   *
-   * @see     http://exif.org/samples.html
-   */
   #[@test]
   public function exifSampleFujifilmFinepix40i() {
     $i= $this->extractFromFile($this->resourceAsFile('fujifilm-finepix40i.jpg', 'exif_org'));
@@ -160,11 +110,6 @@ class ExifDataTest extends MetaDataTest {
     $this->assertTrue($i->flashUsed());
   }
 
-  /**
-   * Test sample image "fujifilm-mx1700.jpg" from exif.org
-   *
-   * @see     http://exif.org/samples.html
-   */
   #[@test]
   public function exifSampleFujifilmMx1700() {
     $i= $this->extractFromFile($this->resourceAsFile('fujifilm-mx1700.jpg', 'exif_org'));
@@ -185,11 +130,6 @@ class ExifDataTest extends MetaDataTest {
     $this->assertFalse($i->flashUsed());
   }
 
-  /**
-   * Test sample image "kodak-dc210.jpg" from exif.org
-   *
-   * @see     http://exif.org/samples.html
-   */
   #[@test, @ignore('Not reliable within XAR files, see issue #259')]
   public function exifSampleKodakDC210() {
     $i= $this->extractFromFile($this->resourceAsFile('kodak-dc210.jpg', 'exif_org'));
@@ -210,11 +150,6 @@ class ExifDataTest extends MetaDataTest {
     $this->assertTrue($i->flashUsed());
   }
 
-  /**
-   * Test sample image "kodak-dc240.jpg" from exif.org
-   *
-   * @see     http://exif.org/samples.html
-   */
   #[@test]
   public function exifSampleKodakDC240() {
     $i= $this->extractFromFile($this->resourceAsFile('kodak-dc240.jpg', 'exif_org'));
@@ -235,11 +170,6 @@ class ExifDataTest extends MetaDataTest {
     $this->assertTrue($i->flashUsed());
   }
 
-  /**
-   * Test sample image "nikon-e950.jpg" from exif.org
-   *
-   * @see     http://exif.org/samples.html
-   */
   #[@test]
   public function exifSampleNikonE950() {
     $i= $this->extractFromFile($this->resourceAsFile('nikon-e950.jpg', 'exif_org'));
@@ -260,11 +190,6 @@ class ExifDataTest extends MetaDataTest {
     $this->assertFalse($i->flashUsed());
   }
 
-  /**
-   * Test sample image "olympus-c960.jpg" from exif.org
-   *
-   * @see     http://exif.org/samples.html
-   */
   #[@test]
   public function exifSampleOlympusC960() {
     $i= $this->extractFromFile($this->resourceAsFile('olympus-c960.jpg', 'exif_org'));
@@ -285,11 +210,6 @@ class ExifDataTest extends MetaDataTest {
     $this->assertFalse($i->flashUsed());
   }
 
-  /**
-   * Test sample image "ricoh-rdc5300.jpg" from exif.org
-   *
-   * @see     http://exif.org/samples.html
-   */
   #[@test]
   public function exifSampleRicohrdc5300() {
     $i= $this->extractFromFile($this->resourceAsFile('ricoh-rdc5300.jpg', 'exif_org'));
@@ -310,11 +230,6 @@ class ExifDataTest extends MetaDataTest {
     $this->assertTrue($i->flashUsed());
   }
 
-  /**
-   * Test sample image "sanyo-vpcg250.jpg" from exif.org
-   *
-   * @see     http://exif.org/samples.html
-   */
   #[@test]
   public function exifSampleSanyoVpcg250() {
     $i= $this->extractFromFile($this->resourceAsFile('sanyo-vpcg250.jpg', 'exif_org'));
@@ -335,11 +250,6 @@ class ExifDataTest extends MetaDataTest {
     $this->assertTrue($i->flashUsed());
   }
 
-  /**
-   * Test sample image "sanyo-vpcsx550.jpg" from exif.org
-   *
-   * @see     http://exif.org/samples.html
-   */
   #[@test]
   public function exifSampleSanyovpcsx550() {
     $i= $this->extractFromFile($this->resourceAsFile('sanyo-vpcsx550.jpg', 'exif_org'));
@@ -360,11 +270,6 @@ class ExifDataTest extends MetaDataTest {
     $this->assertFalse($i->flashUsed());
   }
 
-  /**
-   * Test sample image "sony-cybershot.jpg" from exif.org
-   *
-   * @see     http://exif.org/samples.html
-   */
   #[@test]
   public function exifSampleSonyCybershot() {
     $i= $this->extractFromFile($this->resourceAsFile('sony-cybershot.jpg', 'exif_org'));
@@ -385,11 +290,6 @@ class ExifDataTest extends MetaDataTest {
     $this->assertFalse($i->flashUsed());
   }
 
-  /**
-   * Test sample image "sony-d700.jpg" from exif.org
-   *
-   * @see     http://exif.org/samples.html
-   */
   #[@test]
   public function exifSampleSonyD700() {
     $i= $this->extractFromFile($this->resourceAsFile('sony-d700.jpg', 'exif_org'));

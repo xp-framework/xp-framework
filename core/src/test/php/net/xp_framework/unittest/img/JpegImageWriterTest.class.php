@@ -2,20 +2,14 @@
 
 use img\io\JpegStreamWriter;
 
-
 /**
  * Tests writing JPEG images
  */
+#[@action([
+#  new \unittest\actions\ExtensionAvailable('gd'),
+#  new ImageTypeSupport('JPEG')
+#])]
 class JpegImageWriterTest extends AbstractImageWriterTest {
-
-  /**
-   * Returns the image type to test for
-   *
-   * @return string
-   */
-  protected function imageType() {
-    return 'JPEG';
-  }
 
   #[@test, @expect('img.ImagingException')]
   public function write_error() {

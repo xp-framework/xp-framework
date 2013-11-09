@@ -2,7 +2,6 @@
 
 use img\io\PngStreamWriter;
 
-
 /**
  * Tests writing PNG images
  */

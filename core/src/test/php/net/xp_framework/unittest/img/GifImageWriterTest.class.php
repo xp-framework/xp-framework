@@ -2,20 +2,14 @@
 
 use img\io\GifStreamWriter;
 
-
 /**
  * Tests writing GIF images
  */
+#[@action([
+#  new \unittest\actions\ExtensionAvailable('gd'),
+#  new ImageTypeSupport('GIF')
+#])]
 class GifImageWriterTest extends AbstractImageWriterTest {
-
-  /**
-   * Returns the image type to test for
-   *
-   * @return string
-   */
-  protected function imageType() {
-    return 'GIF';
-  }
 
   #[@test, @expect('img.ImagingException')]
   public function write_error() {

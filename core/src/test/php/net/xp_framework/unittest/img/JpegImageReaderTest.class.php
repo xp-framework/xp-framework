@@ -7,25 +7,16 @@ use io\Stream;
 use io\FileUtil;
 use io\streams\MemoryInputStream;
 
-
 /**
  * Tests reading JPEG images
  *
  * @see   xp://img.io.JpegStreamReader
  */
+#[@action([
+#  new \unittest\actions\ExtensionAvailable('gd'),
+#  new ImageTypeSupport('JPEG')
+#])]
 class JpegImageReaderTest extends TestCase {
-
-  /**
-   * Setup this test, checking prerequisites.
-   */
-  public function setUp() {
-    if (!\lang\Runtime::getInstance()->extensionAvailable('gd')) {
-      throw new \unittest\PrerequisitesNotMetError('GD extension not available');
-    }
-    if (!(imagetypes() & IMG_JPG)) {
-      throw new \unittest\PrerequisitesNotMetError('JPEG support not enabled');
-    }
-  }
 
   #[@test]
   public function read() {

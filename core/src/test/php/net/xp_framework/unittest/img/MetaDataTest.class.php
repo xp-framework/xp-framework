@@ -1,22 +1,18 @@
 <?php namespace net\xp_framework\unittest\img;
 
-use unittest\TestCase;
-
-
 /**
  * Base class for EXIF- and IPTC-Data tests
  *
- * @see      xp://net.xp_framework.unittest.img.ExifDataTest
- * @see      xp://net.xp_framework.unittest.img.IptcDataTest
- * @purpose  Unittest
+ * @see  xp://net.xp_framework.unittest.img.ExifDataTest
+ * @see  xp://net.xp_framework.unittest.img.IptcDataTest
  */
-abstract class MetaDataTest extends TestCase {
+abstract class MetaDataTest extends \unittest\TestCase {
 
   /**
    * Returns a file for a classloader resource
    *
-   * @param   string name
-   * @param   string sub default NULL subpackage
+   * @param   string $name
+   * @param   string $sub default NULL subpackage
    * @return  io.File
    */
   protected function resourceAsFile($name, $sub= null) {
@@ -28,25 +24,16 @@ abstract class MetaDataTest extends TestCase {
   /**
    * Extract from file and return the instance
    *
-   * @param   io.File f
+   * @param   io.File $f
    * @return  lang.Generic the instance
    */
   protected abstract function extractFromFile(\io\File $f);
 
-  /**
-   * Test reading Exif data from this file (which is definitely not an
-   * image)
-   *
-   */
   #[@test, @expect('img.ImagingException')]
   public function fromNonImageFile() {
     $this->extractFromFile(new \io\File(__FILE__));
   }
 
-  /**
-   * Test reading Exif data from an empty file
-   *
-   */
   #[@test, @expect('img.ImagingException')]
   public function fromEmptyFile() {
     $this->extractFromFile($this->resourceAsFile('empty.jpg'));

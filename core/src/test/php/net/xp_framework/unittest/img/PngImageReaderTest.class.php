@@ -7,25 +7,16 @@ use io\Stream;
 use io\FileUtil;
 use io\streams\MemoryInputStream;
 
-
 /**
  * Tests reading PNG images
  *
  * @see   xp://img.io.JpegStreamReader
  */
+#[@action([
+#  new \unittest\actions\ExtensionAvailable('gd'),
+#  new ImageTypeSupport('PNG')
+#])]
 class PngImageReaderTest extends TestCase {
-
-  /**
-   * Setup this test, checking prerequisites.
-   */
-  public function setUp() {
-    if (!\lang\Runtime::getInstance()->extensionAvailable('gd')) {
-      throw new \unittest\PrerequisitesNotMetError('GD extension not available');
-    }
-    if (!(imagetypes() & IMG_PNG)) {
-      throw new \unittest\PrerequisitesNotMetError('PNG support not enabled');
-    }
-  }
 
   #[@test]
   public function read() {

@@ -1,23 +1,16 @@
 <?php namespace net\xp_framework\unittest\img;
 
-use unittest\TestCase;
 use img\filter\Kernel;
-
 
 /**
  * Tests the kernel class
  *
- * @see      xp://img.filter.Kernel
- * @purpose  Unit Test
+ * @see  xp://img.filter.Kernel
  */
-class KernelTest extends TestCase {
+class KernelTest extends \unittest\TestCase {
 
-  /**
-   * Tests creating a kernel from an array
-   *
-   */
   #[@test]
-  public function fromArray() {
+  public function create_from_array() {
     $matrix= array(
       array(-1.0, -1.0, -1.0), 
       array(-1.0, 16.0, -1.0), 
@@ -28,12 +21,8 @@ class KernelTest extends TestCase {
     $this->assertEquals($matrix, $k->getMatrix());
   }
 
-  /**
-   * Tests creating a kernel from a string
-   *
-   */
   #[@test]
-  public function fromString() {
+  public function create_from_string() {
     $string= '[[-1.0, -1.0, -1.0], [-1.0, 16.0, -1.0], [-1.0, -1.0, -1.0]]';
     $matrix= array(
       array(-1.0, -1.0, -1.0), 
@@ -45,22 +34,13 @@ class KernelTest extends TestCase {
     $this->assertEquals($matrix, $k->getMatrix());
   }
 
-  /**
-   * Tests creating a kernel from an array of size 0
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
-  public function wrongArraySize() {
+  public function create_from_empty_array() {
     new Kernel(array());
   }
 
-  /**
-   * Tests creating a kernel from an array where one row has more
-   * than three values.
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
-  public function wrongRowSizeInArray() {
+  public function create_from_array_with_incorrect_row_size() {
     $matrix= array(
       array(-1.0, -1.0, -1.0), 
       array(-1.0, 16.0, -1.0, 6100), 
@@ -69,22 +49,13 @@ class KernelTest extends TestCase {
     new Kernel($matrix);
   }
 
-  /**
-   * Tests creating a kernel from a string with illegal syntax
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
-  public function illegalStringSyntax() {
+  public function create_with_malformed_string() {
     new Kernel('@@SYNTAX-ERROR@@');
   }
 
-  /**
-   * Tests creating a kernel from a string with where one row has 
-   * less than three values.
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
-  public function wrongRowSizeInString() {
+  public function create_from_string_with_incorrect_row_size() {
     new Kernel('[[-1.0, -1.0, -1.0], [-1.0, -1.0], [-1.0, -1.0, -1.0]]');
   }
 }
