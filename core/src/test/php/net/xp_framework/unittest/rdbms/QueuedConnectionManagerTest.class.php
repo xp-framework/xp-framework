@@ -1,6 +1,7 @@
 <?php namespace net\xp_framework\unittest\rdbms;
 
 use rdbms\DSN;
+use rdbms\ConnectionManager;
 
 /**
  * Tests for connection managers with connections programmatically
@@ -19,7 +20,7 @@ class QueuedConnectionManagerTest extends ConnectionManagerTest {
    * @return  rdbms.ConnectionManager
    */
   protected function instanceWith($dsns) {
-    $cm= \rdbms\ConnectionManager::getInstance();
+    $cm= ConnectionManager::getInstance();
     foreach ($dsns as $name => $dsn) {
       if (false !== ($p= strpos($name, '.'))) {
         $cm->queue($dsn, substr($name, 0, $p), substr($name, $p+ 1));
@@ -30,10 +31,6 @@ class QueuedConnectionManagerTest extends ConnectionManagerTest {
     return $cm;
   }
   
-  /**
-   * Test queue() method returns a DSN instance
-   *
-   */
   #[@test]
   public function queueReturnsDSN() {
     $dsn= 'mock://user:pass@host/db';
@@ -42,10 +39,6 @@ class QueuedConnectionManagerTest extends ConnectionManagerTest {
     $this->assertEquals(new DSN($dsn), $cm->queue($dsn));
   }
  
-  /**
-   * Test queue() method returns a DSN instance
-   *
-   */
   #[@test]
   public function queueReturnsDSNWhenPreviouslyRegistered() {
     $dsn= 'mock://user:pass@host/db';
@@ -55,10 +48,6 @@ class QueuedConnectionManagerTest extends ConnectionManagerTest {
     $this->assertEquals(new DSN($dsn), $cm->queue($dsn));
   }
 
-  /**
-   * Test queue() method implementation
-   *
-   */
   #[@test]
   public function queueOverwritesPreviouslyRegistered() {
     $conn1= 'mock://user:pass@host/db1';

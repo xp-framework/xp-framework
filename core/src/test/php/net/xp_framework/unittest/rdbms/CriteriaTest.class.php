@@ -36,41 +36,23 @@ class CriteriaTest extends TestCase {
   protected function assertSql($sql, $criteria) {
     $this->assertEquals($sql, trim($criteria->toSQL($this->conn, $this->peer), ' '));
   }
-    
-  /**
-   * Test that an "empty" criteria object will return an empty where 
-   * statetement
-   *
-   */
+
   #[@test]
   public function emptyCriteria() {
     $this->assertSql('', new Criteria());
   }
 
-  /**
-   * Tests a criteria object with one equality comparison
-   *
-   */
   #[@test]
   public function simpleCriteria() {
     $this->assertSql('where job_id = 1', new Criteria(array('job_id', 1, EQUAL)));
   }
 
-  /**
-   * Tests Criteria::toSQL() will throw an exception when using a non-
-   * existant field
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function nonExistantFieldCausesException() {
     $criteria= new Criteria(array('non-existant-field', 1, EQUAL));
     $criteria->toSQL($this->conn, $this->peer);
   }
 
-  /**
-   * Tests a more complex criteria object
-   *
-   */
   #[@test]
   public function complexCriteria() {
     with ($c= new Criteria()); {
@@ -86,10 +68,6 @@ class CriteriaTest extends TestCase {
     );
   }
 
-  /**
-   * Test IN operator
-   *
-   */
   #[@test]
   public function inCriteria() {
     $c= new Criteria();
@@ -98,10 +76,6 @@ class CriteriaTest extends TestCase {
     $this->assertSql('where job_id in (1, 2)', $c);
   }
   
-  /**
-   * Test NOT_IN operator
-   *
-   */
   #[@test]
   public function notInCriteria() {
     $c= new Criteria();
@@ -110,10 +84,6 @@ class CriteriaTest extends TestCase {
     $this->assertSql('where job_id not in (1, 2)', $c);
   }
   
-  /**
-   * Test LIKE operator
-   *
-   */
   #[@test]
   public function likeCriteria() {
     $c= new Criteria();
@@ -122,10 +92,6 @@ class CriteriaTest extends TestCase {
     $this->assertSql('where title like "%keyword%"', $c);
   }
   
-  /**
-   * Test EQUAL operator
-   *
-   */
   #[@test]
   public function equalCriteria() {
     $c= new Criteria();
@@ -134,10 +100,6 @@ class CriteriaTest extends TestCase {
     $this->assertSql('where job_id = 1', $c);
   }
   
-  /**
-   * Test NOT_EQUAL operator
-   *
-   */
   #[@test]
   public function notEqualCriteria() {
     $c= new Criteria();
@@ -146,10 +108,6 @@ class CriteriaTest extends TestCase {
     $this->assertSql('where job_id != 1', $c);
   }
   
-  /**
-   * Test LESS_THAN operator
-   *
-   */
   #[@test]
   public function lessThanCriteria() {
     $c= new Criteria();
@@ -158,10 +116,6 @@ class CriteriaTest extends TestCase {
     $this->assertSql('where job_id < 100', $c);
   }
   
-  /**
-   * Test GREATER_THAN operator
-   *
-   */
   #[@test]
   public function greaterThanCriteria() {
     $c= new Criteria();
@@ -170,10 +124,6 @@ class CriteriaTest extends TestCase {
     $this->assertSql('where job_id > 100', $c);
   }
   
-  /**
-   * Test LESS_EQUAL operator
-   *
-   */
   #[@test]
   public function lessEqualCriteria() {
     $c= new Criteria();
@@ -182,10 +132,6 @@ class CriteriaTest extends TestCase {
     $this->assertSql('where job_id <= 100', $c);
   }
   
-  /**
-   * Test GREATER_EQUAL operator
-   *
-   */
   #[@test]
   public function greaterEqualCriteria() {
     $c= new Criteria();
@@ -194,10 +140,6 @@ class CriteriaTest extends TestCase {
     $this->assertSql('where job_id >= 100', $c);
   }
   
-  /**
-   * Test BIT_AND operator
-   *
-   */
   #[@test]
   public function bitAndCriteria() {
     $c= new Criteria();
@@ -206,12 +148,6 @@ class CriteriaTest extends TestCase {
     $this->assertSql('where job_id & 100 != 0', $c);
   }
   
-  /**
-   * Tests the rdbms.criterion API
-   *
-   * @see     xp://rdbms.Column
-   * @see     xp://rdbms.criterion.Restrictions
-   */
   #[@test]
   public function restrictionsFactory() {
     $job_id= Job::column('job_id');
@@ -229,18 +165,14 @@ class CriteriaTest extends TestCase {
     ));
 
     $this->assertSql(
-      'where (not (job_id in (1, 2, 3))'
-      .' or (title like "Hello%" and valid_from > "2006-01-01 12:00AM")'
-      .' or (title like "Hello%" and valid_from > "2006-01-01 12:00AM")'
-      .' or job_id between 1 and 5)',
+      'where (not (job_id in (1, 2, 3))'.
+      ' or (title like "Hello%" and valid_from > "2006-01-01 12:00AM")'.
+      ' or (title like "Hello%" and valid_from > "2006-01-01 12:00AM")'.
+      ' or job_id between 1 and 5)',
       $c
     );
   }
   
-  /**
-   * Tests Criteria constructor for varargs support
-   *
-   */
   #[@test]
   public function constructorAcceptsVarArgArrays() {
     $this->assertSql(
@@ -249,11 +181,6 @@ class CriteriaTest extends TestCase {
     );
   }
 
-  /**
-   * Tests rdbms.Criteria's fluent interface 
-   *
-   * @see     xp://rdbms.Criteria#add
-   */
   #[@test]
   public function addReturnsThis() {
     $this->assertClass(
@@ -262,11 +189,6 @@ class CriteriaTest extends TestCase {
     );
   }
 
-  /**
-   * Tests rdbms.Criteria's fluent interface 
-   *
-   * @see     xp://rdbms.Criteria#addOrderBy
-   */
   #[@test]
   public function addOrderByReturnsThis() {
     $this->assertClass(
@@ -275,11 +197,6 @@ class CriteriaTest extends TestCase {
     );
   }
 
-  /**
-   * Tests rdbms.Criteria's fluent interface 
-   *
-   * @see     xp://rdbms.Criteria#addGroupBy
-   */
   #[@test]
   public function addGroupByReturnsThis() {
     $this->assertClass(
@@ -288,11 +205,6 @@ class CriteriaTest extends TestCase {
     );
   }
 
-  /**
-   * Tests rdbms.Column as argument for addorderBy
-   *
-   * @see     xp://rdbms.Criteria#addOrderBy
-   */
   #[@test]
   public function addOrderByColumn() {
     with ($c= new Criteria()); {
@@ -305,11 +217,6 @@ class CriteriaTest extends TestCase {
     );
   }
 
-  /**
-   * Tests string as argument for addorderBy
-   *
-   * @see     xp://rdbms.Criteria#addOrderBy
-   */
   #[@test]
   public function addOrderByString() {
     with ($c= new Criteria()); {
@@ -322,11 +229,6 @@ class CriteriaTest extends TestCase {
     );
   }
 
-  /**
-   * Tests rdbms.Column as argument for addGroupBy
-   *
-   * @see     xp://rdbms.Criteria#addGroupBy
-   */
   #[@test]
   public function addGroupByColumn() {
     with ($c= new Criteria()); {
@@ -339,11 +241,6 @@ class CriteriaTest extends TestCase {
     );
   }
 
-  /**
-   * Tests string as argument for addGroupBy
-   *
-   * @see     xp://rdbms.Criteria#addGroupBy
-   */
   #[@test]
   public function addGroupByString() {
     with ($c= new Criteria()); {
@@ -356,41 +253,21 @@ class CriteriaTest extends TestCase {
     );
   }
 
-  /**
-   * Tests exception for nonexistant column
-   *
-   * @see     xp://rdbms.Criteria#addGroupBy
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function createNonExistantColumn() {
     Job::column('not_existant');
   }
 
-  /**
-   * Tests exception for nonexistant column
-   *
-   * @see     xp://rdbms.Criteria#addGroupBy
-   */
   #[@test, @expect('rdbms.SQLStateException')]
   public function addGroupByNonExistantColumnString() {
     create(new Criteria())->addGroupBy('not_existant')->toSQL($this->conn, $this->peer);
   }
 
-  /**
-   * expect Criteria as result of setFetchmode
-   *
-   * @see     xp://rdbms.Criteria#addGroupBy
-   */
   #[@test]
   public function fetchModeChaining() {
     $this->assertClass(create(new Criteria())->setFetchmode(\rdbms\join\Fetchmode::join('PersonJob')), 'rdbms.Criteria');
   }
 
-  /**
-   * Tests method isJoin
-   *
-   * @see     xp://rdbms.Criteria#toSQL
-   */
   #[@test]
   public function testIsJoin() {
     $crit= new Criteria();
@@ -401,11 +278,6 @@ class CriteriaTest extends TestCase {
     $this->assertFalse($crit->setFetchmode(\rdbms\join\Fetchmode::select('PersonJob'))->isJoin());
   }
 
-  /**
-   * Tests contitions when criteria is a join
-   *
-   * @see     xp://rdbms.Criteria#toSQL
-   */
   #[@test]
   public function testJoinWithoutCondition() {
     $jp= new \rdbms\join\JoinProcessor(Job::getPeer());
@@ -420,11 +292,6 @@ class CriteriaTest extends TestCase {
     $jp->leaveJoinContext();
   }
 
-  /**
-   * Tests contitions when criteria is a join
-   *
-   * @see     xp://rdbms.Criteria#toSQL
-   */
   #[@test]
   public function testJoinWithCondition() {
     $jp= new \rdbms\join\JoinProcessor(Job::getPeer());
@@ -441,10 +308,6 @@ class CriteriaTest extends TestCase {
     $jp->leaveJoinContext();
   }
 
-  /**
-   * test joins and projection
-   *
-   */
   #[@test]
   public function testJoinWithProjection() {
     $jp= new \rdbms\join\JoinProcessor(Job::getPeer());
@@ -462,5 +325,4 @@ class CriteriaTest extends TestCase {
     );
     $jp->leaveJoinContext();
   }
-
 }

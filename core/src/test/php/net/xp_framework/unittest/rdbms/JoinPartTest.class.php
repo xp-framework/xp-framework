@@ -19,39 +19,20 @@ use net\xp_framework\unittest\rdbms\dataset\Department;
  * @see     xp://rdbms.Criteria
  */
 class JoinPartTest extends TestCase {
-  public
-    $conn = null,
-    $peer = null;
+  public $conn= null;
+  public $peer= null;
     
   /**
    * Setup test
-   *
    */
   public function setUp() {
     $this->conn= new MySQLConnection(new DSN('mysql://localhost:3306/'));
   }
-  
-  /**
-   * test an Array
-   *
-   * @param   mixed[] testArray
-   * @param   mixed[] assertArray
-   */
-  private function assertArrayElements($testArray, $assertArray) {
-    $this->assertEquals(sizeof($assertArray), sizeof($testArray));
-    foreach ($testArray as $testKey => $testValue) $this->assertEquals($assertArray[$testKey], $testValue);
-  }
 
-  
-  /**
-   * Tests for correct formatted attribute
-   *
-   * @see     xp://rdbms.join.JoinPart#getAttributes
-   */
   #[@test]
   public function getAttributesTest() {
     $joinpart= new JoinPart('job', Job::getPeer());
-    $this->assertArrayElements(
+    $this->assertEquals(
       $joinpart->getAttributes(),
       array(
         'job.job_id as job_job_id',
@@ -62,11 +43,6 @@ class JoinPartTest extends TestCase {
     );
   }
 
-  /**
-   * Tests correct formatting for tables
-   *
-   * @see     xp://rdbms.join.JoinPart#getTable
-   */
   #[@test]
   public function getTableTest() {
     $joinpart= new JoinPart('job', Job::getPeer());
@@ -80,11 +56,6 @@ class JoinPartTest extends TestCase {
     );
   }
 
-  /**
-   * Tests production of JoinRelations
-   *
-   * @see     xp://rdbms.join.JoinPart#getJoinRelations
-   */
   #[@test]
   public function getJoinRelationsTest() {
     $jobpart=    new JoinPart('j', Job::getPeer());
@@ -97,17 +68,12 @@ class JoinPartTest extends TestCase {
     $this->assertClass($j_p, 'rdbms.join.JoinRelation');
     $this->assertClass($j_p->getSource(), 'rdbms.join.JoinTable');
     $this->assertClass($j_p->getTarget(), 'rdbms.join.JoinTable');
-    $this->assertArrayElements(
+    $this->assertEquals(
       $j_p->getConditions(),
       array('j.job_id = p.job_id')
     );
   }
 
-  /**
-   * Tests production of JoinRelations
-   *
-   * @see     xp://rdbms.join.JoinPart#getJoinRelations
-   */
   #[@test]
   public function getComplexJoinRelationsTest() {
     $toJob=        new JoinPart('j', Job::getPeer());
@@ -125,11 +91,6 @@ class JoinPartTest extends TestCase {
     );
   }
 
-  /**
-   * Tests extraction from record
-   *
-   * @see     xp://rdbms.join.JoinPart#extract
-   */
   #[@test]
   public function extractTest() {
     $toJob=        new JoinPart('j', Job::getPeer());
@@ -179,7 +140,5 @@ class JoinPartTest extends TestCase {
       $job->getCachedObj('JobPerson', '#11')->getCachedObj('Department', '#31')->getCachedObj('DepartmentChief', '#12'),
       'net.xp_framework.unittest.rdbms.dataset.Person'
     );
-
   }
-
 }

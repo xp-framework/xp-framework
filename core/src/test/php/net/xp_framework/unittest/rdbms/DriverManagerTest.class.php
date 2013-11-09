@@ -1,14 +1,13 @@
 <?php namespace net\xp_framework\unittest\rdbms;
 
-use unittest\TestCase;
 use rdbms\DriverManager;
 
 /**
  * TestCase
  *
- * @see      xp://rdbms.DriverManager
+ * @see  xp://rdbms.DriverManager
  */
-class DriverManagerTest extends TestCase {
+class DriverManagerTest extends \unittest\TestCase {
   protected $registered= array();
 
   /**
@@ -24,7 +23,6 @@ class DriverManagerTest extends TestCase {
   
   /**
    * Tears down test case - removes all drivers registered via register().
-   *
    */
   public function tearDown() {
     foreach ($this->registered as $name) {
@@ -32,49 +30,26 @@ class DriverManagerTest extends TestCase {
     }
   }
 
-  /**
-   * Test getConnection() throws an exception in case an unsupported
-   * driver is encountered
-   *
-   */
   #[@test, @expect('rdbms.DriverNotSupportedException')]
   public function unsupportedDriver() {
     DriverManager::getConnection('unsupported://localhost');
   }
 
-  /**
-   * Test getConnection()
-   *
-   */
   #[@test, @expect('lang.FormatException')]
   public function nullConnection() {
     DriverManager::getConnection(null);
   }
 
-  /**
-   * Test getConnection()
-   *
-   */
   #[@test, @expect('lang.FormatException')]
   public function emptyConnection() {
     DriverManager::getConnection('');
   }
 
-  /**
-   * Test getConnection()
-   *
-   */
   #[@test, @expect('lang.FormatException')]
   public function malformedConnection() {
     DriverManager::getConnection('not.a.dsn');
   }
 
-  /**
-   * Ensure "mysqlx" is always supported - this is our userland implementation 
-   * for MySQL connectivity as snap-in replacement so even if PHP comes without 
-   * MySQL (!), the XP Framework supports it.
-   *
-   */
   #[@test]
   public function mysqlxProvidedByDefaultDrivers() {
     $this->assertInstanceOf(
@@ -83,21 +58,11 @@ class DriverManagerTest extends TestCase {
     );
   }
 
-  /**
-   * Ensure querying specifically for "mysql+unsupported" will raise an 
-   * exception and not find the "mysql" family driver.
-   *
-   */
   #[@test, @expect('rdbms.DriverNotSupportedException')]
   public function unsupportedDriverInMySQLDriverFamily() {
     DriverManager::getConnection('mysql+unsupported://localhost');
   }
 
-  /**
-   * Test "mysql" is always supported, in the "worst" case through our mysqlx 
-   * implementation (see above).
-   *
-   */
   #[@test]
   public function mysqlAlwaysSupported() {
     $this->assertInstanceOf(
@@ -106,10 +71,6 @@ class DriverManagerTest extends TestCase {
     );
   }
 
-  /**
-   * Test registering a connection
-   *
-   */
   #[@test]
   public function registerConnection() {
     $this->register('mock', \lang\XPClass::forName('net.xp_framework.unittest.rdbms.mock.MockConnection'));
@@ -119,19 +80,11 @@ class DriverManagerTest extends TestCase {
     );
   }
 
-  /**
-   * Test registering a class which is not a subclass of rdbms.DBConnection
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function registerNonDbConnection() {
     $this->register('fail', $this->getClass());
   }
 
-  /**
-   * Test searching for a connection
-   *
-   */
   #[@test]
   public function searchImplementation() {
 

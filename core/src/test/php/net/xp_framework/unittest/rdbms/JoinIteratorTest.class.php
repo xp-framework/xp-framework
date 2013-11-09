@@ -22,38 +22,22 @@ class JoinIteratorTest extends TestCase {
   
   /**
    * Setup test
-   *
    */
   #[@beforeClass]
   public static function registerConnection() {
     \rdbms\ConnectionManager::getInstance()->register(new MySQLConnection(new DSN('mysql://localhost:3306/')), 'jobs');
   }
   
-  /**
-   * Tests extraction from record
-   *
-   * @see     xp://rdbms.join.JoinProcessor#setFetchModes
-   */
   #[@test, @expect('util.NoSuchElementException')]
   public function emptyResultNextTest() {
     create(new JoinIterator(new JoinProcessor(Job::getPeer()), new MockResultSet()))->next();
   }
   
-  /**
-   * Tests extraction from record
-   *
-   * @see     xp://rdbms.join.JoinProcessor#setFetchModes
-   */
   #[@test]
   public function emptyResultHasNextTest() {
     $this->assertFalse(create(new JoinIterator(new JoinProcessor(Job::getPeer()), new MockResultSet()))->hasNext());
   }
   
-  /**
-   * Tests extraction from record
-   *
-   * @see     xp://rdbms.join.JoinProcessor#setFetchModes
-   */
   #[@test]
   public function resultHasNextTest() {
     $rs= new MockResultSet(
@@ -86,11 +70,6 @@ class JoinIteratorTest extends TestCase {
     $this->assertFalse($ji->hasNext());
   }
 
-  /**
-   * Tests extraction from record
-   *
-   * @see     xp://rdbms.join.JoinProcessor#setFetchModes
-   */
   #[@test]
   public function multipleResultTest() {
     $rs= new MockResultSet(
@@ -132,11 +111,6 @@ class JoinIteratorTest extends TestCase {
     $this->assertFalse($ji->hasNext());
   }
 
-  /**
-   * Tests extraction from record
-   *
-   * @see     xp://rdbms.join.JoinProcessor#setFetchModes
-   */
   #[@test]
   public function multipleJoinResultTest() {
     $rs= new MockResultSet(

@@ -71,10 +71,6 @@ class SQLFunctionTest extends TestCase {
     $this->assertEquals('sqlite: '.$sqlite, 'sqlite: '.trim($criteria->projections($this->sqconn, $this->peer), ' '));
   }
   
-  /**
-   * test the function set
-   *
-   */
   #[@test]
   function columnTest() {
     $this->assertEquals(
@@ -83,10 +79,6 @@ class SQLFunctionTest extends TestCase {
     );
   }
 
-  /**
-   * test the function set
-   *
-   */
   #[@test]
   function projectionTest() {
     $this->assertProjection(
@@ -98,10 +90,6 @@ class SQLFunctionTest extends TestCase {
     );
   }
     
-  /**
-   * test the function set
-   *
-   */
   #[@test]
   function prepareProjectionTest() {
     $this->assertEquals(
@@ -122,10 +110,6 @@ class SQLFunctionTest extends TestCase {
     );
   }
     
-  /**
-   * test the function set
-   *
-   */
   #[@test]
   function stringFunctionTest() {
     $this->assertProjection(
@@ -172,10 +156,6 @@ class SQLFunctionTest extends TestCase {
     );
   }
     
-  /**
-   * test the function set
-   *
-   */
   #[@test]
   function concatStringTest() {
     $this->assertProjection(
@@ -187,10 +167,6 @@ class SQLFunctionTest extends TestCase {
     );
   }
     
-  /**
-   * test the function set
-   *
-   */
   #[@test]
   function dateFunctionTest() {
     $date= new Date();
@@ -235,10 +211,6 @@ class SQLFunctionTest extends TestCase {
     );
   }
     
-  /**
-   * test the function set
-   *
-   */
   #[@test]
   function mathArithFunctionTest() {
     $this->assertProjection(
@@ -307,10 +279,6 @@ class SQLFunctionTest extends TestCase {
     );
   }
     
-  /**
-   * test the function set
-   *
-   */
   #[@test]
   function mathTrigFunctionTest() {
     $this->assertProjection(
@@ -378,10 +346,6 @@ class SQLFunctionTest extends TestCase {
     );
   }
     
-  /**
-   * test the function set
-   *
-   */
   #[@test]
   function randFunctionTest() {
     $this->assertProjection(
@@ -393,10 +357,6 @@ class SQLFunctionTest extends TestCase {
     );
   }
     
-  /**
-   * test the function set
-   *
-   */
   #[@test]
   function castFunctionTest() {
     $this->assertProjection(
@@ -415,10 +375,6 @@ class SQLFunctionTest extends TestCase {
     );
   }
     
-  /**
-   * test the function set
-   *
-   */
   #[@test]
   function restrictionTest() {
     $this->assertSQL(

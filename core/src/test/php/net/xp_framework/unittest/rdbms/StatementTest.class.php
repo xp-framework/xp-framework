@@ -36,20 +36,12 @@ class StatementTest extends TestCase {
     $statement->executeSelect($this->conn, $this->peer);
     $this->assertEquals($sql, trim($this->conn->getStatement(), ' '));
   }
-  
-  /**
-   * Test simple statement
-   *
-   */
+
   #[@test]
   public function simpleStatement() {
     $this->assertStatement('select * from job', new Statement('select * from job'));
   }
   
-  /**
-   * Test tokenized statement
-   *
-   */
   #[@test]
   public function tokenizedStatement() {
     $this->assertStatement(
@@ -58,10 +50,6 @@ class StatementTest extends TestCase {
     );
   }
   
-  /**
-   * Test multi-token statement
-   *
-   */
   #[@test]
   public function multiTokenStatement() {
     $this->assertStatement(

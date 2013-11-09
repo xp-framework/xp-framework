@@ -71,10 +71,6 @@ class ProjectionTest extends TestCase {
     $this->assertEquals('sqlite: '.$sqlite, 'sqlite: '.trim($criteria->projections($this->sqconn, $this->peer), ' '));
   }
   
-  /**
-   * test the count projection
-   *
-   */
   #[@test]
   function countTest() {
     $this->assertProjection(
@@ -86,10 +82,6 @@ class ProjectionTest extends TestCase {
     );
   }
 
-  /**
-   * test the count projection with a parameter
-   *
-   */
   #[@test]
   function countColumnTest() {
     $this->assertProjection(
@@ -101,10 +93,6 @@ class ProjectionTest extends TestCase {
     );
   }
 
-  /**
-   * test the count projection with a parameter and an alias
-   *
-   */
   #[@test]
   function countColumnAliasTest() {
     $this->assertProjection(
@@ -116,10 +104,6 @@ class ProjectionTest extends TestCase {
     );
   }
 
-  /**
-   * test the count projection with an alias
-   *
-   */
   #[@test]
   function countAliasTest() {
     $this->assertProjection(
@@ -131,10 +115,6 @@ class ProjectionTest extends TestCase {
     );
   }
 
-  /**
-   * test the average projection
-   *
-   */
   #[@test]
   function avgTest() {
     $this->assertProjection(
@@ -146,10 +126,6 @@ class ProjectionTest extends TestCase {
     );
   }
 
-  /**
-   * test the sum projection
-   *
-   */
   #[@test]
   function sumTest() {
     $this->assertProjection(
@@ -161,10 +137,6 @@ class ProjectionTest extends TestCase {
     );
   }
 
-  /**
-   * test the min projection
-   *
-   */
   #[@test]
   function minTest() {
     $this->assertProjection(
@@ -176,10 +148,6 @@ class ProjectionTest extends TestCase {
     );
   }
 
-  /**
-   * test the max projection
-   *
-   */
   #[@test]
   function maxTest() {
     $this->assertProjection(
@@ -191,10 +159,6 @@ class ProjectionTest extends TestCase {
     );
   }
 
-  /**
-   * test the property projection
-   *
-   */
   #[@test]
   function propertyTest() {
     $this->assertProjection(
@@ -206,10 +170,6 @@ class ProjectionTest extends TestCase {
     );
   }
 
-  /**
-   * test the projection list projection
-   *
-   */
   #[@test]
   function propertyListTest() {
     $this->assertProjection(
@@ -227,10 +187,6 @@ class ProjectionTest extends TestCase {
     );
   }
 
-  /**
-   * test the projection list projection with aliases
-   *
-   */
   #[@test]
   function propertyListAliasTest() {
     $this->assertProjection(
@@ -244,10 +200,6 @@ class ProjectionTest extends TestCase {
     ));
   }
 
-  /**
-   * test to set and unset projections
-   *
-   */
   #[@test]
   function setProjectionTest() {
     $crit= new \rdbms\Criteria();
@@ -262,10 +214,6 @@ class ProjectionTest extends TestCase {
     $this->assertFalse($crit->isProjection());
   }
 
-  /**
-   * test temporarly set projections
-   *
-   */
   #[@test]
   function withProjectionTest() {
     $crit= new \rdbms\Criteria();
@@ -276,5 +224,4 @@ class ProjectionTest extends TestCase {
     $this->assertFalse($crit->isProjection());
     $this->assertTrue($crit->withProjection(Projections::property(Job::column('job_id')))->isProjection());
   }
-
 }

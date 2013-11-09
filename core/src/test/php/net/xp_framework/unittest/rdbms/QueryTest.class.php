@@ -25,7 +25,6 @@ class QueryTest extends TestCase {
     
   /**
    * Setup method
-   *
    */
   public function setUp() {
     with ($conn= \rdbms\DriverManager::getConnection('mock://mock/JOBS?autoconnect=1')); {
@@ -55,19 +54,11 @@ class QueryTest extends TestCase {
 
   }
   
-  /**
-   * Test existance
-   *
-   */
   #[@test]
   public function newQuery() {
     $this->assertTrue(class_exists('SelectQuery'));
   }
   
-  /**
-   * set and store criteria
-   *
-   */
   #[@test]
   public function setCriteria() {
     $q= new SelectQuery();
@@ -76,10 +67,6 @@ class QueryTest extends TestCase {
     $this->assertEquals($c, $q->getCriteria());
   }
   
-  /**
-   * set and store Dataset by name
-   *
-   */
   #[@test]
   public function setPeer() {
     $q= new SelectQuery();
@@ -87,10 +74,6 @@ class QueryTest extends TestCase {
     $this->assertEquals(Job::getPeer(), $q->getPeer());
   }
   
-  /**
-   * get Connection
-   *
-   */
   #[@test]
   public function getConnection() {
     $q= new SelectQuery();
@@ -99,29 +82,17 @@ class QueryTest extends TestCase {
     $this->assertClass($q->getConnection(), 'net.xp_framework.unittest.rdbms.mock.MockConnection');
   }
   
-  /**
-   * withRestriction test
-   *
-   */
   #[@test]
   public function executeWithRestriction() {
     $this->assertClass(create(new SelectQuery())->withRestriction(Job::column('job_id')->equal(5)), 'rdbms.query.SelectQuery');
   }
   
-  /**
-   * test query string without set operation
-   *
-   */
   #[@test]
   public function getSingleQueryString() {
     $this->assertEquals($this->qas, $this->qa->getQueryString());
     $this->assertEquals($this->qbs, $this->qb->getQueryString());
   }
   
-  /**
-   * test query string with set operation
-   *
-   */
   #[@test]
   public function getQueryString() {
     $so= new SetOperation(SetOperation::UNION, $this->qa, $this->qb);
@@ -131,10 +102,6 @@ class QueryTest extends TestCase {
     );
   }
   
-  /**
-   * test query string with set operation
-   *
-   */
   #[@test]
   public function factory() {
     $so= SetOperation::union($this->qa, $this->qb);
@@ -154,10 +121,6 @@ class QueryTest extends TestCase {
     );
   }
   
-  /**
-   * test query string with set operation
-   *
-   */
   #[@test]
   public function all() {
     $so= SetOperation::union($this->qa, $this->qb, true);
@@ -167,10 +130,6 @@ class QueryTest extends TestCase {
     );
   }
   
-  /**
-   * test query string with set operation
-   *
-   */
   #[@test]
   public function nesting() {
     $so= SetOperation::union(SetOperation::union($this->qb, $this->qa), SetOperation::union($this->qb, $this->qa));

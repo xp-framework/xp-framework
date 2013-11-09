@@ -20,17 +20,11 @@ class JoinProcessorTest extends TestCase {
 
   /**
    * Make Job's peer use mysql
-   *
    */
   public function setUp() {
     Job::getPeer()->setConnection(new MySQLConnection(new \rdbms\DSN('mysql://localhost:3306/')));
   }
   
-  /**
-   * Tests extraction from record
-   *
-   * @see     xp://rdbms.join.JoinProcessor#getAttributeString
-   */
   #[@test]
   public function getAttributeStringTest() {
     $jp= new JoinProcessor(Job::getPeer());
@@ -51,11 +45,6 @@ class JoinProcessorTest extends TestCase {
     );
   }
 
-  /**
-   * Tests extraction from record
-   *
-   * @see     xp://rdbms.join.JoinProcessor#getJoinString
-   */
   #[@test]
   public function getJoinStringTest() {
     $jp= new JoinProcessor(Job::getPeer());
@@ -67,37 +56,21 @@ class JoinProcessorTest extends TestCase {
     );
   }
 
-  /**
-   * Tests extraction from record
-   *
-   * @see     xp://rdbms.join.JoinProcessor#setFetchModes
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function emptyModeTest() {
     $jp= new JoinProcessor(Job::getPeer());
     $jp->setFetchModes(array());
   }
 
-  /**
-   * Tests extraction from record
-   *
-   * @see     xp://rdbms.join.JoinProcessor#setFetchModes
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function noJoinModeTest() {
     $jp= new JoinProcessor(Job::getPeer());
     $jp->setFetchModes(array('JobPerson.Department' => 'select'));
   }
 
-  /**
-   * Tests extraction from record
-   *
-   * @see     xp://rdbms.join.JoinProcessor#setFetchModes
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function noSuchRoleTest() {
     $jp= new JoinProcessor(Job::getPeer());
-    $jp->setFetchModes(array('UnknowenRole' => 'join'));
+    $jp->setFetchModes(array('UnknownRole' => 'join'));
   }
-
 }

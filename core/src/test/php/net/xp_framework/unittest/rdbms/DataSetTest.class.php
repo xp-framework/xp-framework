@@ -45,10 +45,6 @@ class DataSetTest extends TestCase {
     $this->getConnection()->setResultSet($r);
   }
   
-  /**
-   * Tests the getPeer() method
-   *
-   */
   #[@test]
   public function peerObject() {
     $peer= Job::getPeer();
@@ -67,10 +63,6 @@ class DataSetTest extends TestCase {
     );
   }
   
-  /**
-   * Tests the getByJob_id() method
-   *
-   */
   #[@test]
   public function getByJob_id() {
     $now= Date::now();
@@ -90,20 +82,12 @@ class DataSetTest extends TestCase {
     $this->assertNull($job->getExpire_at());
   }
   
-  /**
-   * Tests the isNew() method when creating a job object by means of new()
-   *
-   */
   #[@test]
   public function newObject() {
     $j= new Job();
     $this->assertTrue($j->isNew());
   }
 
-  /**
-   * Tests the isNew() method when fetching the object by getByJob_id()
-   *
-   */
   #[@test]
   public function existingObject() {
     $this->setResults(new MockResultSet(array(
@@ -120,10 +104,6 @@ class DataSetTest extends TestCase {
     $this->assertFalse($job->isNew());
   }
 
-  /**
-   * Tests the isNew() method after saving an object
-   *
-   */
   #[@test]
   public function noLongerNewAfterSave() {
     $j= new Job();
@@ -136,21 +116,12 @@ class DataSetTest extends TestCase {
     $this->assertFalse($j->isNew());
   }
 
-  /**
-   * Tests that getByJob_id() method returns NULL if nothing is found
-   *
-   */
   #[@test]
   public function noResultsDuringGetByJob_id() {
     $this->setResults(new MockResultSet());
     $this->assertNull(Job::getByJob_id(self::IRRELEVANT_NUMBER));
   }
 
-  /**
-   * Tests that getByJob_id() method will throw an exception if the SQL
-   * query fails
-   *
-   */
   #[@test, @expect('rdbms.SQLException')]
   public function failedQueryInGetByJob_id() {
     $mock= $this->getConnection();
@@ -159,11 +130,6 @@ class DataSetTest extends TestCase {
     Job::getByJob_id(self::IRRELEVANT_NUMBER);
   }
 
-  /**
-   * Tests that the insert() method will return the identity value
-   *
-   * @see     xp://rdbms.DataSet#insert
-   */
   #[@test]
   public function insertReturnsIdentity() {
     $mock= $this->getConnection();
@@ -178,11 +144,6 @@ class DataSetTest extends TestCase {
     $this->assertEquals(14121977, $id);
   }
   
-  /**
-   * Tests that the save() method will return the identity value
-   *
-   * @see     xp://rdbms.DataSet#insert
-   */
   #[@test]
   public function saveReturnsIdentityForInserts() {
     $mock= $this->getConnection();
@@ -197,11 +158,6 @@ class DataSetTest extends TestCase {
     $this->assertEquals(14121977, $id);
   }
 
-  /**
-   * Tests that the save() method will return the identity value
-   *
-   * @see     xp://rdbms.DataSet#insert
-   */
   #[@test]
   public function saveReturnsIdentityForUpdates() {
     $this->setResults(new MOckResultSet(array(
@@ -219,12 +175,6 @@ class DataSetTest extends TestCase {
     $this->assertEquals(1, $id);
   }
   
-  /**
-   * Tests that the insert() method will set the identity field's value
-   * and that it is set to its initial value before.
-   *
-   * @see     xp://rdbms.DataSet#insert
-   */
   #[@test]
   public function identityFieldIsSet() {
     $mock= $this->getConnection();
@@ -241,12 +191,6 @@ class DataSetTest extends TestCase {
     $this->assertEquals(14121977, $j->getJob_id());
   }
   
-  /**
-   * Tests that the insert() method will throw an exception in case the
-   * SQL query fails
-   *
-   * @see     xp://rdbms.DataSet#insert
-   */
   #[@test, @expect('rdbms.SQLException')]
   public function failedQueryInInsert() {
     $mock= $this->getConnection();
@@ -260,10 +204,6 @@ class DataSetTest extends TestCase {
     $j->insert();
   }
   
-  /**
-   * Tests that the doSelect() will return an array of objects
-   *
-   */
   #[@test]
   public function oneResultForDoSelect() {
     $this->setResults(new MOckResultSet(array(
@@ -283,10 +223,6 @@ class DataSetTest extends TestCase {
     $this->assertClass($jobs[0], 'net.xp_framework.unittest.rdbms.dataset.Job');
   }
 
-  /**
-   * Tests that the doSelect() will return an empty array if nothing is found
-   *
-   */
   #[@test]
   public function noResultForDoSelect() {
     $this->setResults(new MOckResultSet());
@@ -298,10 +234,6 @@ class DataSetTest extends TestCase {
     $this->assertEquals(0, sizeof($jobs));
   }
 
-  /**
-   * Tests that the doSelect() will return an array of objects
-   *
-   */
   #[@test]
   public function multipleResultForDoSelect() {
     $this->setResults(new MOckResultSet(array(
@@ -330,10 +262,6 @@ class DataSetTest extends TestCase {
     $this->assertEquals(9, $jobs[1]->getJob_id());
   }
   
-  /**
-   * Tests the iteratorFor() method with criteria
-   *
-   */
   #[@test]
   public function iterateOverCriteria() {
     $this->setResults(new MOckResultSet(array(
@@ -374,11 +302,6 @@ class DataSetTest extends TestCase {
     $this->assertFalse($iterator->hasNext());
   }
 
-  /**
-   * Tests that ResultIterator::next() can be called without previously having
-   * called hasMext()
-   *
-   */
   #[@test]
   public function nextCallWithoutHasNext() {
     $this->setResults(new MOckResultSet(array(
@@ -406,11 +329,6 @@ class DataSetTest extends TestCase {
     $this->assertTrue($iterator->hasNext());
   }
 
-  /**
-   * Tests that ResultIterator::next() will throw an exception in case it
-   * is called on an empty resultset.
-   *
-   */
   #[@test, @expect('util.NoSuchElementException')]
   public function nextCallOnEmptyResultSet() {
     $this->setResults(new MOckResultSet());
@@ -419,11 +337,6 @@ class DataSetTest extends TestCase {
     $iterator->next();
   }
 
-  /**
-   * Tests that ResultIterator::next() will throw an exception in case it
-   * has iterated past the end of a resultset.
-   *
-   */
   #[@test, @expect('util.NoSuchElementException')]
   public function nextCallPastEndOfResultSet() {
     $this->setResults(new MOckResultSet(array(
@@ -441,10 +354,6 @@ class DataSetTest extends TestCase {
     $iterator->next();
   }
   
-  /**
-   * Tests the iteratorFor() method with statement
-   *
-   */
   #[@test]
   public function iterateOverStatement() {
     $this->setResults(new MOckResultSet(array(
@@ -470,10 +379,6 @@ class DataSetTest extends TestCase {
     $this->assertFalse($iterator->hasNext());
   }
 
-  /**
-   * Tests that update doesn't do anything when the object is unchanged
-   *
-   */
   #[@test]
   public function updateUnchangedObject() {
 
@@ -499,10 +404,6 @@ class DataSetTest extends TestCase {
     $this->setResults(new MOckResultSet());
   }
 
-  /**
-   * Tests column
-   *
-   */
   #[@test]
   public function column() {
     $c= Job::column('job_id');
@@ -510,65 +411,37 @@ class DataSetTest extends TestCase {
     $this->assertEquals('job_id', $c->getName());
   }
 
-  /**
-   * Tests column exeption
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function nonExistantColumn() {
     Job::column('non_existant');
   }
 
-  /**
-   * Tests column of relatives
-   *
-   */
   #[@test]
   public function relativeColumn() {
     $this->assertClass(Job::column('PersonJob->person_id'), 'rdbms.Column');
   }
 
-  /**
-   * Tests column of relatives exeption
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function nonExistantRelativeColumn() {
     Job::column('PersonJob->non_existant');
   }
 
-  /**
-   * Tests column of relatives
-   *
-   */
   #[@test]
   public function farRelativeColumn() {
     $this->assertClass(Job::column('PersonJob->Department->department_id'), 'rdbms.Column');
   }
 
-  /**
-   * Tests column of relatives exeption
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function nonExistantfarRelativeColumn() {
     Job::column('PersonJob->Department->non_existant');
   }
 
-  /**
-   * Tests relation exeption
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function nonExistantRelative() {
     Job::column('NonExistant->person_id');
   }
 
 
-  /**
-   * Tests doUpdate()
-   *
-   */
   #[@test]
   public function doUpdate() {
     $this->setResults(new MOckResultSet(array(
@@ -585,10 +458,6 @@ class DataSetTest extends TestCase {
     $job->doUpdate(new \rdbms\Criteria(array('job_id', $job->getJob_id(), EQUAL)));
   }
 
-  /**
-   * Tests doDelete()
-   *
-   */
   #[@test]
   public function doDelete() {
     $this->setResults(new MOckResultSet(array(
@@ -604,11 +473,6 @@ class DataSetTest extends TestCase {
     $job->doDelete(new \rdbms\Criteria(array('job_id', $job->getJob_id(), EQUAL)));
   }
 
-  /**
-   * Tests percent signs don't get messed up during dataset processing
-   * Round-trip test.
-   *
-   */
   #[@test]
   public function percentSign() {
     $observer= $this->getConnection()->addObserver(newinstance('rdbms.DBObserver', array(create('new Vector<lang.types.String>')), '{
@@ -633,14 +497,10 @@ class DataSetTest extends TestCase {
     );
   }
 
-  /**
-   * Test the max parameter with Peer::doSelect
-   *
-   */
   #[@test]
   public function testDoSelectMax() {
     for ($i= 0; $i < 4; $i++) {
-      $this->setResults(new MOckResultSet(array(
+      $this->setResults(new MockResultSet(array(
         0 => array(
           'job_id'      => 654,
           'title'       => 'Java Unit tester',

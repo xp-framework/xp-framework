@@ -41,51 +41,29 @@ class DBTest extends TestCase {
     ) $this->assertEquals($field, $version);
   }
 
-  /**
-   * Test database connect
-   *
-   */
   #[@test]
   public function connect() {
     $result= $this->conn->connect();
     $this->assertTrue($result);
   }
 
-  /**
-   * Test database connect throws an SQLConnectException in case it fails
-   *
-   */
   #[@test, @expect('rdbms.SQLConnectException')]
   public function connectFailure() {
     $this->conn->makeConnectFail('Unknown server');
     $this->conn->connect();
   }
   
-  /**
-   * Test database select
-   *
-   */
   #[@test]
   public function select() {
     $this->conn->connect();
     $this->assertQuery();
   }
 
-  /**
-   * Test an SQLStateException is thrown if a query is performed on a
-   * not yet connect()ed connection object.
-   *
-   */
   #[@test, @expect('rdbms.SQLStateException')]
   public function queryOnUnConnected() {
     $this->conn->query('select 1');   // Not connected
   }
 
-  /**
-   * Test an SQLStateException is thrown if a query is performed on a
-   * disconnect()ed connection object.
-   *
-   */
   #[@test, @expect('rdbms.SQLStateException')]
   public function queryOnDisConnected() {
     $this->conn->connect();
@@ -94,12 +72,6 @@ class DBTest extends TestCase {
     $this->conn->query('select 1');   // Not connected
   }
 
-  /**
-   * Test an SQLConnectionClosedException is thrown if the connection
-   * has been lost.
-   *
-   * @see     rfc://0058
-   */
   #[@test, @expect('rdbms.SQLConnectionClosedException')]
   public function connectionLost() {
     $this->conn->connect();
@@ -108,11 +80,6 @@ class DBTest extends TestCase {
     $this->conn->query('select 1');   // Not connected
   }
 
-  /**
-   * Test an SQLStateException is thrown if a query is performed on a
-   * connection thas is not connected due to connect() failure.
-   *
-   */
   #[@test, @expect('rdbms.SQLStateException')]
   public function queryOnFailedConnection() {
     $this->conn->makeConnectFail('Access denied');
@@ -123,10 +90,6 @@ class DBTest extends TestCase {
     $this->conn->query('select 1');   // Previously failed to connect
   }
 
-  /**
-   * Test an SQLStatementFailedException is thrown when a query fails.
-   *
-   */
   #[@test, @expect('rdbms.SQLStatementFailedException')]
   public function statementFailed() {
     $this->conn->connect();

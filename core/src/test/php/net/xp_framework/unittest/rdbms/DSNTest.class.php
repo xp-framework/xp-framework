@@ -1,21 +1,14 @@
 <?php namespace net\xp_framework\unittest\rdbms;
 
-use unittest\TestCase;
 use rdbms\DSN;
-
 
 /**
  * Tests the DSN class
  *
- * @see      xp://rdbms.DSN
- * @purpose  Unit Test
+ * @see  xp://rdbms.DSN
  */
-class DSNTest extends TestCase {
+class DSNTest extends \unittest\TestCase {
 
-  /**
-   * Tests the toString() method returns passwords replaced by stars.
-   *
-   */
   #[@test]
   public function stringRepresentationWithPassword() {
     $this->assertEquals(
@@ -24,10 +17,6 @@ class DSNTest extends TestCase {
     );
   }
   
-  /**
-   * Tests the toString() method does not mangle DSNs without passwords
-   *
-   */
   #[@test]
   public function stringRepresentationWithoutPassword() {
     $this->assertEquals(
@@ -36,10 +25,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function asStringRemovesPassword() {
     $this->assertEquals(
@@ -48,10 +33,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function asStringKeepsPasswordIfRequested() {
     $this->assertEquals(
@@ -60,10 +41,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function asStringSkipsUserEvenWithRaw() {
     $this->assertEquals(
@@ -72,10 +49,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getDriver() method
-   *
-   */
   #[@test]
   public function driver() {
     $this->assertEquals(
@@ -84,19 +57,11 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getDriver() method
-   *
-   */
   #[@test, @expect('lang.FormatException')]
   public function noDriver() {
     new DSN('');
   }
 
-  /**
-   * Tests the getHost() method
-   *
-   */
   #[@test]
   public function host() {
     $this->assertEquals(
@@ -105,10 +70,6 @@ class DSNTest extends TestCase {
     );
   }
   
-  /**
-   * Tests the getPort() method
-   *
-   */
   #[@test]
   public function port() {
     $this->assertEquals(
@@ -117,10 +78,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getPort() method
-   *
-   */
   #[@test]
   public function portDefault() {
     $this->assertEquals(
@@ -129,19 +86,11 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getPort() method
-   *
-   */
   #[@test]
   public function noPort() {
     $this->assertNull(create(new DSN('sybase://TEST/'))->getPort());
   }
 
-  /**
-   * Tests the getPort() method
-   *
-   */
   #[@test]
   public function noPortDefault() {
     $this->assertEquals(
@@ -150,10 +99,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getDatabase() method
-   *
-   */
   #[@test]
   public function database() {
     $this->assertEquals(
@@ -162,10 +107,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getDatabase() method
-   *
-   */
   #[@test]
   public function databaseDefault() {
     $this->assertEquals(
@@ -174,19 +115,11 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getDatabase() method
-   *
-   */
   #[@test]
   public function noDatabase() {
     $this->assertNull(create(new DSN('mysql://root@localhost'))->getDatabase());
   }
 
-  /**
-   * Tests the getDatabase() method
-   *
-   */
   #[@test]
   public function noDatabaseDefault() {
     $this->assertEquals(
@@ -195,19 +128,11 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getDatabase() method
-   *
-   */
   #[@test]
   public function slashDatabase() {
     $this->assertNull(create(new DSN('mysql://root@localhost/'))->getDatabase());
   }
 
-  /**
-   * Tests the getDatabase() method
-   *
-   */
   #[@test]
   public function slashDatabaseDefault() {
     $this->assertEquals(
@@ -216,10 +141,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getDatabase() method
-   *
-   */
   #[@test]
   public function fileDatabase() {
     $this->assertEquals(
@@ -228,10 +149,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getUser() method
-   *
-   */
   #[@test]
   public function user() {
     $this->assertEquals(
@@ -240,10 +157,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getUser() method
-   *
-   */
   #[@test]
   public function userDefault() {
     $this->assertEquals(
@@ -252,19 +165,11 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getUser() method
-   *
-   */
   #[@test]
   public function noUser() {
     $this->assertNull(create(new DSN('sybase://TEST'))->getUser());
   }
 
-  /**
-   * Tests the getUser() method
-   *
-   */
   #[@test]
   public function noUserDefault() {
     $this->assertEquals(
@@ -273,10 +178,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getPassword() method
-   *
-   */
   #[@test]
   public function password() {
     $this->assertEquals(
@@ -285,10 +186,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getPassword() method
-   *
-   */
   #[@test]
   public function passwordDefault() {
     $this->assertEquals(
@@ -297,19 +194,11 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getPassword() method
-   *
-   */
   #[@test]
   public function noPassword() {
     $this->assertNull(create(new DSN('sybase://sa@TEST'))->getPassword());
   }
 
-  /**
-   * Tests the getPassword() method
-   *
-   */
   #[@test]
   public function noPasswordDefault() {
     $this->assertEquals(
@@ -318,19 +207,11 @@ class DSNTest extends TestCase {
     );
   }
   
-  /**
-   * Tests the getFlags() method on a DSN without flags
-   *
-   */
   #[@test]
   public function noFlags() {
     $this->assertEquals(0, create(new DSN('sybase://sa@TEST'))->getFlags());
   }
 
-  /**
-   * Tests the getFlags() method on a DSN with flags
-   *
-   */
   #[@test]
   public function definedFlags() {
     $this->assertEquals(
@@ -339,10 +220,6 @@ class DSNTest extends TestCase {
     );
   }
   
-  /**
-   * Tests the getProperty() method
-   *
-   */
   #[@test]
   public function stringPropertyValue() {
     $this->assertEquals(
@@ -351,10 +228,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the getProperty() method
-   *
-   */
   #[@test]
   public function arrayPropertyValue() {
     $this->assertEquals(
@@ -363,20 +236,12 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the equals() method
-   *
-   */
   #[@test]
   public function twoDsnsCreatedFromSameStringAreEqual() {
     $string= 'scheme://user:password@host/DATABASE?log=default&autoconnect=1';
     $this->assertEquals(new DSN($string), new DSN($string));
   }
 
-  /**
-   * Tests the equals() method
-   *
-   */
   #[@test]
   public function twoDsnsWithDifferingAutoconnectNotEqual() {
     $this->assertNotEquals(
@@ -385,10 +250,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the equals() method
-   *
-   */
   #[@test]
   public function twoDsnsWithDifferingParamsNotEqual() {
     $this->assertNotEquals(
@@ -397,10 +258,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the equals() method
-   *
-   */
   #[@test]
   public function twoDsnsWithDifferingFlagParamsNotEqual() {
     $this->assertNotEquals(
@@ -409,10 +266,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the equals() method
-   *
-   */
   #[@test]
   public function twoDsnsWithDifferingObserverParamsNotEqual() {
     $this->assertNotEquals(
@@ -421,10 +274,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the equals() method
-   *
-   */
   #[@test]
   public function twoDsnsWithDifferingObserverParamValuesNotEqual() {
     $this->assertNotEquals(
@@ -433,10 +282,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the equals() method
-   *
-   */
   #[@test]
   public function twoDsnsWithSameObserverParamsEqual() {
     $this->assertEquals(
@@ -445,10 +290,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the equals() method
-   *
-   */
   #[@test]
   public function twoDsnsWithDifferentlyOrderedParamsAreEqual() {
     $this->assertEquals(
@@ -457,10 +298,6 @@ class DSNTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the cloning method
-   *
-   */
   #[@test]
   public function cloning() {
     $dsn= new DSN('mysql://root:password@localhost/');
@@ -469,10 +306,6 @@ class DSNTest extends TestCase {
     $this->assertEquals('password', $dsn->getPassword());
   }
 
-  /**
-   * Tests the withoutPassword() method
-   *
-   */
   #[@test]
   public function withoutPassword() {
     $dsn= new DSN('mysql://root:password@localhost/');
