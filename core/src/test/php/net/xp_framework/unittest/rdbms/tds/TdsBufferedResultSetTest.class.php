@@ -1,16 +1,14 @@
 <?php namespace net\xp_framework\unittest\rdbms\tds;
 
-use unittest\TestCase;
 use rdbms\tds\TdsBufferedResultSet;
 use rdbms\tds\TdsProtocol;
-
 
 /**
  * TestCase
  *
  * @see   xp://rdbms.tds.TdsBufferedResultSet
  */
-class TdsBufferedResultSetTest extends TestCase {
+class TdsBufferedResultSetTest extends \unittest\TestCase {
   protected static $proto;
 
   /**
@@ -57,17 +55,11 @@ class TdsBufferedResultSetTest extends TestCase {
     return new TdsBufferedResultSet(self::$proto->newInstance($records), $fields);
   }
 
-  /**
-   * Test constructor
-   */
   #[@test]
   public function can_create_with_empty() { 
     $this->newResultSet(array());
   }
 
-  /**
-   * Test constructor
-   */
   #[@test]
   public function can_create() { 
     $this->newResultSet(array(
@@ -78,9 +70,6 @@ class TdsBufferedResultSetTest extends TestCase {
     ));
   }
 
-  /**
-   * Test next()
-   */
   #[@test]
   public function next() { 
     $records= array(
@@ -89,9 +78,6 @@ class TdsBufferedResultSetTest extends TestCase {
     $this->assertFalse($fixture->next());
   }
 
-  /**
-   * Test next()
-   */
   #[@test]
   public function next_once() { 
     $records= array(
@@ -104,9 +90,6 @@ class TdsBufferedResultSetTest extends TestCase {
     $this->assertEquals($records[0], $fixture->next());
   }
 
-  /**
-   * Test next()
-   */
   #[@test]
   public function next_twice() { 
     $records= array(
@@ -124,9 +107,6 @@ class TdsBufferedResultSetTest extends TestCase {
     $this->assertEquals($records[1], $fixture->next());
   }
 
-  /**
-   * Test next()
-   */
   #[@test]
   public function next_returns_false_at_end() { 
     $records= array(
@@ -140,9 +120,6 @@ class TdsBufferedResultSetTest extends TestCase {
     $this->assertFalse($fixture->next());
   }
 
-  /**
-   * Test seek()
-   */
   #[@test]
   public function seek_to_0_before_start() {
     $records= array(
@@ -156,9 +133,6 @@ class TdsBufferedResultSetTest extends TestCase {
     $this->assertEquals($records[0], $fixture->next());
   }
 
-  /**
-   * Test seek()
-   */
   #[@test]
   public function seek_to_0_after_start() {
     $records= array(
@@ -173,9 +147,6 @@ class TdsBufferedResultSetTest extends TestCase {
     $this->assertEquals($records[0], $fixture->next());
   }
 
-  /**
-   * Test seek()
-   */
   #[@test]
   public function seek_to_1() {
     $records= array(
@@ -193,25 +164,16 @@ class TdsBufferedResultSetTest extends TestCase {
     $this->assertEquals($records[1], $fixture->next());
   }
 
-  /**
-   * Test seek()
-   */
   #[@test, @expect(class= 'rdbms.SQLException', withMessage= 'Cannot seek to offset 1, out of bounds')]
   public function seek_to_offset_exceeding_length() {
     $fixture= $this->newResultSet(array())->seek(1);
   }
 
-  /**
-   * Test seek()
-   */
   #[@test, @expect(class= 'rdbms.SQLException', withMessage= 'Cannot seek to offset -1, out of bounds')]
   public function seek_to_negative_offset() {
     $fixture= $this->newResultSet(array())->seek(-1);
   }
 
-  /**
-   * Test seek()
-   */
   #[@test, @expect(class= 'rdbms.SQLException', withMessage= 'Cannot seek to offset 0, out of bounds')]
   public function seek_to_zero_offset_on_empty() {
     $fixture= $this->newResultSet(array())->seek(0);

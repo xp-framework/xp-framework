@@ -1,20 +1,15 @@
 <?php namespace net\xp_framework\unittest\rdbms\tds;
 
-use unittest\TestCase;
+use rdbms\DSN;
 use rdbms\tds\FreeTdsLookup;
-
 
 /**
  * TestCase
  *
  * @see   xp://rdbms.tds.FreeTdsLookup#locateConf
  */
-class FreeTdsConfigLocationTest extends TestCase {
+class FreeTdsConfigLocationTest extends \unittest\TestCase {
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function noAlternativesFound() {
     $fixture= newinstance('rdbms.tds.FreeTdsLookup', array(), '{
@@ -23,18 +18,14 @@ class FreeTdsConfigLocationTest extends TestCase {
       }
       
       protected function locateConf() {
-        return NULL;
+        return null;
       }
     }');
-    $dsn= new \rdbms\DSN('sybase://test');
+    $dsn= new DSN('sybase://test');
     $fixture->lookup($dsn);
     $this->assertEquals($dsn, $dsn);
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function fileReturned() {
     $fixture= newinstance('rdbms.tds.FreeTdsLookup', array(), '{
@@ -49,8 +40,8 @@ class FreeTdsConfigLocationTest extends TestCase {
         return new File("it.worked");
       }
     }');
-    $dsn= new \rdbms\DSN('sybase://test');
+    $dsn= new DSN('sybase://test');
     $fixture->lookup($dsn);
-    $this->assertEquals(new \rdbms\DSN('sybase://it.worked:1999'), $dsn);
+    $this->assertEquals(new DSN('sybase://it.worked:1999'), $dsn);
   }
 }
