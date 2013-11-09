@@ -3,7 +3,6 @@
 use rdbms\DriverManager;
 use util\cmd\Console;
 
-
 /**
  * SQL Runner used inside deadlock tests
  *

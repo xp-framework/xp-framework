@@ -1,7 +1,5 @@
 <?php namespace net\xp_framework\unittest\rdbms\integration;
 
-
-
 /**
  * Deadlock test on PostgreSQL
  *

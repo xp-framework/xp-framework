@@ -4,14 +4,12 @@ use unittest\TestCase;
 use lang\Runtime;
 use rdbms\DriverManager;
 
-
 /**
  * Abstract deadlock test
  *
  */
 abstract class AbstractDeadlockTest extends TestCase {
-  protected
-    $dsn    = null;
+  protected $dsn= null;
 
   /**
    * Retrieve DSN
@@ -58,7 +56,6 @@ abstract class AbstractDeadlockTest extends TestCase {
   
   /**
    * Tear down test case
-   *
    */
   public function tearDown() {
     $this->dropTables();
@@ -66,7 +63,6 @@ abstract class AbstractDeadlockTest extends TestCase {
   
   /**
    * Create necessary tables for this test
-   *
    */
   protected function createTables() {
     $db= $this->db();
@@ -85,7 +81,6 @@ abstract class AbstractDeadlockTest extends TestCase {
   
   /**
    * Cleanup database tables
-   *
    */
   protected function dropTables() {
     $db= $this->db();
@@ -117,12 +112,7 @@ abstract class AbstractDeadlockTest extends TestCase {
       return $proc;
     }
   }
-  
-  /**
-   * Test a deadlock situation results in rdbms.SQLDeadlockException
-   * being thrown.
-   *
-   */
+
   #[@test]
   public function provokeDeadlock() {
     $a= $this->newProcess();
