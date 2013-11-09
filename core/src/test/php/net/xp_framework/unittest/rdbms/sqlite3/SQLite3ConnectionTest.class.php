@@ -1,59 +1,34 @@
 <?php namespace net\xp_framework\unittest\rdbms\sqlite3;
 
-use unittest\TestCase;
 use rdbms\sqlite3\SQLite3Connection;
-
 
 /**
  * Testcase for rdbms.sqlite3.SQLite3Connection
  *
  * @see      xp://rdbms.sqlite3.SQLite3Connection
  */
-class SQLite3ConnectionTest extends TestCase {
+#[@action(new \unittest\actions\ExtensionAvailable('sqlite3'))]
+class SQLite3ConnectionTest extends \unittest\TestCase {
   protected $conn= null;
 
   /**
-   * Verifies sqlite3 extension is available
-   *
-   */
-  #[@beforeClass]
-  public static function verifySqlite3Extension() {
-    if (!\lang\Runtime::getInstance()->extensionAvailable('sqlite3')) {
-      throw new \unittest\PrerequisitesNotMetError('Extension not available', null, array('sqlite3'));
-    }
-  }
-
-  /**
    * Set up this test
-   *
    */
   public function setUp() {
-    $this->conn= new \Sqlite3Connection(new \rdbms\DSN('sqlite+3:///:memory:?autoconnect=1'));
+    $this->conn= new SQLite3Connection(new \rdbms\DSN('sqlite+3:///:memory:?autoconnect=1'));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function close() {
     $this->assertFalse($this->conn->close());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function connect_then_close_both_return_true() {
     $this->assertTrue($this->conn->connect());
     $this->assertTrue($this->conn->close());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function second_close_call_returns_false() {
     $this->assertTrue($this->conn->connect());
@@ -61,19 +36,11 @@ class SQLite3ConnectionTest extends TestCase {
     $this->assertFalse($this->conn->close());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect('rdbms.SQLStatementFailedException')]
   public function selectdb() {
     $this->conn->selectdb('foo');
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function query() {
     $this->conn->connect();
@@ -83,20 +50,12 @@ class SQLite3ConnectionTest extends TestCase {
     $this->assertEquals(array('one' => 1), $result->next());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function query_returns_true_on_empty_resultset() {
     $this->conn->connect();
     $this->assertTrue($this->conn->query('pragma user_version = 1'));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect('rdbms.SQLStatementFailedException')]
   public function query_throws_exception_for_broken_statement() {
     $this->conn->connect();
@@ -113,10 +72,6 @@ class SQLite3ConnectionTest extends TestCase {
     $this->conn->open('select 1');
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function query_returns_result_for_empty_resultset() {
     $this->conn->connect();
@@ -126,10 +81,6 @@ class SQLite3ConnectionTest extends TestCase {
     $this->assertFalse($result->next());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function create_table_and_fill() {
     $this->conn->query('create temp table testthewest (
@@ -148,10 +99,6 @@ class SQLite3ConnectionTest extends TestCase {
     $this->assertEquals(1, $this->conn->identity());
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function select_from_prefilled_table_yields_correct_column_types() {
     $this->create_table_and_fill();
@@ -163,10 +110,6 @@ class SQLite3ConnectionTest extends TestCase {
     )), $this->conn->select('* from testthewest'));
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect('lang.IllegalStateException')]
   public function unbuffered_query_not_supported() {
     $this->conn->setFlag(DB_UNBUFFERED);
@@ -174,10 +117,6 @@ class SQLite3ConnectionTest extends TestCase {
     $this->conn->query('select 1');
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect('rdbms.SQLStateException')]
   public function identity_throws_exception_when_not_connected() {
     $this->conn->identity();
