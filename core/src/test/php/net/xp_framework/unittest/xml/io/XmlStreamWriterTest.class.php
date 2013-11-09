@@ -1,32 +1,25 @@
 <?php namespace net\xp_framework\unittest\xml\io;
 
-use unittest\TestCase;
 use xml\io\XmlStreamWriter;
 use io\streams\MemoryOutputStream;
-
 
 /**
  * TestCase
  *
- * @see      xp://xml.io.XmlStreamWriter
+ * @see   xp://xml.io.XmlStreamWriter
  */
-class XmlStreamWriterTest extends TestCase {
-  protected $out;
-  protected $writerx;
+class XmlStreamWriterTest extends \unittest\TestCase {
+  protected $out= null;
+  protected $writer= null;
 
   /**
    * Sets up test case
-   *
    */
   public function setUp() {
     $this->out= new MemoryOutputStream();
     $this->writer= new XmlStreamWriter($this->out);
   }
   
-  /**
-   * Test startDocument() with iso-8859-1 encoding
-   *
-   */
   #[@test]
   public function startIso88591Document() {
     $this->writer->startDocument('1.0', 'iso-8859-1');
@@ -36,10 +29,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test startDocument() with utf-8 encoding
-   *
-   */
   #[@test]
   public function startUtf8Document() {
     $this->writer->startDocument('1.0', 'utf-8');
@@ -49,10 +38,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test startDocument() with standalone=true
-   *
-   */
   #[@test]
   public function standaloneDocument() {
     $this->writer->startDocument('1.0', 'iso-8859-1', true);
@@ -62,10 +47,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test startElement()
-   *
-   */
   #[@test]
   public function startElement() {
     $this->writer->startElement('book');
@@ -75,10 +56,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test startElement()
-   *
-   */
   #[@test]
   public function startElementWithAttribute() {
     $this->writer->startElement('book', array('isbn' => '978-3-86680-192-9'));
@@ -88,10 +65,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test startElement()
-   *
-   */
   #[@test]
   public function startElementWithAttributes() {
     $this->writer->startElement('book', array('isbn' => '978-3-86680-192-9', 'authors' => 'Timm & Alex'));
@@ -101,10 +74,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test closeElement()
-   *
-   */
   #[@test]
   public function closeElement() {
     $this->writer->startElement('book');
@@ -115,10 +84,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test closeElement()
-   *
-   */
   #[@test]
   public function closeElements() {
     $this->writer->startElement('book');
@@ -131,10 +96,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test startComment()
-   *
-   */
   #[@test]
   public function startComment() {
     $this->writer->startComment();
@@ -144,10 +105,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test closeComment()
-   *
-   */
   #[@test]
   public function closeComment() {
     $this->writer->startComment();
@@ -158,10 +115,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test startCData()
-   *
-   */
   #[@test]
   public function startCData() {
     $this->writer->startCData();
@@ -171,10 +124,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test closeCData()
-   *
-   */
   #[@test]
   public function closeCData() {
     $this->writer->startCData();
@@ -185,10 +134,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test startPI()
-   *
-   */
   #[@test]
   public function startPI() {
     $this->writer->startPI('php');
@@ -198,10 +143,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test closePI()
-   *
-   */
   #[@test]
   public function closePI() {
     $this->writer->startPI('php');
@@ -212,10 +153,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test writeText()
-   *
-   */
   #[@test]
   public function writeText() {
     $this->writer->startElement('book');
@@ -227,10 +164,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test writeCData()
-   *
-   */
   #[@test]
   public function writeCData() {
     $this->writer->startElement('book');
@@ -242,10 +175,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test writeComment()
-   *
-   */
   #[@test]
   public function writeComment() {
     $this->writer->startElement('book');
@@ -257,10 +186,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test writeComment()
-   *
-   */
   #[@test]
   public function writeCommentedNode() {
     $this->writer->startElement('book');
@@ -274,10 +199,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test writeElement()
-   *
-   */
   #[@test]
   public function writeMarkup() {
     $this->writer->startElement('markup');
@@ -291,10 +212,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test writePI()
-   *
-   */
   #[@test]
   public function writePI() {
     $this->writer->startElement('code');
@@ -306,11 +223,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test writePI()
-   *
-   * @see   http://www.w3.org/TR/xml-stylesheet/
-   */
   #[@test]
   public function writePIWithAttributes() {
     $this->writer->writePI('xml-stylesheet', array('href' => 'template.xsl'));
@@ -320,10 +232,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test write...() methods used together
-   *
-   */
   #[@test]
   public function writeCDataAndText() {
     $this->writer->startElement('book');
@@ -337,10 +245,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test writeElement
-   *
-   */
   #[@test]
   public function writElement() {
     $this->writer->writeElement('book', 'Hello & World', array('isbn' => '978-3-86680-192-9'));
@@ -350,10 +254,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test writeElement
-   *
-   */
   #[@test]
   public function writElementEmptyContent() {
     $this->writer->writeElement('book');
@@ -363,10 +263,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test closeDocument()
-   *
-   */
   #[@test]
   public function endDocumentClosesAllElements() {
     $this->writer->startElement('books');
@@ -380,10 +276,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test closeDocument()
-   *
-   */
   #[@test]
   public function endDocumentClosesComments() {
     $this->writer->startElement('books');
@@ -397,10 +289,6 @@ class XmlStreamWriterTest extends TestCase {
     );
   }
 
-  /**
-   * Test closeElement()
-   *
-   */
   #[@test, @expect(class= 'lang.IllegalStateException', withMessage= '/Incorrect nesting/')]
   public function incorrectNesting() {
     $this->writer->startElement('books');
