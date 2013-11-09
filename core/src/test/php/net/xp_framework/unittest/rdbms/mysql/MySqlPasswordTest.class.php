@@ -1,20 +1,14 @@
 <?php namespace net\xp_framework\unittest\rdbms\mysql;
 
-use unittest\TestCase;
 use rdbms\mysqlx\MySqlPassword;
-
 
 /**
  * TestCase
  *
  * @see     xp://rdbms.mysqlx.MySqlPassword
  */
-class MySqlPasswordTest extends TestCase {
+class MySqlPasswordTest extends \unittest\TestCase {
 
-  /**
-   * Test PROTOCOL_40 (8 byte scramble buf)
-   *
-   */
   #[@test]
   public function protocol40() {
     $this->assertEquals(
@@ -23,10 +17,6 @@ class MySqlPasswordTest extends TestCase {
     );
   }
 
-  /**
-   * Test PROTOCOL_41 (20 byte scramble buf)
-   *
-   */
   #[@test]
   public function protocol41() {
     $this->assertEquals(

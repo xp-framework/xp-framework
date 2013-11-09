@@ -1,21 +1,18 @@
 <?php namespace net\xp_framework\unittest\rdbms\mysql;
 
-use unittest\TestCase;
 use rdbms\mysqlx\MySqlxBufferedResultSet;
 use rdbms\mysqlx\MySqlxProtocol;
-
 
 /**
  * TestCase
  *
  * @see   xp://rdbms.mysqlx.MySqlxBufferedResultSet
  */
-class MySqlxBufferedResultSetTest extends TestCase {
+class MySqlxBufferedResultSetTest extends \unittest\TestCase {
   protected static $proto;
 
   /**
    * Defines the mock socket class necessary for these tests
-   *
    */
   #[@beforeClass]
   public static function mockSocket() {
@@ -57,17 +54,11 @@ class MySqlxBufferedResultSetTest extends TestCase {
     return new MySqlxBufferedResultSet(self::$proto->newInstance($records), $fields);
   }
 
-  /**
-   * Test constructor
-   */
   #[@test]
   public function can_create_with_empty() { 
     $this->newResultSet(array());
   }
 
-  /**
-   * Test constructor
-   */
   #[@test]
   public function can_create() { 
     $this->newResultSet(array(
@@ -78,9 +69,6 @@ class MySqlxBufferedResultSetTest extends TestCase {
     ));
   }
 
-  /**
-   * Test next()
-   */
   #[@test]
   public function next() { 
     $records= array(
@@ -89,9 +77,6 @@ class MySqlxBufferedResultSetTest extends TestCase {
     $this->assertFalse($fixture->next());
   }
 
-  /**
-   * Test next()
-   */
   #[@test]
   public function next_once() { 
     $records= array(
@@ -104,9 +89,6 @@ class MySqlxBufferedResultSetTest extends TestCase {
     $this->assertEquals($records[0], $fixture->next());
   }
 
-  /**
-   * Test next()
-   */
   #[@test]
   public function next_twice() { 
     $records= array(
@@ -124,9 +106,6 @@ class MySqlxBufferedResultSetTest extends TestCase {
     $this->assertEquals($records[1], $fixture->next());
   }
 
-  /**
-   * Test next()
-   */
   #[@test]
   public function next_returns_false_at_end() { 
     $records= array(
@@ -140,9 +119,6 @@ class MySqlxBufferedResultSetTest extends TestCase {
     $this->assertFalse($fixture->next());
   }
 
-  /**
-   * Test seek()
-   */
   #[@test]
   public function seek_to_0_before_start() {
     $records= array(
@@ -156,9 +132,6 @@ class MySqlxBufferedResultSetTest extends TestCase {
     $this->assertEquals($records[0], $fixture->next());
   }
 
-  /**
-   * Test seek()
-   */
   #[@test]
   public function seek_to_0_after_start() {
     $records= array(
@@ -173,9 +146,6 @@ class MySqlxBufferedResultSetTest extends TestCase {
     $this->assertEquals($records[0], $fixture->next());
   }
 
-  /**
-   * Test seek()
-   */
   #[@test]
   public function seek_to_1() {
     $records= array(
@@ -193,25 +163,16 @@ class MySqlxBufferedResultSetTest extends TestCase {
     $this->assertEquals($records[1], $fixture->next());
   }
 
-  /**
-   * Test seek()
-   */
   #[@test, @expect(class= 'rdbms.SQLException', withMessage= 'Cannot seek to offset 1, out of bounds')]
   public function seek_to_offset_exceeding_length() {
     $fixture= $this->newResultSet(array())->seek(1);
   }
 
-  /**
-   * Test seek()
-   */
   #[@test, @expect(class= 'rdbms.SQLException', withMessage= 'Cannot seek to offset -1, out of bounds')]
   public function seek_to_negative_offset() {
     $fixture= $this->newResultSet(array())->seek(-1);
   }
 
-  /**
-   * Test seek()
-   */
   #[@test, @expect(class= 'rdbms.SQLException', withMessage= 'Cannot seek to offset 0, out of bounds')]
   public function seek_to_zero_offset_on_empty() {
     $fixture= $this->newResultSet(array())->seek(0);
