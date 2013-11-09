@@ -1,8 +1,5 @@
 <?php namespace net\xp_framework\unittest\rdbms\drivers;
  
-use rdbms\sqlsrv\SqlSrvConnection;
-
-
 /**
  * Test SqlSrv tokenizer
  *
@@ -17,6 +14,6 @@ class SqlSrvTokenizerTest extends TDSTokenizerTest {
    * @return  rdbms.DBConnection
    */
   protected function fixture() {
-    return new SqlSrvConnection(new \rdbms\DSN('sqlsrv://localhost/'));
+    return new \rdbms\sqlsrv\SqlSrvConnection(new \rdbms\DSN('sqlsrv://localhost/'));
   }
 }

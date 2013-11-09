@@ -1,7 +1,4 @@
 <?php namespace net\xp_framework\unittest\rdbms\drivers;
- 
-use rdbms\mysqli\MySQLiConnection;
-
 
 /**
  * Test MySQLi tokenizer
@@ -17,6 +14,6 @@ class MySQLImprovedTokenizerTest extends MySQLTokenizerTest {
    * @return  rdbms.DBConnection
    */
   protected function fixture() {
-    return new MySQLiConnection(new \rdbms\DSN('mysqli://localhost/'));
+    return new \rdbms\mysqli\MySQLiConnection(new \rdbms\DSN('mysqli://localhost/'));
   }
 }

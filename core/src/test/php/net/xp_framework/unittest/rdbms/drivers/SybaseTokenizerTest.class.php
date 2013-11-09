@@ -1,8 +1,5 @@
 <?php namespace net\xp_framework\unittest\rdbms\drivers;
  
-use rdbms\sybase\SybaseConnection;
-
-
 /**
  * Test sybase tokenizer
  *
@@ -17,6 +14,6 @@ class SybaseTokenizerTest extends TDSTokenizerTest {
    * @return  rdbms.DBConnection
    */
   protected function fixture() {
-    return new SybaseConnection(new \rdbms\DSN('sybase://localhost:1999/'));
+    return new \rdbms\sybase\SybaseConnection(new \rdbms\DSN('sybase://localhost:1999/'));
   }
 }

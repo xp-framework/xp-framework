@@ -1,8 +1,5 @@
 <?php namespace net\xp_framework\unittest\rdbms\drivers;
  
-use rdbms\mssql\MsSQLConnection;
-
-
 /**
  * Test MSSQL tokenizer
  *
@@ -17,6 +14,6 @@ class MssqlTokenizerTest extends TDSTokenizerTest {
    * @return  rdbms.DBConnection
    */
   protected function fixture() {
-    return new MsSQLConnection(new \rdbms\DSN('mssql://localhost:1433/'));
+    return new \rdbms\mssql\MsSQLConnection(new \rdbms\DSN('mssql://localhost:1433/'));
   }
 }

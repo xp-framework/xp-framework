@@ -1,19 +1,12 @@
 <?php namespace net\xp_framework\unittest\rdbms\drivers;
  
-use net\xp_framework\unittest\rdbms\TokenizerTest;
-
-
 /**
  * Test tokenizers for TDS based connections
  *
  * @see   xp://net.xp_framework.unittest.rdbms.TokenizerTest
  */
-abstract class TDSTokenizerTest extends TokenizerTest {
+abstract class TDSTokenizerTest extends \net\xp_framework\unittest\rdbms\TokenizerTest {
 
-  /**
-   * Test date token
-   *
-   */
   #[@test]
   public function dateToken() {
     $t= new \util\Date('1977-12-14');
@@ -23,10 +16,6 @@ abstract class TDSTokenizerTest extends TokenizerTest {
     );
   }
 
-  /**
-   * Test timestamp token
-   *
-   */
   #[@test]
   public function timeStampToken() {
     $t= create(new \util\Date('1977-12-14'))->getTime();
@@ -36,10 +25,6 @@ abstract class TDSTokenizerTest extends TokenizerTest {
     );
   }
 
-  /**
-   * Test array of date token
-   *
-   */
   #[@test]
   public function dateArrayToken() {
     $d1= new \util\Date('1977-12-14');

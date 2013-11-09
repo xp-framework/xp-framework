@@ -1,8 +1,5 @@
 <?php namespace net\xp_framework\unittest\rdbms\drivers;
  
-use rdbms\mysql\MySQLConnection;
-
-
 /**
  * Test default MySQL tokenizer
  *
@@ -17,6 +14,6 @@ class DefaultMySQLTokenizerTest extends MySQLTokenizerTest {
    * @return  rdbms.DBConnection
    */
   protected function fixture() {
-    return new MySQLConnection(new \rdbms\DSN('mysql://localhost/'));
+    return new \rdbms\mysql\MySQLConnection(new \rdbms\DSN('mysql://localhost/'));
   }
 }

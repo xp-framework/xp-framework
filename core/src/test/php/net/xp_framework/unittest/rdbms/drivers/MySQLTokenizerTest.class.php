@@ -1,19 +1,12 @@
 <?php namespace net\xp_framework\unittest\rdbms\drivers;
  
-use net\xp_framework\unittest\rdbms\TokenizerTest;
-
-
 /**
  * Test tokenizers for MySQL based connections
  *
  * @see   xp://net.xp_framework.unittest.rdbms.TokenizerTest
  */
-abstract class MySQLTokenizerTest extends TokenizerTest {
+abstract class MySQLTokenizerTest extends \net\xp_framework\unittest\rdbms\TokenizerTest {
 
-  /**
-   * Test label token
-   *
-   */
   #[@test]
   public function labelToken() {
     $this->assertEquals(
@@ -22,10 +15,6 @@ abstract class MySQLTokenizerTest extends TokenizerTest {
     );
   }
 
-  /**
-   * Test backslash escaping
-   *
-   */
   #[@test]
   public function backslash() {
     $this->assertEquals(

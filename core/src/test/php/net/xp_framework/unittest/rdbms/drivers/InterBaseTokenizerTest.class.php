@@ -1,16 +1,12 @@
 <?php namespace net\xp_framework\unittest\rdbms\drivers;
  
-use rdbms\ibase\InterBaseConnection;
-use net\xp_framework\unittest\rdbms\TokenizerTest;
-
-
 /**
  * Test tokenizers for IBase connections
  *
  * @see   xp://rdbms.ibase.InterBaseConnection
  * @see   xp://net.xp_framework.unittest.rdbms.TokenizerTest
  */
-class InterBaseTokenizerTest extends TokenizerTest {
+class InterBaseTokenizerTest extends \net\xp_framework\unittest\rdbms\TokenizerTest {
 
   /**
    * Sets up a Database Object for the test
@@ -18,6 +14,6 @@ class InterBaseTokenizerTest extends TokenizerTest {
    * @return  rdbms.DBConnection
    */
   protected function fixture() {
-    return new InterBaseConnection(new \rdbms\DSN('ibase://localhost/'));
+    return new \rdbms\ibase\InterBaseConnection(new \rdbms\DSN('ibase://localhost/'));
   }
 }
