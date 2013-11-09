@@ -1,22 +1,16 @@
 <?php namespace net\xp_framework\unittest\rdbms\mock;
 
-use rdbms\ResultSet;
-
-
 /**
- * Result set
- *
- * @purpose  Mock Object
+ * Result set Mock Object
  */
-class MockResultSet extends ResultSet {
-  public
-    $offset = 0,
-    $data   = array();
+class MockResultSet extends \rdbms\ResultSet {
+  protected $offset= 0;
+  protected $data= array();
 
   /**
    * Constructor
    *
-   * @param   array<string, mixed>[] data
+   * @param   var[] data
    */
   public function __construct($data= array()) {
     $s= sizeof($data);
@@ -27,7 +21,7 @@ class MockResultSet extends ResultSet {
   /**
    * Seek
    *
-   * @param   int offset
+   * @param   int $offset
    * @return  bool success
    * @throws  rdbms.SQLException
    */
@@ -44,8 +38,8 @@ class MockResultSet extends ResultSet {
    * the fields contents if a field is specified or FALSE to indicate
    * no more rows are available.
    *
-   * @param   string field default NULL
-   * @return  mixed
+   * @param   string $field default NULL
+   * @return  var
    */
   public function next($field= null) {
     if ($this->offset >= sizeof($this->data)) return false;

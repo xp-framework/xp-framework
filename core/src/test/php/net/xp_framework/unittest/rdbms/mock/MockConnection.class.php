@@ -1,9 +1,7 @@
 <?php namespace net\xp_framework\unittest\rdbms\mock;
 
 use rdbms\Transaction;
-use rdbms\DBConnection;
 use rdbms\StatementFormatter;
-
 
 /**
  * Mock database connection.
@@ -11,7 +9,7 @@ use rdbms\StatementFormatter;
  * @see      xp://rdbms.DBConnection
  * @purpose  Mock object
  */
-class MockConnection extends DBConnection {
+class MockConnection extends \rdbms\DBConnection {
   public
     $affectedRows     = 1,
     $identityValue    = 1,
