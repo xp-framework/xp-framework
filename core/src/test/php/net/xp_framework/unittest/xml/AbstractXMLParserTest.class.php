@@ -16,12 +16,10 @@ abstract class AbstractXMLParserTest extends TestCase {
   const ATTR = 1;
   const CHLD = 2;
   
-  protected
-    $parser = null;
+  protected $parser= null;
 
   /**
    * Sets up test case
-   *
    */
   public function setUp() {
     $this->parser= new XMLParser();
@@ -29,7 +27,6 @@ abstract class AbstractXMLParserTest extends TestCase {
   
   /**
    * Tears down test case
-   *
    */
   public function tearDown() {
     delete($this->parser);
@@ -94,37 +91,21 @@ abstract class AbstractXMLParserTest extends TestCase {
     }');
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function withoutDeclaration() {
     $this->assertTrue($this->parser->parse($this->source('<root/>', true)));
   }
 
-  /**
-   * Test parsing an empty string
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function emptyString() {
     $this->parser->parse($this->source('', false));
   }
   
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function withDeclaration() {
     $this->assertTrue($this->parser->parse($this->source('<root/>')));
   }
 
-  /**
-   * Test tree parsing
-   *
-   */
   #[@test]
   public function tree() {
     $callback= $this->newCallback();
@@ -170,11 +151,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     }
   }
 
-  /**
-   * Test reusability, that is, a parser can be reused after calling parse()
-   * on it.
-   *
-   */
   #[@test]
   public function reusable() {
     for ($i= 0; $i < 4; $i++) {
@@ -189,10 +165,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     }
   }
 
-  /**
-   * Test error is thrown late in the process
-   *
-   */
   #[@test]
   public function errorOccursLate() {
     $callback= $this->newCallback();
@@ -211,82 +183,46 @@ abstract class AbstractXMLParserTest extends TestCase {
     }
   }
 
-  /**
-   * Test a document without a root node
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function withoutRoot() {
     $this->parser->parse($this->source(''));
   }
 
-  /**
-   * Test an unclosed tag
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function unclosedTag() {
     $this->parser->parse($this->source('<a>'));
   }
 
-  /**
-   * Test an unclosed attribute
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function unclosedAttribute() {
     $this->parser->parse($this->source('<a href="http://>Click</a>'));
   }
 
-  /**
-   * Test an unclosed comment
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function unclosedComment() {
     $this->parser->parse($this->source('<doc><!-- Comment</doc>'));
   }
 
-  /**
-   * Test an incorrectly closed comment
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function incorrectlyClosedComment() {
     $this->parser->parse($this->source('<doc><!-- Comment ></doc>'));
   }
 
-  /**
-   * Test a malformed comment
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function malformedComment() {
     $this->parser->parse($this->source('<doc><! Comment --></doc>'));
   }
 
-  /**
-   * Test an unclosed PI ("processing instruction")
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function unclosedProcessingInstruction() {
     $this->parser->parse($this->source('<doc><?php echo "1"; </doc>'));
   }
 
-  /**
-   * Test attribute redefinition
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function attributeRedefinition() {
     $this->parser->parse($this->source('<a id="1" id="2"/>'));
   }
 
-  /**
-   * Test quotes inside attributes
-   *
-   */
   #[@test]
   public function quotesInsideAttributes() {
     $callback= $this->newCallback();
@@ -298,10 +234,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     );
   }
 
-  /**
-   * Test unquoted greater sign inside an attribute
-   *
-   */
   #[@test]
   public function greaterSignInAttribute() {
     $callback= $this->newCallback();
@@ -313,19 +245,11 @@ abstract class AbstractXMLParserTest extends TestCase {
     );
   }
 
-  /**
-   * Test unquoted smaller sign inside an attribute
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function smallerSignInAttribute() {
     $this->parser->parse($this->source('<a id="<"/>'));
   }
 
-  /**
-   * Test CDATA
-   *
-   */
   #[@test]
   public function cdataSection() {
     $callback= $this->newCallback();
@@ -340,10 +264,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     ), $callback->tree);
   }
 
-  /**
-   * Test processing instructions
-   *
-   */
   #[@test]
   public function processingInstruction() {
     $callback= $this->newCallback();
@@ -357,10 +277,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     ), $callback->tree);
   }
 
-  /**
-   * Test comments
-   *
-   */
   #[@test]
   public function comment() {
     $callback= $this->newCallback();
@@ -374,10 +290,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     ), $callback->tree);
   }
 
-  /**
-   * Test nested CDATA is not allowed
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function nestedCdata() {
     $callback= $this->newCallback();
@@ -387,10 +299,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     '));
   }
 
-  /**
-   * Test predefined entities
-   *
-   */
   #[@test]
   public function predefinedEntities() {
     $callback= $this->newCallback();
@@ -406,10 +314,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     ), $callback->tree);
   }
 
-  /**
-   * Test hex entity
-   *
-   */
   #[@test]
   public function hexEntity() {
     $callback= $this->newCallback();
@@ -425,10 +329,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     ), $callback->tree);
   }
 
-  /**
-   * Test umlauts returned in iso-8859-1
-   *
-   */
   #[@test]
   public function iso88591Conversion() {
     $this->parser->setEncoding('iso-8859-1');
@@ -446,10 +346,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     ), $callback->tree);
   }
 
-  /**
-   * Test umlauts returned in UTF-8
-   *
-   */
   #[@test]
   public function utf8Conversion() {
     $this->parser->setEncoding('utf-8');
@@ -467,46 +363,26 @@ abstract class AbstractXMLParserTest extends TestCase {
     ), $callback->tree);
   }
 
-  /**
-   * Test undeclared entity
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function undeclaredEntity() {
     $this->parser->parse($this->source('<doc>&nbsp;</doc>'));
   }
 
-  /**
-   * Test undeclared entity inside an attribute
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function undeclaredEntityInAttribute() {
     $this->parser->parse($this->source('<doc><a href="&nbsp;"/></doc>'));
   }
 
-  /**
-   * Test double root node
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function doubleRoot() {
     $this->parser->parse($this->source('<doc/><doc/>'));
   }
 
-  /**
-   * Test DOCTYPE section without content
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function docTypeWithoutContent() {
     $this->parser->parse($this->source('<!DOCTYPE doc ]>'));
   }
 
-  /**
-   * Test entity declared via ENTITY
-   *
-   */
   #[@test]
   public function characterEntity() {
     $callback= $this->newCallback();
@@ -523,10 +399,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     ), $callback->tree);
   }
 
-  /**
-   * Test entity declared via ENTITY
-   *
-   */
   #[@test]
   public function entity() {
     $callback= $this->newCallback();
@@ -543,10 +415,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     ), $callback->tree);
   }
 
-  /**
-   * Test entity declared via ENTITY and used inside an attribute
-   *
-   */
   #[@test]
   public function entityInAttribute() {
     $callback= $this->newCallback();
@@ -563,10 +431,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     ), $callback->tree);
   }
 
-  /**
-   * Test entity expansion
-   *
-   */
   #[@test]
   public function entityExpansion() {
     $callback= $this->newCallback();
@@ -586,10 +450,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     ), $callback->tree);
   }
 
-  /**
-   * Test external entity declared via ENTITY
-   *
-   */
   #[@test]
   public function externalEntity() {
     $callback= $this->newCallback();
@@ -604,11 +464,6 @@ abstract class AbstractXMLParserTest extends TestCase {
     ), $callback->tree);
   }
 
-  /**
-   * Test external entity declared via ENTITY and used inside an 
-   * attribute raises a XML_ERR_ENTITY_IS_EXTERNAL
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function externalEntityInAttribute() {
     $callback= $this->newCallback();

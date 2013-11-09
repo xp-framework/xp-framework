@@ -1,7 +1,5 @@
 <?php namespace net\xp_framework\unittest\xml;
  
-use xml\DomXSLProcessor;
-
 /**
  * ProcessorTest implementation that tests the DomXSL processor
  *
@@ -34,7 +32,7 @@ class DomXslProcessorTest extends AbstractProcessorTest {
    * @return  xml.IXSLProcessor
    */
   public function processorInstance() {
-    return new DomXSLProcessor();
+    return new \xml\DomXSLProcessor();
   }
 
   /**
@@ -65,10 +63,6 @@ class DomXslProcessorTest extends AbstractProcessorTest {
     return '@@SUCCESS@@';
   }
   
-  /**
-   * Test 
-   *
-   */
   #[@test]
   public function callXslHook() {
     $this->processor->registerInstance('proc', $this);
@@ -87,10 +81,6 @@ class DomXslProcessorTest extends AbstractProcessorTest {
     $this->processor->run();
   }
   
-  /**
-   * Test
-   *
-   */
   #[@test, @expect('lang.ElementNotFoundException')]
   public function callNonXslHook() {
     $this->processor->registerInstance('proc', $this);
@@ -109,10 +99,6 @@ class DomXslProcessorTest extends AbstractProcessorTest {
     $this->processor->run();
   }
   
-  /**
-   * Test
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function callNonRegisteredInstance() {
     $this->processor->setXMLBuf('<document/>');
@@ -224,10 +210,6 @@ class DomXslProcessorTest extends AbstractProcessorTest {
     }
   }
   
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function defaultCallbacks() {
 
@@ -249,10 +231,6 @@ class DomXslProcessorTest extends AbstractProcessorTest {
     $this->assertXmlEquals('<i>LOWER STRING</i>', $this->processor->output());
   }
   
-  /**
-   * Tests setXSLDoc() method
-   *
-   */
   #[@test]
   public function setXSLDoc() {
     $doc= new \DOMDocument();
@@ -267,10 +245,6 @@ class DomXslProcessorTest extends AbstractProcessorTest {
     $this->processor->setXSLDoc($doc);
   }
   
-  /**
-   * Tests setXMLDoc() method
-   *
-   */
   #[@test]
   public function setXMLDoc() {
     $doc= new \DOMDocument();
@@ -278,11 +252,6 @@ class DomXslProcessorTest extends AbstractProcessorTest {
     $this->processor->setXMLDoc($doc);
   }
   
-  /**
-   * Test a trivial processor run with DOMDocuments 
-   * as stylesheet and XML document
-   *
-   */
   #[@test]
   public function processDocuments() {
     $this->setXSLDoc();
@@ -291,21 +260,11 @@ class DomXslProcessorTest extends AbstractProcessorTest {
     $this->assertEquals('document', $this->processor->output());
   }
   
-  /**
-   * Test loading XSL with schemes, e.g. by using res:// and
-   * ResourceProvider
-   *
-   */
   #[@test]
   public function loadXSLFromStreamWrapper() {
     $this->processor->setXSLFile('res://net/xp_framework/unittest/xml/include.xsl');
   }
   
-  /**
-   * Test loading non-existant XSL with schemes, e.g. by using res://
-   * and ResourceProvider
-   *
-   */
   #[@test, @expect('io.FileNotFoundException')]
   public function loadNonexistantXSLFromStreamWrapper() {
     $this->processor->setXSLFile('res://nonexistant.xsl');

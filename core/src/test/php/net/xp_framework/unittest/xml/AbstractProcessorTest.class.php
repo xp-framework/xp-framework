@@ -1,30 +1,25 @@
 <?php namespace net\xp_framework\unittest\xml;
  
-use unittest\TestCase;
-
-
 /**
  * Test XSL processor
  *
- * @see      xp://xml.IXSLProcessor
- * @purpose  Unit Test
+ * @see    xp://xml.IXSLProcessor
  */
-class AbstractProcessorTest extends TestCase {
-  public
-    $processor      = null,
-    $xmlDeclaration = '';
+class AbstractProcessorTest extends \unittest\TestCase {
+  public $processor= null;
+  public $xmlDeclaration= '';
     
   /**
    * Compares XML after stripping all whitespace between tags of both 
    * expected and actual strings.
    *
    * @see     xp://unittest.TestCase#assertEquals
-   * @param   string expect
-   * @param   string actual
+   * @param   string $expect
+   * @param   string $actual
    * @throws  unittest.AssertionFailedError
    */
   public function assertXmlEquals($expect, $actual) {
-    return $this->assertEquals(
+    $this->assertEquals(
       $this->xmlDeclaration.preg_replace('#>[\s\r\n]+<#', '><', trim($expect)),
       preg_replace('#>[\s\r\n]+<#', '><', trim($actual))
     );
@@ -92,118 +87,66 @@ class AbstractProcessorTest extends TestCase {
     $this->xmlDeclaration= '<?xml version="1.0" encoding="'.$this->processorCharset().'"?>';
   }
 
-  /**
-   * Tests setXMLFile() method
-   *
-   */
   #[@test, @expect('io.FileNotFoundException')]
   public function setNonExistantXMLFile() {
     $this->processor->setXMLFile(':does-no-exist:');
   }
 
-  /**
-   * Tests setXMLFile() method
-   *
-   */
   #[@test, @expect('xml.TransformerException')]
   public function setMalformedXMLFile() {
     $this->processor->setXMLFile($this->includeUri('malformed'));
   }
 
-  /**
-   * Tests setXMLFile() method
-   *
-   */
   #[@test]
   public function setXMLFile() {
     $this->processor->setXMLFile($this->includeUri('include'));
   }
 
-  /**
-   * Tests setXMLBuf() method
-   *
-   */
   #[@test]
   public function setXMLBuf() {
     $this->processor->setXMLBuf('<document/>');
   }
 
-  /**
-   * Tests setXMLTree() method
-   *
-   */
   #[@test]
   public function setXMLTree() {
     $this->processor->setXMLTree(new \xml\Tree('document'));
   }
 
-  /**
-   * Tests setXMLTree() method
-   *
-   */
   #[@test, @expect('xml.TransformerException')]
   public function setMalformedXMLTree() {
     $this->processor->setXMLTree(new \xml\Tree('<!>'));    // xml.Tree does not check this!
   }
 
-  /**
-   * Tests setXMLBuf() method
-   *
-   */
   #[@test, @expect('xml.TransformerException')]
   public function setMalformedXMLBuf() {
     $this->processor->setXMLBuf('this-is-not-valid<XML>');
   }
 
-  /**
-   * Tests setXSLFile() method
-   *
-   */
   #[@test, @expect('io.FileNotFoundException')]
   public function setNonExistantXSLFile() {
     $this->processor->setXSLFile(':does-no-exist:');
   }
 
-  /**
-   * Tests setXSLFile() method
-   *
-   */
   #[@test, @expect('xml.TransformerException')]
   public function setMalformedXSLFile() {
     $this->processor->setXSLFile($this->includeUri('malformed'));
   }
 
-  /**
-   * Tests setXSLFile() method
-   *
-   */
   #[@test]
   public function setXSLFile() {
     $this->processor->setXSLFile($this->includeUri('include'));
   }
 
-  /**
-   * Tests setXSLBuf() method
-   *
-   */
   #[@test]
   public function setXSLBuf() {
     $this->processor->setXSLBuf('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"/>');
   }
 
-  /**
-   * Tests setXSLBuf() method
-   *
-   */
   #[@test, @expect('xml.TransformerException')]
   public function setMalformedXSLBuf() {
     $this->processor->setXSLBuf('<xsl stylsheet!');
   }
 
-  /**
-   * Tests setXSLTree() method
-   *
-   */
   #[@test]
   public function setXSLTree() {
     $t= new \xml\Tree('xsl:stylesheet');
@@ -211,29 +154,17 @@ class AbstractProcessorTest extends TestCase {
     $this->processor->setXSLTree($t);
   }
 
-  /**
-   * Tests setXSLTree() method
-   *
-   */
   #[@test, @expect('xml.TransformerException')]
   public function setMalformedXSLTree() {
     $this->processor->setXSLTree(new \xml\Tree('<!>'));    // xml.Tree does not check this!
   }
 
-  /**
-   * Tests the setParam() and getParam() methods
-   *
-   */
   #[@test]
   public function paramAccessors() {
     $this->processor->setParam('a', 'b');
     $this->assertEquals('b', $this->processor->getParam('a'));
   }
 
-  /**
-   * Tests the setBase() and getBase() methods
-   *
-   */
   #[@test]
   public function baseAccessors() {
     $file= \lang\Runtime::getInstance()->getExecutable()->getFilename();
@@ -242,10 +173,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals($path, $this->processor->getBase());
   }
 
-  /**
-   * Tests the setBase() adds trailing DIRECTORY_SEPARATOR
-   *
-   */
   #[@test]
   public function setBaseAddsTrailingDirectorySeparator() {
     $file= \lang\Runtime::getInstance()->getExecutable()->getFilename();
@@ -254,10 +181,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals($path.DIRECTORY_SEPARATOR, $this->processor->getBase());
   }
 
-  /**
-   * Tests the setParams() methods
-   *
-   */
   #[@test]
   public function setParams() {
     $this->processor->setParams(array(
@@ -270,10 +193,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals('two', $this->processor->getParam('right'));
   }
 
-  /**
-   * Tests a transformation that will result in an empty result
-   *
-   */
   #[@test]
   public function transformationWithEmptyResult() {
     $this->processor->setXMLBuf('<document/>');
@@ -286,11 +205,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals('', $this->processor->output());
   }
 
-  /**
-   * Tests a transformation w/ ISO-8859-1 XSL without output encoding
-   * results in the default processor charset.
-   *
-   */
   #[@test]
   public function iso88591XslWithoutOutputEncoding() {
     $this->processor->setXMLBuf('<document/>');
@@ -310,11 +224,6 @@ class AbstractProcessorTest extends TestCase {
     );
   }
 
-  /**
-   * Tests a transformation w/ ISO-8859-1 XSL with utf-8 output encoding
-   * results in UTF-8 output.
-   *
-   */
   #[@test]
   public function iso88591XslWithUtf8OutputEncoding() {
     $this->processor->setXMLBuf('<document/>');
@@ -331,11 +240,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals('HÃ¤llo', $this->processor->output());
   }
 
-  /**
-   * Tests a transformation w/ UTF-8 XSL without output encoding
-   * results in the default processor charset.
-   *
-   */
   #[@test]
   public function utf8XslWithoutOutputEncoding() {
     $this->processor->setXMLBuf('<document/>');
@@ -355,11 +259,6 @@ class AbstractProcessorTest extends TestCase {
     );
   }
 
-  /**
-   * Tests a transformation w/ UTF-8 XSL with utf-8 output encoding
-   * results in UTF-8 output.
-   *
-   */
   #[@test]
   public function utf8XslWithUtf8OutputEncoding() {
     $this->processor->setXMLBuf('<document/>');
@@ -376,11 +275,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals('HÃ¤llo', $this->processor->output());
   }
 
-  /**
-   * Tests a transformation w/ UTF-8 XSL with iso-8859-1 output encoding
-   * results in iso-8859-1 output.
-   *
-   */
   #[@test]
   public function utf8XslWithIso88591OutputEncoding() {
     $this->processor->setXMLBuf('<document/>');
@@ -397,11 +291,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals('Hällo', $this->processor->output());
   }
 
-  /**
-   * Tests a transformation w/ ISO-8859-1 XSL with iso-8859-1 output encoding
-   * results in iso-8859-1 output.
-   *
-   */
   #[@test]
   public function iso88591XslWithIso88591OutputEncoding() {
     $this->processor->setXMLBuf('<document/>');
@@ -418,10 +307,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals('Hällo', $this->processor->output());
   }
 
-  /**
-   * Tests a transformation
-   *
-   */
   #[@test]
   public function transformationWithResult() {
     $this->processor->setXMLBuf('<document/>');
@@ -437,10 +322,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertXmlEquals('<b>Hello</b>', $this->processor->output());
   }
 
-  /**
-   * Tests a transformation to HTML
-   *
-   */
   #[@test]
   public function transformationToHtml() {
     $this->processor->setXMLBuf('<document/>');
@@ -456,10 +337,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals('<b>Hello</b>', trim($this->processor->output()));
   }
 
-  /**
-   * Tests a transformation javascript embedded in a CDATA section
-   *
-   */
   #[@test]
   public function javaScriptInCDataSection() {
     $this->processor->setXMLBuf('<document/>');
@@ -478,10 +355,6 @@ class AbstractProcessorTest extends TestCase {
     );
   }
 
-  /**
-   * Tests a transformation with parameters
-   *
-   */
   #[@test]
   public function omitXmlDeclaration() {
     $this->processor->setXMLBuf('<document/>');
@@ -497,10 +370,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals('<tag>No XML declaration</tag>', trim($this->processor->output()));
   }
 
-  /**
-   * Tests a transformation with parameters
-   *
-   */
   #[@test]
   public function transformationWithParameter() {
     $this->processor->setXMLBuf('<document/>');
@@ -518,10 +387,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertXmlEquals('<b>Parameter #1</b>', $this->processor->output());
   }
 
-  /**
-   * Tests a transformation with parameters
-   *
-   */
   #[@test]
   public function transformationWithParameters() {
     $this->processor->setXMLBuf('<document/>');
@@ -543,10 +408,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertXmlEquals('<b>3</b>', $this->processor->output());
   }
 
-  /**
-   * Tests a transformation with malformed XML
-   *
-   */
   #[@test, @expect('xml.TransformerException')]
   public function malformedXML() {
     $this->processor->setXMLBuf('@@MALFORMED@@');
@@ -554,10 +415,6 @@ class AbstractProcessorTest extends TestCase {
     $this->processor->run();
   }
 
-  /**
-   * Tests a transformation with malformed XSL
-   *
-   */
   #[@test, @expect('xml.TransformerException')]
   public function malformedXSL() {
     $this->processor->setXMLBuf('<document/>');
@@ -565,10 +422,6 @@ class AbstractProcessorTest extends TestCase {
     $this->processor->run();
   }
 
-  /**
-   * Tests a transformation with malformed XSL expression
-   *
-   */
   #[@test, @expect('xml.TransformerException')]
   public function malformedExpression() {
     $this->processor->setXMLBuf('<document/>');
@@ -582,10 +435,6 @@ class AbstractProcessorTest extends TestCase {
     $this->processor->run();
   }
 
-  /**
-   * Tests a transformation with an unbound variable
-   *
-   */
   #[@test, @expect('xml.TransformerException')]
   public function unboundVariable() {
     $this->processor->setXMLBuf('<document/>');
@@ -599,11 +448,6 @@ class AbstractProcessorTest extends TestCase {
     $this->processor->run();
   }
 
-  /**
-   * Tests a transformation with an xsl:include reference to a non-
-   * existant file.
-   *
-   */
   #[@test, @expect('xml.TransformerException')]
   public function includeNotFound() {
     $this->processor->setXMLBuf('<document/>');
@@ -615,11 +459,6 @@ class AbstractProcessorTest extends TestCase {
     $this->processor->run();
   }
 
-  /**
-   * Tests a transformation with an xsl:import reference to a non-
-   * existant file.
-   *
-   */
   #[@test, @expect('xml.TransformerException')]
   public function importNotFound() {
     $this->processor->setXMLBuf('<document/>');
@@ -631,11 +470,6 @@ class AbstractProcessorTest extends TestCase {
     $this->processor->run();
   }
 
-  /**
-   * Tests a transformation with an xsl:include reference to an
-   * existant file.
-   *
-   */
   #[@test]
   public function includingAFile() {
     $this->processor->setXMLBuf('<document/>');
@@ -651,11 +485,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals('TEST', $this->processor->output());
   }
 
-  /**
-   * Tests a transformation with an xsl:import reference to an
-   * existant file.
-   *
-   */
   #[@test]
   public function importingAFile() {
     $this->processor->setXMLBuf('<document/>');
@@ -671,10 +500,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals('TEST', $this->processor->output());
   }
 
-  /**
-   * Tests the output-encoding is determined from the included file
-   *
-   */
   #[@test]
   public function outputEncodingFromIncludedFile() {
     $this->processor->setXMLBuf('<document/>');
@@ -687,10 +512,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals('iso-8859-1', $this->processor->outputEncoding());
   }
 
-  /**
-   * Tests the output-encoding is determined from the imported file
-   *
-   */
   #[@test]
   public function outputEncodingFromImportedFile() {
     $this->processor->setXMLBuf('<document/>');
@@ -703,11 +524,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals('iso-8859-1', $this->processor->outputEncoding());
   }
 
-  /**
-   * Tests the output-encoding is determined from the file included 
-   * from an imported file.
-   *
-   */
   #[@test]
   public function outputEncodingFromIncludedInImportedFile() {
     $this->processor->setXMLBuf('<document/>');
@@ -720,11 +536,6 @@ class AbstractProcessorTest extends TestCase {
     $this->assertEquals('iso-8859-1', $this->processor->outputEncoding());
   }
 
-  /**
-   * Tests the output-encoding is determined from the file included 
-   * from an included file.
-   *
-   */
   #[@test]
   public function outputEncodingFromIncludedInIncludedFile() {
     $this->processor->setXMLBuf('<document/>');

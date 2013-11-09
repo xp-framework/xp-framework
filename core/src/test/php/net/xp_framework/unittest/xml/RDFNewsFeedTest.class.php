@@ -3,7 +3,6 @@
 use unittest\TestCase;
 use xml\rdf\RDFNewsFeed;
 
-
 /**
  * TestCase
  *
@@ -11,19 +10,11 @@ use xml\rdf\RDFNewsFeed;
  */
 class RDFNewsFeedTest extends TestCase {
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function can_create() {
     new RDFNewsFeed();
   }
 
-  /**
-   * Test getSource()
-   *
-   */
   #[@test]
   public function source_of_new_newsfeed() {
     $f= new RDFNewsFeed();
@@ -37,10 +28,6 @@ class RDFNewsFeedTest extends TestCase {
     );
   }
 
-  /**
-   * Test getSource() and setChannel()
-   *
-   */
   #[@test]
   public function source_of_newsfeed_with_channel() {
     $f= new RDFNewsFeed();
@@ -66,10 +53,6 @@ class RDFNewsFeedTest extends TestCase {
     );
   }
 
-  /**
-   * Test getSource() and addItem()
-   *
-   */
   #[@test]
   public function source_of_newsfeed_with_channel_and_item() {
     $f= new RDFNewsFeed();
@@ -106,10 +89,6 @@ class RDFNewsFeedTest extends TestCase {
     );
   }
 
-  /**
-   * Test getSource() and addItem()
-   *
-   */
   #[@test]
   public function source_of_newsfeed_with_channel_and_two_items() {
     $f= new RDFNewsFeed();
@@ -154,20 +133,12 @@ class RDFNewsFeedTest extends TestCase {
     );
   }
 
-  /**
-   * Passing non-util.Date objects fails
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function setChannel_only_accepts_a_date() {
     $f= new RDFNewsFeed();
     $f->setChannel('Channel', '/', 'Description', 'I am not a date');
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function setChannel_accepting_date() {
     $f= new RDFNewsFeed();
@@ -194,10 +165,6 @@ class RDFNewsFeedTest extends TestCase {
     );
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function addItem_only_accepts_a_date() {
     $f= new RDFNewsFeed();
@@ -205,10 +172,6 @@ class RDFNewsFeedTest extends TestCase {
     $f->addItem('Item', '/', 'Desc', 'I am not a date');
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function addItem_accepting_date() {
     $f= new RDFNewsFeed();

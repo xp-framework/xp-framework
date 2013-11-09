@@ -3,19 +3,16 @@
 use unittest\TestCase;
 use xml\meta\Marshaller;
 
-
 /**
  * Test Marshaller API
  *
- * @see      xp://xml.meta.Marshaller
- * @purpose  Unit Test
+ * @see   xp://xml.meta.Marshaller
  */
 class MarshallerTest extends TestCase {
   protected $fixture= null;
 
   /**
    * Creates fixture
-   *
    */
   public function setUp() {
     $this->fixture= new Marshaller();
@@ -26,31 +23,23 @@ class MarshallerTest extends TestCase {
    * expected and actual strings.
    *
    * @see     xp://unittest.TestCase#assertEquals
-   * @param   string expect
-   * @param   xml.Node node
-   * @return  bool
+   * @param   string $expect
+   * @param   xml.Node $node
+   * @throws  unittest.AssertionFailedError
    */
   public function assertMarshalled($expect, $node) {
-    return $this->assertEquals(
+    $this->assertEquals(
       preg_replace('#>[\s\r\n]+<#', '><', trim($expect)),
       preg_replace('#>[\s\r\n]+<#', '><', trim($node->getSource(INDENT_DEFAULT)))
     );
   }
 
-  /**
-   * Tests marshalTo() returns the node its given
-   *
-   */
   #[@test]
   public function marshalToReturnsGivenNode() {
     $n= new \xml\Node('node');
     $this->assertEquals($n, $this->fixture->marshalTo($n, new \lang\Object()));
   }
 
-  /**
-   * Tests node name given to marshalTo() is used
-   *
-   */
   #[@test]
   public function nameOfNodeUsed() {
     $dialog= new DialogType();
@@ -64,33 +53,16 @@ class MarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Tests marshalTo() creates new node if none is given
-   *
-   */
   #[@test]
   public function marshalToCreatesNewNodeWhenNoneGiven() {
     $this->assertEquals(new \xml\Node('object'), $this->fixture->marshalTo(null, new \lang\Object()));
   }
 
-  /**
-   * Tests marshalTo() uses an xmlfactory annotation for getting the name
-   *
-   * <code>
-   *   #[@xmlfactory(element = 'scroll')]
-   * </code>
-   *
-   * @see  xp://net.xp_framework.unittest.xml.ScrollBarType
-   */
   #[@test]
   public function classAnnotationSuppliesName() {
     $this->assertEquals(new \xml\Node('scroll'), $this->fixture->marshalTo(null, new ScrollBarType()));
   }
 
-  /**
-   * Tests the dialog's id member gets serialized as an id attribute
-   *
-   */
   #[@test]
   public function idAttribute() {
     $dialog= new DialogType();
@@ -106,10 +78,6 @@ class MarshallerTest extends TestCase {
     );
   }
   
-  /**
-   * Tests the dialog's caption member gets serialized as a node
-   *
-   */
   #[@test]
   public function captionNode() {
     $dialog= new DialogType();
@@ -125,10 +93,6 @@ class MarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the dialog's buttons member gets serialized as a nodeset
-   *
-   */
   #[@test]
   public function buttonsNodeSet() {
     $dialog= new DialogType();
@@ -155,10 +119,6 @@ class MarshallerTest extends TestCase {
     );
   }
   
-  /**
-   * Tests for a new dialog without any members set
-   *
-   */
   #[@test]
   public function emptyMembers() {
     $dialog= new DialogType();
@@ -172,10 +132,6 @@ class MarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the dialog's id member gets serialized as an id attribute
-   *
-   */
   #[@test]
   public function asTree() {
     $dialog= new DialogType();
@@ -187,11 +143,6 @@ class MarshallerTest extends TestCase {
     $this->assertEquals('file.open', $node->getAttribute('id'));
   }
 
-  /**
-   * Tests the deprecated usage
-   *
-   * @deprecated
-   */
   #[@test]
   public function deprecatedUsage() {
     $dialog= new DialogType();
@@ -201,11 +152,6 @@ class MarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the deprecated usage
-   *
-   * @deprecated
-   */
   #[@test]
   public function deprecatedUsageWithNamespace() {
     $app= new ApplicationType();
@@ -215,15 +161,6 @@ class MarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Test injection
-   *
-   * <code>
-   *   #[@xmlfactory(element= '@owner-window', inject= array('window'))]
-   * </code>
-   *
-   * @see   xp://net.xp_framework.unittest.xml.WindowType#getOwnerWindowName
-   */
   #[@test]
   public function inject() {
     $window= create(new WindowType())->withOwnerWindow(1);
@@ -236,25 +173,12 @@ class MarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Test injection
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function injectionFails() {
     $window= create(new WindowType())->withOwnerWindow(1);
     $this->fixture->marshalTo(new \xml\Node('window'), $window);
   }
 
-  /**
-   * Test namespaces
-   *
-   * <code>
-   *   #[@xmlns(app = 'http://projects.xp-framework.net/xmlns/app')]
-   * </code>
-   *
-   * @see   xp://net.xp_framework.unittest.xml.ApplicationType
-   */
   #[@test]
   public function namespaces() {
     $this->assertMarshalled(
@@ -263,13 +187,6 @@ class MarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Tests casting
-   *
-   * <code>
-   *   #[@xmlfactory(element = '@disabled', cast = 'toBool')]
-   * </code>
-   */
   #[@test]
   public function casting() {
     $t= new TextInputType();

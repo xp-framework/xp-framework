@@ -5,28 +5,21 @@ use xml\meta\Unmarshaller;
 use io\streams\MemoryInputStream;
 use xml\parser\StreamInputSource;
 
-
 /**
  * Test Unmarshaller API
  *
- * @see      xp://xml.meta.Unmarshaller
- * @purpose  Unit Test
+ * @see    xp://xml.meta.Unmarshaller
  */
 class UnmarshallerTest extends TestCase {
   protected $fixture= null;
 
   /**
    * Creates fixture
-   *
    */
   public function setUp() {
     $this->fixture= new Unmarshaller();
   }
 
-  /**
-   * Tests the id attribute gets unserialized as the dialog's id member
-   *
-   */
   #[@test]
   public function idAttribute() {
     $dialog= $this->fixture->unmarshalFrom(new StreamInputSource(new MemoryInputStream('
@@ -39,10 +32,6 @@ class UnmarshallerTest extends TestCase {
     $this->assertEquals('file.open', $dialog->getId());
   }
 
-  /**
-   * Tests the caption node gets unserialized as the dialog's caption member
-   *
-   */
   #[@test]
   public function captionNode() {
     $dialog= $this->fixture->unmarshalFrom(new StreamInputSource(new MemoryInputStream('
@@ -55,10 +44,6 @@ class UnmarshallerTest extends TestCase {
     $this->assertEquals('Open a file > Choose', $dialog->getCaption());
   }
   
-  /**
-   * Tests the buttons get unserialized to a button collection
-   *
-   */
   #[@test]
   public function buttonsNodeSet() {
     $dialog= $this->fixture->unmarshalFrom(new StreamInputSource(new MemoryInputStream('
@@ -83,13 +68,6 @@ class UnmarshallerTest extends TestCase {
     }
   }
   
-  /**
-   * Test pass attribute when used with scalar results, e.g.
-   *
-   * <code>
-   *   #[@xmlmapping(element= 'flags', pass= array('count(.)'))]
-   * </code>
-   */
   #[@test]
   public function usingPassWithScalars() {
     $dialog= $this->fixture->unmarshalFrom(new StreamInputSource(new MemoryInputStream('
@@ -102,13 +80,6 @@ class UnmarshallerTest extends TestCase {
     $this->assertEquals(array('ON_TOP', 'MODAL'), $dialog->getFlags());
   }
   
-  /**
-   * Test pass attribute when used with nodeset results, e.g.
-   *
-   * <code>
-   *   #[@xmlmapping(element= 'option', pass= array('@name'))]
-   * </code>
-   */
   #[@test]
   public function usingPassWithNodes() {
     $dialog= $this->fixture->unmarshalFrom(new StreamInputSource(new MemoryInputStream('
@@ -127,10 +98,6 @@ class UnmarshallerTest extends TestCase {
     ), $dialog->getOptions());
   }
 
-  /**
-   * Test unmarshalling from a stream
-   *
-   */
   #[@test]
   public function unmarshallingAnInputStream() {
     $dialog= $this->fixture->unmarshalFrom(
@@ -141,10 +108,6 @@ class UnmarshallerTest extends TestCase {
     $this->assertEquals('stream.select', $dialog->getId());
   }
 
-  /**
-   * Test unmarshalling malformed data
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function malformedStream() {
     $this->fixture->unmarshalFrom(
@@ -153,10 +116,6 @@ class UnmarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Test unmarshalling empty data
-   *
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function emptyStream() {
     $this->fixture->unmarshalFrom(
@@ -165,11 +124,6 @@ class UnmarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Tests the deprecated usage
-   *
-   * @deprecated
-   */
   #[@test]
   public function deprecatedUsage() {
     $xml= '<dialogtype id="file.open"/>';
@@ -180,11 +134,6 @@ class UnmarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Test unmarshalling malformed data
-   *
-   * @deprecated
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function malformedString() {
     Unmarshaller::unmarshal(
@@ -193,11 +142,6 @@ class UnmarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Test unmarshalling empty data
-   *
-   * @deprecated
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function emptyString() {
     Unmarshaller::unmarshal(
@@ -206,10 +150,6 @@ class UnmarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Test unmarshalling to a factory
-   *
-   */
   #[@test]
   public function nameBasedFactoryToDialog() {
     $object= $this->fixture->unmarshalFrom(
@@ -219,10 +159,6 @@ class UnmarshallerTest extends TestCase {
     $this->assertInstanceOf('net.xp_framework.unittest.xml.DialogType', $object);
   }
 
-  /**
-   * Test unmarshalling to a factory
-   *
-   */
   #[@test]
   public function nameBasedFactoryToButton() {
     $object= $this->fixture->unmarshalFrom(
@@ -232,10 +168,6 @@ class UnmarshallerTest extends TestCase {
     $this->assertInstanceOf('net.xp_framework.unittest.xml.ButtonType', $object);
   }
 
-  /**
-   * Test unmarshalling to a factory
-   *
-   */
   #[@test, @expect('lang.reflect.TargetInvocationException')]
   public function nameBasedFactoryToUnknown() {
     $this->fixture->unmarshalFrom(
@@ -244,10 +176,6 @@ class UnmarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Test unmarshalling to a factory
-   *
-   */
   #[@test]
   public function idBasedFactoryToDialog() {
     $object= $this->fixture->unmarshalFrom(
@@ -257,10 +185,6 @@ class UnmarshallerTest extends TestCase {
     $this->assertInstanceOf('net.xp_framework.unittest.xml.DialogType', $object);
   }
 
-  /**
-   * Test unmarshalling to a factory
-   *
-   */
   #[@test]
   public function idBasedFactoryToButton() {
     $object= $this->fixture->unmarshalFrom(
@@ -270,10 +194,6 @@ class UnmarshallerTest extends TestCase {
     $this->assertInstanceOf('net.xp_framework.unittest.xml.ButtonType', $object);
   }
 
-  /**
-   * Test unmarshalling to a factory
-   *
-   */
   #[@test, @expect('lang.reflect.TargetInvocationException')]
   public function idBasedFactoryToUnknown() {
     $this->fixture->unmarshalFrom(
@@ -282,15 +202,6 @@ class UnmarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Test injection
-   *
-   * <code>
-   *   #[@xmlmapping(element= '@owner-window', inject= array('window'))]
-   * </code>
-   *
-   * @see   xp://net.xp_framework.unittest.xml.WindowType#setOwnerWindowNamed
-   */
   #[@test]
   public function inject() {
     $window= $this->fixture->unmarshalFrom(
@@ -304,10 +215,6 @@ class UnmarshallerTest extends TestCase {
     $this->assertEquals(1, $window->getOwnerWindow());
   }
 
-  /**
-   * Test injection
-   *
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function injectionFails() {
     $this->fixture->unmarshalFrom(
@@ -316,15 +223,6 @@ class UnmarshallerTest extends TestCase {
     );
   }
 
-  /**
-   * Test namespaces
-   *
-   * <code>
-   *   #[@xmlns(app = 'http://projects.xp-framework.net/xmlns/app')]
-   * </code>
-   *
-   * @see   xp://net.xp_framework.unittest.xml.ApplicationType
-   */
   #[@test]
   public function namespaces() {
     $app= $this->fixture->unmarshalFrom(
@@ -334,14 +232,6 @@ class UnmarshallerTest extends TestCase {
     $this->assertInstanceOf('net.xp_framework.unittest.xml.ApplicationType', $app);
   }
 
-
-  /**
-   * Tests casting
-   *
-   * <code>
-   *   #[@xmlmapping(element = '@disabled', cast = 'asBool')]
-   * </code>
-   */
   #[@test]
   public function casting() {
     $t= $this->fixture->unmarshalFrom(

@@ -4,12 +4,10 @@ use unittest\TestCase;
 use lang\types\String;
 use xml\Node;
 
-
 /**
  * Test XML Node class
  *
- * @see      xp://net.xp_framework.unittest.xml.TreeTest 
- * @purpose  Unit Test
+ * @see   xp://net.xp_framework.unittest.xml.TreeTest 
  */
 class NodeTest extends TestCase {
   
@@ -24,12 +22,6 @@ class NodeTest extends TestCase {
     return rtrim($node->getSource($mode), "\n");
   }
   
-  /**
-   * Tests attribute accessors
-   *
-   * @see     xp://xml.Node#setAttribute
-   * @see     xp://xml.Node#getAttribute
-   */
   #[@test]
   public function attributeAccessors() {
     $n= new Node('node');
@@ -39,12 +31,6 @@ class NodeTest extends TestCase {
     $this->assertEquals(1, $n->getAttribute('id'));
   }
 
-  /**
-   * Tests content accessors
-   *
-   * @see     xp://xml.Node#setContent
-   * @see     xp://xml.Node#getContent
-   */
   #[@test]
   public function contentAccessors() {
     $content= '"This is interesting", Tom\'s friend said. "It\'s > 4 but < 2!"';
@@ -53,12 +39,6 @@ class NodeTest extends TestCase {
     $this->assertEquals($content, $n->getContent());
   }
   
-  /**
-   * Tests name accessors
-   *
-   * @see     xp://xml.Node#setName
-   * @see     xp://xml.Node#getName
-   */
   #[@test]
   public function nameAccessors() {
     $n= new Node('node');
@@ -66,35 +46,18 @@ class NodeTest extends TestCase {
     $this->assertEquals('name', $n->getName());
   }
   
-  /**
-   * Tests that setContent() will throw an XMLFormatException in case the 
-   * content contains illegal characters
-   *
-   * @see     xp://xml.Node#setContent
-   */
   #[@test, @expect('xml.XMLFormatException')]
   public function illegalContent() {
     $n= new Node('node');
     $n->setContent("\0");
   }
   
-  /**
-   * Tests that addChild() will throw an IllegalArgumentException in case the 
-   * passed argument is not a node object
-   *
-   * @see     xp://xml.Node#addChild
-   */
   #[@test, @expect('lang.IllegalArgumentException')]
   public function addingNullChild() {
     $n= new Node('node');
     $n->addChild($child= null);
   }
 
-  /**
-   * Tests that addChild() will return the child added
-   *
-   * @see     xp://xml.Node#addChild
-   */
   #[@test]
   public function addingReturnsChild() {
     $n= new Node('node');
@@ -102,11 +65,6 @@ class NodeTest extends TestCase {
     $this->assertEquals($child, $n->addChild($child));
   }
 
-  /**
-   * Tests that withChild() will return the node itself
-   *
-   * @see     xp://xml.Node#withChild
-   */
   #[@test]
   public function withChildReturnsNode() {
     $n= new Node('node');
@@ -114,11 +72,6 @@ class NodeTest extends TestCase {
     $this->assertEquals($n, $n->withChild($child));
   }
   
-  /**
-   * Tests that fromArray() will return an empty node when passed an empty array
-   *
-   * @see     xp://xml.Node#fromArray
-   */
   #[@test]
   public function fromEmptyArray() {
     $this->assertEquals(
@@ -127,11 +80,6 @@ class NodeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests fromArray() with an array of two numbers
-   *
-   * @see     xp://xml.Node#fromArray
-   */
   #[@test]
   public function fromNumberArray() {
     $this->assertEquals(
@@ -140,11 +88,6 @@ class NodeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests fromArray() with an array of characters
-   *
-   * @see     xp://xml.Node#fromArray
-   */
   #[@test]
   public function fromCharacterArray() {
     $this->assertEquals(
@@ -153,10 +96,6 @@ class NodeTest extends TestCase {
     );
   }
   
-  /**
-   * Tests a node without attributes or content
-   *
-   */
   #[@test]
   public function sourceOfEmptyNode() {
     $this->assertEquals(
@@ -165,10 +104,6 @@ class NodeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests a node with one attribute
-   *
-   */
   #[@test]
   public function sourceOfNodeWithOneAttribute() {
     $this->assertEquals(
@@ -177,10 +112,6 @@ class NodeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests a node with two attributes
-   *
-   */
   #[@test]
   public function sourceOfNodeWithTwoAttributes() {
     $this->assertEquals(
@@ -189,11 +120,6 @@ class NodeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests a node with content. Makes sure escaping of special characters
-   * is performed as necessary.
-   *
-   */
   #[@test]
   public function sourceOfNodeWithContent() {
     $this->assertEquals(
@@ -202,10 +128,6 @@ class NodeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests a node with CDATA content. 
-   *
-   */
   #[@test]
   public function sourceOfNodeWithCData() {
     $this->assertEquals(
@@ -214,10 +136,6 @@ class NodeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests a node with PCDATA content. 
-   *
-   */
   #[@test]
   public function sourceOfNodeWithPCData() {
     $this->assertEquals(
@@ -226,10 +144,6 @@ class NodeTest extends TestCase {
     );
   }
   
-  /**
-   * Tests a node with two attributes
-   *
-   */
   #[@test]
   public function sourceOfNodeWithStringContent() {
     $this->assertEquals(
@@ -238,11 +152,6 @@ class NodeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests getSource()
-   *
-   * XXX Breaks if xp::ENCODING is changed XXX
-   */
   #[@test]
   public function getSourceWithDefaultEncoding() {
     $this->assertEquals(
@@ -251,10 +160,6 @@ class NodeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests getSource()
-   *
-   */
   #[@test]
   public function getSourceWithIsoEncoding() {
     $this->assertEquals(
@@ -263,10 +168,6 @@ class NodeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests getSource()
-   *
-   */
   #[@test]
   public function getSourceWithUtf8Encoding() {
     $this->assertEquals(
@@ -275,10 +176,6 @@ class NodeTest extends TestCase {
     );
   }
 
-  /**
-   * Tests fromObject() 
-   *
-   */
   #[@test]
   public function fromObject() { 
     $this->assertEquals(

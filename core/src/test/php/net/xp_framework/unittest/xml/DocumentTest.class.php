@@ -3,18 +3,13 @@
 use unittest\TestCase;
 use xml\dom\Document;
 
-
 /**
- * TestCase
+ * TestCase for Document class
  *
  * @see      xp://xml.dom.Document
  */
 class DocumentTest extends TestCase {
 
-  /**
-   * Test getElementsByTagName()
-   *
-   */
   #[@test]
   public function elementsByTagName() {
     $dom= Document::fromString('<list>
@@ -28,10 +23,6 @@ class DocumentTest extends TestCase {
     );
   }
 
-  /**
-   * Test getElementById()
-   *
-   */
   #[@test]
   public function elementById() {
     $dom= Document::fromString('<list>
@@ -45,10 +36,6 @@ class DocumentTest extends TestCase {
     );
   }
 
-  /**
-   * Test getElementsByName()
-   *
-   */
   #[@test]
   public function elementsByName() {
     $dom= Document::fromString('<wizard>
@@ -65,10 +52,6 @@ class DocumentTest extends TestCase {
     );
   }
 
-  /**
-   * Test getElementById()
-   *
-   */
   #[@test]
   public function nestedElementById() {
     $dom= Document::fromString('<html>
@@ -90,10 +73,6 @@ class DocumentTest extends TestCase {
     );
   }
 
-  /**
-   * Test getElementsById()
-   *
-   */
   #[@test]
   public function noSuchElementById() {
     $this->assertEquals(

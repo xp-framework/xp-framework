@@ -1,17 +1,14 @@
 <?php namespace net\xp_framework\unittest\xml;
 
-use unittest\TestCase;
 use xml\Stylesheet;
 use util\collections\Vector;
 
-
 /**
- * TestCase
+ * TestCase for Stylesheet class
  *
- * @see      xp://xml.Stylesheet
- * @purpose  Unittest
+ * @see  xp://xml.Stylesheet
  */
-class StylesheetTest extends TestCase {
+class StylesheetTest extends \unittest\TestCase {
 
   /**
    * Helper method
@@ -36,10 +33,6 @@ class StylesheetTest extends TestCase {
     return $r;
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function emptyStylesheet() {
     $this->assertEquals(
@@ -48,10 +41,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test setOutputMethod()
-   *
-   */
   #[@test]
   public function setOutputMethod() {
     $s= new Stylesheet();
@@ -63,10 +52,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test setOutputMethod()
-   *
-   */
   #[@test]
   public function withOutputMethod() {
     $s= create(new Stylesheet())->withOutputMethod('text', false, 'utf-8');
@@ -77,10 +62,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test addImport()
-   *
-   */
   #[@test]
   public function addImport() {
     $s= new Stylesheet();
@@ -92,10 +73,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test withImport()
-   *
-   */
   #[@test]
   public function withImport() {
     $s= create(new Stylesheet())->withImport('portlets/welcome.portlet.xsl');
@@ -106,10 +83,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test addInclude()
-   *
-   */
   #[@test]
   public function addInclude() {
     $s= new Stylesheet();
@@ -121,10 +94,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test withInclude()
-   *
-   */
   #[@test]
   public function withInclude() {
     $s= create(new Stylesheet())->withInclude('portlets/welcome.portlet.xsl');
@@ -135,10 +104,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test addParam()
-   *
-   */
   #[@test]
   public function addParam() {
     $s= new Stylesheet();
@@ -150,10 +115,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test withParam()
-   *
-   */
   #[@test]
   public function withParam() {
     $s= create(new Stylesheet())->withParam('session');
@@ -164,10 +125,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test addVariable()
-   *
-   */
   #[@test]
   public function addVariable() {
     $s= new Stylesheet();
@@ -179,10 +136,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test addVariable()
-   *
-   */
   #[@test]
   public function addVariables() {
     $s= new Stylesheet();
@@ -200,10 +153,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test withVariable()
-   *
-   */
   #[@test]
   public function withVariable() {
     $s= create(new Stylesheet())->withVariable('session');
@@ -214,10 +163,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test addTemplate()
-   *
-   */
   #[@test]
   public function addMatchTemplate() {
     $s= new Stylesheet();
@@ -229,10 +174,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test withTemplate()
-   *
-   */
   #[@test]
   public function withMatchTemplate() {
     $s= create(new Stylesheet())->withTemplate(create(new \xml\XslTemplate())->matching('/'));
@@ -243,10 +184,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test addTemplate()
-   *
-   */
   #[@test]
   public function addNamedTemplate() {
     $s= new Stylesheet();
@@ -258,10 +195,6 @@ class StylesheetTest extends TestCase {
     );
   }
 
-  /**
-   * Test withTemplate()
-   *
-   */
   #[@test]
   public function withNamedTemplate() {
     $s= create(new Stylesheet())->withTemplate(create(new \xml\XslTemplate())->named('sitemap'));
