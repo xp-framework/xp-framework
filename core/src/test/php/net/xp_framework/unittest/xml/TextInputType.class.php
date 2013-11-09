@@ -3,18 +3,17 @@
 /**
  * Test class for Marshaller / Unmarshaller tests.
  *
- * @see      xp://net.xp_framework.unittest.xml.UnmarshallerTest
- * @see      xp://net.xp_framework.unittest.xml.MarshallerTest
- * @purpose  Test class
+ * @see  xp://net.xp_framework.unittest.xml.UnmarshallerTest
+ * @see  xp://net.xp_framework.unittest.xml.MarshallerTest
  */
 class TextInputType extends \lang\Object {
-  protected $id = '';
-  protected $disabled = false;
+  protected $id= '';
+  protected $disabled= false;
 
   /**
    * Cast to a bool
    *
-   * @param   string string
+   * @param   string $string
    * @return  bool
    */
   public function asBool($string) {
@@ -38,7 +37,7 @@ class TextInputType extends \lang\Object {
   /**
    * Set ID
    *
-   * @param   string id
+   * @param   string $id
    */
   #[@xmlmapping(element= '@id')]
   public function setId($id) {
@@ -58,7 +57,7 @@ class TextInputType extends \lang\Object {
   /**
    * Set disabled
    *
-   * @param   bool disabled
+   * @param   bool $disabled
    */
   #[@xmlmapping(element= '@disabled', cast= 'asBool')]
   public function setDisabled($disabled) {

@@ -4,18 +4,16 @@
  * Test class for Marshaller / Unmarshaller tests. Used by
  * DialogType.
  *
- * @see      xp://net.xp_framework.unittest.xml.DialogType
- * @purpose  Test class
+ * @see  xp://net.xp_framework.unittest.xml.DialogType
  */
 class ButtonType extends \lang\Object {
-  public
-    $id       = '',
-    $caption  = '';
+  public $id= '';
+  public $caption= '';
 
   /**
    * Set ID
    *
-   * @param   string id
+   * @param   string $id
    */
   #[@xmlmapping(element= '@id')]
   public function setId($id) {
@@ -35,7 +33,7 @@ class ButtonType extends \lang\Object {
   /**
    * Set caption
    *
-   * @param   string caption
+   * @param   string $caption
    */
   #[@xmlmapping(element= '.')]
   public function setCaption($caption) {
@@ -45,7 +43,7 @@ class ButtonType extends \lang\Object {
   /**
    * Get caption
    *
-   * @param   string caption
+   * @return  string caption
    */
   #[@xmlfactory(element= '.')]
   public function getCaption() {

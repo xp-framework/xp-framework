@@ -3,9 +3,8 @@
 /**
  * Test class for Marshaller / Unmarshaller tests
  *
- * @see      xp://net.xp_framework.unittest.xml.UnmarshallerTest
- * @see      xp://net.xp_framework.unittest.xml.MarshallerTest
- * @purpose  Test class
+ * @see  xp://net.xp_framework.unittest.xml.UnmarshallerTest
+ * @see  xp://net.xp_framework.unittest.xml.MarshallerTest
  */
 class WindowType extends \lang\Object {
   protected $window= null;
@@ -13,8 +12,8 @@ class WindowType extends \lang\Object {
   /**
    * Inject a window
    *
-   * @param   string name
-   * @param   [:int] windows handle lookup
+   * @param   string $name
+   * @param   [:int] $windows handle lookup
    */
   #[@xmlmapping(element= '@owner-window', inject= array('windows'))]
   public function setOwnerWindowNamed($name, array $windows) {
@@ -24,7 +23,7 @@ class WindowType extends \lang\Object {
   /**
    * Returns owner window ID
    *
-   * @param   [:int] windows handle lookup
+   * @param   [:int] $windows handle lookup
    * @return  string name
    */
   #[@xmlfactory(element= '@owner-window', inject= array('windows'))]
@@ -35,7 +34,7 @@ class WindowType extends \lang\Object {
   /**
    * Sets window
    *
-   * @param   int id
+   * @param   int $id
    */
   public function setOwnerWindow($id) {
     $this->window= $id;
@@ -44,7 +43,7 @@ class WindowType extends \lang\Object {
   /**
    * Sets window
    *
-   * @param   int id
+   * @param   int $id
    * @return  net.xp_framework.unittest.xml.WindowType this
    */
   public function withOwnerWindow($id) {
@@ -55,7 +54,7 @@ class WindowType extends \lang\Object {
   /**
    * Gets window
    *
-   * @param   int id
+   * @return  int id
    */
   public function getOwnerWindow() {
     return $this->window;

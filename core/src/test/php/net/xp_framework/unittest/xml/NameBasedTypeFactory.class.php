@@ -2,15 +2,14 @@
 
 /**
  * Type factory
- *
  */
 #[@xmlmapping(factory= 'forName')]
-  class NameBasedTypeFactory extends \lang\Object {
+class NameBasedTypeFactory extends \lang\Object {
   
   /**
    * Factory method
    *
-   * @param   string name
+   * @param   string $name
    * @return  lang.XPClass
    * @throws  lang.IllegalArgumentException
    */

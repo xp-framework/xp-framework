@@ -1,15 +1,11 @@
 <?php namespace net\xp_framework\unittest\xml;
 
-use util\collections\Vector;
-
-
 /**
  * Test class for Marshaller / Unmarshaller tests
  *
- * @see      xp://net.xp_framework.unittest.xml.UnmarshallerTest
- * @see      xp://net.xp_framework.unittest.xml.MarshallerTest
- * @see      rfc://0040
- * @purpose  Test class
+ * @see  xp://net.xp_framework.unittest.xml.UnmarshallerTest
+ * @see  xp://net.xp_framework.unittest.xml.MarshallerTest
+ * @see  rfc://0040
  */
 class DialogType extends \lang\Object {
   public
@@ -21,7 +17,6 @@ class DialogType extends \lang\Object {
 
   /**
    * Constructor
-   *
    */
   public function __construct() {
     $this->buttons= create('new util.collections.Vector<net.xp_framework.unittest.xml.ButtonType>()');
@@ -30,7 +25,7 @@ class DialogType extends \lang\Object {
   /**
    * Set ID
    *
-   * @param   string id
+   * @param   string $id
    */
   #[@xmlmapping(element= '@id')]
   public function setId($id) {
@@ -50,7 +45,7 @@ class DialogType extends \lang\Object {
   /**
    * Set caption
    *
-   * @param   string caption
+   * @param   string $caption
    */
   #[@xmlmapping(element= 'caption')]
   public function setCaption($caption) {
@@ -60,7 +55,7 @@ class DialogType extends \lang\Object {
   /**
    * Get caption
    *
-   * @param   string caption
+   * @return  string caption
    */
   #[@xmlfactory(element= 'caption')]
   public function getCaption() {
@@ -70,7 +65,7 @@ class DialogType extends \lang\Object {
   /**
    * Add a button
    *
-   * @param   net.xp_framework.unittest.xml.ButtonType button
+   * @param   net.xp_framework.unittest.xml.ButtonType $button
    * @return  net.xp_framework.unittest.xml.ButtonType the added button
    */
   #[@xmlmapping(element= 'button', class= 'net.xp_framework.unittest.xml.ButtonType')]
@@ -120,6 +115,8 @@ class DialogType extends \lang\Object {
   /**
    * Set flags
    *
+   * @param   string $flag1
+   * @param   string $flag2
    */
   #[@xmlmapping(element= 'flags', pass= array('substring-before(., "|")', 'substring-after(., "|")'))]
   public function setFlags($flag1, $flag2) {
@@ -129,7 +126,7 @@ class DialogType extends \lang\Object {
   /**
    * Get flags
    *
-   * @return array
+   * @return string[]
    */
   #[@xmlfactory(element= 'flags')]
   public function getFlags() {
@@ -139,6 +136,8 @@ class DialogType extends \lang\Object {
   /**
    * Set options
    *
+   * @param   string $name
+   * @param   string $value
    */
   #[@xmlmapping(element= 'options/option', pass= array('@name', '@value'))]
   public function setOptions($name, $value) {
@@ -148,7 +147,7 @@ class DialogType extends \lang\Object {
   /**
    * Get options
    *
-   * @return array
+   * @return [:string]
    */
   #[@xmlfactory(element= 'options')]
   public function getOptions() {
@@ -158,7 +157,7 @@ class DialogType extends \lang\Object {
   /**
    * Returns whether another object is equal to this value object
    *
-   * @param   lang.Generic cmp
+   * @param   var $cmp
    * @return  bool
    */
   public function equals($cmp) {

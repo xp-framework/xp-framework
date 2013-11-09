@@ -2,15 +2,14 @@
 
 /**
  * Type factory
- *
  */
 #[@xmlmapping(factory= 'forName', pass= array('@id'))]
-  class IdBasedTypeFactory extends \lang\Object {
+class IdBasedTypeFactory extends \lang\Object {
   
   /**
    * Factory method
    *
-   * @param   string id
+   * @param   string $id
    * @return  lang.XPClass
    * @throws  lang.IllegalArgumentException
    */
