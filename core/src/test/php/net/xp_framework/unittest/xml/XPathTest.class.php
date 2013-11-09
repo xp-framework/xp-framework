@@ -5,97 +5,13 @@ use xml\Tree;
 use xml\XPath;
 use lang\types\String;
 
-
 /**
  * TestCase for XPath class
  *
- * @see      xp://xml.XPath
- * @purpose  Unittest
+ * @see  xp://xml.XPath
  */
 class XPathTest extends TestCase {
 
-  /**
-   * Test constructor accepts string as argument
-   *
-   */
-  #[@test]
-  public function constructWithString() {
-    new XPath('<document/>');
-  }
-
-  /**
-   * Test constructor accepts a php.DOMDocument as argument
-   *
-   */
-  #[@test]
-  public function constructWithDomDocument() {
-    $d= new \DOMDocument();
-    $d->appendChild($d->createElement('document'));
-    new XPath($d);
-  }
-
-  /**
-   * Test constructor accepts an xml.Tree as argument
-   *
-   */
-  #[@test]
-  public function constructWithTree() {
-    new XPath(new Tree('document'));
-  }
-
-  /**
-   * Test constructor does not accept NULL as argument
-   *
-   */
-  #[@test, @expect('lang.IllegalArgumentException')]
-  public function constructWithNull() {
-    new XPath(null);
-  }
-
-  /**
-   * Test constructor throws an XMLFormatException when given invalid 
-   * XML inside a string
-   *
-   */
-  #[@test, @expect('xml.XMLFormatException')]
-  public function constructWithUnclosedTag() {
-    new XPath('<unclosed-tag>');
-  }
-
-  /**
-   * Test constructor throws an XMLFormatException when given invalid 
-   * XML inside a string
-   *
-   */
-  #[@test, @expect('xml.XMLFormatException')]
-  public function constructWithSyntaxErrorInAttribute() {
-    new XPath('<hello attribute="/>');
-  }
-  
-  /**
-   * Test query for "/" returns the document
-   *
-   */
-  #[@test]
-  public function queryReturnsNodeList() {
-    $this->assertEquals(
-      'php.DOMNodeList', 
-      \xp::typeOf(create(new XPath('<document/>'))->query('/'))
-    );
-  }
-
-  /**
-   * Test query for "/" returns the document
-   *
-   */
-  #[@test]
-  public function slashQueryReturnsDocument() {
-    $this->assertEquals(
-      'php.DOMDocument', 
-      \xp::typeOf(create(new XPath('<document/>'))->query('/')->item(0))
-    );
-  }
-  
   /**
    * Returns an XML tree for use in further test cases
    *
@@ -110,11 +26,55 @@ class XPathTest extends TestCase {
     $t->addChild(new \xml\Node('location', 'Germany'));
     return $t;
   }
+
+  #[@test]
+  public function constructWithString() {
+    new XPath('<document/>');
+  }
+
+  #[@test]
+  public function constructWithDomDocument() {
+    $d= new \DOMDocument();
+    $d->appendChild($d->createElement('document'));
+    new XPath($d);
+  }
+
+  #[@test]
+  public function constructWithTree() {
+    new XPath(new Tree('document'));
+  }
+
+  #[@test, @expect('lang.IllegalArgumentException')]
+  public function constructWithNull() {
+    new XPath(null);
+  }
+
+  #[@test, @expect('xml.XMLFormatException')]
+  public function constructWithUnclosedTag() {
+    new XPath('<unclosed-tag>');
+  }
+
+  #[@test, @expect('xml.XMLFormatException')]
+  public function constructWithSyntaxErrorInAttribute() {
+    new XPath('<hello attribute="/>');
+  }
   
-  /**
-   * Test an attribute query
-   *
-   */
+  #[@test]
+  public function queryReturnsNodeList() {
+    $this->assertEquals(
+      'php.DOMNodeList', 
+      \xp::typeOf(create(new XPath('<document/>'))->query('/'))
+    );
+  }
+
+  #[@test]
+  public function slashQueryReturnsDocument() {
+    $this->assertEquals(
+      'php.DOMDocument', 
+      \xp::typeOf(create(new XPath('<document/>'))->query('/')->item(0))
+    );
+  }
+  
   #[@test]
   public function attributeQuery() {
     $this->assertEquals('1549', create(new XPath($this->personTree()))
@@ -124,10 +84,6 @@ class XPathTest extends TestCase {
     );
   }
 
-  /**
-   * Test an attribute query
-   *
-   */
   #[@test]
   public function attributeName() {
     $this->assertEquals('id', create(new XPath($this->personTree()))
@@ -135,10 +91,6 @@ class XPathTest extends TestCase {
     );
   }
 
-  /**
-   * Test a query with [expr]/text()
-   *
-   */
   #[@test]
   public function textQuery() {
     $this->assertEquals('Timm', create(new XPath($this->personTree()))
@@ -148,10 +100,6 @@ class XPathTest extends TestCase {
     );
   }
 
-  /**
-   * Test a query with name([expr])
-   *
-   */
   #[@test]
   public function nameQuery() {
     $this->assertEquals('firstName', create(new XPath($this->personTree()))
@@ -159,10 +107,6 @@ class XPathTest extends TestCase {
     );
   }
 
-  /**
-   * Test a query with string([expr])
-   *
-   */
   #[@test]
   public function stringQuery() {
     $this->assertEquals('Timm', create(new XPath($this->personTree()))
@@ -170,10 +114,6 @@ class XPathTest extends TestCase {
     );
   }
 
-  /**
-   * Test a query for a node that exists twice
-   *
-   */
   #[@test]
   public function multipleQuery() {
     $locations= create(new XPath($this->personTree()))->query('/person/location');
@@ -182,10 +122,6 @@ class XPathTest extends TestCase {
     $this->assertEquals('Germany', $locations->item(1)->nodeValue);
   }
 
-  /**
-   * Test a query for first node of set that exists twice
-   *
-   */
   #[@test]
   public function offsetQuery() {
     $this->assertEquals('Karlsruhe', create(new XPath($this->personTree()))
@@ -193,29 +129,17 @@ class XPathTest extends TestCase {
     );
   }
 
-  /**
-   * Test an invalid XPath expression throws an exception
-   *
-   */
   #[@test, @expect('xml.XPathException')]
   public function invalidQuery() {
     create(new XPath('<document/>'))->query(',INVALID,');
   }
   
-  /**
-   * Query XML document from xml.Tree
-   *
-   */
   #[@test]
   public function queryTree() {
     $xpath= new XPath(Tree::fromString('<document><node>value</node></document>'));
     $this->assertEquals('value', $xpath->query('string(/document/node)'));
   }
   
-  /**
-   * Query XML document from xml.Tree with encoding given
-   *
-   */
   #[@test]
   public function queryTreeWithEncoding() {
     $value= new String('value öäü', 'iso-8859-1');
@@ -228,10 +152,6 @@ class XPathTest extends TestCase {
     $this->assertEquals($value, new String($xpath->query('string(/document/node)'), 'utf-8'));
   }
   
-  /**
-   * Query XML document from xml.Tree with default encoding
-   *
-   */
   #[@test]
   public function queryTreeWithDefaultEncoding() {
     $value= new String('value Ã¶Ã¤Ã¼', 'utf-8');
