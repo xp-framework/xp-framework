@@ -3,7 +3,7 @@
 use unittest\TestCase;
 use rdbms\Statement;
 use rdbms\DriverManager;
-
+use net\xp_framework\unittest\rdbms\dataset\Job;
 
 /**
  * Test Statement class
