@@ -115,4 +115,11 @@ class HttpConnectionTest extends TestCase {
       $appender->getBuffer()
     );
   }
+
+  #[@test]
+  public function changing_request_target_does_not_modify_connection_url() {
+    $url= $this->fixture->getUrl();
+    $this->fixture->create(new HttpRequest())->setTarget('/foo');
+    $this->assertNotEquals('/foo', $url->getPath());
+  }
 }

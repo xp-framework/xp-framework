@@ -3,6 +3,13 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+### Bugfixes
+
+* Fixed issues with REST client and base URLs. Repeated calls lead to
+  resources URIs being concatenated. Aftermath of fix for issue #335
+  (@haimich, @thekid)
+
+
 ## 5.9.9 / 2013-11-09
 
 ### Heads up!
