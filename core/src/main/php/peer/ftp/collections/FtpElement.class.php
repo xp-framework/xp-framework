@@ -27,6 +27,15 @@
     }
 
     /**
+     * Returns this element's name
+     *
+     * @return  string
+     */
+    public function getName() {
+      return basename($this->file->getName());
+    }
+
+    /**
      * Returns this element's URI
      *
      * @return  string
