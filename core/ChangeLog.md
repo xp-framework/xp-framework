@@ -3,6 +3,10 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+### Features
+
+* Added io.collections.IOElement::getName(), pull request #333 - (@thekid)
+
 ### Bugfixes
 
 * Fixed issues with REST client and base URLs. Repeated calls lead to
