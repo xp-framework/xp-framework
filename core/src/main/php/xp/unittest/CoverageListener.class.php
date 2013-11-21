@@ -23,7 +23,7 @@ use lang\Runtime;
  *
  * @ext   xdebug
  */
-class CoverageListener extends Object implements TestListener {
+class CoverageListener extends \lang\Object implements TestListener {
   private $paths= array();
   private $processor= null;
   private $reportFile= 'coverage.html';
@@ -68,7 +68,7 @@ class CoverageListener extends Object implements TestListener {
    *
    * @param   unittest.TestCase failure
    */
-  public function testStarted(TestCase $case) {
+  public function testStarted(\unittest\TestCase $case) {
     // Empty
   }
 
@@ -77,7 +77,7 @@ class CoverageListener extends Object implements TestListener {
    *
    * @param   unittest.TestFailure failure
    */
-  public function testFailed(TestFailure $failure) {
+  public function testFailed(\unittest\TestFailure $failure) {
     // Empty
   }
 
@@ -86,7 +86,7 @@ class CoverageListener extends Object implements TestListener {
    *
    * @param   unittest.TestFailure error
    */
-  public function testError(TestError $error) {
+  public function testError(\unittest\TestError $error) {
     // Empty
   }
 
@@ -95,7 +95,7 @@ class CoverageListener extends Object implements TestListener {
    *
    * @param   unittest.TestWarning warning
    */
-  public function testWarning(TestWarning $warning) {
+  public function testWarning(\unittest\TestWarning $warning) {
     // Empty
   }
 
@@ -104,7 +104,7 @@ class CoverageListener extends Object implements TestListener {
    *
    * @param   unittest.TestSuccess success
    */
-  public function testSucceeded(TestSuccess $success) {
+  public function testSucceeded(\unittest\TestSuccess $success) {
     // Empty
   }
 
@@ -114,7 +114,7 @@ class CoverageListener extends Object implements TestListener {
    *
    * @param   unittest.TestSkipped skipped
    */
-  public function testSkipped(TestSkipped $skipped) {
+  public function testSkipped(\unittest\TestSkipped $skipped) {
     // Empty
   }
 
@@ -124,7 +124,7 @@ class CoverageListener extends Object implements TestListener {
    *
    * @param   unittest.TestSkipped ignore
    */
-  public function testNotRun(TestSkipped $ignore) {
+  public function testNotRun(\unittest\TestSkipped $ignore) {
     // Empty
   }
 
@@ -133,7 +133,7 @@ class CoverageListener extends Object implements TestListener {
    *
    * @param   unittest.TestSuite suite
    */
-  public function testRunStarted(TestSuite $suite) {
+  public function testRunStarted(\unittest\TestSuite $suite) {
     xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
   }
 
@@ -143,7 +143,7 @@ class CoverageListener extends Object implements TestListener {
    * @param   unittest.TestSuite suite
    * @param   unittest.TestResult result
    */
-  public function testRunFinished(TestSuite $suite, TestResult $result) {
+  public function testRunFinished(\unittest\TestSuite $suite, TestResult $result) {
     $coverage= xdebug_get_code_coverage();
     xdebug_stop_code_coverage();
 
