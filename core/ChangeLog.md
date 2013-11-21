@@ -5,6 +5,7 @@ XP Framework ChangeLog
 
 ### Features
 
+* Added code coverage test listener - see pull request #337 - (@andstefiul)
 * Added io.collections.IOElement::getName(), pull request #333 - (@thekid)
 
 ### Bugfixes
