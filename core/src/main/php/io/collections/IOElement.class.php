@@ -14,6 +14,13 @@
   interface IOElement {
 
     /**
+     * Retrieve this element's name
+     *
+     * @return  string
+     */
+    public function getName();
+
+    /**
      * Retrieve this element's URI
      *
      * @return  string

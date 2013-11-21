@@ -61,8 +61,8 @@ class ArchiveCollectionTest extends TestCase {
     try {
       $c->open();
       $first= $c->next();
-      $this->assertSubclass($first, 'io.collections.IOCollection');
-      $this->assertXarUri('lang', $first->getURI());
+      $this->assertInstanceOf('io.collections.IOCollection', $first);
+      $this->assertXarUri('lang/', $first->getURI());
       $this->assertEquals(0, $first->getSize());
       $this->assertEquals(null, $c->next());
     } catch (\lang\Throwable $e) {
@@ -81,8 +81,8 @@ class ArchiveCollectionTest extends TestCase {
       $expect= array(
         'lang/Object.xp'    => 'io.collections.IOElement', 
         'lang/Type.xp'      => 'io.collections.IOElement',
-        'lang/reflect'      => 'io.collections.IOCollection',
-        'lang/types'        => 'io.collections.IOCollection',
+        'lang/reflect/'     => 'io.collections.IOCollection',
+        'lang/types/'       => 'io.collections.IOCollection',
         'lang/Runnable.xp'  => 'io.collections.IOElement',
       );
       for (reset($expect); $element= $c->next(), $name= key($expect); next($expect)) {
@@ -147,5 +147,35 @@ class ArchiveCollectionTest extends TestCase {
   #[@test, @expect('io.IOException')]
   public function writeLangEntry() {
     $this->firstElement(new ArchiveCollection($this->archive))->getOutputStream();
+  }
+
+  #[@test]
+  public function collections_origin() {
+    $base= new ArchiveCollection($this->archive, 'lang');
+    $this->assertEquals($base, $this->firstElement($base)->getOrigin());
+  }
+
+  #[@test]
+  public function collections_name() {
+    $base= new ArchiveCollection($this->archive, 'lang');
+    $this->assertEquals('lang', $base->getName());
+  }
+
+  #[@test]
+  public function collections_uri() {
+    $base= new ArchiveCollection($this->archive, 'lang');
+    $this->assertXarUri('lang/', $base->getUri());
+  }
+
+  #[@test]
+  public function elements_name() {
+    $element= $this->firstElement(new ArchiveCollection($this->archive, 'lang'));
+    $this->assertEquals('Object.xp', $element->getName());
+  }
+
+  #[@test]
+  public function elements_uri() {
+    $element= $this->firstElement(new ArchiveCollection($this->archive, 'lang'));
+    $this->assertXarUri('lang/Object.xp', $element->getUri());
   }
 }

@@ -8,12 +8,9 @@
 
   /**
    * Name filter
-   *
-   * @purpose  Iteration Filter
    */
   class NameEqualsFilter extends Object implements IterationFilter {
-    public
-      $compare= '';
+    public $compare= '';
       
     /**
      * Constructor
@@ -31,7 +28,7 @@
      * @return  bool
      */
     public function accept($element) {
-      return $this->compare == basename($element->getURI());
+      return $this->compare === $element->getName();
     }
 
     /**
@@ -42,6 +39,5 @@
     public function toString() {
       return $this->getClassName().'("'.$this->compare.'")';
     }
-  
   } 
 ?>

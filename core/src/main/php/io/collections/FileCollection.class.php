@@ -9,16 +9,12 @@
   /**
    * File collection
    *
-   * @see      xp://io.collections.IOCollection
-   * @purpose  IOCollection implementation
+   * @see   xp://io.collections.IOCollection
    */
   class FileCollection extends Object implements IOCollection, RandomCollectionAccess {
-    public
-      $uri = '';
-    
-    protected
-      $origin = NULL,
-      $_hd    = NULL;
+    public $uri = '';
+    protected $origin = NULL;
+    protected $_hd    = NULL;
       
     /**
      * Constructor
@@ -32,7 +28,16 @@
         $this->uri= rtrim(realpath($arg), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
       }
     }
-    
+
+    /**
+     * Returns this element's name
+     *
+     * @return  string
+     */
+    public function getName() {
+      return basename($this->uri);
+    }
+
     /**
      * Returns this element's URI
      *

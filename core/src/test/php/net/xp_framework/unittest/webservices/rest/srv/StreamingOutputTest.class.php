@@ -81,6 +81,7 @@ class StreamingOutputTest extends TestCase {
     $e= newinstance('io.collections.IOElement', array(new MemoryInputStream('Test')), '{
       protected $stream;
       public function __construct($stream) { $this->stream= $stream; }
+      public function getName() { return "test.txt"; }
       public function getURI() { return "/path/to/test.txt"; }
       public function getSize() { return 6100; }
       public function createdAt() { return NULL; }

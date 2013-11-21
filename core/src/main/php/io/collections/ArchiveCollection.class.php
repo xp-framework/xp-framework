@@ -30,14 +30,23 @@
       $this->archive= $archive;
       $this->base= $base;
     }
-    
+
+    /**
+     * Returns this element's name
+     *
+     * @return  string
+     */
+    public function getName() {
+      return basename($this->base);
+    }
+
     /**
      * Returns this element's URI
      *
      * @return  string
      */
     public function getURI() {
-      return 'xar://'.$this->archive->getURI().'?'.$this->base;
+      return 'xar://'.$this->archive->getURI().'?'.$this->base.'/';
     }
     
     /**
