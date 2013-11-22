@@ -3,6 +3,8 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 5.9.10 / 2013-11-22
+
 ### Features
 
 * Added code coverage test listener - see pull request #337 - (@andstefiul)
