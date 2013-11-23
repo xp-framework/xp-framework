@@ -26,18 +26,18 @@
   define('BCC', 'bcc');
 
   // Common Header
-  define('HEADER_FROM',         'From');
-  define('HEADER_TO',           'To');
-  define('HEADER_CC',           'Cc');
-  define('HEADER_BCC',          'Bcc');
-  define('HEADER_SUBJECT',      'Subject');
-  define('HEADER_PRIORITY',     'X-Priority');
-  define('HEADER_ENCODING',     'Content-Transfer-Encoding');
-  define('HEADER_CONTENTTYPE',  'Content-Type');
-  define('HEADER_DATE',         'Date');
-  define('HEADER_MIMEVER',      'Mime-Version');
-  define('HEADER_MESSAGEID',    'Message-ID');
-  define('HEADER_RETURNPATH',   'Return-Path');
+  define('HEADER_FROM',         'from');
+  define('HEADER_TO',           'to');
+  define('HEADER_CC',           'cc');
+  define('HEADER_BCC',          'bcc');
+  define('HEADER_SUBJECT',      'subject');
+  define('HEADER_PRIORITY',     'x-priority');
+  define('HEADER_ENCODING',     'content-transfer-encoding');
+  define('HEADER_CONTENTTYPE',  'content-type');
+  define('HEADER_DATE',         'date');
+  define('HEADER_MIMEVER',      'mime-version');
+  define('HEADER_MESSAGEID',    'message-id');
+  define('HEADER_RETURNPATH',   'return-path');
   
   /**
    * This class models an email message.
@@ -385,7 +385,7 @@
     protected function _setHeader($header, $value, $add= FALSE) {
       static $notallowed= array(HEADER_FROM, HEADER_TO, HEADER_CC, HEADER_BCC);
       
-      if (in_array(ucfirst($header), $notallowed)) return FALSE;
+      if (in_array(strtolower($header), $notallowed)) return FALSE;
       if ($add && isset($this->headers[$header])) {
         $this->headers[$header].= $add.$value;
       } else {
@@ -465,7 +465,7 @@
           sscanf($t, "%[^:]: %[^\r]", $k, $value);
         }
 
-        switch (ucfirst($k)) {
+        switch (strtolower($k)) {
           case HEADER_FROM:
             if ('' === $value) break;
             try {
