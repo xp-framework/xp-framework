@@ -21,14 +21,14 @@ class MimeMessageTest extends AbstractMessageTest {
 
   #[@test]
   public function default_headers_returned_by_getHeaderString() {
-    $this->fixture->setHeader('X-Common-Header', 'test');
+    $this->fixture->setHeader('x-common-header', 'test');
     $this->assertEquals(
-      "Mime-Version: 1.0\n".
-      "X-Common-Header: test\n".
-      "Content-Type: multipart/mixed; boundary=\"------=_Part_4711Test\";\n".
+      "mime-version: 1.0\n".
+      "x-common-header: test\n".
+      "content-type: multipart/mixed; boundary=\"------=_Part_4711Test\";\n".
       "\tcharset=\"iso-8859-1\"\n".
-      "X-Priority: 3 (Normal)\n".
-      "Date: ".$this->fixture->getDate()->toString('r')."\n",
+      "x-priority: 3 (Normal)\n".
+      "date: ".$this->fixture->getDate()->toString('r')."\n",
       $this->fixture->getHeaderString()
     );
   }
@@ -118,11 +118,11 @@ class MimeMessageTest extends AbstractMessageTest {
     $this->fixture->addPart(new MimePart('Part #1', 'text/plain'));
 
     $this->assertEquals(
-      "Mime-Version: 1.0\n".
-      "Content-Type: text/plain;\n".
+      "mime-version: 1.0\n".
+      "content-type: text/plain;\n".
       "\tcharset=\"iso-8859-1\"\n".
-      "X-Priority: 3 (Normal)\n".
-      "Date: ".$this->fixture->getDate()->toString('r')."\n",
+      "x-priority: 3 (Normal)\n".
+      "date: ".$this->fixture->getDate()->toString('r')."\n",
       $this->fixture->getHeaderString()
     );
     $this->assertEquals('Part #1', $this->fixture->getBody());
@@ -133,11 +133,11 @@ class MimeMessageTest extends AbstractMessageTest {
     $this->fixture->addPart(new MimePart('Part #1', 'image/gif'));
     
     $this->assertEquals(
-      "Mime-Version: 1.0\n".
-      "Content-Type: image/gif;\n".
+      "mime-version: 1.0\n".
+      "content-type: image/gif;\n".
       "\tcharset=\"iso-8859-1\"\n".
-      "X-Priority: 3 (Normal)\n".
-      "Date: ".$this->fixture->getDate()->toString('r')."\n",
+      "x-priority: 3 (Normal)\n".
+      "date: ".$this->fixture->getDate()->toString('r')."\n",
       $this->fixture->getHeaderString()
     );
     $this->assertEquals('Part #1', $this->fixture->getBody());
@@ -149,11 +149,11 @@ class MimeMessageTest extends AbstractMessageTest {
     $this->fixture->addPart(new MimePart('Part #2', 'text/plain'));
     
     $this->assertEquals(
-      "Mime-Version: 1.0\n".
-      "Content-Type: multipart/mixed; boundary=\"------=_Part_4711Test\";\n".
+      "mime-version: 1.0\n".
+      "content-type: multipart/mixed; boundary=\"------=_Part_4711Test\";\n".
       "\tcharset=\"iso-8859-1\"\n".
-      "X-Priority: 3 (Normal)\n".
-      "Date: ".$this->fixture->getDate()->toString('r')."\n",
+      "x-priority: 3 (Normal)\n".
+      "date: ".$this->fixture->getDate()->toString('r')."\n",
       $this->fixture->getHeaderString()
     );
     $this->assertEquals(
@@ -180,11 +180,11 @@ class MimeMessageTest extends AbstractMessageTest {
     $this->fixture->addPart(new MimePart('Part #2', 'image/gif'));
     
     $this->assertEquals(
-      "Mime-Version: 1.0\n".
-      "Content-Type: multipart/mixed; boundary=\"------=_Part_4711Test\";\n".
+      "mime-version: 1.0\n".
+      "content-type: multipart/mixed; boundary=\"------=_Part_4711Test\";\n".
       "\tcharset=\"iso-8859-1\"\n".
-      "X-Priority: 3 (Normal)\n".
-      "Date: ".$this->fixture->getDate()->toString('r')."\n",
+      "x-priority: 3 (Normal)\n".
+      "date: ".$this->fixture->getDate()->toString('r')."\n",
       $this->fixture->getHeaderString()
     );
     $this->assertEquals(

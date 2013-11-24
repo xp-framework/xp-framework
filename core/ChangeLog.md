@@ -3,6 +3,9 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+
+* Fixed issue with header casing in peer.mail.Message. Issue #339 (@iigorr)
+
 ## 5.9.10 / 2013-11-22
 
 ### Features
