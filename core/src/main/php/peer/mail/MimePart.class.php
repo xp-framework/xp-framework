@@ -246,7 +246,7 @@
           return base64_decode($this->body);
         } else if ('quoted-printable' === $this->encoding) {
           return quoted_printable_decode($this->body);
-        } else if ('8bit' === $this->encoding || '' === $this->encoding) {
+        } else if ('8bit' === $this->encoding || '7bit' === $this->encoding || '' === $this->encoding) {
           return $this->body;
         } else {
           throw new FormatException('Unknown encoding '.$this->encoding);
