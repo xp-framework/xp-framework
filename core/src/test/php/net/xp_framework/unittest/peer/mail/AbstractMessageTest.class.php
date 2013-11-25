@@ -82,6 +82,12 @@ abstract class AbstractMessageTest extends \unittest\TestCase {
     $this->assertEquals('test', $this->fixture->getHeader('X-Common-Header'));
   }
 
+  #[@test, @values(['x-common-header', 'X-COMMON-HEADER', 'X-common-header'])]
+  public function getHeader_returns_added_header_case_insensitively($variant) {
+    $this->fixture->setHeader('X-Common-Header', 'test');
+    $this->assertEquals('test', $this->fixture->getHeader($variant));
+  }
+
   #[@test]
   public function subject_accessors() {
     $this->fixture->setSubject('Hello World');

@@ -465,8 +465,8 @@
           sscanf($t, "%[^:]: %[^\r]", $k, $value);
         }
 
-        switch (ucfirst($k)) {
-          case HEADER_FROM:
+        switch (strtolower($k)) {
+          case 'from':
             if ('' === $value) break;
             try {
               $this->setFrom(InternetAddress::fromString($value));
@@ -475,9 +475,7 @@
             }
             break;
             
-          case HEADER_TO:
-          case HEADER_CC:
-          case HEADER_BCC:
+          case 'to': case 'cc': case 'bcc':
             if ('' === $value) break;
             $k= strtolower($k);
             $offset= 0;
@@ -498,31 +496,31 @@
             } while ($offset < strlen($value));
             break;
             
-          case HEADER_MIMEVER:
+          case 'mime-version':
             $this->mimever= $value;
             break;
             
-          case HEADER_SUBJECT:
+          case 'subject':
             $this->subject.= ($this->subject ? ' ' : '').$this->decode($value);
             break;
             
-          case HEADER_CONTENTTYPE: 
+          case 'content-type': 
             $this->contenttype.= $value;
             break;
 
-          case HEADER_ENCODING: 
+          case 'content-transfer-encoding': 
             $this->encoding= $value;
             break;
             
-          case HEADER_DATE:
+          case 'date':
             $this->setDate($value);
             break;
           
-          case HEADER_PRIORITY:
+          case 'x-priority':
             $this->priority= (int)$value;
             break;
 
-          case HEADER_MESSAGEID:
+          case 'message-id':
             $this->message_id= $value;
             break;
           
