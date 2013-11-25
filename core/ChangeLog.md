@@ -3,6 +3,8 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+* Fixed handling of 7bit encoded message parts. Issue #431 (@iigorr)
+
 ## 5.9.10 / 2013-11-22
 
 ### Features
