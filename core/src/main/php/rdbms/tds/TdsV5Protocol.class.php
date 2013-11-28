@@ -193,6 +193,9 @@
           // 04 01 00 0E 00 00 00 00 * 02 00 * 19 00 00 00
           $token= $this->read();
           continue;
+        } else if ("\xA3" === $token || "\x23" === $token || "\x10" === $token) {
+          $token= $this->read();                 // TDS_CURDECLARE*
+          continue;
         } else if ("\xEE" === $token) {          // TDS_ROWFMT
           $fields= array();
           $this->stream->getShort();
