@@ -3,8 +3,13 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+* Fixed REST marshalling and unmarshalling not working recursively. See
+  issue #344. Note: To not break BC, the TypeMarshaller's marshal() and
+  unmarshal() methods' signatures remain unchanged; and implementing 
+  instances must declare the added marshalling parameter to both methods
+  as optional! - (@thekid)
 * Fixed unknown token exception for TDS_CURDECLARE* on certain queries
-  with Sybase ASE 15- (@thekid)
+  with Sybase ASE 15 - (@thekid)
 * Fixed handling of 7bit encoded message parts. Issue #431 (@iigorr)
 
 ## 5.9.10 / 2013-11-22

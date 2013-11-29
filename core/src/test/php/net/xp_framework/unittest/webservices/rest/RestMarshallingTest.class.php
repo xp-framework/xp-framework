@@ -29,7 +29,9 @@ use webservices\rest\RestMarshalling;
  */
 class RestMarshallingTest extends \unittest\TestCase {
   protected $fixture= null;
+  protected static $walletClass= null;
   protected static $moneyMarshaller= null;
+  protected static $walletMarshaller= null;
 
   /**
    * Sets up test case
@@ -39,19 +41,45 @@ class RestMarshallingTest extends \unittest\TestCase {
   }
 
   #[@beforeClass]
+  public static function defineWalletClassAndMarshaller() {
+    self::$walletClass= ClassLoader::defineClass('Wallet', 'lang.Object', array(), '{
+      public $values= array();
+      public function __construct($values= array()) {
+        $this->values= $values;
+      }
+      public function add(\util\Money $m) {
+        $this->values[]= $m;
+        return $this;
+      }
+      public function equals($cmp) {
+        return $cmp instanceof self && \util\Objects::equal($cmp->values, $this->values);
+      }
+    }');
+    self::$walletMarshaller= newinstance('webservices.rest.TypeMarshaller', array(), '{
+      public function marshal($wallet, $marshalling= null) {
+        return $marshalling->marshal($wallet->values);
+      }
+
+      public function unmarshal(\lang\Type $t, $input, $marshalling= null) {
+        return $t->newInstance($marshalling->unmarshal(new \lang\ArrayType("util.Money"), $input));
+      }
+    }');
+  }
+
+  #[@beforeClass]
   public static function defineMoneyMarshaller() {
     self::$moneyMarshaller= newinstance('webservices.rest.TypeMarshaller', array(), '{
       public function marshal($money) {
         return sprintf("%.2f %s", $money->amount()->floatValue(), $money->currency()->name());
       }
 
-      public function unmarshal(Type $t, $input) {
+      public function unmarshal(\lang\Type $t, $input) {
         sscanf($input, "%f %s", $amount, $currency);
-        return $t->newInstance($amount, Currency::getInstance($currency));
+        return $t->newInstance($amount, \util\Currency::getInstance($currency));
       }
     }');
   }
-  
+
   #[@test]
   public function marshal_null() {
     $this->assertEquals(null, $this->fixture->marshal(null));
@@ -635,6 +663,26 @@ class RestMarshallingTest extends \unittest\TestCase {
     $this->assertEquals(
       array(new Money(6.10, Currency::$USD)),
       $this->fixture->unmarshal(ArrayType::forName('util.Money[]'), array('6.10 USD'))
+    );
+  }
+
+  #[@test]
+  public function marshal_works_recursively() {
+    $this->fixture->addMarshaller('util.Money', self::$moneyMarshaller);
+    $this->fixture->addMarshaller(self::$walletClass, self::$walletMarshaller);
+    $this->assertEquals(
+      array('0.25 USD'),
+      $this->fixture->marshal(self::$walletClass->newInstance()->add(new Money(0.25, Currency::$USD)))
+    );
+  }
+
+  #[@test]
+  public function unmarshal_works_recursively() {
+    $this->fixture->addMarshaller('util.Money', self::$moneyMarshaller);
+    $this->fixture->addMarshaller(self::$walletClass, self::$walletMarshaller);
+    $this->assertEquals(
+      self::$walletClass->newInstance()->add(new Money(0.25, Currency::$USD)),
+      $this->fixture->unmarshal(self::$walletClass, array('0.25 USD'))
     );
   }
 }
