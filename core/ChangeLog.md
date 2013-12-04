@@ -10,7 +10,7 @@ XP Framework ChangeLog
   as optional! - (@thekid)
 * Fixed unknown token exception for TDS_CURDECLARE* on certain queries
   with Sybase ASE 15 - (@thekid)
-* Fixed handling of 7bit encoded message parts. Issue #431 (@iigorr)
+* Fixed handling of 7bit encoded message parts. Issue #341 (@iigorr)
 
 ## 5.9.10 / 2013-11-22
 
