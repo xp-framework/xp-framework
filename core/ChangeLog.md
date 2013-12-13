@@ -3,6 +3,11 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+
+## 5.9.11 / 2013-12-13
+
+### Bugfixes
+
 * Fixed REST marshalling and unmarshalling not working recursively. See
   issue #344. Note: To not break BC, the TypeMarshaller's marshal() and
   unmarshal() methods' signatures remain unchanged; and implementing 
