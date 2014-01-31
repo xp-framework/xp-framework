@@ -175,4 +175,30 @@ class NewInstanceTest extends \unittest\TestCase {
       $n
     );
   }
+
+  #[@test]
+  public function anonymousClassWithoutConstructor() {
+    newinstance('util.log.Traceable', array(), '{
+      public function setTrace($cat) {}
+    }');
+  }
+
+  #[@test]
+  public function anonymousClassWithoutConstructorIgnoresConstructArgs() {
+    newinstance('util.log.Traceable', array('arg1'), '{
+      public function setTrace($cat) {}
+    }');
+  }
+
+  #[@test]
+  public function anonymousClassWithConstructor() {
+    newinstance('util.log.Traceable', array('arg1'), '{
+      public function __construct($arg) {
+        if ($arg != "arg1") {
+          throw new \\unittest\\AssertionFailedError("equals", $arg, "arg1");
+        }
+      }
+      public function setTrace($cat) {}
+    }');
+  }
 }
