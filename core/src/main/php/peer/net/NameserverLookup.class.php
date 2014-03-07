@@ -7,7 +7,8 @@
   uses(
     'peer.net.InetAddressFactory',
     'peer.net.Inet4Address',
-    'peer.net.Inet6Address'
+    'peer.net.Inet6Address',
+    'lang.ElementNotFoundException'
   );
 
   /**
