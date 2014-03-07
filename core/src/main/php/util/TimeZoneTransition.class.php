@@ -90,7 +90,7 @@
       }
       if (!isset($t)) throw new IllegalArgumentException('Timezone '.$this->tz->getName().' does not have DST transitions.');
 
-      $this->date= new Date($last['ts'], new TimeZone($last['abbr']));
+      $this->date= new Date($last['ts'], $this->date->getTimeZone());
       $this->isDst= $last['isdst'];
       $this->offset= $last['offset'];
       $this->abbr= $last['abbr'];
