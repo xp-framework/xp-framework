@@ -3,6 +3,8 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+* Fixed `String` and `Character` classes to work predictably across all
+  PHP versions (including PHP 5.6) - @thekid
 
 ## 5.9.11 / 2013-12-13
 
