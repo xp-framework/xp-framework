@@ -3,6 +3,11 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+### Bugfixes
+
+* Changed time zone transition calculation to no longer us deprecated
+  timezone abbreviatons. See #352 and https://bugs.php.net/bugs/66845
+  @thekid
 * Fixed `String` and `Character` classes to work predictably across all
   PHP versions (including PHP 5.6) - @thekid
 
