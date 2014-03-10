@@ -9,13 +9,22 @@
   /**
    * Appender which appends data to a file
    *
+   * Supported parameters:
+   * <ul><li>string filename - the file name to log to; may contain strftime() token which
+   *     will be automatically replaced
+   * </li><li>boolean syncDate -  whether to keep filename constant after first resolution;
+   *     this is a BC feature
+   * </li><li>int perms; file permissions
+   * </li></ul>
+   *
    * @see   xp://util.log.Appender
    * @test  xp://net.xp_framework.unittest.logging.FileAppenderTest
    */  
   class FileAppender extends Appender {
     public 
       $filename = '',
-      $perms    = NULL;
+      $perms    = NULL,
+      $syncDate = TRUE;
     
     /**
      * Constructor
@@ -25,6 +34,23 @@
     public function __construct($filename= 'php://stderr') {
       $this->filename= $filename;
     }
+
+    /**
+     * Retrieve current log file name
+     *
+     * @return string
+     */
+    public function filename() {
+      if ($this->syncDate) {
+        return strfime($this->filename);
+      }
+
+      if (FALSE !== $this->filename) {
+        $this->filename= strftime($this->filename);
+      }
+
+      return $this->filename;
+    }
     
     /**
      * Append data
@@ -33,10 +59,11 @@
      */ 
     public function append(LoggingEvent $event) {
       $line= $this->layout->format($event);
-      $fd= fopen($this->filename, 'a');
+      $fn= $this->filename();
+      $fd= fopen($fn, 'a');
 
       if ($this->perms) {
-        chmod($this->filename, octdec($this->perms));
+        chmod($fn, octdec($this->perms));
         $this->perms= NULL;
       }
       
