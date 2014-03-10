@@ -61,14 +61,10 @@
       $line= $this->layout->format($event);
       $fn= $this->filename();
       $fd= fopen($fn, 'a');
-
-      if ($this->perms) {
-        chmod($fn, octdec($this->perms));
-        $this->perms= NULL;
-      }
-      
       fputs($fd, $line);
       fclose($fd);
+
+      chmod($fn, octdec($this->perms));
     }
   }
 ?>
