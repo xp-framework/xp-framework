@@ -43,6 +43,7 @@ class FileAppenderTest extends AppenderTest {
       public function stream_write($data) {
         $this->handle[1]+= strlen($data);
         $this->handle[2].= $data;
+        return strlen($data);
       }
 
       public function stream_read($count) {
@@ -143,5 +144,37 @@ class FileAppenderTest extends AppenderTest {
     $fixture->perms= '0666';  // -rw-rw-rw
     $fixture->append($this->newEvent(\util\log\LogLevel::WARN, 'Test'));
     $this->assertEquals(0666, fileperms($fixture->filename));
+  }
+
+  #[@test]
+  public function filename_syncs_with_time() {
+    $fixture= $this->newFixture();
+    $fixture->filename= 'test://file-%H:%M:%I:%S';
+
+    $fn1= $fixture->filename();
+    $fixture->append($this->newEvent(\util\log\LogLevel::INFO, 'One'));
+
+    sleep(1);
+
+    $fn2= $fixture->filename();
+    $fixture->append($this->newEvent(\util\log\LogLevel::INFO, 'Two'));
+
+    sleep(1);
+
+    $fn3= $fixture->filename();
+
+    $this->assertTrue(file_exists($fn1));
+    $this->assertTrue(file_exists($fn2));
+    $this->assertFalse(file_exists($fn3));
+  }
+
+  #[@test]
+  public function filename_does_not_sync_with_time() {
+    $fixture= $this->newFixture();
+    $fixture->filename= 'test://file-%H:%M:%I:%S';
+    $fixture->syncDate= false;
+
+    $fixture->filename();
+    $this->assertFalse(strpos($fixture->filename, '%'));
   }
 }
