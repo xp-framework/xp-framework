@@ -42,7 +42,7 @@
      */
     public function filename() {
       if ($this->syncDate) {
-        return strfime($this->filename);
+        return strftime($this->filename);
       }
 
       if (FALSE !== $this->filename) {
@@ -60,10 +60,8 @@
     public function append(LoggingEvent $event) {
       $line= $this->layout->format($event);
       $fn= $this->filename();
-      $fd= fopen($fn, 'a');
-      fputs($fd, $line);
-      fclose($fd);
 
+      file_put_contents($fn, $line, FILE_APPEND);
       chmod($fn, octdec($this->perms));
     }
   }
