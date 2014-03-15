@@ -154,24 +154,19 @@ class FileAppenderTest extends AppenderTest {
 
   #[@test]
   public function filename_syncs_with_time() {
-    $fixture= $this->newFixture();
-    $fixture->filename= 'test://file-%H:%M:%I:%S';
+    $fixture= newinstance('util.log.FileAppender', array('test://file-%H:%M:%I:%S'), '{
+      public $times= array("fn1", "fn2", "fn3");
+      public function filename() { return array_shift($this->times); }
+    }');
+    $fixture->setLayout(new PatternLayout("[%l] %m\n"));
 
-    $fn1= $fixture->filename();
     $fixture->append($this->newEvent(\util\log\LogLevel::INFO, 'One'));
-
-    sleep(1);
-
-    $fn2= $fixture->filename();
     $fixture->append($this->newEvent(\util\log\LogLevel::INFO, 'Two'));
 
-    sleep(1);
-
-    $fn3= $fixture->filename();
-
-    $this->assertTrue(file_exists($fn1));
-    $this->assertTrue(file_exists($fn2));
-    $this->assertFalse(file_exists($fn3));
+    $this->assertEquals(
+      array('fn1' => TRUE, 'fn2' => TRUE, 'fn3' => FALSE),
+      array('fn1' => file_exists('fn1'), 'fn2' => file_exists('fn2'), 'fn3' => file_exists('fn3'))
+    );
   }
 
   #[@test]
