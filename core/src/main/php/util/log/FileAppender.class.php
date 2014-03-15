@@ -62,7 +62,7 @@
       $fn= $this->filename();
 
       file_put_contents($fn, $line, FILE_APPEND);
-      chmod($fn, octdec($this->perms));
+      $this->perms && chmod($fn, octdec($this->perms));
     }
   }
 ?>

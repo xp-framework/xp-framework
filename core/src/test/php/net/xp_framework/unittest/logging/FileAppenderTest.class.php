@@ -138,7 +138,16 @@ class FileAppenderTest extends AppenderTest {
     if (!defined('STREAM_META_ACCESS')) return;
 
     $fixture= $this->newFixture();
-    $fixture->perms= '0666';  // -rw-rw-rw
+    $fixture->perms= '0640';  // -rw-r-----
+    $fixture->append($this->newEvent(\util\log\LogLevel::WARN, 'Test'));
+    $this->assertEquals(0640, fileperms($fixture->filename));
+  }
+
+  #[@test]
+  public function chmod_not_called_without_initializing_perms() {
+    if (!defined('STREAM_META_ACCESS')) return;
+
+    $fixture= $this->newFixture();
     $fixture->append($this->newEvent(\util\log\LogLevel::WARN, 'Test'));
     $this->assertEquals(0666, fileperms($fixture->filename));
   }
