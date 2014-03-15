@@ -102,7 +102,7 @@ class FileAppenderTest extends AppenderTest {
    * @return  util.log.BufferedAppender
    */
   protected function newFixture() {
-    return create(new FileAppender('test://file'))->withLayout(new PatternLayout("[%l] %m\n"));
+    return create(new FileAppender('test://'.$this->name))->withLayout(new PatternLayout("[%l] %m\n"));
   }
 
   #[@test]
