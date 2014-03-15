@@ -19,7 +19,14 @@ class FileAppenderTest extends AppenderTest {
   public static function defineStreamWrapper() {
     $sw= \lang\ClassLoader::defineClass('FileAppender_StreamWrapper', 'lang.Object', array(), '{
       public static $buffer= array();
+      private static $meta= array();
       private $handle;
+
+      static function __static() {
+        if (defined("STREAM_META_ACCESS")) {
+          self::$meta= array(STREAM_META_ACCESS => 0666);
+        }
+      }
 
       public function stream_open($path, $mode, $options, $opened_path) {
         if (strstr($mode, "r")) {
@@ -27,10 +34,10 @@ class FileAppenderTest extends AppenderTest {
           self::$buffer[$path][0]= $mode;
           self::$buffer[$path][1]= 0;
         } else if (strstr($mode, "w")) {
-          self::$buffer[$path]= array($mode, 0, "", array());
+          self::$buffer[$path]= array($mode, 0, "", self::$meta);
         } else if (strstr($mode, "a")) {
           if (!isset(self::$buffer[$path])) {
-            self::$buffer[$path]= array($mode, 0, "", array());
+            self::$buffer[$path]= array($mode, 0, "", self::$meta);
           } else {
             self::$buffer[$path][0]= $mode;
           }
