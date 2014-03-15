@@ -12,8 +12,8 @@
    * Supported parameters:
    * <ul><li>string filename - the file name to log to; may contain strftime() token which
    *     will be automatically replaced
-   * </li><li>boolean syncDate -  whether to keep filename constant after first resolution;
-   *     this is a BC feature
+   * </li><li>bool syncDate - whether to recalculate the log file name for every line written.
+   *     Set this to FALSE to calculcate it only once.
    * </li><li>int perms; file permissions
    * </li></ul>
    *
@@ -41,15 +41,11 @@
      * @return string
      */
     public function filename() {
-      if ($this->syncDate) {
-        return strftime($this->filename);
+      $formatted= strftime($this->filename);
+      if (!$this->syncDate) {
+        $this->filename= $formatted;
       }
-
-      if (FALSE !== $this->filename) {
-        $this->filename= strftime($this->filename);
-      }
-
-      return $this->filename;
+      return $formatted;
     }
     
     /**
@@ -58,10 +54,8 @@
      * @param   util.log.LoggingEvent event
      */ 
     public function append(LoggingEvent $event) {
-      $line= $this->layout->format($event);
       $fn= $this->filename();
-
-      file_put_contents($fn, $line, FILE_APPEND);
+      file_put_contents($fn, $this->layout->format($event), FILE_APPEND);
       $this->perms && chmod($fn, octdec($this->perms));
     }
   }
