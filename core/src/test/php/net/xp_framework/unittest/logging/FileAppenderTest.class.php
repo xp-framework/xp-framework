@@ -5,7 +5,6 @@ use io\streams\Streams;
 use io\streams\MemoryOutputStream;
 use util\log\layout\PatternLayout;
 
-
 /**
  * TestCase for FileAppender
  *
@@ -106,9 +105,6 @@ class FileAppenderTest extends AppenderTest {
     return create(new FileAppender('test://file'))->withLayout(new PatternLayout("[%l] %m\n"));
   }
 
-  /**
-   * Test append() method
-   */
   #[@test]
   public function append_one_message() {
     $fixture= $this->newFixture();
@@ -119,9 +115,6 @@ class FileAppenderTest extends AppenderTest {
     );
   }
 
-  /**
-   * Test append() method
-   */
   #[@test]
   public function append_two_messages() {
     $fixture= $this->newFixture();
@@ -133,9 +126,6 @@ class FileAppenderTest extends AppenderTest {
     );
   }
 
-  /**
-   * Test append() method
-   */
   #[@test]
   public function chmod_called_when_perms_given() {
     if (!defined('STREAM_META_ACCESS')) return;
