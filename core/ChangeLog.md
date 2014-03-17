@@ -3,6 +3,11 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+### Features
+
+* Added support for rolling logfiles to `util.log.FileAppender` via
+  PR #353 - (@kiesel, @thekid)
+
 ### Bugfixes
 
 * Changed time zone transition calculation to no longer us deprecated
