@@ -96,7 +96,7 @@ class FileAppenderTest extends AppenderTest {
         if (!isset(self::$buffer[$path])) return FALSE;
         return array(
           "size" => strlen(self::$buffer[$path][2]),
-          "mode" => self::$buffer[$path][3][STREAM_META_ACCESS]
+          "mode" => defined("STREAM_META_ACCESS") ? self::$buffer[$path][3][STREAM_META_ACCESS] : 0
         );
       }
     }');
