@@ -154,10 +154,10 @@ class FileAppenderTest extends AppenderTest {
 
   #[@test]
   public function filename_syncs_with_time() {
-    $fixture= newinstance('util.log.FileAppender', array('fn%H'), '{
-      protected $hour= 1;
+    $fixture= newinstance('util.log.FileAppender', array('test://fn%H'), '{
+      protected $hour= 0;
       public function filename($ref= NULL) {
-        return parent::filename($this->hour++);
+        return parent::filename(0 + 3600 * $this->hour++);
       }
     }');
     $fixture->setLayout(new PatternLayout("[%l] %m\n"));
@@ -167,7 +167,7 @@ class FileAppenderTest extends AppenderTest {
 
     $this->assertEquals(
       array('fn1' => TRUE, 'fn2' => TRUE, 'fn3' => FALSE),
-      array('fn1' => file_exists('fn1'), 'fn2' => file_exists('fn2'), 'fn3' => file_exists('fn3'))
+      array('fn1' => file_exists('test://fn01'), 'fn2' => file_exists('test://fn02'), 'fn3' => file_exists('test://fn03'))
     );
   }
 

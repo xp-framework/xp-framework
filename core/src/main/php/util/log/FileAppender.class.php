@@ -41,7 +41,7 @@
      * @return string
      */
     public function filename($ref= NULL) {
-      $formatted= $ref ? strftime($this->filename, $ref) : strftime($this->filename);
+      $formatted= NULL === $ref ? strftime($this->filename) : strftime($this->filename, $ref);
       if (!$this->syncDate) {
         $this->filename= $formatted;
       }
