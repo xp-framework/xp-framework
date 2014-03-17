@@ -40,8 +40,8 @@
      *
      * @return string
      */
-    public function filename() {
-      $formatted= strftime($this->filename);
+    public function filename($ref= NULL) {
+      $formatted= $ref ? strftime($this->filename, $ref) : strftime($this->filename);
       if (!$this->syncDate) {
         $this->filename= $formatted;
       }

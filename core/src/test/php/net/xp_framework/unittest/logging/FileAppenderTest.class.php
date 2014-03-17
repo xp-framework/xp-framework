@@ -154,9 +154,11 @@ class FileAppenderTest extends AppenderTest {
 
   #[@test]
   public function filename_syncs_with_time() {
-    $fixture= newinstance('util.log.FileAppender', array('test://file-%H:%M:%I:%S'), '{
-      public $times= array("fn1", "fn2", "fn3");
-      public function filename() { return array_shift($this->times); }
+    $fixture= newinstance('util.log.FileAppender', array('fn%H'), '{
+      protected $hour= 1;
+      public function filename($ref= NULL) {
+        return parent::filename($this->hour++);
+      }
     }');
     $fixture->setLayout(new PatternLayout("[%l] %m\n"));
 
