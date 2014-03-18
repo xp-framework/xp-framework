@@ -5,6 +5,7 @@ XP Framework ChangeLog
 
 ### Features
 
+* Added support for PHP 5.6 - see also issue #352 - (@kiesel, @thekid)
 * Added support for rolling logfiles to `util.log.FileAppender` via
   PR #353 - (@kiesel, @thekid)
 
