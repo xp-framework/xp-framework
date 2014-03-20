@@ -4,12 +4,11 @@ use unittest\TestCase;
 use io\streams\BufferedInputStream;
 use io\streams\MemoryInputStream;
 
-
 /**
  * Unit tests for streams API
  *
- * @see      xp://io.streams.InputStream
- * @purpose  Unit test
+ * @see   xp://io.streams.InputStream
+ * @see   xp://lang.Closeable#close
  */
 class BufferedInputStreamTest extends TestCase {
   const BUFFER= 'Hello World, how are you doing?';
@@ -21,53 +20,41 @@ class BufferedInputStreamTest extends TestCase {
   /**
    * Setup method. Creates the fixture, a BufferedInputStream with
    * a buffer size of 10 characters.
-   *
    */
   public function setUp() {
     $this->mem= new MemoryInputStream(self::BUFFER);
     $this->in= new BufferedInputStream($this->mem, 10);
   }
 
-  /**
-   * Test reading all
-   *
-   */
   #[@test]
   public function readAll() {
     $this->assertEquals(self::BUFFER, $this->in->read(strlen(self::BUFFER)));
     $this->assertEquals(0, $this->in->available());
   }
 
-  /**
-   * Test reading a five bytes chunk
-   *
-   */
   #[@test]
   public function readChunk() {
     $this->assertEquals('Hello', $this->in->read(5));
     $this->assertEquals(5, $this->in->available());   // Five buffered bytes
   }
   
-  /**
-   * Test reading a five bytes chunk
-   *
-   */
   #[@test]
   public function readChunks() {
     $this->assertEquals('Hello', $this->in->read(5));
     $this->assertEquals(5, $this->in->available());   // Five buffered bytes
     $this->assertEquals(' Worl', $this->in->read(5));
-    $this->assertEquals(0, $this->in->available());   // Buffer completely empty
+    $this->assertNotEquals(0, $this->in->available());   // Buffer completely empty, but underlying stream has bytes
   }
 
-  /**
-   * Test closing a stream twice has no effect.
-   *
-   * @see   xp://lang.Closeable#close
-   */
   #[@test]
-  public function closingTwice() {
+  public function closingTwiceHasNoEffect() {
     $this->in->close();
     $this->in->close();
+  }
+
+  #[@test]
+  public function readSize() {
+    $this->assertEquals('Hello Worl', $this->in->read(10));
+    $this->assertEquals(strlen(self::BUFFER) - 10, $this->in->available());
   }
 }
