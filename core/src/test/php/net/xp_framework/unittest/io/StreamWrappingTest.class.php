@@ -166,4 +166,9 @@ class StreamWrappingTest extends TestCase {
       file_get_contents(Streams::readableUri(new MemoryInputStream($data)))
     );
   }
+
+  #[@test]
+  public function is_file() {
+    $this->assertTrue(is_file(Streams::readableUri(new MemoryInputStream('Hello'))));
+  }
 }

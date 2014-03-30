@@ -11,6 +11,8 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed `io.streams.Streams` instances to return true for `is_file()`
+  (@thekid)
 * Fixed `BufferedInputStream::available()` (see xp-framework/xp-runners#17)
   (@thekid)
 * Changed time zone transition calculation to no longer us deprecated
