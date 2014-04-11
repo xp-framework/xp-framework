@@ -508,7 +508,7 @@ class ParameterTest extends TestCase {
     );
   }
 
-  #[@test]
+  #[@test, @expect('lang.FormatException')]
   public function restrictedParameter_raises_exception_when_unknown() {
     $this->getClass()->getMethod('setUnknownTypeRestriction')->getParameter(0)->getTypeRestriction();
   }
