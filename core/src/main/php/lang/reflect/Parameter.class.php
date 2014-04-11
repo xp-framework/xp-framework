@@ -81,12 +81,19 @@
      * @return  lang.Type or NULL if there is no restriction
      */
     public function getTypeRestriction() {
-      if ($this->_reflect->isArray()) {
-        return Primitive::$ARRAY;
-      } else if ($c= $this->_reflect->getClass()) {
-        return new XPClass($c);
-      } else {
-        return NULL;
+      try {
+        if ($this->_reflect->isArray()) {
+          return Primitive::$ARRAY;
+        } else if ($c= $this->_reflect->getClass()) {
+          return new XPClass($c);
+        } else {
+          return NULL;
+        }
+      } catch (ReflectionException $e) {
+
+        // In case a typehint references an undeclared class, a ReflectionException will
+        // be thrown.
+        throw new FormatException('Typehint "'.$this->_reflect->getName().'" cannot be resolved: '.$e->getMessage());
       }
     }
 
