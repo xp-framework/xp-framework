@@ -5,6 +5,7 @@
  */
 
   $package= 'lang.reflect';
+  uses('lang.ClassFormatException');
 
   /**
    * Represents a method's parameter
@@ -93,7 +94,13 @@
 
         // In case a typehint references an undeclared class, a ReflectionException will
         // be thrown.
-        throw new FormatException('Typehint "'.$this->_reflect->getName().'" cannot be resolved: '.$e->getMessage());
+        throw new ClassFormatException(sprintf(
+          'Typehint for %s::%s()\'s parameter "%s" cannot be resolved: %s',
+          $this->_details[0],
+          $this->_details[1],
+          $this->_reflect->getName(),
+          $e->getMessage()
+       ));
       }
     }
 
