@@ -50,7 +50,7 @@
      *
      * @param   string message
      */
-    public function __construct($message, $cause= NULL) {
+    public function __construct($message, self $cause= NULL) {
       static $u= 0;
       $this->__id= uniqid('', TRUE);
       $this->message= is_string($message) ? $message : xp::stringOf($message);
