@@ -395,7 +395,7 @@ class RestContextTest extends TestCase {
       'output'   => 'text/json'
     );
     $this->assertProcess(
-      400, array('Content-Type: text/json'), '{ "message" : "Parameter \"name\" required but found in path(\'name\')" }',
+      400, array('Content-Type: text/json'), '{ "message" : "Parameter \"name\" required, but not found in path(\'name\')" }',
       $route, $this->newRequest()
     );
   }
