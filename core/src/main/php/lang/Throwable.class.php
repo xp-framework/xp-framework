@@ -49,6 +49,7 @@
      * Constructor
      *
      * @param   string message
+     * @param   lang.Throwable cause default NULL
      */
     public function __construct($message, self $cause= NULL) {
       static $u= 0;
