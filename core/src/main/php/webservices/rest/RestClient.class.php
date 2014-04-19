@@ -216,7 +216,7 @@
      * Execute a request
      *
      * <code>
-     *   $client->execute(new RestRequest('GET', '/'));
+     *   $client->execute(new RestRequest('/', HttpConstants::GET));
      * </code>
      *
      * @param   var t either a string or a lang.Type - response type, defaults to webservices.rest.RestResponse
