@@ -3,23 +3,12 @@
 use unittest\TestCase;
 use lang\types\String;
 
-
 /**
  * TestCase
  *
- * @see      xp://lang.types.String
- * @purpose  Unittest
+ * @see   xp://lang.types.String
  */
 class StringTest extends TestCase {
-
-  /**
-   * Setup this test. Forces input and output encoding to ISO-8859-1
-   *
-   */
-  public function setUp() {
-    iconv_set_encoding('input_encoding', 'iso-8859-1');
-    iconv_set_encoding('output_encoding', 'iso-8859-1');
-  }
 
   #[@test]
   public function stringIsEqualToItself() {
