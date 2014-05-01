@@ -7,7 +7,7 @@ use util\Hashmap;
  * Web application configuration
  *
  * @see   xp://xp.scriptlet.WebApplication
- * @test  xp://net.xp_framework.unittest.scriptlet.WebConfigurationTest
+ * @test  xp://scriptlet.unittest.WebConfigurationTest
  */
 class WebConfiguration extends \lang\Object {
   protected $prop= null;
@@ -137,5 +137,16 @@ class WebConfiguration extends \lang\Object {
     }
 
     return $apps;
+  }
+
+  /**
+   * Gets all static resources
+   *
+   * @param   string profile
+   * @return  [:string]
+   */
+  public function staticResources($profile= null) {
+    $hash= $this->prop->readHash('static', 'resources', null);
+    return null === $hash ? null : $hash->toArray();
   }
 }
