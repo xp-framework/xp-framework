@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('scriptlet.Response', 'peer.http.HttpConstants');
+  uses('scriptlet.Response', 'scriptlet.ScriptletOutputStream', 'peer.http.HttpConstants');
  
   /**
    * Defines the response sent from the webserver to the client,
