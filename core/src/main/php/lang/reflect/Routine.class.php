@@ -86,8 +86,9 @@
       // #define ZEND_ACC_PASS_REST_PREFER_REF   0x2000000
       // #define ZEND_ACC_RETURN_REFERENCE       0x4000000
       // #define ZEND_ACC_DONE_PASS_TWO          0x8000000
+      // #define ZEND_ACC_HAS_TYPE_HINTS         0x10000000
       // ==
-      return $this->_reflect->getModifiers() & ~0xfb7f008;
+      return $this->_reflect->getModifiers() & ~0x1fb7f008;
     }
     
     /**
