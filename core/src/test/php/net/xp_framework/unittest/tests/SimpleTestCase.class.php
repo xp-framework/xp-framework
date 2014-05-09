@@ -37,7 +37,7 @@ class SimpleTestCase extends \unittest\TestCase {
    */
   public function setUp() {
     if ('skipped' === $this->name) {
-      throw new \unittest\PrerequisitesNotMetError('SKIP', $this->name);
+      throw new \unittest\PrerequisitesNotMetError('SKIP', null, $this->name);
     } else if ('raisesAnErrorInSetup' === $this->name) {
       $a.= '';
       throw new \unittest\AssertionFailedError('WARN', $this->name);

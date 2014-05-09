@@ -55,7 +55,7 @@
      * @param   var[] prerequisites default []
      */
     public function skip($reason, $prerequisites= array()) {
-      throw new PrerequisitesNotMetError($reason, $prerequisites= array());
+      throw new PrerequisitesNotMetError($reason, NULL, $prerequisites= array());
     }
     
     /**

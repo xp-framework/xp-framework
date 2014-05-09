@@ -22,7 +22,7 @@
      * @param   lang.Throwable cause 
      * @param   array prerequisites default array()
      */
-    public function __construct($message, $cause= NULL, $prerequisites= array()) {
+    public function __construct($message, Throwable $cause= NULL, $prerequisites= array()) {
       parent::__construct($message, $cause);
       $this->prerequisites= (array)$prerequisites;
     }

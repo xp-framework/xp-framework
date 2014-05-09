@@ -26,6 +26,11 @@ class ChainedExceptionTest extends \unittest\TestCase {
     $this->assertFalse(!strstr($e->toString(), 'Caused by Exception lang.IllegalArgumentException (Arg)'));
   }
 
+  #[@test, @expect('lang.IllegalArgumentException')]
+  public function withCause_must_be_a_throwable() {
+    new ChainedException('Message', 'Anything...');
+  }
+
   #[@test]
   public function commonElements() {
     $e= new ChainedException('Message', new \lang\IllegalArgumentException('Arg'));
