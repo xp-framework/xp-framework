@@ -21,7 +21,8 @@ class FileHandler extends AbstractUrlHandler {
   public function __construct($docroot, $notFound= null) {
     $this->docroot= new Folder($docroot);
     if (null === $notFound) {
-      $this->notFound= function($handler, $socket, $path) {
+      $handler= $this;
+      $this->notFound= function($socket, $path) use($handler) {
         $handler->sendErrorMessage($socket, 404, 'Not found', $path);
       };
     } else {
