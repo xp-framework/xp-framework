@@ -12,6 +12,7 @@ class ScriptletHandler extends AbstractUrlHandler {
   protected $request;
   protected $response;
   protected $env;
+  protected $serverName;
 
   /**
    * Constructor
@@ -31,6 +32,7 @@ class ScriptletHandler extends AbstractUrlHandler {
     $this->request= $class->getMethod('_request')->setAccessible(true);
     $this->response= $class->getMethod('_response')->setAccessible(true);
     $this->env= $env;
+    $this->serverName= \lang\System::getProperty('host.name');
   }
 
   /**
@@ -44,7 +46,7 @@ class ScriptletHandler extends AbstractUrlHandler {
    * @return  int
    */
   public function handleRequest($method, $query, array $headers, $data, Socket $socket) {
-    $url= new URL('http://localhost'.$query);
+    $url= new URL('http://'.(isset($headers['Host']) ? $headers['Host'] : $this->serverName).$query);
     $request= $this->request->invoke($this->scriptlet, array());
     $response= $this->response->invoke($this->scriptlet, array());
 
