@@ -65,6 +65,13 @@ class ScriptletHandler extends AbstractUrlHandler {
         $request->env['PHP_AUTH_PW']= $credentials[1];
       }
     }
+    $_COOKIE= array();
+    if (isset($headers['Cookie'])) {
+      foreach (explode(';', $headers['Cookie']) as $cookie) {
+        sscanf(trim($cookie), "%[^=]=%[^\r]", $name, $value);
+        $_COOKIE[$name]= $value;
+      }
+    }
     $request->setHeaders($headers);
 
     try {
@@ -78,7 +85,11 @@ class ScriptletHandler extends AbstractUrlHandler {
     $h= array();
     foreach ($response->headers as $header) {
       list($name, $value)= explode(': ', $header, 2);
-      $h[$name]= $value;
+      if (isset($h[$name])) {
+        $h[$name]= array($h[$name], $value);
+      } else {
+        $h[$name]= $value;
+      }
     }
     $this->sendHeader($socket, $response->statusCode, '', $h);
     $socket->write($response->getContent());

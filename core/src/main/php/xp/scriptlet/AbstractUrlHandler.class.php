@@ -13,7 +13,7 @@ abstract class AbstractUrlHandler extends \lang\Object {
    * @param   peer.Socket socket
    * @param   int sc the status code
    * @param   string message status message
-   * @param   [:string] headers
+   * @param   [:var] headers
    * @return  int
    */
   protected function sendHeader(Socket $socket, $sc, $message, array $headers) {
@@ -22,7 +22,13 @@ abstract class AbstractUrlHandler extends \lang\Object {
     $socket->write('Server: XP/PHP '.phpversion()."\r\n");
     $socket->write("Connection: close\r\n");
     foreach ($headers as $key => $value) {
-      $socket->write($key.': '.$value."\r\n");
+      if (is_array($value)) {
+        foreach ($value as $val) {
+          $socket->write($key.': '.$val."\r\n");
+        }
+      } else{
+        $socket->write($key.': '.$value."\r\n");
+      }
     }
     $socket->write("\r\n");
     return $sc;
