@@ -72,13 +72,6 @@ class Server extends \lang\Object {
         }
       }
       foreach ($conf->mappedApplications($args[2]) as $url => $application) {
-        $protocol->setUrlHandler('default', '/' == $url ? '##' : '#^('.preg_quote($url, '#').')($|/.+)#', new ScriptletHandler(
-          $application->getScriptlet(),
-          array_map($expand, $application->getArguments()),
-          array_map($expand, array_merge($application->getEnvironment(), array(
-            'DOCUMENT_ROOT' => getenv('DOCUMENT_ROOT')
-          )))
-        ));
         foreach (explode('|', $application->getConfig()) as $element) {
           $expanded= $expand($element);
           if (0 == strncmp('res://', $expanded, 6)) {
@@ -87,6 +80,13 @@ class Server extends \lang\Object {
             $pm->appendSource(new FilesystemPropertySource($expanded));
           }
         }
+        $protocol->setUrlHandler('default', '/' == $url ? '##' : '#^('.preg_quote($url, '#').')($|/.+)#', new ScriptletHandler(
+          $application->getScriptlet(),
+          array_map($expand, $application->getArguments()),
+          array_map($expand, array_merge($application->getEnvironment(), array(
+            'DOCUMENT_ROOT' => getenv('DOCUMENT_ROOT')
+          )))
+        ));
       }
 
       $l= Logger::getInstance();
