@@ -3,6 +3,7 @@
 use io\IOException;
 use util\cmd\Console;
 use peer\Socket;
+use peer\http\HttpConstants;
 
 /**
  * HTTP protocol implementation
@@ -70,8 +71,9 @@ class HttpProtocol extends \lang\Object implements \peer\server\ServerProtocol {
     foreach ($handlers as $pattern => $handler) {
       if (preg_match($pattern, $query)) {
         try {
-          if (false === $handler->handleRequest($method, $query, $headers, $body, $socket)) continue;
-          Console::$out->writeLine('OK');
+          $sc= $handler->handleRequest($method, $query, $headers, $body, $socket);
+          Console::$out->writeLine($sc);
+          if (HttpConstants::STATUS_CONTINUE === $sc) continue;
         } catch (IOException $e) {
           Console::$out->writeLine('Error ', $e->compoundMessage());
         }

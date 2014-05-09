@@ -41,6 +41,7 @@ class ScriptletHandler extends AbstractUrlHandler {
    * @param   [:string] headers request headers
    * @param   string data post data
    * @param   peer.Socket socket
+   * @return  int
    */
   public function handleRequest($method, $query, array $headers, $data, Socket $socket) {
     $url= new URL('http://localhost'.$query);
@@ -81,6 +82,7 @@ class ScriptletHandler extends AbstractUrlHandler {
     }
     $this->sendHeader($socket, $response->statusCode, '', $h);
     $socket->write($response->getContent());
+    return $response->statusCode;
   }
 
   /**

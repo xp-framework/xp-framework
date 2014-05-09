@@ -14,6 +14,7 @@ abstract class AbstractUrlHandler extends \lang\Object {
    * @param   int sc the status code
    * @param   string message status message
    * @param   [:string] headers
+   * @return  int
    */
   protected function sendHeader(Socket $socket, $sc, $message, array $headers) {
     $socket->write('HTTP/1.1 '.$sc.' '.$message."\r\n");
@@ -24,6 +25,7 @@ abstract class AbstractUrlHandler extends \lang\Object {
       $socket->write($key.': '.$value."\r\n");
     }
     $socket->write("\r\n");
+    return $sc;
   }
 
   /**
@@ -33,6 +35,7 @@ abstract class AbstractUrlHandler extends \lang\Object {
    * @param   int sc the status code
    * @param   string message status message
    * @param   string reason the reason
+   * @return  int
    */
   protected function sendErrorMessage(Socket $socket, $sc, $message, $reason) {
     $package= create(new \lang\XPClass(__CLASS__))->getPackage();
@@ -46,6 +49,7 @@ abstract class AbstractUrlHandler extends \lang\Object {
       'Content-Length'  => strlen($body),
     ));
     $socket->write($body);
+    return $sc;
   }
 
   /**

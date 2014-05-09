@@ -8,6 +8,7 @@ use util\log\Logger;
 use util\log\context\EnvironmentAware;
 use rdbms\ConnectionManager;
 use lang\XPClass;
+use peer\http\HttpConstants;
 
 /**
  * Web server
@@ -64,7 +65,7 @@ class Server extends \lang\Object {
       if (null === $resources) {
         $protocol->setUrlHandler('default', '#^/#', new FileHandler(
           $expand('{DOCUMENT_ROOT}'),
-          $notFound= function() { return false; }
+          $notFound= function() { return HttpConstants::STATUS_CONTINUE; }
         ));
       } else {
         foreach ($conf->staticResources($args[2]) as $pattern => $location) {

@@ -23,7 +23,7 @@ class FileHandler extends AbstractUrlHandler {
     if (null === $notFound) {
       $handler= $this;
       $this->notFound= function($socket, $path) use($handler) {
-        $handler->sendErrorMessage($socket, 404, 'Not found', $path);
+        return $handler->sendErrorMessage($socket, 404, 'Not found', $path);
       };
     } else {
       $this->notFound= $notFound;
@@ -53,6 +53,7 @@ class FileHandler extends AbstractUrlHandler {
    * @param   [:string] headers request headers
    * @param   string data post data
    * @param   peer.Socket socket
+   * @return  int
    */
   public function handleRequest($method, $query, array $headers, $data, Socket $socket) {
     $url= parse_url($query);
@@ -70,8 +71,7 @@ class FileHandler extends AbstractUrlHandler {
     if ($mod= $this->header($headers, 'If-Modified-Since')) {
       $d= strtotime($mod);
       if ($lastModified <= $d) {
-        $this->sendHeader($socket, 304, 'Not modified', array());
-        return;
+        return $this->sendHeader($socket, 304, 'Not modified', array());
       }
     }
 
@@ -84,7 +84,7 @@ class FileHandler extends AbstractUrlHandler {
     }
 
     // Send OK header and data in 8192 byte chunks
-    $this->sendHeader($socket, 200, 'OK', array(
+    $sc= $this->sendHeader($socket, 200, 'OK', array(
       'Last-Modified'   => gmdate('D, d M Y H:i:s T', $lastModified),
       'Content-Type'    => MimeType::getByFileName($f->getFilename()),
       'Content-Length'  => $f->size(),
@@ -93,6 +93,7 @@ class FileHandler extends AbstractUrlHandler {
       $socket->write($f->read(8192));
     }
     $f->close();
+    return $sc;
   }
 
   /**
