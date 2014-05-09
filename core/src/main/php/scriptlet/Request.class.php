@@ -10,8 +10,6 @@
 
   /**
    * Defines the request sent by the client to the server
-   *
-   * @purpose  Interface
    */  
   interface scriptlet·Request {
 

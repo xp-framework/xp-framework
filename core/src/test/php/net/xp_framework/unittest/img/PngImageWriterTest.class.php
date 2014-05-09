@@ -5,6 +5,10 @@ use img\io\PngStreamWriter;
 /**
  * Tests writing PNG images
  */
+#[@action([
+#  new \unittest\actions\ExtensionAvailable('gd'),
+#  new ImageTypeSupport('PNG')
+#])]
 class PngImageWriterTest extends AbstractImageWriterTest {
 
   /**

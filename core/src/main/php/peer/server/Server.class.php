@@ -222,7 +222,7 @@
           // Check if we got an EOF from the client - in this file the connection
           // was gracefully closed.
           if (!$handles[$index]->isConnected() || $handles[$index]->eof()) {
-            $this->protocol->handleDisconnect($handles[$h]);
+            $this->protocol->handleDisconnect($handles[$index]);
             $handles[$index]->close();
             unset($handles[$index]);
             unset($lastAction[$index]);

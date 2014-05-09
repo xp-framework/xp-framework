@@ -12,15 +12,6 @@ use lang\types\Bytes;
  */
 class CharacterTest extends TestCase {
 
-  /**
-   * Setup this test. Forces input and output encoding to ISO-8859-1
-   *
-   */
-  public function setUp() {
-    iconv_set_encoding('input_encoding', 'iso-8859-1');
-    iconv_set_encoding('output_encoding', 'iso-8859-1');
-  }
-
   #[@test, @expect('lang.FormatException')]
   public function incompleteMultiByteCharacter() {
     new Character("\xe4", 'utf-8');

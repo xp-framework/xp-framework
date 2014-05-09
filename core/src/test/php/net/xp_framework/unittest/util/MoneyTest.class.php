@@ -3,12 +3,12 @@
 use unittest\TestCase;
 use util\Money;
 
-
 /**
  * TestCase
  *
  * @see      xp://util.Money
  */
+#[@action(new \unittest\actions\ExtensionAvailable('bcmath'))]
 class MoneyTest extends TestCase {
 
   /**

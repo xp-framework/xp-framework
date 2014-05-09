@@ -8,8 +8,6 @@
 
   /**
    * Defines the response sent by the server to the client
-   *
-   * @purpose  Interface
    */  
   interface scriptlet·Response {
 

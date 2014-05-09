@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('scriptlet.Response', 'peer.http.HttpConstants');
+  uses('scriptlet.Response', 'scriptlet.ScriptletOutputStream', 'peer.http.HttpConstants');
  
   /**
    * Defines the response sent from the webserver to the client,
@@ -20,7 +20,8 @@
   class HttpScriptletResponse extends Object implements scriptlet·Response {
     protected
       $uri=             NULL,
-      $committed=       FALSE;
+      $committed=       FALSE,
+      $outputStream=    NULL;
     
     public
       $version=         '1.1',
@@ -121,21 +122,10 @@
      * @param   io.streams.OutputStream
      */
     public function getOutputStream() {
-      return newinstance('io.streams.OutputStream', array($this), '{
-        protected $response;
-        public function __construct($r) {
-          $this->response= $r;
-        }
-        public function write($arg) {
-          $this->response->write($arg);
-        }
-        public function flush() {
-          $this->response->flush();
-        }
-        public function close() {
-          $this->response->flush();
-        }
-      }');
+      if (null === $this->outputStream) {
+        $this->outputStream= new ScriptletOutputStream($this);
+      }
+      return $this->outputStream;
     }
     
     /**
