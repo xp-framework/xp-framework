@@ -377,7 +377,7 @@
      * @return  int
      * @throws  peer.SocketException in case of failure
      */
-    public function select(Sockets $s, $timeout= NULL) {
+    public static function select(Sockets $s, $timeout= NULL) {
       if (NULL === $timeout) {
         $tv_sec= $tv_usec= NULL;
       } else {
@@ -402,7 +402,7 @@
 
       // OK, real error here now.
       if (FALSE === $n || NULL === $n) {
-        $e= new SocketException('Select('.$s->toString().', '.$tv_sec.', '.$tv_usec.')= failed: '.$this->getLastError());
+        $e= new SocketException('Select('.$s->toString().', '.$tv_sec.', '.$tv_usec.')= failed');
         xp::gc(__FILE__);
         throw $e;
       }

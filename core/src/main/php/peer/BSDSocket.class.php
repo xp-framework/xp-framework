@@ -417,7 +417,7 @@
      * @return  int
      * @throws  peer.SocketException in case of failure
      */
-    public function select(Sockets $s, $timeout= NULL) {
+    public static function select(Sockets $s, $timeout= NULL) {
       if (NULL === $timeout) {
         $tv_sec= $tv_usec= NULL;
       } else {
