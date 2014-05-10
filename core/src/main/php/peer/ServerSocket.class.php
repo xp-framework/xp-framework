@@ -60,11 +60,13 @@
      * @param   int domain default AF_INET (one of AF_INET or AF_UNIX)
      * @param   int type default SOCK_STREAM (one of SOCK_STREAM | SOCK_DGRAM | SOCK_RAW | SOCK_SEQPACKET | SOCK_RDM)
      * @param   int protocol default SOL_TCP (one of SOL_TCP or SOL_UDP)
+     * @param   lang.XPClass impl default NULL
      */
-    public function __construct($host, $port, $domain= AF_INET, $type= SOCK_STREAM, $protocol= SOL_TCP) {
+    public function __construct($host, $port, $domain= AF_INET, $type= SOCK_STREAM, $protocol= SOL_TCP, XPClass $impl= NULL) {
       $this->host= $host;
       $this->port= $port;
-      $this->impl= self::$impl->newInstance($domain, $type, $protocol);
+      if (NULL === $impl) $impl= self::$impl;
+      $this->impl= $impl->newInstance($domain, $type, $protocol);
     }
 
     /**
