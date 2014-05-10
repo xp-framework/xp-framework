@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.SocketHandle', 'peer.Sockets');
+  uses('peer.SocketHandle', 'peer.Sockets', 'peer.SocketImpl');
 
   /**
    * Server socket interface
@@ -31,27 +31,6 @@
     public $host     = '';
     public $protocol = 0;
 
-    protected static $impl = null;
-
-    static function __static() {
-      if (extension_loaded('sockets')) {
-        self::$impl= XPClass::forName('peer.BSDSocketImpl');
-      } else {
-        define('AF_UNIX', 1);
-        define('AF_INET', 2);
-
-        define('SOCK_STREAM', 1);
-        define('SOCK_DGRAM', 2);
-        define('SOCK_RAW', 3);
-        define('SOCK_RDM', 4);
-        define('SOCK_SEQPACKET', 5);
-
-        define('SOL_TCP', 6);
-        define('SOL_UDP', 17);
-        self::$impl= XPClass::forName('peer.StreamSocketImpl');
-      }
-    }
-
     /**
      * Constructor
      *
@@ -65,7 +44,7 @@
     public function __construct($host, $port, $domain= AF_INET, $type= SOCK_STREAM, $protocol= SOL_TCP, XPClass $impl= NULL) {
       $this->host= $host;
       $this->port= $port;
-      if (NULL === $impl) $impl= self::$impl;
+      if (NULL === $impl) $impl= SocketImpl::$BSD;
       $this->impl= $impl->newInstance($domain, $type, $protocol);
     }
 
@@ -121,7 +100,7 @@
      * @return  bool
      */
     public function isConnected() {
-      return $this->impl->isConnected();
+      return $this->impl->connected();
     }
 
     /**
