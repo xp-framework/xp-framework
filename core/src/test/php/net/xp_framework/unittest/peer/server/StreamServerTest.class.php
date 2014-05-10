@@ -1,36 +1,26 @@
 <?php namespace net\xp_framework\unittest\peer\server;
 
-
-
 /**
  * TestCase for default server protocol
  *
+ * @see  xp://peer.server.Server
  */
-class ServerTest extends AbstractServerTest {
+class StreamServerTest extends AbstractServerTest {
   
   /**
    * Starts server in background
-   *
    */
   #[@beforeClass]
   public static function startServer() {
-    parent::startServerWith('net.xp_framework.unittest.peer.server.TestingProtocol');
+    parent::startServerWith('net.xp_framework.unittest.peer.server.TestingProtocol', 'StreamServerSocketImpl');
   }
 
-  /**
-   * Test handleConnect() is invoked
-   *
-   */
   #[@test]
   public function connected() {
     $this->connect();
     $this->assertHandled(array('CONNECT'));
   }
 
-  /**
-   * Test handleDisconnect() is invoked
-   *
-   */
   #[@test]
   public function disconnected() {
     $this->connect();
@@ -38,10 +28,6 @@ class ServerTest extends AbstractServerTest {
     $this->assertHandled(array('CONNECT', 'DISCONNECT'));
   }
 
-  /**
-   * Test handleError() is invoked
-   *
-   */
   #[@test, @ignore('Fragile test, dependant on OS / platform and implementation vagaries')]
   public function error() {
     $this->connect();

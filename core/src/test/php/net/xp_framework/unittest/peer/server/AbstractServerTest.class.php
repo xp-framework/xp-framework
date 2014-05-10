@@ -52,15 +52,16 @@ abstract class AbstractServerTest extends TestCase {
    * Starts server in background
    *
    * @param   string protocol
+   * @param   string impl
    */
-  public static function startServerWith($protocol) {
+  public static function startServerWith($protocol, $impl= 'StreamServerSocketImpl') {
 
     // Start server process
     with ($rt= Runtime::getInstance()); {
       self::$serverProcess= $rt->getExecutable()->newInstance(array_merge(
         $rt->startupOptions()->asArguments(),
         array($rt->bootstrapScript('class')),
-        array('net.xp_framework.unittest.peer.server.TestingServer', $protocol)
+        array('net.xp_framework.unittest.peer.server.TestingServer', $protocol, $impl)
       ));
     }
     self::$serverProcess->in->close();
