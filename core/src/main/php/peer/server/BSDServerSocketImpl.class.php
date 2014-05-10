@@ -31,14 +31,14 @@
     }
 
     /**
-     * Bind a given host and port, with a given backlog
+     * Bind a given address and port, with a given backlog
      *
-     * @param   string host
+     * @param   string address
      * @param   int port
      * @param   int backlog
      * @param   bool reuse
      */
-    public function bind($host, $port, $backlog= 10, $reuse= TRUE) {
+    public function bind($address, $port= 0, $backlog= 10, $reuse= TRUE) {
       if (
         (FALSE === socket_setopt($this->handle, SOL_SOCKET, SO_REUSEADDR, $reuse)) ||
         (FALSE === socket_bind($this->handle, $host, $port))

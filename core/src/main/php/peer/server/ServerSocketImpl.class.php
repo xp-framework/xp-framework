@@ -27,14 +27,14 @@
     public abstract function __construct($domain, $type, $protocol);
 
     /**
-     * Bind a given host and port, with a given backlog
+     * Bind a given address and port, with a given backlog
      *
-     * @param   string host
+     * @param   string address
      * @param   int port
      * @param   int backlog
      * @param   bool reuse
      */
-    public abstract function bind($host, $port, $backlog= 10, $reuse= TRUE);
+    public abstract function bind($address, $port= 0, $backlog= 10, $reuse= TRUE);
 
     /**
      * Returns the underlying socket host
