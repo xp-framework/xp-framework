@@ -56,7 +56,6 @@
       }
       
       socket_getsockname($this->handle, $this->host, $this->port);
-
       if (FALSE === socket_listen($this->handle, $backlog)) {
         throw new SocketException(sprintf(
           'Listening on socket failed: %s',
@@ -86,7 +85,7 @@
      */
     protected function timeval($seconds) {
       $sec= floor($seconds);
-      $usec= ($seconds- $sec) * 1000;
+      $usec= ($seconds- $sec) * 100000;
       return array('sec' => $sec, 'usec' => $usec);
     }
 
