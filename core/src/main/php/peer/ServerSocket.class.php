@@ -28,8 +28,8 @@
    * </code>
    */
   class ServerSocket extends Object implements SocketHandle {
-    public $host     = '';
-    public $protocol = 0;
+    public $host= '';
+    public $port= 0;
 
     /**
      * Constructor
