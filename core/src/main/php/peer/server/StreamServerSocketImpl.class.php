@@ -25,17 +25,20 @@
      */
     public function __construct($domain, $type, $protocol) {
       static $protocols= array(
-        SOL_TCP => 'tcp',
-        SOL_UDP => 'udp'
+        SOL_TCP => 'tcp://%s:%d',
+        SOL_UDP => 'udp://%s:%d'
       );
 
-      if (AF_INET !== $domain) {
-        raise('lang.MethodNotImplementedException', 'Not implemented: AF_UNIX sockets');
+      if (AF_INET === $domain) {
+        if (!isset($protocols[$protocol])) {
+          throw new IllegalArgumentException('Unknown protocol '.$protocol);
+        }
+        $this->protocol= $protocols[$protocol];
+      } else if (AF_UNIX === $domain) {
+        $this->protocol= 'unix://%s';
+      } else {
+        throw new IllegalArgumentException('Unknown domain '.$doman);
       }
-      if (!isset($protocols[$protocol])) {
-        throw new IllegalArgumentException('Unknown protocol '.$protocol);
-      }
-      $this->protocol= $protocols[$protocol];
       $this->context= stream_context_create();
     }
 
@@ -48,7 +51,7 @@
      * @param   bool reuse
      */
     public function bind($address, $port= 0, $backlog= 10, $reuse= TRUE) {
-      $sock= sprintf('%s://%s:%d', $this->protocol, $host, $port);
+      $sock= sprintf($this->protocol, $host, $port);
       $this->handle= stream_socket_server(
         $sock,
         $errno,
