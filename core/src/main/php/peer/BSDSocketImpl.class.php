@@ -191,8 +191,7 @@
           socket_strerror(socket_last_error($accepted))
         ));      
       }
-      
-      
+
       return new Socket($host, $port, $accepted, new XPClass(__CLASS__));
     }
 
