@@ -20,12 +20,22 @@
      * Constructor
      *
      * @param   int domain default AF_INET (one of AF_INET or AF_UNIX)
-     * @param   int type default SOCK_STREAM (one of SOCK_STREAM | SOCK_DGRAM | SOCK_RAW | SOCK_SEQPACKET | SOCK_RDM)
+     * @param   int type default SOCK_STREAM (one of SOCK_STREAM, SOCK_DGRAM, SOCK_RAW, SOCK_RDM or SOCK_SEQPACKET)
      * @param   int protocol default SOL_TCP (one of SOL_TCP or SOL_UDP)
      */
     public function __construct($domain, $type, $protocol) {
-      // XXX
-      $this->protocol= 'tcp';
+      static $protocols= array(
+        SOL_TCP => 'tcp',
+        SOL_UDP => 'udp'
+      );
+
+      if (AF_INET !== $domain) {
+        raise('lang.MethodNotImplementedException', 'Not implemented: AF_UNIX sockets');
+      }
+      if (!isset($protocols[$protocol])) {
+        throw new IllegalArgumentException('Unknown protocol '.$protocol);
+      }
+      $this->protocol= $protocols[$protocol];
       $this->context= stream_context_create();
     }
 

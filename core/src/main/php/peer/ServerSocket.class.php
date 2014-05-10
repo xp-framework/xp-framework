@@ -37,6 +37,17 @@
       if (extension_loaded('sockets')) {
         self::$impl= XPClass::forName('peer.server.BSDServerSocketImpl');
       } else {
+        define('AF_UNIX', 1);
+        define('AF_INET', 2);
+
+        define('SOCK_STREAM', 1);
+        define('SOCK_DGRAM', 2);
+        define('SOCK_RAW', 3);
+        define('SOCK_RDM', 4);
+        define('SOCK_SEQPACKET', 5);
+
+        define('SOL_TCP', 6);
+        define('SOL_UDP', 17);
         self::$impl= XPClass::forName('peer.server.StreamServerSocketImpl');
       }
     }
