@@ -5,6 +5,7 @@
  */
  
   uses(
+    'peer.SocketHandle',
     'peer.ConnectException',
     'peer.SocketTimeoutException',
     'peer.SocketEndpoint',
@@ -21,7 +22,7 @@
    * @see      php://network
    * @purpose  Basic TCP/IP socket
    */
-  class Socket extends Object {
+  class Socket extends Object implements SocketHandle {
     public
       $_eof     = FALSE,
       $host     = '',

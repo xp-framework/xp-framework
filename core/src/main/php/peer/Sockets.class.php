@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('peer.SocketHandle');
+
   /**
    * Instances of this Sockets class hold the read, write and except
    * arrays of Socket instances necessary for passing to `select`.
@@ -19,9 +21,9 @@
     /**
      * Creates a new instances
      *
-     * @param  var read either an array of sockets, or NULL
-     * @param  var write either an array of sockets, or NULL
-     * @param  var except either an array of sockets, or NULL
+     * @param  var read either an array of peer.SocketHandles, or NULL
+     * @param  var write either an array of peer.SocketHandles, or NULL
+     * @param  var except either an array of peer.SocketHandles, or NULL
      */
     public function __construct($read= NULL, $write= NULL, $except= NULL) {
       $this->setSockets(0, $read);
@@ -33,7 +35,7 @@
      * Helper: Set handles
      *
      * @param  int n
-     * @param  var arg either an array of sockets, or NULL
+     * @param  var arg either an array of peer.SocketHandles, or NULL
      */
     protected function setSockets($n, $arg) {
       if (NULL === $arg) {
@@ -41,7 +43,7 @@
       } else {
         $this->handles[$n]= array();
         foreach ($arg as $sock) {
-          $handle= cast($sock, 'peer.Socket')->getHandle();
+          $handle= cast($sock, 'peer.SocketHandle')->getHandle();
           $this->handles[$n][]= $handle;
           $this->sockets[(int)$handle]= $sock;
         }
@@ -68,7 +70,7 @@
      * Helper: Get read sockets
      *
      * @param  int n
-     * @return peer.Socket[]
+     * @return peer.SocketHandle[]
      */
     public function read() {
       return $this->getSockets(0);
@@ -78,7 +80,7 @@
      * Helper: Get write sockets
      *
      * @param  int n
-     * @return peer.Socket[]
+     * @return peer.SocketHandle[]
      */
     public function write() {
       return $this->getSockets(1);
@@ -88,7 +90,7 @@
      * Helper: Get except sockets
      *
      * @param  int n
-     * @return peer.Socket[]
+     * @return peer.SocketHandle[]
      */
     public function except() {
       return $this->getSockets(2);
