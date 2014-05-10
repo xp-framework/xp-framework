@@ -244,10 +244,9 @@
      * Reading helper
      *
      * @param   int maxLen
-     * @param   int type PHP_BINARY_READ or PHP_NORMAL_READ
      * @return  string data
      */
-    protected function _read($maxLen, $type) {
+    protected function _read($maxLen) {
       $res= '';
       if (!$this->_eof && 0 === strlen($this->rq)) {
         if (!$this->_select(array($this->handle), NULL, NULL, $this->timeout)) {
@@ -260,7 +259,7 @@
           $error= socket_last_error($this->handle);
           if (0 === $error || SOCKET_ECONNRESET === $error) {
             $this->_eof= TRUE;
-            return NULL;
+            return '';
           }
           $e= new SocketException('Read of '.$maxLen.' bytes failed');
           xp::gc(__FILE__);
@@ -269,19 +268,8 @@
           $this->_eof= TRUE;
         }
       }
-      
-      $read= $this->rq.$res;
-      if (PHP_NORMAL_READ === $type) {
-        if ('' === $read) return NULL;
-        $c= strcspn($read, "\n");
-        $this->rq= substr($read, $c+ 1);
-        $chunk= substr($read, 0, $c+ 1);
-        return $chunk;
-      } else if (PHP_BINARY_READ === $type) {
-        if ('' === $read) return NULL;
-        $this->rq= substr($read, $maxLen);
-        return substr($read, 0, $maxLen);
-      }
+
+      return $this->rq.$res;
     }
 
     /**
@@ -291,7 +279,11 @@
      * @return  string
      */
     public function gets($length) {
-      return $this->_read($length, PHP_NORMAL_READ);
+      if ('' === ($read= $this->_read($length))) return NULL;
+      $c= strcspn($read, "\n");
+      $this->rq= substr($read, $c+ 1);
+      $chunk= substr($read, 0, $c+ 1);
+      return $chunk;
     }
 
     /**
@@ -301,7 +293,9 @@
      * @return  string
      */
     public function read($length) {
-      return $this->_read($length, PHP_BINARY_READ);
+      if ('' === ($read= $this->_read($length))) return NULL;
+      $this->rq= substr($read, $maxLen);
+      return substr($read, 0, $maxLen);
     }
 
     /**
