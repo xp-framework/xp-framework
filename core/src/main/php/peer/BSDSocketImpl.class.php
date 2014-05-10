@@ -306,8 +306,8 @@
      */
     public function read($length) {
       if ('' === ($read= $this->_read($length))) return NULL;
-      $this->rq= substr($read, $maxLen);
-      return substr($read, 0, $maxLen);
+      $this->rq= substr($read, $length);
+      return substr($read, 0, $length);
     }
 
     /**
