@@ -18,7 +18,7 @@
     protected $port;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param   int domain default AF_INET (one of AF_INET or AF_UNIX)
      * @param   int type default SOCK_STREAM (one of SOCK_STREAM | SOCK_DGRAM | SOCK_RAW | SOCK_SEQPACKET | SOCK_RDM)

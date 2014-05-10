@@ -13,9 +13,6 @@
    * @see  xp://peer.BSDSocket
    */
   class BSDServerSocketImpl extends ServerSocketImpl {
-    protected $handle= NULL;
-    protected $host;
-    protected $port;
 
     /**
      * Constructor
