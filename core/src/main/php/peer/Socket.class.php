@@ -153,7 +153,7 @@
      * @return  bool success
      */
     public function close() {
-      if ($this->impl->connected()) {
+      if ($this->impl && $this->impl->connected()) {
         $this->impl->close();
         $this->_eof= FALSE;
         return TRUE;
