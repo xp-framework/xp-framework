@@ -21,9 +21,9 @@
     /**
      * Creates a new instances
      *
-     * @param  var read either an array of peer.SocketHandles, or NULL
-     * @param  var write either an array of peer.SocketHandles, or NULL
-     * @param  var except either an array of peer.SocketHandles, or NULL
+     * @param  peer.SocketHandle[] read or NULL
+     * @param  peer.SocketHandle[] write or NULL
+     * @param  peer.SocketHandle[] except or NULL
      */
     public function __construct($read= NULL, $write= NULL, $except= NULL) {
       $this->setSockets(0, $read);
@@ -32,10 +32,11 @@
     }
 
     /**
-     * Helper: Set handles
+     * Helper: Set sockets
      *
      * @param  int n
-     * @param  var arg either an array of peer.SocketHandles, or NULL
+     * @param  peer.SocketHandle[] except or NULL
+     * @return void
      */
     protected function setSockets($n, $arg) {
       if (NULL === $arg) {
@@ -54,7 +55,7 @@
      * Helper: Get sockets
      *
      * @param  int n
-     * @return peer.Socket[]
+     * @return peer.SocketHandle[]
      */
     protected function getSockets($n) {
       $r= array();
