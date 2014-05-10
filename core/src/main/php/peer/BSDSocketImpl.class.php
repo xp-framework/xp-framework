@@ -119,7 +119,7 @@
       // Use SNDTIMEO as timeout while connecting, then reset it back afterwards
       // to the default read timeout.
       socket_set_option($this->handle, SOL_SOCKET, SO_SNDTIMEO, $this->timeval($timeout));
-      $r= socket_connect($this->handle, $address, $port);
+      $r= socket_connect($this->handle, $host, $port);
       socket_set_option(SOL_SOCKET, SO_SNDTIMEO, $this->timeval($this->timeout));
 
       if (FALSE === $r) {

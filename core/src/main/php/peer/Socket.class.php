@@ -47,7 +47,7 @@
       if (NULL === $impl) $impl= SocketImpl::$STREAM;
       $this->impl= $impl->newInstance(AF_INET, SOCK_STREAM, $this->sol);
       if ($host instanceof InetAddress) {
-        $this->host= $address->asString();
+        $this->host= $host->asString();
       } else {
         $this->host= $host;
       }
