@@ -44,11 +44,15 @@
     /**
      * Constructor
      *
-     * @param   string addr
+     * @param   var arg either a ServerSocket instance or an address
      * @param   int port
      */
-    public function __construct($addr, $port) {
-      $this->socket= new ServerSocket($addr, $port);
+    public function __construct($arg, $port= NULL) {
+      if ($arg instanceof ServerSocket) {
+        $this->socket= $arg;
+      } else {
+        $this->socket= new ServerSocket($arg, $port);
+      }
     }
     
     /**
