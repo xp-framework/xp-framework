@@ -134,8 +134,13 @@
       return $this->connected;
     }
 
+    /**
+     * Returns local endpoint
+     *
+     * @return  string
+     */
     public function local() {
-      if (FALSE === socket_getsockname($this->_sock, $host, $port)) {
+      if (FALSE === socket_getsockname($this->handle, $host, $port)) {
         throw new SocketException('Cannot get socket name on '.$this->_sock);
       }
       return $host.':'.$port;
