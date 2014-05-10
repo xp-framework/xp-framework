@@ -188,8 +188,8 @@
      * @return  void
      */
     public function block($mode) {
-      if (FALSE === stream_set_blocking($this->_sock, $mode)) {
-        $e= new SocketException('Set blocking call failed: '.$this->getLastError());
+      if (FALSE === stream_set_blocking($this->handle, $mode)) {
+        $e= new SocketException('Set blocking call failed');
         xp::gc(__FILE__);
         throw $e;
       }

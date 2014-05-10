@@ -140,7 +140,7 @@
      */
     public function local() {
       if (FALSE === socket_getsockname($this->handle, $host, $port)) {
-        throw new SocketException('Cannot get socket name on '.$this->_sock);
+        throw new SocketException('Cannot get socket name on '.$this->handle);
       }
       return $host.':'.$port;
     }
@@ -204,9 +204,9 @@
      */
     public function block($mode) {
       if ($mode) {
-        $ret= socket_set_block($this->_sock);
+        $ret= socket_set_block($this->handle);
       } else {
-        $ret= socket_set_nonblock($this->_sock);
+        $ret= socket_set_nonblock($this->handle);
       }
       if (FALSE === $ret) {
         $e= new SocketException('Failed to set '.($mode ? 'blocking' : 'nonblocking'));
