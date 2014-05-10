@@ -28,9 +28,25 @@
      * @param   int protocol default SOL_TCP (one of SOL_TCP or SOL_UDP)
      */
     public function __construct($domain, $type, $protocol) {
+      static $domains= array(
+         AF_INET   => 'AF_INET',
+         AF_INET6  => 'AF_INET6',
+         AF_UNIX   => 'AF_UNIX'
+      );
+      static $types= array(
+        SOCK_STREAM     => 'SOCK_STREAM',
+        SOCK_DGRAM      => 'SOCK_DGRAM',
+        SOCK_RAW        => 'SOCK_RAW',
+        SOCK_SEQPACKET  => 'SOCK_SEQPACKET',
+        SOCK_RDM        => 'SOCK_RDM'
+      );
+
       if (!is_resource($this->handle= socket_create($domain, $type, $protocol))) {
         throw new SocketException(sprintf(
-          'Creating socket failed: %s',
+          'Creating %s socket (type %s, protocol %s) failed: %s',
+          $domains[$domain],
+          $types[$type],
+          getprotobynumber($this->protocol),
           socket_strerror(socket_last_error())
         ));
       }
