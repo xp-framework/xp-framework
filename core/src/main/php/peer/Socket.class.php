@@ -38,7 +38,7 @@
      * as value for the parameter "host", you must enclose the IP in
      * square brackets.
      *
-     * @param   string host hostname or IP address
+     * @param   var host hostname or IP address, as string or peer.net.InetAddress
      * @param   int port
      * @param   var handle default NULL
      * @param   lang.XPClass impl default NULL
@@ -46,7 +46,11 @@
     public function __construct($host, $port, $handle= NULL, XPClass $impl= NULL) {
       if (NULL === $impl) $impl= SocketImpl::$STREAM;
       $this->impl= $impl->newInstance(AF_INET, SOCK_STREAM, $this->sol);
-      $this->host= $host;
+      if ($host instanceof InetAddress) {
+        $this->host= $address->asString();
+      } else {
+        $this->host= $host;
+      }
       $this->port= $port;
       if ($handle) {
         $this->impl->attach($handle);

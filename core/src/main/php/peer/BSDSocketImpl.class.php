@@ -98,11 +98,7 @@
      * @throws  peer.ConnectException
      */
     public function connect($address, $port= 0, $timeout= 2.0) {
-      if ($address instanceof InetAddress) {
-        $host= $address->asString();
-      } else {
-        $host= gethostbyname($address);
-      }
+      $host= gethostbyname($address);
 
       // Use SNDTIMEO as timeout while connecting, then reset it back afterwards
       // to the default read timeout.
