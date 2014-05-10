@@ -28,7 +28,7 @@ class TestingServer extends \lang\Object {
    * @param   string[] args
    */
   public static function main(array $args) {
-    $impl= Package::forName('peer.server')->loadClass($args[1]);
+    $impl= Package::forName('peer')->loadClass($args[1]);
 
     $s= new Server(new ServerSocket('127.0.0.1', 0, AF_INET, SOCK_STREAM, SOL_TCP, $impl));
     try {

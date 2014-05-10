@@ -4,7 +4,6 @@ use unittest\TestCase;
 use peer\Socket;
 use lang\Runtime;
 
-
 /**
  * TestCase
  *
@@ -12,16 +11,13 @@ use lang\Runtime;
  * @see   xp://peer.server.Server
  */
 abstract class AbstractServerTest extends TestCase {
-  protected static
-    $serverProcess = null,
-    $bindAddress   = array(null, -1);
-
+  protected static $serverProcess = null;
+  protected static $bindAddress   = array(null, -1);
   protected $conn= null;
   protected $client= null;
 
   /**
    * Setup this test case
-   *
    */
   public function setUp() {
     $this->conn= new Socket(self::$bindAddress[0], self::$bindAddress[1]);
@@ -29,7 +25,6 @@ abstract class AbstractServerTest extends TestCase {
   
   /**
    * Connect helper
-   *
    */
   protected function connect() {
     $this->conn->connect();
@@ -39,7 +34,6 @@ abstract class AbstractServerTest extends TestCase {
   
   /**
    * Tears down this test case
-   *
    */
   public function tearDown() {
     if ($this->conn->isConnected()) {
@@ -54,7 +48,7 @@ abstract class AbstractServerTest extends TestCase {
    * @param   string protocol
    * @param   string impl
    */
-  public static function startServerWith($protocol, $impl= 'StreamServerSocketImpl') {
+  public static function startServerWith($protocol, $impl= 'StreamSocketImpl') {
 
     // Start server process
     with ($rt= Runtime::getInstance()); {
@@ -80,7 +74,6 @@ abstract class AbstractServerTest extends TestCase {
 
   /**
    * Shut down socket server
-   *
    */
   #[@afterClass]
   public static function shutdownServer() {

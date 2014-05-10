@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.BSDSocket', 'peer.server.ServerSocketImpl');
+  uses('peer.BSDSocket', 'peer.SocketImpl');
 
   /**
    * BSD server socket implementation
@@ -12,7 +12,7 @@
    * @ext  sockets
    * @see  xp://peer.BSDSocket
    */
-  class BSDServerSocketImpl extends ServerSocketImpl {
+  class BSDSocketImpl extends SocketImpl {
 
     /**
      * Constructor

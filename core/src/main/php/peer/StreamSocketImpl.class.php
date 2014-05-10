@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('peer.Socket', 'peer.server.ServerSocketImpl');
+  uses('peer.Socket', 'peer.SocketImpl');
 
   /**
-   * Stream server socket implementation
+   * Stream socket implementation
    *
    * @see  xp://peer.Socket
    */
-  class StreamServerSocketImpl extends ServerSocketImpl {
+  class StreamSocketImpl extends SocketImpl {
     protected $handle= NULL;
     protected $host;
     protected $port;

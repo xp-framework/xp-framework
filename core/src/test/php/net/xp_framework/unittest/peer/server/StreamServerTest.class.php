@@ -12,7 +12,7 @@ class StreamServerTest extends AbstractServerTest {
    */
   #[@beforeClass]
   public static function startServer() {
-    parent::startServerWith('net.xp_framework.unittest.peer.server.TestingProtocol', 'StreamServerSocketImpl');
+    parent::startServerWith('net.xp_framework.unittest.peer.server.TestingProtocol', 'StreamSocketImpl');
   }
 
   #[@test]

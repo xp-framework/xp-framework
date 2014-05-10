@@ -35,7 +35,7 @@
 
     static function __static() {
       if (extension_loaded('sockets')) {
-        self::$impl= XPClass::forName('peer.server.BSDServerSocketImpl');
+        self::$impl= XPClass::forName('peer.BSDSocketImpl');
       } else {
         define('AF_UNIX', 1);
         define('AF_INET', 2);
@@ -48,7 +48,7 @@
 
         define('SOL_TCP', 6);
         define('SOL_UDP', 17);
-        self::$impl= XPClass::forName('peer.server.StreamServerSocketImpl');
+        self::$impl= XPClass::forName('peer.StreamSocketImpl');
       }
     }
 

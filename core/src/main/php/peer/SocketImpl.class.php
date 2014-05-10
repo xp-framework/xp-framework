@@ -7,12 +7,12 @@
   uses('lang.Closeable');
 
   /**
-   * Abstract server socket implementation
+   * Abstract base class for all other socket implementations
    *
-   * @see  xp://peer.server.BSDServerSocketImpl
-   * @see  xp://peer.server.StreamServerSocketImpl
+   * @see  xp://peer.BSDSocketImpl
+   * @see  xp://peer.StreamSocketImpl
    */
-  abstract class ServerSocketImpl extends Object implements Closeable {
+  abstract class SocketImpl extends Object implements Closeable {
     protected $handle= NULL;
     protected $host;
     protected $port;

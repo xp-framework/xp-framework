@@ -13,7 +13,7 @@ class BSDServerTest extends AbstractServerTest {
    */
   #[@beforeClass]
   public static function startServer() {
-    parent::startServerWith('net.xp_framework.unittest.peer.server.TestingProtocol', 'BSDServerSocketImpl');
+    parent::startServerWith('net.xp_framework.unittest.peer.server.TestingProtocol', 'BSDSocketImpl');
   }
 
   #[@test]
