@@ -1,11 +1,8 @@
 <?php namespace net\xp_framework\unittest\peer\server;
 
-
-
 use util\cmd\Console;
 use peer\server\Server;
 use peer\server\ServerProtocol;
-
 
 /**
  * Socket server used by ServerTest. 

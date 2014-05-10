@@ -17,6 +17,13 @@
     protected $host;
     protected $port;
 
+    /**
+     * Constructor
+     *
+     * @param   int domain default AF_INET (one of AF_INET or AF_UNIX)
+     * @param   int type default SOCK_STREAM (one of SOCK_STREAM | SOCK_DGRAM | SOCK_RAW | SOCK_SEQPACKET | SOCK_RDM)
+     * @param   int protocol default SOL_TCP (one of SOL_TCP or SOL_UDP)
+     */
     public function __construct($domain, $type, $protocol) {
       if (!is_resource($this->handle= socket_create($domain, $type, $protocol))) {
         throw new SocketException(sprintf(
@@ -26,6 +33,14 @@
       }
     }
 
+    /**
+     * Bind a given host and port, with a given backlog
+     *
+     * @param   string host
+     * @param   int port
+     * @param   int backlog
+     * @param   bool reuse
+     */
     public function bind($host, $port, $backlog= 10, $reuse= TRUE) {
       if (
         (FALSE === socket_setopt($this->handle, SOL_SOCKET, SO_REUSEADDR, $reuse)) ||
@@ -48,41 +63,11 @@
     }
 
     /**
-     * Returns the underlying socket host
+     * Accepts an incoming client connection
      *
-     * @return  string
+     * @return  peer.Socket
+     * @throws  peer.SocketException
      */
-    public function host() {
-      return $this->host;
-    }
-
-    /**
-     * Returns the underlying socket port
-     *
-     * @return  int
-     */
-    public function port() {
-      return $this->port;
-    }
-
-    /**
-     * Returns the underlying socket handle
-     *
-     * @return  var
-     */
-    public function handle() {
-      return $this->handle;
-    }
-
-    /**
-     * Returns whether this socket is connected
-     *
-     * @return  bool
-     */
-    public function isConnected() {
-      return NULL !== $this->handle;
-    }
-
     public function accept() {
       if (0 > ($accepted= socket_accept($this->handle))) {
         throw new SocketException(sprintf(
@@ -112,19 +97,19 @@
      * @throws  peer.SocketException in case of failure
      */
     public function select(Sockets $s, $timeout= NULL) {
-      var_dump($s);
       return BSDSocket::select($s, $timeout);
     }
 
+    /**
+     * Closes underlying socket
+     *
+     * @return  void
+     */
     public function close() {
       if ($this->handle) {
         socket_close($this->handle);
         $this->handle= NULL;
       }
-    }
-
-    public function __destruct() {
-      $this->close();
     }
   }
 ?>
