@@ -96,6 +96,7 @@
     /**
      * Get last error
      *
+     * @deprecated
      * @return  string error
      */  
     public function getLastError() {

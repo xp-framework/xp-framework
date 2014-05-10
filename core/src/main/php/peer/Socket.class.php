@@ -107,6 +107,7 @@
      * any PHP error/warning is returned - but since there's no function like
      * flasterror() we must rely on this
      *
+     * @deprecated
      * @return  string error
      */  
     public function getLastError() {
