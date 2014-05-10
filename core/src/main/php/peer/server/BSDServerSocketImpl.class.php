@@ -41,10 +41,10 @@
     public function bind($address, $port= 0, $backlog= 10, $reuse= TRUE) {
       if (
         (FALSE === socket_setopt($this->handle, SOL_SOCKET, SO_REUSEADDR, $reuse)) ||
-        (FALSE === socket_bind($this->handle, $host, $port))
+        (FALSE === socket_bind($this->handle, $address, $port))
       ) {
         throw new SocketException(sprintf(
-          'Binding socket to '.$host.':'.$port.' failed: %s',
+          'Binding socket to '.$address.':'.$port.' failed: %s',
           socket_strerror(socket_last_error($this->handle))
         ));
       }

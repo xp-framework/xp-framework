@@ -39,6 +39,7 @@
       } else {
         throw new IllegalArgumentException('Unknown domain '.$doman);
       }
+
       $this->context= stream_context_create();
     }
 
@@ -51,7 +52,7 @@
      * @param   bool reuse
      */
     public function bind($address, $port= 0, $backlog= 10, $reuse= TRUE) {
-      $sock= sprintf($this->protocol, $host, $port);
+      $sock= sprintf($this->protocol, $address, $port);
       $this->handle= stream_socket_server(
         $sock,
         $errno,
