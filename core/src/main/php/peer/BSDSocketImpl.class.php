@@ -120,7 +120,7 @@
       // to the default read timeout.
       socket_set_option($this->handle, SOL_SOCKET, SO_SNDTIMEO, $this->timeval($timeout));
       $r= socket_connect($this->handle, $host, $port);
-      socket_set_option(SOL_SOCKET, SO_SNDTIMEO, $this->timeval($this->timeout));
+      socket_set_option($this->handle, SOL_SOCKET, SO_SNDTIMEO, $this->timeval($this->timeout));
 
       if (FALSE === $r) {
         $e= new ConnectException(sprintf(
@@ -165,8 +165,8 @@
      */
     public function timeout($timeout) {
       parent::timeout($timeout);
-      socket_set_option(SOL_SOCKET, SO_RCVTIMEO, $this->timeval($timeout));
-      socket_set_option(SOL_SOCKET, SO_SNDTIMEO, $this->timeval($timeout));
+      socket_set_option($this->handle, SOL_SOCKET, SO_RCVTIMEO, $this->timeval($timeout));
+      socket_set_option($this->handle, SOL_SOCKET, SO_SNDTIMEO, $this->timeval($timeout));
     }
 
     /**
