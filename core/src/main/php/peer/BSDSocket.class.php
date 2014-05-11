@@ -4,12 +4,12 @@
  * $Id$
  */
 
-  uses('peer.Socket');
+  uses('peer.Socket', 'peer.SocketImpl');
   
   /**
    * BSDSocket implementation
    *
-   * @test     xp://net.xp_framework.unittest.peer.sockets.BSDSocketTest
+   * @test     xp://net.xp_framework.unittest.peer.sockets.DeprecatedBSDSocketTest
    * @see      php://sockets
    * @see      http://www.developerweb.net/sock-faq/ The UNIX Socket FAQ
    * @ext      sockets
@@ -24,6 +24,22 @@
     
     static function __static() {
       defined('TCP_NODELAY') || define('TCP_NODELAY', 1);
+    }
+
+    /**
+     * Constructor
+     *
+     * Note: When specifying a numerical IPv6 address (e.g. fe80::1)
+     * as value for the parameter "host", you must enclose the IP in
+     * square brackets.
+     *
+     * @param   var host hostname or IP address, as string or peer.net.InetAddress
+     * @param   int port
+     * @param   var handle default NULL
+     * @param   lang.XPClass impl default NULL
+     */
+    public function __construct($host, $port, $handle= NULL, XPClass $impl= NULL) {
+      parent::__construct($host, $port, $handle= NULL, SocketImpl::$BSD);
     }
 
     /**
