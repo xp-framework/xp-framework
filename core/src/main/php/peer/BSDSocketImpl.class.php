@@ -146,6 +146,15 @@
     }
 
     /**
+     * Returns the underlying socket handle
+     *
+     * @return  var
+     */
+    public function handle() {
+      return $this->connected ? $this->handle : NULL;
+    }
+
+    /**
      * Returns local endpoint
      *
      * @return  string
@@ -259,6 +268,10 @@
      * @return  string data
      */
     protected function _read($maxLen) {
+      if (!$this->connected) {
+        throw new SocketException('Cannot read from disconnected socket');
+      }
+
       $res= '';
       if (!$this->_eof && 0 === strlen($this->rq)) {
         if (!$this->_select(array($this->handle), NULL, NULL, $this->timeout)) {
@@ -317,6 +330,10 @@
      * @return  int
      */
     public function write($bytes) {
+      if (!$this->connected) {
+        throw new SocketException('Cannot write to disconnected socket');
+      }
+
       $length= strlen($bytes);
       if (FALSE === ($written= socket_write($this->handle, $bytes, $length))) {
         $e= new SocketException('Write of '.$length.' bytes to socket failed');
