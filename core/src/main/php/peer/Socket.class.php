@@ -28,9 +28,9 @@
     public $host= '';
     public $port= 0;
 
-    protected $_eof= FALSE;
-    protected $_options = array();
-    protected $_timeout = 60;
+    protected $eof= FALSE;
+    protected $options= array();
+    protected $timeout= 60;
     protected $sol= SOL_TCP;
 
     /**
@@ -90,7 +90,7 @@
      * @param   var value
      */
     protected function setSocketOption($wrapper, $option, $value) {
-      $this->_options[$wrapper][$option]= $value;
+      $this->options[$wrapper][$option]= $value;
       $this->impl->option($wrapper, $option, $value);
     }
     
@@ -102,8 +102,8 @@
      * @param   var
      */
     protected function getSocketOption($wrapper, $option) {
-      return isset($this->_options[$wrapper][$option])
-        ? $this->_options[$wrapper][$option]
+      return isset($this->options[$wrapper][$option])
+        ? $this->options[$wrapper][$option]
         : NULL
       ;
     }
@@ -162,7 +162,7 @@
     public function close() {
       if ($this->impl && $this->impl->connected()) {
         $this->impl->close();
-        $this->_eof= FALSE;
+        $this->eof= FALSE;
         return TRUE;
       }
       return FALSE;
@@ -175,7 +175,7 @@
      */
     public function setTimeout($timeout) {
       $this->impl->timeout($timeout);
-      $this->_timeout= $timeout;
+      $this->timeout= $timeout;
     }
 
     /**
@@ -184,7 +184,7 @@
      * @return  double
      */
     public function getTimeout() {
-      return $this->_timeout;
+      return $this->timeout;
     }
 
     /**
@@ -219,7 +219,7 @@
      */
     public function read($maxLen= 4096) {
       if (NULL === ($bytes= $this->impl->gets($maxLen))) {
-        $this->_eof= TRUE;
+        $this->eof= TRUE;
         return NULL;
       }
       return $bytes;
@@ -234,7 +234,7 @@
      */
     public function readLine($maxLen= 4096) {
       if (NULL === ($bytes= $this->impl->gets($maxLen))) {
-        $this->_eof= TRUE;
+        $this->eof= TRUE;
         return NULL;
       }
       return rtrim($bytes, "\r\n");
@@ -249,7 +249,7 @@
      */
     public function readBinary($maxLen= 4096) {
       if (NULL === ($bytes= $this->impl->read($maxLen))) {
-        $this->_eof= TRUE;
+        $this->eof= TRUE;
         return '';
       }
       return $bytes;
@@ -261,7 +261,7 @@
      * @return  bool
      */
     public function eof() {
-      return $this->_eof;
+      return $this->eof;
     }
     
     /**
