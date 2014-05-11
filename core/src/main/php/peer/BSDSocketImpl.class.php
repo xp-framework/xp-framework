@@ -101,7 +101,7 @@
      */
     protected function timeval($seconds) {
       $sec= floor($seconds);
-      $usec= ($seconds- $sec) * 100000;
+      $usec= ($seconds- $sec) * 1000000;
       return array('sec' => $sec, 'usec' => $usec);
     }
 
@@ -245,19 +245,34 @@
      * @return  int
      * @see     php://socket_select
      */
-    protected function _select($r, $w, $e, $timeout) {
+    protected static function _select(&$r, &$w, &$e, $timeout) {
       if (NULL === $timeout) {
         $tv_sec= $tv_usec= NULL;
       } else {
         $tv_sec= (int)floor($timeout);
-        $tv_usec= (int)(($timeout- $tv_sec) * 1000000);
+        $tv_usec= (int)(($timeout- $tv_sec) * 100000);
       }
 
-      if (FALSE === ($n= socket_select($r, $w, $e, $tv_sec, $tv_usec))) {
-        $e= new SocketException('Select failed: '.socket_strerror(socket_last_error()));
-        xp::gc(__FILE__);
-        throw $e;
-      }
+      do {
+        $socketSelectInterrupted = FALSE;
+        if (FALSE === ($n= socket_select($r, $w, $e, $tv_sec, $tv_usec))) {
+          $l= __LINE__ - 1;
+
+          // If socket_select has been interrupted by a signal, it will return FALSE,
+          // but no actual error occurred - so check for "real" errors before throwing
+          // an exception. If no error has occurred, skip over to the socket_select again.
+          if (0 !== ($error= socket_last_error()) || xp::errorAt(__FILE__, $l)) {
+            socket_clear_error();
+            $e= new SocketException(sprintf('Select failed - #%d: %s', $error, socket_strerror($error)));
+            xp::gc(__FILE__);
+            throw $e;
+          } else {
+            $socketSelectInterrupted = TRUE;
+          }
+        }
+
+      // if socket_select was interrupted by signal, retry socket_select
+      } while ($socketSelectInterrupted);
       return $n;
     }
 
@@ -274,7 +289,8 @@
 
       $res= '';
       if (!$this->_eof && 0 === strlen($this->rq)) {
-        if (!$this->_select(array($this->handle), NULL, NULL, $this->timeout)) {
+        $r= array($this->handle); $w= $e= NULL;
+        if (!self::_select($r, $w, $e, $this->timeout)) {
           $e= new SocketTimeoutException('Read of '.$maxLen.' bytes failed', $this->timeout);
           xp::gc(__FILE__);
           throw $e;
@@ -353,34 +369,7 @@
      * @throws  peer.SocketException in case of failure
      */
     public function select(Sockets $s, $timeout= NULL) {
-      if (NULL === $timeout) {
-        $tv_sec= $tv_usec= NULL;
-      } else {
-        $tv_sec= (int)floor($timeout);
-        $tv_usec= (int)(($timeout- $tv_sec) * 1000000);
-      }
-
-      do {
-        $socketSelectInterrupted = FALSE;
-        if (FALSE === ($n= socket_select($s->handles[0], $s->handles[1], $s->handles[2], $tv_sec, $tv_usec))) {
-          $l= __LINE__ - 1;
-
-          // If socket_select has been interrupted by a signal, it will return FALSE,
-          // but no actual error occurred - so check for "real" errors before throwing
-          // an exception. If no error has occurred, skip over to the socket_select again.
-          if (0 !== ($error= socket_last_error()) || xp::errorAt(__FILE__, $l)) {
-            socket_clear_error();
-            $e= new SocketException(sprintf('Select failed - #%d: %s', $error, socket_strerror($error)));
-            xp::gc(__FILE__);
-            throw $e;
-          } else {
-            $socketSelectInterrupted = TRUE;
-          }
-        }
-
-      // if socket_select was interrupted by signal, retry socket_select
-      } while ($socketSelectInterrupted);
-      return $n;
+      return self::_select($s->handles[0], $s->handles[1], $s->handles[2], $timeout);
     }
 
     /**
