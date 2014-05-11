@@ -20,6 +20,8 @@
    * The socket class
    *
    * @test  xp://net.xp_framework.unittest.peer.sockets.SocketTest
+   * @test  xp://net.xp_framework.unittest.peer.sockets.BSDSocketTest
+   * @see   http://www.developerweb.net/sock-faq/ The UNIX Socket FAQ
    * @see   php://network
    */
   class Socket extends Object implements SocketHandle {
