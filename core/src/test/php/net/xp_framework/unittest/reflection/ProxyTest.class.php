@@ -180,7 +180,7 @@ class ProxyTest extends TestCase {
 
   #[@test]
   public function namespaced_parameters_handled_correctly() {
-    $proxy= $this->proxyClassFor(array(ClassLoader::defineInterface('net.xp_framework.unittest.reflection.NSInterface', [], '{
+    $proxy= $this->proxyClassFor(array(ClassLoader::defineInterface('net.xp_framework.unittest.reflection.NSInterface', array(), '{
       public function fixture(\lang\types\Long $param);
     }')));
     $this->assertEquals(
