@@ -11,6 +11,8 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed xp-framework/core#19: MockProxyBuilder does not respect namespaces
+  in PHP < 5.3.7 (see also https://bugs.php.net/bug.php?id=54624) - @thekid
 * Fixed `io.streams.Streams` instances to return true for `is_file()`
   (@thekid)
 * Fixed `BufferedInputStream::available()` (see xp-framework/xp-runners#17)
