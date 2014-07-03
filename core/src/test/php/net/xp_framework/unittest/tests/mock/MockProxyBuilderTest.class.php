@@ -3,8 +3,9 @@
 use unittest\TestCase;
 use unittest\mock\MockProxyBuilder;
 use util\XPIterator;
-use lang\reflect\InvocationHandler;
 use lang\XPClass;
+use lang\ClassLoader;
+use lang\reflect\InvocationHandler;
 
 /**
  * Tests the Proxy class
@@ -43,7 +44,7 @@ class MockProxyBuilderTest extends TestCase {
    */
   protected function proxyInstanceFor($interfaces) {
     return MockProxyBuilder::newProxyInstance(
-      \lang\ClassLoader::getDefault(),
+      ClassLoader::getDefault(),
       $interfaces, 
       $this->handler
     );
@@ -59,7 +60,7 @@ class MockProxyBuilderTest extends TestCase {
    */
   protected function proxyClassFor($interfaces) {
     return MockProxyBuilder::getProxyClass(
-      \lang\ClassLoader::getDefault(),
+      ClassLoader::getDefault(),
       $interfaces,
       $this->handler
     );
@@ -72,7 +73,7 @@ class MockProxyBuilderTest extends TestCase {
 
   #[@test, @expect('lang.IllegalArgumentException')]
   public function nullInterfaces() {
-    MockProxyBuilder::getProxyClass(\lang\ClassLoader::getDefault(), null);
+    MockProxyBuilder::getProxyClass(ClassLoader::getDefault(), null);
   }
 
   #[@test]
@@ -142,7 +143,7 @@ class MockProxyBuilderTest extends TestCase {
   
   #[@test]
   public function allowDoubledInterfaceMethod() {
-    $newIteratorClass= \lang\ClassLoader::defineInterface('util.NewIterator', 'util.XPIterator');
+    $newIteratorClass= ClassLoader::defineInterface('util.NewIterator', 'util.XPIterator');
     
     $this->proxyInstanceFor(array(
       XPClass::forName('util.XPIterator'),
@@ -169,7 +170,7 @@ class MockProxyBuilderTest extends TestCase {
   #[@test]
   public function concrete_methods_should_not_be_changed_by_default() {
     $proxyBuilder= new MockProxyBuilder();
-    $class= $proxyBuilder->createProxyClass(\lang\ClassLoader::getDefault(),
+    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
       array(),
       XPClass::forName('net.xp_framework.unittest.tests.mock.AbstractDummy')
     );
@@ -181,7 +182,7 @@ class MockProxyBuilderTest extends TestCase {
   #[@test]
   public function abstract_methods_should_delegated_to_handler() {
     $proxyBuilder= new MockProxyBuilder();
-    $class= $proxyBuilder->createProxyClass(\lang\ClassLoader::getDefault(),
+    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
       array(),
       XPClass::forName('net.xp_framework.unittest.tests.mock.AbstractDummy')
     );
@@ -196,7 +197,7 @@ class MockProxyBuilderTest extends TestCase {
   public function with_overwriteAll_abstract_methods_should_delegated_to_handler() {
     $proxyBuilder= new MockProxyBuilder();
     $proxyBuilder->setOverwriteExisting(true);
-    $class= $proxyBuilder->createProxyClass(\lang\ClassLoader::getDefault(),
+    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
       array(),
       XPClass::forName('net.xp_framework.unittest.tests.mock.AbstractDummy')
     );
@@ -210,7 +211,7 @@ class MockProxyBuilderTest extends TestCase {
   public function reserved_methods_should_not_be_overridden() {
     $proxyBuilder= new MockProxyBuilder();
     $proxyBuilder->setOverwriteExisting(true);
-    $class= $proxyBuilder->createProxyClass(\lang\ClassLoader::getDefault(),
+    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
       array(),
       XPClass::forName('net.xp_framework.unittest.tests.mock.AbstractDummy')
     );
@@ -223,7 +224,7 @@ class MockProxyBuilderTest extends TestCase {
 
   #[@test]
   public function namespaced_parameters_handled_correctly() {
-    $class= $this->proxyClassFor(array(\lang\ClassLoader::defineInterface('net.xp_framework.unittest.test.mock.NSInterface', [], '{
+    $class= $this->proxyClassFor(array(ClassLoader::defineInterface('net.xp_framework.unittest.test.mock.NSInterface', array(), '{
       public function fixture(\lang\types\Long $param);
     }')));
     $this->assertEquals(
