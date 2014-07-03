@@ -17,7 +17,7 @@ XP Framework ChangeLog
   (@thekid)
 * Fixed `BufferedInputStream::available()` (see xp-framework/xp-runners#17)
   (@thekid)
-* Changed time zone transition calculation to no longer us deprecated
+* Changed time zone transition calculation to no longer use deprecated
   timezone abbreviatons. See #352 and https://bugs.php.net/bugs/66845
   @thekid
 * Fixed `String` and `Character` classes to work predictably across all
