@@ -1423,4 +1423,22 @@ class URLTest extends TestCase {
     $this->assertEquals('user', $u->getUser());
     $this->assertEquals('/@', $u->getPath());
   }
+
+  #[@test, @values([
+  #  'http://localhost/',
+  #  'http://localhost:8080/',
+  #  'http://localhost/path',
+  #  'http://localhost/path?query',
+  #  'http://localhost/path?query#fragment',
+  #  'http://user@localhost/path?query#fragment'
+  #])]
+  public function string_representation($input) {
+    $this->assertEquals($input, create(new URL($input))->toString());
+  }
+
+  #[@test]
+  public function string_representation_does_not_include_password() {
+    $u= new URL('http://user:pass@localhost/path?query#fragment');
+    $this->assertEquals('http://user:********@localhost/path?query#fragment', $u->toString());
+  }
 }
