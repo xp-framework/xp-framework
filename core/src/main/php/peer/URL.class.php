@@ -40,33 +40,35 @@
     }
 
     /**
+     * Helper to create a string representation. Used by toString() and getURL().
+     *
+     * @param  var $pass A function to represent the password
+     * @return string
+     */
+    protected function asString($pass) {
+      $str= $this->_info['scheme'].'://';
+      if (isset($this->_info['user'])) $str.= sprintf(
+        '%s%s@',
+        rawurlencode($this->_info['user']),
+        (isset($this->_info['pass']) ? ':'.$pass($this->_info['pass']) : '')
+      );
+      $str.= $this->_info['host'];
+      isset($this->_info['port']) && $str.= ':'.$this->_info['port'];
+      isset($this->_info['path']) && $str.= $this->_info['path'];
+      if ($this->_info['params']) {
+        $str.= '?'.$this->getQuery();
+      }
+      isset($this->_info['fragment']) && $str.= '#'.$this->_info['fragment'];
+      return $str;
+    }
+
+    /**
      * Creates a string representation of this URL
      *
      * @return  string
-     * @see     xp://lang.Object#toString
      */
     public function toString() {
-      return sprintf(
-        "%s@ {\n".
-        "  [scheme]      %s\n".
-        "  [host]        %s\n".
-        "  [port]        %d\n".
-        "  [user]        %s\n".
-        "  [password]    %s\n".
-        "  [path]        %s\n".
-        "  [query]       %s\n".
-        "  [fragment]    %s\n".
-        "}",
-        $this->getClassName(),
-        $this->getScheme(),
-        $this->getHost(),
-        $this->getPort(),
-        $this->getUser(),
-        $this->getPassword(),
-        $this->getPath(),
-        $this->getQuery(),
-        $this->getFragment()
-      );
+      return $this->asString(function($pass) { return '********'; });
     }
 
     /**
@@ -442,19 +444,7 @@
      */
     public function getURL() {
       if (!isset($this->_info['url'])) {
-        $this->_info['url']= $this->_info['scheme'].'://';
-        if (isset($this->_info['user'])) $this->_info['url'].= sprintf(
-          '%s%s@',
-          rawurlencode($this->_info['user']),
-          (isset($this->_info['pass']) ? ':'.rawurlencode($this->_info['pass']) : '')
-        );
-        $this->_info['url'].= $this->_info['host'];
-        isset($this->_info['port']) && $this->_info['url'].= ':'.$this->_info['port'];
-        isset($this->_info['path']) && $this->_info['url'].= $this->_info['path'];
-        if ($this->_info['params']) {
-          $this->_info['url'].= '?'.$this->getQuery();
-        }
-        isset($this->_info['fragment']) && $this->_info['url'].= '#'.$this->_info['fragment'];
+        $this->_info['url']= $this->asString(function($pass) { return rawurlencode($pass); });
       }
       return $this->_info['url'];
     }
