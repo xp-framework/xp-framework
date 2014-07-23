@@ -5,6 +5,7 @@ XP Framework ChangeLog
 
 ### Features
 
+* Merged PR #359 - Change `URL::toString()` - (@kiesel, @thekid)
 * Added support for PHP 5.6 - see also issue #352 - (@kiesel, @thekid)
 * Added support for rolling logfiles to `util.log.FileAppender` via
   PR #353 - (@kiesel, @thekid)
