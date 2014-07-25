@@ -1,5 +1,7 @@
 <?php namespace net\xp_framework\unittest\rdbms\integration;
 
+use rdbms\SQLStatementFailedException;
+
 /**
  * Sybase integration test
  *
@@ -181,9 +183,16 @@ class SybaseIntegrationTest extends RdbmsIntegrationTest {
     $conn->insert('into %c (id, cost) values (1, 123.12345)', $this->tableName());
   }
 
-  #[@test, @expect('rdbms.SQLStatementFailedException')]
+  #[@test]
   public function repeated_extend_errors() {
     $this->createTable();
-    $this->db()->select('not_the_table_name.field1, not_the_table_name.field2 from %c', $this->tableName());
+    $conn= $this->db();
+    try {
+      $conn->select('not_the_table_name.field1, not_the_table_name.field2 from %c', $this->tableName());
+      $this->fail('No exception raised', NULL, 'rdbms.SQLStatementFailedException');
+    } catch (SQLStatementFailedException $expected) {
+      // OK
+    }
+    $this->assertEquals(array(0 => array('working' => 1)), $conn->select('1 as working'));
   }
 }
