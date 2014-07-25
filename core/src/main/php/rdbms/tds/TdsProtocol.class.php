@@ -465,7 +465,6 @@
      */
     protected function read() {
       $this->done= FALSE;
-      $this->messages= array();
       $type= $this->stream->begin();
 
       // Check for message type
