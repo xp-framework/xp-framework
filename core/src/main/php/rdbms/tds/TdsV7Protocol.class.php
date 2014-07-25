@@ -202,6 +202,7 @@
      * @return  var
      */
     public function query($sql) {
+      $this->messages= array();
       $this->stream->write(self::MSG_QUERY, iconv(xp::ENCODING, 'ucs-2le', $sql));
       $token= $this->read();
 

@@ -176,6 +176,7 @@
      * @return  var
      */
     public function query($sql) {
+      $this->messages= array();
       $this->stream->write(self::MSG_QUERY, $sql);
       $token= $this->read();
 

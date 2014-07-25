@@ -409,6 +409,7 @@
      */
     public function connect($user= '', $password= '') {
       $this->stream->connect();
+      $this->messages= array();
       $this->login($user, $password);
       $response= $this->read();
 
