@@ -168,7 +168,7 @@
       }
       // DEBUG Console::writeLine($initial ? 'I' : 'E', $type, ' ', $old, ' -> ', $new);
     }
-    
+
     /**
      * Issues a query and returns the results
      *
@@ -236,15 +236,14 @@
           }
           return $fields;
         } else if ("\xFD" === $token || "\xFF" === $token || "\xFE" === $token) {   // DONE
-          $meta= $this->stream->get('vstatus/vcmd/Vrowcount', 8);
-          if ($meta['status'] & 0x0001) {
+          if (-1 === ($rows= $this->handleDone())) {
             $token= $this->stream->getToken();
             continue;
           }
           $this->done= TRUE;
-          return $meta['rowcount'];
+          return $rows;
         } else if ("\xE5" === $token) {   // EED (messages or errors)
-          $this->handleExtendedError();
+          $this->handleEED();
           $token= $this->stream->getToken();
         } else if ("\xE3" === $token) {   // ENVCHANGE, e.g. from "use [db]" queries
           $this->envchange();

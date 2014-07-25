@@ -168,7 +168,7 @@ class SybaseIntegrationTest extends RdbmsIntegrationTest {
     $this->assertEquals(1, $q->next('result'));
   }
 
-  #[@test, @expect(class= 'rdbms.SQLStatementFailedException', withMessage= '/241/')]
+  #[@test, @expect(class= 'rdbms.SQLStatementFailedException', withMessage= '/Truncation/')]
   public function dataTruncationWarning() {
     $conn= $this->db();
     $conn->query('
@@ -178,6 +178,12 @@ class SybaseIntegrationTest extends RdbmsIntegrationTest {
       )',
       $this->tableName()
     );
-    $conn->insert('into %c (cost) values (123.12345)', $this->tableName());
+    $conn->insert('into %c (id, cost) values (1, 123.12345)', $this->tableName());
+  }
+
+  #[@test, @expect('rdbms.SQLStatementFailedException')]
+  public function repeated_extend_errors() {
+    $this->createTable();
+    $this->db()->select('not_the_table_name.field1, not_the_table_name.field2 from %c', $this->tableName());
   }
 }
