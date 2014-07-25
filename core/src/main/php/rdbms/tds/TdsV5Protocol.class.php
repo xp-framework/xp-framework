@@ -9,6 +9,7 @@
   /**
    * TDS V5 protocol implementation
    *
+   * @see   http://www.sybase.com/content/1013412/tds34.pdf
    * @see   https://github.com/mono/mono/blob/master/mcs/class/Mono.Data.Tds/Mono.Data.Tds.Protocol/Tds50.cs
    */
   class TdsV5Protocol extends TdsProtocol {
