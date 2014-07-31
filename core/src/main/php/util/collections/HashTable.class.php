@@ -112,7 +112,7 @@
       }
 
       $this->_buckets[$h]= array($key, $value);
-      $this->_hash+= HashProvider::hashOf($h.($value instanceof Generic ? $value->hashCode() : $value));
+      $this->_hash+= HashProvider::hashOf($h.($value instanceof Generic ? $value->hashCode() : serialize($value)));
       return $previous;
     }
 
@@ -144,7 +144,7 @@
         $prev= NULL;
       } else {
         $prev= $this->_buckets[$h][1];
-        $this->_hash-= HashProvider::hashOf($h.($prev instanceof Generic ? $prev->hashCode() : $prev));
+        $this->_hash-= HashProvider::hashOf($h.($prev instanceof Generic ? $prev->hashCode() : serialize($prev)));
         unset($this->_buckets[$h]);
       }
 
