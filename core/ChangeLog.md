@@ -12,6 +12,8 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed xp-framework/xp-framework#361: HashTable::put($key, array()) 
+  doesn't work with PHP 5.4.4... (@thekid)
 * Fixed xp-framework/core#19: MockProxyBuilder does not respect namespaces
   in PHP < 5.3.7 (see also https://bugs.php.net/bug.php?id=54624) - @thekid
 * Fixed `io.streams.Streams` instances to return true for `is_file()`
