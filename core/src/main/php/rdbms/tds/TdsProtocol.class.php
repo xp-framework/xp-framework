@@ -299,22 +299,49 @@
     }
 
     /**
+     * Returns an exception consuming all server messages into causes
+     *
+     * @param  string prefix
+     * @return rdbms.tds.TdsProtocolException
+     */
+    protected function exception($prefix= NULL) {
+      if ($this->messages) {
+        $cause= NULL;
+        while ($e= array_shift($this->messages)) {
+          $cause= new TdsProtocolException(
+            $e['message'],
+            $e['number'],
+            $e['state'],
+            $e['class'],
+            $e['server'],
+            $e['proc'],
+            $e['line'],
+            $cause
+          );
+        }
+      } else {
+        $cause= new TdsProtocolException('Unexpected protocol error', -1, -1, 0xFF, null, null, -1);
+      }
+
+      if (NULL !== $prefix) {
+        $cause->message= $prefix.': '.$cause->message;
+      }
+      return $cause;
+    }
+
+    /**
      * Handles ERROR messages (0xAA)
      *
      * @throws  rdbms.tds.TdsProtocolException
      */
     protected function handleError() {
       $meta= $this->stream->get('vlength/Vnumber/Cstate/Cclass', 8);
-      $this->done= TRUE;
-      throw new TdsProtocolException(
-        $this->stream->getString($this->stream->getShort()),
-        $meta['number'],
-        $meta['state'],
-        $meta['class'],
-        $this->stream->getString($this->stream->getByte()),
-        $this->stream->getString($this->stream->getByte()),
-        $this->stream->getByte()
-      );
+      $message= $this->stream->getString($this->stream->getShort());
+      $server= $this->stream->getString($this->stream->getByte());
+      $proc= $this->stream->getString($this->stream->getByte());
+      $line= $this->stream->getByte();
+
+      $this->handleMessage($message, $meta['number'], $meta['state'], $meta['class'], $server, $proc, $line);
     }
 
     /**
@@ -328,16 +355,16 @@
       $server= $this->stream->getString($this->stream->getByte());
       $proc= $this->stream->getString($this->stream->getByte());
       $line= $this->stream->getShort();
+
       $this->handleMessage($message, $meta['number'], $meta['state'], $meta['class'], $server, $proc, $line);
     }
 
     /**
      * Handles EED text messages (0xE5)
      *
-     * @param   bool raise
      * @throws  rdbms.tds.TdsProtocolException
      */
-    protected function handleEED($raise= FALSE) {
+    protected function handleEED() {
       $meta= $this->stream->get('vlength/Vnumber/Cstate/Cclass', 8);
       $meta['sqlstate']= $this->stream->read($this->stream->getByte());
       $meta= array_merge($meta, $this->stream->get('Cstatus/vtranstate', 3));
@@ -345,11 +372,8 @@
       $server= $this->stream->read($this->stream->getByte());
       $proc= $this->stream->read($this->stream->getByte());
       $line= $this->stream->getShort();
-      $this->handleMessage($message, $meta['number'], $meta['state'], $meta['class'], $server, $proc, $line);
 
-      if ($raise) {
-        throw new TdsProtocolException($message, $meta['number'], $meta['state'], $meta['class'], $server, $proc, $line);
-      }
+      $this->handleMessage($message, $meta['number'], $meta['state'], $meta['class'], $server, $proc, $line);
     }
 
     /**
@@ -363,27 +387,9 @@
       if ($meta['status'] & 0x0001) {         // TDS_DONE_MORE
         return -1;
       } else if ($meta['status'] & 0x0002) {  // TDS_DONE_ERROR
-        $e= current($this->messages);
-        throw new TdsProtocolException(
-          $e['message'],
-          $e['number'],
-          $e['state'],
-          $e['class'],
-          $e['server'],
-          $e['proc'],
-          $e['line']
-        );
+        throw $this->exception();
       } else if (!empty($this->messages) && (3 === $meta['transtate']  || 4 === $meta['transtate'])) {
-        $e= current($this->messages);
-        throw new TdsProtocolException(
-          'Aborted: '.$e['message'],
-          $e['number'],
-          $e['state'],
-          $e['class'],
-          $e['server'],
-          $e['proc'],
-          $e['line']
-        );
+        throw $this->exception('Aborted');
       }
       return $meta['rowcount'];
     }
@@ -423,8 +429,8 @@
           case 6:     // TDS_LOG_FAIL
             $this->stream->read($meta['length']- 1);
             $this->stream->getToken();    // 0xE5
-            $this->handleEED(TRUE);
-            break;
+            $this->handleEED();
+            throw $this->exception('Login failed');
 
           case 7:     // TDS_LOG_NEGOTIATE
             $this->stream->read($meta['length']- 1);
@@ -477,6 +483,8 @@
       $token= $this->stream->getToken();
       if ("\xAA" === $token) {
         $this->handleError();
+        $this->done= TRUE;
+        throw $this->exception();
       }
       
       return $token;
@@ -539,9 +547,11 @@
           $continue= TRUE;
         } else if ("\xAA" === $token) {
           $this->handleError();
-          // Always raises an exception
+          $this->done= TRUE;
+          throw $this->exception();
         } else if ("\xE5" === $token) {
-          $this->handleEED(TRUE);
+          $this->handleEED();
+          throw $this->exception();
         } else if ("\xA9" === $token) {       // TDS_COLUMNORDER
           $this->stream->read($this->stream->getShort());
           $token= $this->stream->getToken();

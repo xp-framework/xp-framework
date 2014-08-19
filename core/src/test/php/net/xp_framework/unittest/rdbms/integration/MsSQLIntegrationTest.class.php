@@ -1,5 +1,7 @@
 <?php namespace net\xp_framework\unittest\rdbms\integration;
 
+use rdbms\SQLStatementFailedException;
+
 /**
  * MSSQL integration test
  *
