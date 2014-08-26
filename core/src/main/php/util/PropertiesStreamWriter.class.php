@@ -13,6 +13,7 @@
   /**
    * Write util.PropertyAccess objects to a stream
    *
+   * @test  xp://net.xp_framework.unittest.util.PropertiesStreamWriterTest
    */
   class PropertiesStreamWriter extends Object {
     protected $charset = xp::ENCODING;
@@ -39,6 +40,10 @@
 
       $section= $prop->getFirstSection();
       do {
+
+        // Skip for empty properties
+        if (!$section) continue;
+
         $writer->writeLine(sprintf("[%s]", $section));
         
         foreach ($prop->readSection($section) as $key => $val) {
