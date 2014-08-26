@@ -181,24 +181,8 @@
       $this->stream->write(self::MSG_QUERY, $sql);
       $token= $this->read();
 
-      // Skip over DONEPROC & DONEINPROC results
       do {
-        if ("\x00" === $token || "\x02" === $token) {
-
-          // Tokens encountered in some situations, seem to be inserted after a certain number
-          // of rows, we need to continue reading in these cases (if we don't, we experience
-          // issues like https://github.com/xp-framework/xp-framework/issues/305). Examples:
-          //
-          // packet header           * token * data
-          // ----------------------- * ----- * -----------
-          // 04 01 00 0A 00 00 00 00 * 00 00 *
-          // 04 01 00 0E 00 00 00 00 * 02 00 * 19 00 00 00
-          $token= $this->read();
-          continue;
-        } else if ("\xA3" === $token || "\x23" === $token || "\x10" === $token) {
-          $token= $this->read();                 // TDS_CURDECLARE*
-          continue;
-        } else if ("\xEE" === $token) {          // TDS_ROWFMT
+        if ("\xEE" === $token) {          // TDS_ROWFMT
           $fields= array();
           $this->stream->getShort();
           $nfields= $this->stream->getShort();
@@ -210,7 +194,7 @@
               $field= array('name' => $this->stream->read($len));
             }
             $field['status']= $this->stream->getByte();
-            $this->stream->read(4);              // Skip usertype
+            $this->stream->read(4);       // Skip usertype
             $field['type']= $this->stream->getByte();
 
             // Handle column.
@@ -251,15 +235,16 @@
           $this->envchange();
           return NULL;
         } else {
-          throw new TdsProtocolException(
-            sprintf('Unexpected token 0x%02X', ord($token)),
-            0,    // Number
-            0,    // State
-            0,    // Class
-            NULL, // Server
-            NULL, // Proc
-            -1    // Line
-          );
+          // Tokens encountered in some situations, seem to be inserted after a certain number
+          // of rows, we need to continue reading in these cases (if we don't, we experience
+          // issues like https://github.com/xp-framework/xp-framework/issues/305). Examples:
+          //
+          // packet header           * token * data
+          // ----------------------- * ----- * -----------
+          // 04 01 00 0A 00 00 00 00 * 00 00 *
+          // 04 01 00 0E 00 00 00 00 * 02 00 * 19 00 00 00
+          // 04 01 00 10 00 00 00 00 * 14 00 * 01 00 01 00 00 00
+          $token= $this->read();
         }
       } while (!$this->done);
     }
