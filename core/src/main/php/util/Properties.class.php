@@ -14,8 +14,6 @@
     'io.streams.MemoryInputStream',
     'io.streams.MemoryOutputStream',
     'io.streams.FileInputStream',
-    'io.streams.TextReader',
-    'text.TextTokenizer',
     'util.Hashmap'
   );
   
@@ -72,7 +70,7 @@
      * @param   io.streams.OutputStream out
      * @throws  io.IOException
      */
-    public function store(OutputStream $out) {
+    public function store(OutputStream $out, $charset= NULL) {
       create(new PropertiesStreamWriter())->write($this, $out);
     }
     

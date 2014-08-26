@@ -6,6 +6,7 @@
 
   uses(
     'io.streams.OutputStream',
+    'io.streams.TextWriter',
     'util.PropertyAccess'
   );
 
@@ -14,6 +15,18 @@
    *
    */
   class PropertiesStreamWriter extends Object {
+    protected $charset = xp::ENCODING;
+
+    /**
+     * Constructor.
+     *
+     * @param string charset
+     */
+    public function __construct($charset= NULL) {
+      if ($charset) {
+        $this->charset= $charset;
+      }
+    }
 
     /**
      * Write to stream
@@ -22,14 +35,16 @@
      * @param  io.streams.OutputStream out
      */
     public function write(PropertyAccess $prop, OutputStream $out) {
-      $section= $prop->getFirstSection();
+      $writer= new TextWriter($out, $this->charset);
 
+      $section= $prop->getFirstSection();
       do {
-        $out->write(sprintf("[%s]\n", $section));
+        $writer->writeLine(sprintf("[%s]", $section));
         
         foreach ($prop->readSection($section) as $key => $val) {
           if (';' == $key{0}) {
-            $out->write(sprintf("\n; %s\n", $val)); 
+            $writer->writeLine();
+            $writer->writeLine(sprintf("; %s", $val));
           } else {
             if ($val instanceof Hashmap) {
               $str= '';
@@ -40,14 +55,14 @@
             } 
             if (is_array($val)) $val= implode('|', $val);
             if (is_string($val)) $val= '"'.$val.'"';
-            $out->write(sprintf(
-              "%s=%s\n",
+            $writer->writeLine(sprintf(
+              "%s=%s",
               $key,
               strval($val)
             ));
           }
         }
-        $out->write("\n");
+        $writer->writeLine();
       } while ($section= $prop->getNextSection());
     }
   }

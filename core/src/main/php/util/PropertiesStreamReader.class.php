@@ -16,7 +16,7 @@
    *
    */
   class PropertiesStreamReader extends Object {
-    protected $charset;
+    protected $charset = NULL;
 
     /**
      * Constructor.
@@ -25,16 +25,6 @@
      */
     public function __construct($charset= NULL) {
       $this->charset= $charset;
-    }
-
-    /**
-     * Read data into existing util.Properties object
-     * 
-     * @param  util.Properties prop
-     * @param  io.streams.InputStream in
-     */
-    public function readInto(Properties $prop, InputStream $in) {
-      $prop->setData($this->read($in));
     }
 
     /**
