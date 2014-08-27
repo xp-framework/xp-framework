@@ -31,7 +31,7 @@
      * Read stream into properies object
      * 
      * @param  io.streams.InputStream in
-     * @return <string,string>[]
+     * @return [:[:var]]
      */
     public function read(InputStream $in) {
       $s= new TextTokenizer(new TextReader($in, $this->charset), "\r\n");
