@@ -8,7 +8,8 @@
     'util.Properties',
     'util.CompositeProperties',
     'util.RegisteredPropertySource',
-    'util.FilesystemPropertySource'
+    'util.FilesystemPropertySource',
+    'util.ResolvingProperties'
   );
   
   /**
@@ -176,13 +177,13 @@
       }
 
       switch (sizeof($found)) {
-        case 1: return $found[0];
+        case 1: return new ResolvingProperties($found[0]);
         case 0: raise('lang.ElementNotFoundException', sprintf(
           'Cannot find properties "%s" in any of %s',
           $name,
           xp::stringOf(array_values($this->provider))
         ));
-        default: return new CompositeProperties($found);
+        default: return new ResolvingProperties(new CompositeProperties($found));
       }
 	  }
   }

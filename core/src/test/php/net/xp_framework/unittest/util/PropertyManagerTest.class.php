@@ -2,6 +2,7 @@
 
 use unittest\TestCase;
 use util\PropertyManager;
+use util\PropertyDecorator;
 use util\ResourcePropertySource;
 use lang\ClassLoader;
 
@@ -102,10 +103,15 @@ class PropertyManagerTest extends TestCase {
   #[@test]
   public function getPropertiesReturnsSameObjectIfExactlyOneAvailable() {
     $fixture= $this->preconfigured();
-    $this->assertEquals(
-      $fixture->getProperties('example')->hashCode(),
-      $fixture->getProperties('example')->hashCode()
-    );
+    $prop1= $fixture->getProperties('example');
+    if ($prop1 instanceof PropertyDecorator) {
+      $prop1= $prop1->getDecoratedProperties();
+    }
+    $prop2= $fixture->getProperties('example');
+    if ($prop2 instanceof PropertyDecorator) {
+      $prop2= $prop2->getDecoratedProperties();
+    }
+    $this->assertEquals($prop1->hashCode(), $prop2->hashCode());
   }
   
   /**
@@ -255,6 +261,9 @@ class PropertyManagerTest extends TestCase {
 dynamic-value=whatever'));
 
     $prop= $fixture->getProperties('example');
+    if ($prop instanceof PropertyDecorator) {
+      $prop= $prop->getDecoratedProperties();
+    }
     $this->assertInstanceOf('util.PropertyAccess', $prop);
     $this->assertFalse($prop instanceof \util\Properties);
 
@@ -289,8 +298,11 @@ key="overwritten value"'));
     $fixture= $this->fixture();
     $fixture->appendSource(new ResourcePropertySource(self::RESOURCE_PATH));
     $fixture->appendSource(new ResourcePropertySource(self::RESOURCE_PATH));
-
-    $this->assertInstanceOf('util.Properties', $fixture->getProperties('example'));
+    $properties= $fixture->getProperties('example');
+    if ($properties instanceof PropertyDecorator) {
+      $properties= $properties->getDecoratedProperties();
+    }
+    $this->assertInstanceOf('util.Properties', $properties);
   }
 
   /**
@@ -300,6 +312,9 @@ key="overwritten value"'));
   #[@test]
   public function getExistantProperties() {
     $p= $this->preconfigured()->getProperties('example');
+    if ($p instanceof PropertyDecorator) {
+      $p= $p->getDecoratedProperties();
+    }
     $this->assertInstanceOf('util.Properties', $p);
     $this->assertTrue($p->exists(), 'Should return an existant Properties instance');
 
