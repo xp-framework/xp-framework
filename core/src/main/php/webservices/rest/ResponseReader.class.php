@@ -30,7 +30,7 @@
      * @return var
      */
     public function read(Type $t, InputStream $is) {
-      return $this->marshalling->unmarshal($t, $this->deserializer->deserialize($is, Type::$VAR));
+      return $this->marshalling->unmarshal($t, $this->deserializer->deserialize($is));
     }
   }
 ?>
