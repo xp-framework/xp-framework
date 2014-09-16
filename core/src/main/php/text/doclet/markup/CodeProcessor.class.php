@@ -107,7 +107,7 @@
           $current= $class;
         }
 
-        $out.= strtr(htmlspecialchars(is_array($token) ? $token[1] : $token), array(
+        $out.= strtr(htmlspecialchars(is_array($token) ? $token[1] : $token, ENT_COMPAT, xp::ENCODING), array(
           "\n" => '<br/>',
           "\r" => ''
         ));
