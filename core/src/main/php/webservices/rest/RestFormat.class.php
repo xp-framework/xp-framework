@@ -75,7 +75,7 @@
      * @return var
      */
     public function read(InputStream $in, $type) {
-      return $this->deserializer->deserialize($in, $type);
+      return $this->deserializer->deserialize($in);
     }
 
     /**
