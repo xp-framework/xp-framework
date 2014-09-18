@@ -31,7 +31,8 @@
 
     protected 
       $version  = '1.0',
-      $encoding = xp::ENCODING;
+      $inputEncoding = xp::ENCODING,
+      $outputEncoding = xp::ENCODING;
     
     /**
      * Constructor
@@ -53,16 +54,25 @@
     }
 
     /**
-     * Set encoding
+     * Set input encoding
+     *
+     * @param   string e encoding
+     */
+    public function setInputEncoding($e) {
+      $this->inputEncoding= strtolower($e);
+    }
+
+    /**
+     * Set output encoding
      *
      * @param   string e encoding
      */
     public function setEncoding($e) {
-      $this->encoding= strtolower($e);
+      $this->outputEncoding= strtolower($e);
     }
 
     /**
-     * Set encoding and return this tree
+     * Set output encoding and return this tree
      *
      * @param   string e encoding
      * @return  xml.Tree
@@ -73,12 +83,21 @@
     }
     
     /**
-     * Retrieve encoding
+     * Retrieve input encoding
+     *
+     * @return  string encoding
+     */
+    public function getInputEncoding() {
+      return $this->inputEncoding;
+    }
+    
+    /**
+     * Retrieve output encoding
      *
      * @return  string encoding
      */
     public function getEncoding() {
-      return $this->encoding;
+      return $this->outputEncoding;
     }
     
     /**
@@ -90,7 +109,7 @@
       return sprintf(
         '<?xml version="%s" encoding="%s"?>',
         $this->version,
-        strtoupper($this->encoding)
+        strtoupper($this->outputEncoding)
       );
     }
     
@@ -101,7 +120,7 @@
      * @return  string
      */
     public function getSource($indent= TRUE) {
-      return $this->root->getSource($indent, $this->encoding, '');
+      return $this->root->getSource($indent, $this->outputEncoding, '', $this->inputEncoding);
     }
 
     /**
@@ -251,7 +270,7 @@
      * @param   xml.parser.XMLParser instance
      */
     public function onBegin($instance) {
-      $this->encoding= $instance->getEncoding();
+      $this->setEncoding($instance->getEncoding());
     }
 
     /**
@@ -283,7 +302,7 @@
         "%s(version=%s encoding=%s)@{\n  %s\n}",
         $this->getClassName(),
         $this->version,
-        $this->encoding,
+        $this->outputEncoding,
         xp::stringOf($this->root, '  ')
       );
     }
