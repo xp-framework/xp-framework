@@ -11,7 +11,7 @@
   <!-- The basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>core</artifactId>
-  <version>5.9.12-SNAPSHOT</version>
+  <version>5.10.0</version>
   <packaging>xar</packaging>
 
   <!-- More project information -->
@@ -213,6 +213,7 @@
     <connection>scm:git:git://github.com/xp-framework/xp-framework.git</connection>
     <developerConnection>scm:git:git@github.com:xp-framework/xp-framework.git</developerConnection>
     <url>https://github.com/xp-framework/xp-framework</url>
+    <tag>maven-5.10.0</tag>
   </scm>
 
   <!-- Issue management -->

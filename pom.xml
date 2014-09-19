@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <!-- Sonatype OSS parent -->
@@ -12,7 +11,7 @@
   <!-- The basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>pom</artifactId>
-  <version>5.9.12-SNAPSHOT</version>
+  <version>5.10.0</version>
   <packaging>pom</packaging>
 
   <!-- More project information -->
@@ -66,5 +65,6 @@
     <connection>scm:git:git://github.com/xp-framework/xp-framework.git</connection>
     <developerConnection>scm:git:git@github.com:xp-framework/xp-framework.git</developerConnection>
     <url>https://github.com/xp-framework/xp-framework</url>
+    <tag>maven-5.10.0</tag>
   </scm>
 </project>
