@@ -120,9 +120,28 @@ class TreeTest extends \unittest\TestCase {
   public function iso88591Encoding() {
     $t= create(new Tree('unicode'))->withEncoding('iso-8859-1');
     $t->root()->setContent('Hällo');
+    $this->assertEquals('<?xml version="1.0" encoding="ISO-8859-1"?>', $t->getDeclaration());
+    $this->assertEquals('<unicode>Hällo</unicode>', $this->sourceOf($t));
+  }
+
+  #[@test]
+  public function utf8InputIso88591Output() {
+    $t= create(new Tree('unicode'))->withEncoding('iso-8859-1');
+    $t->setInputEncoding('utf-8');
+    $t->root()->setContent('HÃ¤llo');
 
     $this->assertEquals('<?xml version="1.0" encoding="ISO-8859-1"?>', $t->getDeclaration());
     $this->assertEquals('<unicode>Hällo</unicode>', $this->sourceOf($t));
+  }
+
+  #[@test]
+  public function utf8InputUtf8Output() {
+    $t= create(new Tree('unicode'))->withEncoding('utf-8');
+    $t->setInputEncoding('utf-8');
+    $t->root()->setContent('HÃ¤llo');
+
+    $this->assertEquals('<?xml version="1.0" encoding="UTF-8"?>', $t->getDeclaration());
+    $this->assertEquals('<unicode>HÃ¤llo</unicode>', $this->sourceOf($t));
   }
 
   #[@test]

@@ -245,18 +245,19 @@
      * </pre>
      *
      * @param   int indent default INDENT_WRAPPED
-     * @param   string encoding defaults to XP default encoding
+     * @param   string outputEncoding defaults to XP default encoding
      * @param   string inset default ''
+     * @param   string inputEncoding defaults to XP default encoding
      * @return  string XML
      */
-    public function getSource($indent= INDENT_WRAPPED, $encoding= xp::ENCODING, $inset= '') {
+    public function getSource($indent= INDENT_WRAPPED, $outputEncoding= xp::ENCODING, $inset= '', $inputEncoding= xp::ENCODING) {
       $xml= $inset.'<'.$this->name;
-      $conv= xp::ENCODING != $encoding;
+      $conv= $inputEncoding != $outputEncoding;
       
       if ('string' == ($type= gettype($this->content))) {
         $content= $conv
-          ? iconv(xp::ENCODING, $encoding, htmlspecialchars($this->content, ENT_COMPAT, xp::ENCODING))
-          : htmlspecialchars($this->content, ENT_COMPAT, xp::ENCODING)
+          ? iconv($inputEncoding, $outputEncoding, htmlspecialchars($this->content, ENT_COMPAT, $inputEncoding))
+          : htmlspecialchars($this->content, ENT_COMPAT, $inputEncoding)
         ;
       } else if ('float' == $type) {
         $content= ($this->content - floor($this->content) == 0)
@@ -265,16 +266,16 @@
         ;
       } else if ($this->content instanceof PCData) {
         $content= $conv
-          ? iconv(xp::ENCODING, $encoding, $this->content->pcdata)
+          ? iconv($inputEncoding, $outputEncoding, $this->content->pcdata)
           : $this->content->pcdata
         ;
       } else if ($this->content instanceof CData) {
         $content= '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $conv
-          ? iconv(xp::ENCODING, $encoding, $this->content->cdata)
+          ? iconv($inputEncoding, $outputEncoding, $this->content->cdata)
           : $this->content->cdata
         ).']]>';
       } else if ($this->content instanceof String) {
-        $content= htmlspecialchars($this->content->getBytes($encoding), ENT_COMPAT, $encoding);
+        $content= htmlspecialchars($this->content->getBytes($outputEncoding), ENT_COMPAT, $outputEncoding);
       } else {
         $content= $this->content; 
       }
@@ -282,14 +283,14 @@
       if (INDENT_NONE === $indent) {
         foreach ($this->attribute as $key => $value) {
           $xml.= ' '.$key.'="'.htmlspecialchars(
-            $conv ? iconv(xp::ENCODING, $encoding, $value) : $value,
+            $conv ? iconv($inputEncoding, $outputEncoding, $value) : $value,
             ENT_COMPAT,
-            xp::ENCODING
+            $outputEncoding
           ).'"';
         }
         $xml.= '>'.$content;
         foreach ($this->children as $child) {
-          $xml.= $child->getSource($indent, $encoding, $inset);
+          $xml.= $child->getSource($indent, $outputEncoding, $inset, $inputEncoding);
         }
         return $xml.'</'.$this->name.'>';
       } else {
@@ -297,9 +298,9 @@
           $sep= (sizeof($this->attribute) < 3) ? '' : "\n".$inset;
           foreach ($this->attribute as $key => $value) {
             $xml.= $sep.' '.$key.'="'.htmlspecialchars(
-              $conv ? iconv(xp::ENCODING, $encoding, $value) : $value,
+              $conv ? iconv($inputEncoding, $outputEncoding, $value) : $value,
               ENT_COMPAT,
-              xp::ENCODING
+              $outputEncoding
             ).'"';
           }
           $xml.= $sep;
@@ -316,7 +317,7 @@
         if ($this->children) {
           $xml.= ($indent ? '' : $inset)."\n";
           foreach ($this->children as $child) {
-            $xml.= $child->getSource($indent, $encoding, $inset.'  ');
+            $xml.= $child->getSource($indent, $outputEncoding, $inset.'  ', $inputEncoding);
           }
           $xml= ($indent ? substr($xml, 0, -1) : $xml).$inset;
         }

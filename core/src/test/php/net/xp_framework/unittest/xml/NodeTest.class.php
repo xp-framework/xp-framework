@@ -177,6 +177,22 @@ class NodeTest extends TestCase {
   }
 
   #[@test]
+  public function getSourceWithUtf8InputOutput() {
+    $this->assertEquals(
+      "<n>\xc3\x9cbercoder</n>",
+      create(new Node('n', "\xc3\x9cbercoder"))->getSource(INDENT_NONE, 'utf-8', '', 'utf-8')
+    );
+  }
+
+  #[@test]
+  public function getSourceWithUtf8InputISOOutput() {
+    $this->assertEquals(
+      "<n>Übercoder</n>",
+      create(new Node('n', "\xc3\x9cbercoder"))->getSource(INDENT_NONE, 'iso-8859-1', '', 'utf-8')
+    );
+  }
+
+  #[@test]
   public function fromObject() { 
     $this->assertEquals(
       "<node>\n".
