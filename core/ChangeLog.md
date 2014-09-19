@@ -12,6 +12,10 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed invocations of `htmlspecialchars()` to supply an encoding, so
+  it behaves the same over PHP versions, see issue #367 (@kiesel)
+* Fixed calls to `RestDeserializer`s to not supply obsolete parameters,
+  see issue #366 (@kiesel)
 * Fixed xp-framework/xp-framework#361: HashTable::put($key, array()) 
   doesn't work with PHP 5.4.4... (@thekid)
 * Fixed xp-framework/core#19: MockProxyBuilder does not respect namespaces
