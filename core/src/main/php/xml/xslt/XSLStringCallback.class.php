@@ -22,6 +22,17 @@
     public function urlencode($string) {
       return urlencode($string);
     }
+
+    /**
+     * rawurlencode() string
+     *
+     * @param   string string
+     * @return  string
+     */
+    #[@xslmethod]
+    public function rawurlencode($string) {
+      return rawurlencode($string);
+    }
     
     /**
      * urldecode() string
@@ -32,6 +43,17 @@
     #[@xslmethod]
     public function urldecode($string) {
       return urldecode($string);
+    }
+
+    /**
+     * rawurldecode() string
+     *
+     * @param   string string
+     * @return  string
+     */
+    #[@xslmethod]
+    public function rawurldecode($string) {
+      return rawurldecode($string);
     }
     
     /**
