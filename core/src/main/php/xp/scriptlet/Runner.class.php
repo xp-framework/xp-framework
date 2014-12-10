@@ -234,12 +234,18 @@ class Runner extends \lang\Object {
     // Debugging
     if (($flags & WebDebug::XML) && isset($response->document)) {
       flush();
-      echo '<xmp>', $response->document->getDeclaration()."\n".$response->document->getSource(0), '</xmp>';
+      echo '<div id="xp-debug-xml" style="display: none;">', rawurlencode(
+        $response->document->getDeclaration()."\n".
+        $response->document->getSource(0)),
+      '</div>';
     }
     
-    if (($flags & WebDebug::ERRORS)) {
+    if (($flags & WebDebug::ERRORS) && sizeof(\xp::$errors)) {
       flush();
-      echo '<xmp>', $e ? $e->toString() : '', \xp::stringOf(\xp::$errors), '</xmp>';
+      echo '<div id="xp-debug-errors" style="display: none;">',
+        $e ? rawurlencode($e->toString()) : '',
+        rawurlencode(\xp::stringOf(\xp::$errors)),
+      '</div>';
     }
   }
 
