@@ -231,21 +231,9 @@ class Runner extends \lang\Object {
     // Call scriptlet's finalizer
     $instance && $instance->finalize();
 
-    // Debugging
-    if (($flags & WebDebug::XML) && isset($response->document)) {
-      flush();
-      echo '<div id="xp-debug-xml" style="display: none;">', rawurlencode(
-        $response->document->getDeclaration()."\n".
-        $response->document->getSource(0)),
-      '</div>';
-    }
-    
-    if (($flags & WebDebug::ERRORS) && sizeof(\xp::$errors)) {
-      flush();
-      echo '<div id="xp-debug-errors" style="display: none;">',
-        $e ? rawurlencode($e->toString()) : '',
-        rawurlencode(\xp::stringOf(\xp::$errors)),
-      '</div>';
+    // Call scriptlet's trace method
+    if ($flags & WebDebug::XML || $flags & WebDebug::ERRORS) {
+      $instance->trace($flags, $response, \xp::$errors);
     }
   }
 

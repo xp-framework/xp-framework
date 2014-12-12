@@ -44,6 +44,11 @@
    * @test    xp://net.xp_framework.unittest.scriptlet.HttpScriptletProcessTest
    */
   class HttpScriptlet extends Object {
+
+    // Constants from \xp\scriptlet\Runner
+    const
+      XML         = 0x0001,
+      ERRORS      = 0x0002;
     
     /**
      * Create a request object. Override this method to define
@@ -457,6 +462,24 @@
       
       // Return it
       return $response;
+    }
+
+    /**
+     * At the end of request, perform a "trace" of the processing; this
+     * method will be called for debugging purposes, invoked only on non-
+     * production systems.
+     *
+     * No business logic to be taking place here!
+     *
+     * @param  int flags
+     * @param  scriptlet.HttpScriptletResponse response
+     * @param  var* errors
+     */
+    public function trace($flags, $response, $errors) {
+      if (($flags & self::ERRORS) && sizeof(\xp::$errors)) {
+        flush();
+        echo '<xmp>', \xp::stringOf(\xp::$errors), '</xmp>';
+      }
     }
   }
 ?>
