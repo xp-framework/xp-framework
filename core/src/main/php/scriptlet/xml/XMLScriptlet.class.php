@@ -263,7 +263,7 @@
         '</xmp>';
       }
 
-      parent::trace($flags, $request, $response, $errors);
+      parent::trace($flags, $response, $errors);
     }
   }
 ?>
