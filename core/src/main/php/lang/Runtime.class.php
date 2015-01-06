@@ -178,9 +178,13 @@
           }
 
           case 'd': {
-            sscanf($argument, "-d%[^=]=%[^\r]", $setting, $value); 
-            $setting= ltrim($setting, ' ');
-            $return['options']->withSetting($setting, $value, TRUE);
+            if (2 === strlen($argument)) {
+              sscanf(array_shift($arguments), "%[^=]=%[^\r]", $setting, $value);
+            } else {
+              sscanf($argument, "-d%[^=]=%[^\r]", $setting, $value);
+              $setting= ltrim($setting, ' ');
+            }
+            $return['options']->withSetting($setting, $value, true);
             break;
           }
 
