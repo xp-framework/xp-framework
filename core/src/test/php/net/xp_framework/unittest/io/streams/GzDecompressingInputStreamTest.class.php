@@ -60,6 +60,6 @@ class GzDecompressingInputStreamTest extends AbstractDecompressingInputStreamTes
   public function header_with_original_filename($data) {
     $decompressor= $this->newStream(new MemoryInputStream($data));
     $decompressor->close();
-    $this->assertEquals('test.txt', $decompressor->header()['filename']);
+    $this->assertEquals('test.txt', this($decompressor->header(), 'filename'));
   }
 }
