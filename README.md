@@ -5,7 +5,9 @@ XP Framework
 [![Required PHP 5.3+](https://raw.githubusercontent.com/xp-framework/web/master/static/php-5_3plus.png)](http://php.net/)
 
 
-This is the XP Framework's development checkout
+This is the XP Framework's development checkout for the 5.X-SERIES. 
+
+***Note: Development now focusses on the 6.X-SERIES, which are maintained in the [xp-framework/core](https://github.com/xp-framework/core) repository. Bugfixes may be backported, but new features will usually only go to 6.X***
 
 Installation
 ------------
