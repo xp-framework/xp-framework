@@ -29,9 +29,10 @@
      * @param   string server
      * @param   string proc
      * @param   int line
+     * @param   lang.Throwable cause default NULL
      */
-    public function __construct($message, $number= 0, $state= 0, $class= 0, $server= NULL, $proc= NULL, $line= 0) {
-      parent::__construct($message);
+    public function __construct($message, $number= 0, $state= 0, $class= 0, $server= NULL, $proc= NULL, $line= 0, $cause= NULL) {
+      parent::__construct($message, $cause);
       $this->number= $number;
       $this->state= $state;
       $this->class= $class;

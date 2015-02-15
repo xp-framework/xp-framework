@@ -202,6 +202,7 @@
      * @return  var
      */
     public function query($sql) {
+      $this->messages= array();
       $this->stream->write(self::MSG_QUERY, iconv(xp::ENCODING, 'ucs-2le', $sql));
       $token= $this->read();
 
@@ -242,15 +243,17 @@
           }
           return $fields;
         } else if ("\xFD" === $token || "\xFF" === $token || "\xFE" === $token) {   // DONE
-          $meta= $this->stream->get('vstatus/vcmd/Vrowcount', 8);
-          if ($meta['status'] & 0x0001) {
+          if (-1 === ($rows= $this->handleDone())) {
             $token= $this->stream->getToken();
             continue;
           }
           $this->done= TRUE;
-          return $meta['rowcount'];
+          return $rows;
         } else if ("\xAB" === $token) {   // INFO
           $this->handleInfo();
+          $token= $this->stream->getToken();
+        } else if ("\xE5" === $token) {   // EED (messages or errors)
+          $this->handleEED();
           $token= $this->stream->getToken();
         } else if ("\xE3" === $token) {   // ENVCHANGE, e.g. from "use [db]" queries
           $this->envchange();
