@@ -5,6 +5,7 @@ XP Framework ChangeLog
 
 ### Features
 
+* Added GzDecompressingInputStream::header() method - @thekid
 * Merged PR #359 - Change `URL::toString()` - (@kiesel, @thekid)
 * Added support for PHP 5.6 - see also issue #352 - (@kiesel, @thekid)
 * Added support for rolling logfiles to `util.log.FileAppender` via
@@ -12,6 +13,8 @@ XP Framework ChangeLog
 
 ### Bugfixes
 
+* Fixed GzDecompressingInputStream not supporting gzip data with embedded
+  original filenames - @thekid
 * Fixed invocations of `htmlspecialchars()` to supply an encoding, so
   it behaves the same over PHP versions, see issue #367 (@kiesel)
 * Fixed calls to `RestDeserializer`s to not supply obsolete parameters,

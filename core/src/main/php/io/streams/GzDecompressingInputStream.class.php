@@ -15,9 +15,8 @@
    * @purpose  InputStream implementation
    */
   class GzDecompressingInputStream extends Object implements InputStream {
-    protected $in= NULL;
+    private $in, $header;
     public static $wrapped= array();
-    public $context = NULL;
 
     static function __static() {
       stream_wrapper_register('zlib.bounded', get_class(newinstance('lang.Object', array(), '{
@@ -76,12 +75,18 @@
       // * MTIME    (Modification time, Un*x timestamp)
       // * XFL      (Extra flags)
       // * OS       (Operating system)
-      $header= unpack('a2id/Cmethod/Cflags/Vtime/Cextra/Cos', $in->read(10));
-      if ("\x1F\x8B" != $header['id']) {
-        throw new IOException('Invalid format, expected \037\213, have '.addcslashes($header['id'], "\0..\377"));
+      $this->header= unpack('a2id/Cmethod/Cflags/Vtime/Cextra/Cos', $in->read(10));
+      if ("\x1F\x8B" != $this->header['id']) {
+        throw new IOException('Invalid format, expected \037\213, have '.addcslashes($this->header['id'], "\0..\377"));
       }
-      if (8 != $header['method']) {
-        throw new IOException('Unknown compression method #'.$header['method']);
+      if (8 != $this->header['method']) {
+        throw new IOException('Unknown compression method #'.$this->header['method']);
+      }
+      if (8 === ($this->header['flags'] & 8)) {
+        $this->header['filename']= '';
+        while ("\x00" !== ($b= $in->read(1))) {
+          $this->header['filename'].= $b;
+        }
       }
 
       // Now, convert stream to file handle and append inflating filter
@@ -92,6 +97,9 @@
         throw new IOException('Could not append stream filter');
       }
     }
+
+    /** @return [:var] */
+    public function header() { return $this->header; }
 
     /**
      * Read a string
