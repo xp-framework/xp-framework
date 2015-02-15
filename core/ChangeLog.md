@@ -3,6 +3,7 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+* Added `ToUnixLineBreaks` caster - see pull request #363 (@treuter)
 * Added GzDecompressingInputStream::header() method - @thekid
 * Fixed GzDecompressingInputStream not supporting gzip data with embedded
   original filenames - @thekid
