@@ -1,2 +1,4 @@
 core/target/
 tools/target/
+
+/vendor/
