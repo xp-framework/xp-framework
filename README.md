@@ -42,7 +42,7 @@ the following one-liner:
 
 ```sh
 $ cd ~/bin
-$ curl http://xp-framework.net/downloads/releases/bin/setup | php
+$ wget 'https://github.com/xp-framework/xp-runners/releases/download/v5.2.1/setup' -O - | php
 ```
 
 ### Using it
