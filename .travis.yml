@@ -10,7 +10,7 @@ php:
   - 5.6
 
 before_script:
-  - wget 'http://xp-framework.net/downloads/releases/bin/setup' -O - | php
+  - wget 'https://github.com/xp-framework/xp-runners/releases/download/v5.2.1/setup' -O - | php
   - echo "use=core:tools" > xp.ini
   - echo "[runtime]" >> xp.ini
   - echo "date.timezone=Europe/Berlin" >> xp.ini
