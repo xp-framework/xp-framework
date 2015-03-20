@@ -4,21 +4,36 @@ use validation\ConstraintValidator;
 use validation\Violation;
 
 /**
- * Class False
+ * Checks if a value is false
  *
- * @author jzinnau
- *
+ * Example:
+ * ```
+ * #[@Assert([
+ * # array('type'=>'validation.constraints.False')
+ * #])]
+ * ```
  */
 class False extends ConstraintValidator {
 
   const VIOLATION_TYPE_FALSE= 'false';
 
+  /**
+   * Returns default options for this validator
+   *
+   * @return array
+   */
   protected function getDefaultOptions() {
     return array(
       'message' => 'validation#false'
     );
   }
 
+  /**
+   * Returns true if the object is valid.
+   *
+   * @param $object
+   * @return bool
+   */
   public function validate($object) {
     if ($object !== false) {
       $this->context->addViolation(

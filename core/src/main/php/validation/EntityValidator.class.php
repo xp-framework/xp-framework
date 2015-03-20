@@ -5,9 +5,27 @@ use lang\reflect\Field;
 use lang\XPClass;
 
 /**
- * Class validator
+ * Validates object against constraints defined in its annotations
  *
- * @author jzinnau
+ * The constraints can be defined in two ways:
+ *
+ * Single constraint:
+ * ```
+ * #[@Assert(type='validation.constraints.NotNull', message='example.message')]
+ * ```
+ *
+ * Multiple constraints:
+ * ```
+ * #[@Assert([
+ * # array('type'=>'validation.constraints.NotBlank'),
+ * # array('type'=>'validation.constraints.Numeric'),
+ * # array('type'=>'validation.constraints.Range', 'min'=>1, 'max'=>null, 'message'=>'message.text')
+ * #])]
+ * ```
+ *
+ * Every constraint has the required parameter 'type' which defines the class
+ * of the constraint validator to load.
+ * Depending on the validator, there can be additional parameters like 'message', 'min', 'max' etc.
  *
  */
 class EntityValidator extends Object {
@@ -42,18 +60,21 @@ class EntityValidator extends Object {
         if (!is_array($annotation)) {
           throw new EntityValidationException('Invalid assert annotation format (no array)');
         }
-       /* if (isset($annotation['type'])) {
+        if (isset($annotation['type'])) {
           $annotation= array($annotation);
-        }*/
-
+        }
+        
         foreach ($annotation as $assert) {
           $constraintValidator= XPClass::forName($assert['type'])->newInstance(
             $context,
             $assert
           );
           $valid= $constraintValidator->validate($entity->$fieldName);
-          if (!$valid && $constraintValidator->continueValidationAfterViolation() == false) {
-            break;
+          if (!$valid) {
+            $result->setInvalid();
+            if ($constraintValidator->continueValidationAfterViolation() == false) {
+              break;
+            }
           }
         }
 
