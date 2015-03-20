@@ -3,10 +3,7 @@
 use lang\Object;
 
 /**
- * Class validationResult
- *
- * @author jzinnau
- *
+ * ValidationResult object
  */
 class ValidationResult extends Object {
 

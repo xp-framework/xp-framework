@@ -1,10 +1,7 @@
 <?php namespace validation;
 
 /**
- * Class Violation
- *
- * @author jzinnau
- *
+ * Object representation of a copnstraint violation
  */
 class Violation {
 
@@ -44,6 +41,9 @@ class Violation {
     $this->message= $message;
   }
 
+  /**
+   * @return array
+   */
   public function toArray() {
     return array(
       'code' => $this->getCode(),
