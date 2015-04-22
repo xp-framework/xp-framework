@@ -163,6 +163,13 @@
     </resources>
   </build>
 
+  <distributionManagement>
+    <repository>
+      <id>${xp-repository-id}</id>
+      <url>${xp-repository-url}</url>
+    </repository>
+  </distributionManagement>
+
   <!-- Source code management -->
   <scm>
     <connection>scm:git:git://github.com/xp-framework/xp-framework.git</connection>
