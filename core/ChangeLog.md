@@ -3,6 +3,9 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+* Implemented HTTP Digest Authentication, RFC 2617 by backporting @kiesel's
+  pull request xp-framework/http#9 - @thekid
+
 ## 5.10.1 / 2015-02-17
 
 * Merged PR #360: Sybase/MSSQL: Fix for repeated EED messages - @thekid
