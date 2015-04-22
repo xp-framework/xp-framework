@@ -1,26 +1,24 @@
 <?php
 /* This class is part of the XP framework
- * 
- * $Id: HttpRequest.class.php 14881 2010-10-01 07:46:08Z friebe $
+ *
+ * $Id$
  */
 
   uses(
-    'peer.http.HttpConstants',
-    'peer.Socket',
     'peer.URL',
-    'peer.http.HttpResponse',
-    'peer.http.RequestData',
-    'peer.Header'
+    'peer.Header',
+    'peer.http.HttpConstants',
+    'peer.http.BasicAuthorization',
+    'security.SecureString'
   );
-  
+
   /**
-   * Wrap HTTP/1.0 and HTTP/1.1 requests (used internally by the 
-   * HttpConnection class)
+   * Wrap HTTP/1.0 and HTTP/1.1 requests (used internally by the HttpConnection
+   * class)
    *
-   * @test     xp://net.xp_framework.unittest.peer.HttpRequestTest
-   * @see      xp://peer.http.HttpConnection
-   * @see      rfc://2616
-   * @purpose  HTTP request
+   * @test  xp://peer.http.unittest.HttpRequestTest
+   * @see   xp://peer.http.HttpConnection
+   * @see   rfc://2616
    */
   class HttpRequest extends Object {
     public
@@ -48,7 +46,7 @@
     public function setUrl(URL $url) {
       $this->url= $url;
       if ($url->getUser() && $url->getPassword()) {
-        $this->headers['Authorization']= array('Basic '.base64_encode($url->getUser().':'.$url->getPassword()));
+        $this->setHeader('Authorization', new BasicAuthorization($url->getUser(), new SecureString($url->getPassword())));
       }
       $port= $this->url->getPort(-1);
       $this->headers['Host']= array($this->url->getHost().(-1 == $port ? '' : ':'.$port));
@@ -124,7 +122,13 @@
       if (is_array($v)) {
         $this->headers[$k]= $v;
       } else {
-        $this->headers[$k]= array($v);
+
+        // Handle special BC case when eg. BasicAuthorization instance being passed
+        if ($v instanceof Authorization) {
+          $v->sign($this);
+        } else {
+          $this->headers[$k]= array($v);
+        }
       }
     }
 

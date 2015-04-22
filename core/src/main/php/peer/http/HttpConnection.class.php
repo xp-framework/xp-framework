@@ -58,7 +58,7 @@
      *
      * @param   peer.http.HttpProxy proxy
      */
-    public function setProxy(HttpProxy $proxy) {
+    public function setProxy(HttpProxy $proxy= NULL) {
       $this->transport->setProxy($proxy);
     }
 

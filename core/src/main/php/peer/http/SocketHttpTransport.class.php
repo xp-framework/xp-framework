@@ -44,9 +44,9 @@
      *
      * @param   peer.http.HttpProxy proxy
      */
-    public function setProxy(HttpProxy $proxy) {
+    public function setProxy(HttpProxy $proxy= NULL) {
       parent::setProxy($proxy);
-      $this->proxySocket= $this->newSocket(create(new URL())->setHost($proxy->host)->setPort($proxy->port));
+      $this->proxySocket= $proxy ? $this->newSocket(create(new URL())->setHost($proxy->host)->setPort($proxy->port)) : null;
     }
     
     /**

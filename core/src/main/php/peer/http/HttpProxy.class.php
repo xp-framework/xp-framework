@@ -11,6 +11,8 @@
    * @purpose  Value object
    */
   class HttpProxy extends Object {
+    const NONE = NULL;
+
     public
       $host     = '',
       $port     = 0,
