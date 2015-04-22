@@ -89,8 +89,8 @@
      * Execute xpath query and return results
      *
      * @param   string xpath
-     * @param   php.dom.DOMNode node default NULL
-     * @return  php.dom.DOMNodeList
+     * @param   var node default NULL
+     * @return  var
      * @throws  xml.XPathException if evaluation fails
      */
     public function query($xpath, $node= NULL) {
