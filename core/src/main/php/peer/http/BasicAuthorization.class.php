@@ -1,13 +1,13 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
-  uses('peer.Header');
+  uses('peer.Header', 'peer.http.Authorization', 'security.SecureString');
 
   /**
-   * Basic Authorization
+   * Basic Authorization header
    *
    * <quote>
    * "HTTP/1.0", includes the specification for a Basic Access
@@ -17,56 +17,52 @@
    * password are passed over the network as cleartext.
    * </quote>
    *
-   * @see      http://www.owasp.org/downloads/http_authentication.txt
-   * @see      rfc://2617 
-   * @purpose  Basic Authorization header
+   * @see  rfc://2617 
    */
-  class BasicAuthorization extends Header {
-    public 
-      $user = '',
-      $pass = '';
+  class BasicAuthorization extends Authorization {
     
     /**
      * Constructor
      *
-     * @param   string user
-     * @param   string pass
+     * @param   string $user
+     * @param   var $pass security.SecureString or plain string
      */
     public function __construct($user, $pass) {
-      $this->user= $user;
-      $this->pass= $pass;
-      parent::__construct('Authorization', 'Basic');
+      $this->setUsername($user);
+
+      if (!$pass instanceof SecureString) {
+        $this->setPassword(new SecureString($pass));
+      } else {
+        $this->setPassword($pass);
+      }
     }
 
-    /**
-     * Returns the username
-     *
-     * @return  string
-     */    
-    public function getUser() {
-      return $this->user;
-    }
-    
-    /**
-     * Returns the password
-     *
-     * @return  string
-     */    
-    public function getPassword() {
-      return $this->pass;
-    }
+    /** @return string */
+    public function getUser() { return $this->user; }
     
     /**
      * Returns a BasicAuthorization object from header value; returns
      * FALSE on error.
      *
-     * @param   stirng value The header value
+     * @param   string $value The header value
      * @return  peer.http.BasicAuthorization
      */    
     public static function fromValue($value) {
       if (!preg_match('/^Basic (.*)$/', $value, $matches)) return FALSE;
       list($user, $password)= explode(':', base64_decode($matches[1]), 2);
-      return new BasicAuthorization($user, $password);
+      return new self($user, new SecureString($password));
+    }
+
+    /**
+     * Create BasicAuthorization object from challenge
+     *
+     * @param  string $header
+     * @param  string $user
+     * @param  security.SecureString $pass
+     * @return self
+     */
+    public static function fromChallenge($header, $user, $pass) {
+      return new self($user, $pass);
     }
     
     /**
@@ -75,7 +71,19 @@
      * @return  string value
      */
     public function getValueRepresentation() {
-      return $this->value.' '.base64_encode($this->user.':'.$this->pass);
+      return 'Basic '.base64_encode($this->username.':'.$this->password->getCharacters());
+    }
+
+    /**
+     * Sign HTTP request
+     *
+     * @param  peer.http.HttpRequest $request
+     */
+    public function sign(HttpRequest $request) {
+      $request->setHeader(
+        'Authorization',
+        new Header('Authorization', $this->getValueRepresentation())
+      );
     }
   }
 ?>
