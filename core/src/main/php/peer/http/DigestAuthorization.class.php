@@ -70,10 +70,10 @@
         throw new IllegalStateException('Invalid WWW-Authenticate line');
       }
 
-      $values= [
+      $values= array(
         'algorithm' => 'md5',
-        'opaque'    => null
-      ];
+        'opaque'    => NULL
+      );
       foreach ($matches as $m) {
         $values[$m[2]]= trim($m[3], '"');
       }
@@ -101,18 +101,18 @@
      * @return string
      */
     public function hashFor($method, $requestUri) {
-      return md5(implode(':', [
+      return md5(implode(':', array(
         $this->ha1(),
         $this->nonce,
         sprintf('%08x', $this->counter),
         $this->cnonce,
         $this->qop(),
         $this->ha2($method, $requestUri)
-      ]));
+      )));
     }
 
     public function getValueRepresentation($method, $requestUri) {
-      $parts= [
+      $parts= array(
         'username'  => $this->username,
         'realm'     => $this->realm,
         'nonce'     => $this->nonce,
@@ -121,7 +121,7 @@
         'nc'        => sprintf('%08x', $this->counter),
         'cnonce'    => $this->cnonce,
         'response'  => $this->hashFor($method, $requestUri)
-      ];
+      );
 
       if (sizeof($this->opaque)) {
         $parts['opaque']= $this->opaque;
@@ -147,7 +147,7 @@
     public function sign(HttpRequest $request) {
       $url= $request->target;
 
-      $params= [];
+      $params= array();
       if (is_array($request->parameters)) $params= array_merge($params, $request->parameters);
       if ($request->getUrl()->hasParams()) $params= array_merge($params, $request->getUrl()->getParams());
 
@@ -174,7 +174,7 @@
      * @return string
      */
     private function ha1() {
-      return md5(implode(':', [$this->username, $this->realm, $this->password->getCharacters()]));
+      return md5(implode(':', array($this->username, $this->realm, $this->password->getCharacters())));
     }
 
     /**
@@ -185,7 +185,7 @@
      * @return string
      */
     private function ha2($method, $requestUri) {
-      return md5(implode(':', [strtoupper($method), $requestUri]));
+      return md5(implode(':', array(strtoupper($method), $requestUri)));
     }
 
     /**
@@ -238,7 +238,7 @@
      */
     public function toString() {
       $s= $this->getClassName().' ('.$this->hashCode().") {\n";
-      foreach (['realm', 'qop', 'nonce', 'opaque', 'username'] as $attr) {
+      foreach (array('realm', 'qop', 'nonce', 'opaque', 'username') as $attr) {
         $s.= sprintf("  [ %8s ] %s\n", $attr, \xp::stringOf($this->{$attr}));
       }
       return $s.="}\n";

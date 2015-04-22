@@ -19,10 +19,10 @@
    */
   class Authorizations extends Object {
     const AUTH_HEADER= 'WWW-Authenticate';
-    protected $impl= [
-      ['startsWith' => 'Basic ', 'impl' => 'peer.http.BasicAuthorization'],
-      ['startsWith' => 'Digest ', 'impl' => 'peer.http.DigestAuthorization']
-    ];
+    protected $impl= array(
+      array('startsWith' => 'Basic ', 'impl' => 'peer.http.BasicAuthorization'),
+      array('startsWith' => 'Digest ', 'impl' => 'peer.http.DigestAuthorization')
+    );
 
     public function required(HttpResponse $response) {
       return HttpConstants::STATUS_AUTHORIZATION_REQUIRED == $response->getStatusCode();
@@ -37,13 +37,13 @@
         throw new IllegalStateException('No authentication type indicated.');
       }
 
-      $header= $response->header(self::AUTH_HEADER)[0];
+      $header= this($response->header(self::AUTH_HEADER), 0);
       foreach ($this->impl as $impl) {
         if (0 == strncmp($impl['startsWith'], $header, strlen($impl['startsWith']))) {
           try {
             return XPClass::forName($impl['impl'])->getMethod('fromChallenge')->invoke(
               null,
-              [$header, $user, $pass]
+              array($header, $user, $pass)
             );
           } catch (TargetInvocationException $e) {
             throw $e->getCause();
