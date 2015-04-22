@@ -7,6 +7,7 @@
   uses(
     'peer.URL',
     'peer.Header',
+    'peer.http.RequestData',
     'peer.http.HttpConstants',
     'peer.http.BasicAuthorization',
     'security.SecureString'
