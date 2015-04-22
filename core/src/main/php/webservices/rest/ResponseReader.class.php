@@ -27,10 +27,11 @@
      *
      * @param  lang.Type $t
      * @param  io.streams.InputStream $is
+     * @param   string $encoding
      * @return var
      */
-    public function read(Type $t, InputStream $is) {
-      return $this->marshalling->unmarshal($t, $this->deserializer->deserialize($is));
+    public function read(Type $t, InputStream $is, $encoding= xp::ENCODING) {
+      return $this->marshalling->unmarshal($t, $this->deserializer->deserialize($is, $encoding));
     }
   }
 ?>

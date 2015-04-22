@@ -24,12 +24,13 @@
      * Deserialize
      *
      * @param   io.streams.InputStream in
+     * @param   string $encoding
      * @return  var
      * @throws  lang.FormatException
      */
-    public function deserialize($in) {
+    public function deserialize($in, $encoding= xp::ENCODING) {
       $tree= new Tree();
-      create(new XMLParser())->withCallback($tree)->parse(new StreamInputSource($in));
+      create(new XMLParser($encoding))->withCallback($tree)->parse(new StreamInputSource($in));
       return new RestXmlMap($tree->root);
     }
   }
