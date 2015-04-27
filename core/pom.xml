@@ -4,7 +4,7 @@
   <!-- The basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>core</artifactId>
-  <version>5.10.2</version>
+  <version>5.10.3-SNAPSHOT</version>
   <packaging>xar</packaging>
 
   <!-- More project information -->
@@ -175,7 +175,7 @@
     <connection>scm:git:git://github.com/xp-framework/xp-framework.git</connection>
     <developerConnection>scm:git:git@github.com:xp-framework/xp-framework.git</developerConnection>
     <url>https://github.com/xp-framework/xp-framework</url>
-    <tag>maven-5.10.2</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <!-- Issue management -->
