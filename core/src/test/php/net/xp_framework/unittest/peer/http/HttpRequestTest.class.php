@@ -1,6 +1,7 @@
 <?php namespace net\xp_framework\unittest\peer\http;
 
 use unittest\TestCase;
+use peer\URL;
 use peer\http\RequestData;
 use peer\http\FormRequestData;
 use peer\http\FileUpload;
@@ -125,17 +126,6 @@ class HttpRequestTest extends TestCase {
     $r->setMethod(HttpConstants::GET);
     $this->assertEquals(
       "GET /?data[color]=green&data[size]=S HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
-      $r->getRequestString()
-    );
-  }
-
-  #[@test]
-  public function get_url_with_RequestData_parameters() {
-    $r= new HttpRequest(new \peer\URL('http://example.com/'));
-    $r->setMethod(HttpConstants::GET);
-    $r->setParameters(new RequestData('a=b&c=d'));
-    $this->assertEquals(
-      "GET /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
       $r->getRequestString()
     );
   }
@@ -436,12 +426,23 @@ class HttpRequestTest extends TestCase {
   }
 
   #[@test]
-  public function with_1byte_body() {
-    $r= new HttpRequest(new \peer\URL('http://example.com/'));
+  public function post_with_1byte_body() {
+    $r= new HttpRequest(new URL('http://example.com/'));
     $r->setMethod(HttpConstants::POST);
     $r->setParameters(new RequestData('1'));
     $this->assertEquals(
       "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\nContent-Length: 1\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n",
+      $r->getHeaderString()
+    );
+  }
+
+  #[@test]
+  public function delete_with_1byte_body() {
+    $r= new HttpRequest(new URL('http://example.com/'));
+    $r->setMethod(HttpConstants::DELETE);
+    $r->setParameters(new RequestData('1'));
+    $this->assertEquals(
+      "DELETE / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\nContent-Length: 1\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n",
       $r->getHeaderString()
     );
   }
