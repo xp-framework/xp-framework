@@ -495,8 +495,11 @@
     foreach (func_get_args() as $str) {
       $class= xp::$loader->loadClass0($str);
 
-      if (strstr($class, '\\')) {
-        class_alias($class, substr($class, strrpos($class, '\\')+ 1), false);
+      if ($p= strrpos($class, '\\')) {
+        $short= substr($class, $p+ 1);
+        if (!class_exists($short, false) && !interface_exists($short, false)) {
+          class_alias($class, $short, false);
+        }
       }
 
       // Tricky: We can arrive at this point without the class actually existing:
