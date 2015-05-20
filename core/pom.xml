@@ -1,17 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- Sonatype OSS parent -->
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
-  </parent>
-
   <!-- The basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>core</artifactId>
-  <version>5.10.2-SNAPSHOT</version>
+  <version>5.10.4-SNAPSHOT</version>
   <packaging>xar</packaging>
 
   <!-- More project information -->
@@ -55,7 +48,7 @@
       <plugin>
         <groupId>net.xp-forge.maven.plugins</groupId>
         <artifactId>xp-maven-plugin</artifactId>
-        <version>3.3.1</version>
+        <version>3.3.4</version>
         <extensions>true</extensions>
         <configuration>
 
@@ -156,6 +149,25 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>net.xp-forge.maven.plugins</groupId>
+        <artifactId>xp-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-tests</id>
+            <goals>
+              <goal>test-package</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>source-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
 
     <!-- Create VERSION file -->
@@ -170,43 +182,12 @@
     </resources>
   </build>
 
-  <!--
-   ! When releasing to Sonatype, build and attach the "tests",
-   ! "sources" and "apidoc" artifacts
-   !-->
-  <profiles>
-    <profile>
-      <id>sonatype-oss-release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>net.xp-forge.maven.plugins</groupId>
-            <artifactId>xp-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-tests</id>
-                <goals>
-                  <goal>test-package</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>attach-sources</id>
-                <goals>
-                  <goal>source-no-fork</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>attach-apidoc</id>
-                <goals>
-                  <goal>apidoc-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+  <distributionManagement>
+    <repository>
+      <id>${xp-repository-id}</id>
+      <url>${xp-repository-url}</url>
+    </repository>
+  </distributionManagement>
 
   <!-- Source code management -->
   <scm>

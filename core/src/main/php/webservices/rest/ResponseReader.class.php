@@ -31,6 +31,10 @@
      * @return var
      */
     public function read(Type $t, InputStream $is, $encoding= xp::ENCODING) {
+      if (NULL === $this->deserializer) {
+        throw new IllegalStateException('No deserializer available.');
+      }
+
       return $this->marshalling->unmarshal($t, $this->deserializer->deserialize($is, $encoding));
     }
   }

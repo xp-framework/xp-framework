@@ -1,17 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- Sonatype OSS parent -->
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
-  </parent>
-
   <!-- The basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>pom</artifactId>
-  <version>5.10.2-SNAPSHOT</version>
+  <version>5.10.4-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <!-- More project information -->
@@ -50,7 +43,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.4.1</version>
+        <version>2.5.1</version>
         <configuration>
           <pushChanges>false</pushChanges>
           <tagNameFormat>maven-@{project.version}</tagNameFormat>
@@ -59,6 +52,13 @@
       </plugin>
     </plugins>
   </build>
+
+  <distributionManagement>
+    <repository>
+      <id>${xp-repository-id}</id>
+      <url>${xp-repository-url}</url>
+    </repository>
+  </distributionManagement>
 
   <!-- Source code management -->
   <scm>
