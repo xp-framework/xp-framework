@@ -3,6 +3,14 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+## 5.11.0 / 2015-05-20
+
+* Merged PR #374: Implement optional parameter encoding to RestResponse::data() 
+  (@thekid, @kiesel)
+* Merged PR #378: Fix namespaces with uses - (@kiesel, @thekid)
+
+## 5.10.2 / 2015-04-27
+
 * Implemented HTTP Digest Authentication, RFC 2617 by backporting @kiesel's
   pull request xp-framework/http#9 - @thekid
 
