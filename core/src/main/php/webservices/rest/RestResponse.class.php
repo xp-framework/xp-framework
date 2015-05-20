@@ -131,20 +131,22 @@
      * passed target type. Overwrite in subclasses to change this behaviour.
      *
      * @param   lang.Type target
+     * @param   string $encoding
      * @return  var
      */
-    protected function handlePayloadOf($target) {
-      return $this->reader->read($target, $this->input);
+    protected function handlePayloadOf($target, $encoding= xp::ENCODING) {
+      return $this->reader->read($target, $this->input, $encoding);
     }
 
     /**
      * Get data
      *
      * @param   var type target type of deserialization, either a lang.Type or a string
+     * @param   string $encoding
      * @return  var
      * @throws  webservices.rest.RestException if the status code is > 399
      */
-    public function data($type= NULL) {
+    public function data($type= NULL, $encoding= xp::ENCODING) {
       $this->handleStatus($this->response->statusCode());
  
       if (NULL === $type) {
@@ -159,7 +161,7 @@
         throw new IllegalArgumentException('Unknown content type "'.$this->headers['Content-Type'][0].'"');
       }
 
-      return $this->handlePayloadOf($target);
+      return $this->handlePayloadOf($target, $encoding);
     }
 
     /**

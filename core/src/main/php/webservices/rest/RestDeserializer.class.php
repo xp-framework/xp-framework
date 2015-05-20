@@ -21,9 +21,10 @@
      * Deserialize
      *
      * @param   io.streams.InputStream in
+     * @param   string $encoding
      * @return  var
      * @throws  lang.FormatException
      */
-    public abstract function deserialize($in);
+    public abstract function deserialize($in, $encoding= xp::ENCODING);
   }
 ?>

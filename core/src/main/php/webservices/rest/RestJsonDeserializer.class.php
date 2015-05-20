@@ -26,12 +26,13 @@
      * Deserialize
      *
      * @param   io.streams.InputStream in
+     * @param   string $encoding
      * @return  var
      * @throws  lang.FormatException
      */
-    public function deserialize($in) {
+    public function deserialize($in, $encoding= xp::ENCODING) {
       try {
-        return $this->json->decodeFrom($in);
+        return $this->json->decodeFrom($in, $encoding);
       } catch (JsonException $e) {
         throw new FormatException('Malformed JSON', $e);
       }
