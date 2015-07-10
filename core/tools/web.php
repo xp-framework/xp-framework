@@ -13,6 +13,7 @@
       header('Status: 500 Internal Server Error');
       break;
 
+    case 'fpm-fcgi':
     case 'cli-server':
       if (is_file($_SERVER['DOCUMENT_ROOT'].$_SERVER['REQUEST_URI'])) {
         return FALSE;
