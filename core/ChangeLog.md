@@ -3,6 +3,8 @@ XP Framework ChangeLog
 
 ## ?.?.? / ????-??-??
 
+* Merged PR #379: Add support for FPM SAPI (@kiesel)
+
 ## 5.11.0 / 2015-05-20
 
 * Merged PR #374: Implement optional parameter encoding to RestResponse::data() 
