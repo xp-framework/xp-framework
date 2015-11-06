@@ -1,8 +1,9 @@
 XP Framework ChangeLog
 ========================================================================
 
-## ?.?.? / ????-??-??
+## 5.11.1 / 2015-11-07
 
+* Updated `composer.json` to "replace" new XP6 packages (@kiesel)
 * Merged PR #379: Add support for FPM SAPI (@kiesel)
 
 ## 5.11.0 / 2015-05-20
