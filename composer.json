@@ -28,6 +28,24 @@
     "xp-framework/zip": "self.version"
   },
 
+  "conflicts": {
+    "xp-framework/core": ">= 6.0",
+    "xp-framework/csv": ">= 6.0",
+    "xp-framework/ftp": ">= 6.0",
+    "xp-framework/http": ">= 6.0",
+    "xp-framework/imaging": ">= 6.0",
+    "xp-framework/ldap": ">= 6.0",
+    "xp-framework/mail": ">= 6.0",
+    "xp-framework/parser": ">= 6.0",
+    "xp-framework/rdbms": ">= 6.0",
+    "xp-framework/remote": ">= 6.0",
+    "xp-framework/rest": ">= 6.0",
+    "xp-framework/scriptlet": ">= 6.0",
+    "xp-framework/webservices": ">= 6.0",
+    "xp-framework/xml": ">= 6.0",
+    "xp-framework/zip": ">= 6.0"
+  }
+
   "autoload" : {
     "files" : ["src/main/php/__xp.php", "src/main/resources/autoload.php"]
   }
