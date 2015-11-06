@@ -1,8 +1,9 @@
 XP Framework ChangeLog
 ========================================================================
 
-## ?.??.? / ????-??-??
+## 5.11.2 / 2015-11-07
 
+* Updated `composer.json` to "conflict" with XP6 packages (@kiesel)
 
 ## 5.11.1 / 2015-11-07
 

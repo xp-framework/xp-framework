@@ -28,7 +28,7 @@
     "xp-framework/zip": "self.version"
   },
 
-  "conflicts": {
+  "conflict": {
     "xp-framework/core": ">= 6.0",
     "xp-framework/csv": ">= 6.0",
     "xp-framework/ftp": ">= 6.0",
@@ -44,7 +44,7 @@
     "xp-framework/webservices": ">= 6.0",
     "xp-framework/xml": ">= 6.0",
     "xp-framework/zip": ">= 6.0"
-  }
+  },
 
   "autoload" : {
     "files" : ["src/main/php/__xp.php", "src/main/resources/autoload.php"]
