@@ -1,13 +1,33 @@
 {
   "name" : "xp-framework/xp-framework",
   "type" : "library",
-  "homepage" : "http://xp-framework.net/",
+  "homepage" : "https://github.com/xp-framework/xp-framework",
   "license" : "BSD-3-Clause",
   "description" : "The XP framework is an all-purpose, object oriented PHP framework.",
   "keywords": ["framework", "xp"],
+
   "require" : {
     "php" : ">=5.3.0"
   },
+
+  "replace": {
+    "xp-framework/core": "self.version",
+    "xp-framework/csv": "self.version",
+    "xp-framework/ftp": "self.version",
+    "xp-framework/http": "self.version",
+    "xp-framework/imaging": "self.version",
+    "xp-framework/ldap": "self.version",
+    "xp-framework/mail": "self.version",
+    "xp-framework/parser": "self.version",
+    "xp-framework/rdbms": "self.version",
+    "xp-framework/remote": "self.version",
+    "xp-framework/rest": "self.version",
+    "xp-framework/scriptlet": "self.version",
+    "xp-framework/webservices": "self.version",
+    "xp-framework/xml": "self.version",
+    "xp-framework/zip": "self.version"
+  },
+
   "autoload" : {
     "files" : ["src/main/php/__xp.php", "src/main/resources/autoload.php"]
   }
