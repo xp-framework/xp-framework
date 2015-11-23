@@ -230,7 +230,9 @@
         }
         if ($start= strpos($key, '[')) {    // Array notation
           $base= substr($key, 0, $start);
-          isset($params[$base]) || $params[$base]= array();
+          if (!isset($params[$base]) || !is_array($params[$base])) {
+            $params[$base]= array();
+          }
           $ptr= &$params[$base];
           $offset= 0;
           do {
