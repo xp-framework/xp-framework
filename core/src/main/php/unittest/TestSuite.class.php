@@ -413,7 +413,30 @@
         }
 
         $timer->stop();
-        $tearDown($test);
+        try {
+          $tearDown($test);
+        } catch (AssertionFailedError $e1) {
+          $timer->stop();
+          $this->notifyListeners('testFailed', array(
+            $result->setFailed($test, $e1, $timer->elapsedTime())
+          ));
+        } catch (Throwable $t1) {
+          $timer->stop();
+          $this->notifyListeners('testFailed', array(
+            $result->set($test, new TestError($test, $t1, $timer->elapsedTime()))
+          ));
+        } catch (TargetInvocationException $e1) {
+          $cause= $e1->getCause();
+          $timer->stop();
+          $this->notifyListeners('testFailed', array(
+            $result->set($test, new TestError($test, $cause, $timer->elapsedTime()))
+          ));
+        } catch (Exception $e1) {
+          $timer->stop();
+          $this->notifyListeners('testFailed', array(
+            $result->setFailed($test, new AssertionFailedError($e1->getMessage().PHP_EOL.$e1->getTraceAsString()), $timer->elapsedTime())
+          ));
+        }
         
         // Check expected exception
         if ($expected) {
