@@ -1,8 +1,9 @@
 <?php namespace net\xp_framework\unittest\core;
 
-use unittest\TestCase;
 use lang\Runtime;
-
+use lang\Process;
+use unittest\TestCase;
+use unittest\PrerequisitesNotMetError;
 
 /**
  * TestCase for uses() statement
@@ -15,45 +16,55 @@ class UsesTest extends TestCase {
    */
   #[@beforeClass]
   public static function verifyProcessExecutionEnabled() {
-    if (\lang\Process::$DISABLED) {
-      throw new \unittest\PrerequisitesNotMetError('Process execution disabled', NULL, array('enabled'));
+    if (Process::$DISABLED) {
+      throw new PrerequisitesNotMetError('Process execution disabled', NULL, array('enabled'));
     }
+  }
+
+  /**
+   * Runs code in a new runtime
+   *
+   * @param   string $code
+   * @return  var[] an array with three elements: exitcode, stdout and stderr contents
+   */
+  private function run($code) {
+    with ($out= $err= '', $p= Runtime::getInstance()->newInstance(NULL, 'class', 'xp.runtime.Evaluate', array())); {
+      $p->in->write($code);
+      $p->in->close();
+
+      // Read output
+      while ($b= $p->out->read()) { $out.= $b; }
+      while ($b= $p->err->read()) { $err.= $b; }
+
+      // Close child process
+      $exitv= $p->close();
+    }
+    return array($exitv, explode("\n", rtrim($out)), explode("\n", rtrim($err)));
   }
 
   /**
    * Issues a uses() command inside a new runtime for every class given
    * and returns a line indicating success or failure for each of them.
    *
-   * @param   string[] uses
-   * @param   string decl
+   * @param   string[] $uses
+   * @param   string $decl
    * @return  var[] an array with three elements: exitcode, stdout and stderr contents
    */
-  protected function useAllOf($uses, $decl= '') {
-    with ($out= $err= '', $p= Runtime::getInstance()->newInstance(NULL, 'class', 'xp.runtime.Evaluate', array())); {
-      $p->in->write($decl.'
-        ClassLoader::registerPath(\''.strtr($this->getClass()->getClassLoader()->path, '\\', '/').'\');
-        $errors= 0;
-        foreach (array("'.implode('", "', $uses).'") as $class) {
-          try {
-            uses($class);
-            echo "+OK ", $class, "\n";
-          } catch (Throwable $e) {
-            echo "-ERR ", $class, ": ", $e->getClassName(), "\n";
-            $errors++;
-          }
+  private function useAllOf($uses, $decl= '') {
+    return $this->run($decl.'
+      ClassLoader::registerPath(\''.strtr($this->getClass()->getClassLoader()->path, '\\', '/').'\');
+      $errors= 0;
+      foreach (array("'.implode('", "', $uses).'") as $class) {
+        try {
+          uses($class);
+          echo "+OK ", $class, "\n";
+        } catch (Throwable $e) {
+          echo "-ERR ", $class, ": ", $e->getClassName(), "\n";
+          $errors++;
         }
-        exit($errors);
-      ');
-      $p->in->close();
-
-      // Read output
-        while ($b= $p->out->read()) { $out.= $b; }
-      while ($b= $p->err->read()) { $err.= $b; }
-
-      // Close child process
-        $exitv= $p->close();
-    }
-    return array($exitv, explode("\n", rtrim($out)), explode("\n", rtrim($err)));
+      }
+      exit($errors);
+    ');
   }
 
   /**
