@@ -58,5 +58,5 @@
   bootstrap(scanpath($paths, $webroot).(isset($scan[1]) ? $scan[1] : ''));
   
   $class= XPClass::forName('xp.scriptlet.Runner');
-  exit(call_user_func(array($class, 'main'), $webroot, $configd, $_SERVER['SERVER_PROFILE'], $_SERVER['SCRIPT_URL']));
+  exit(call_user_func(array($class->literal(), 'main'), array($webroot, $configd, $_SERVER['SERVER_PROFILE'], $_SERVER['SCRIPT_URL'])));
 ?>
