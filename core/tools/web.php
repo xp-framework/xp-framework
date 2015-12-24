@@ -1,10 +1,10 @@
 <?php
-  if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-    trigger_error('This version of the XP Framework requires PHP 5.3.0+, have PHP '.PHP_VERSION, E_USER_ERROR);
+  if (version_compare(PHP_VERSION, '5.2.0', '<')) {
+    trigger_error('This version of the XP Framework requires PHP 5.2.0+, have PHP '.PHP_VERSION.PHP_EOL, E_USER_ERROR);
     exit(0x3d);
   }
-  $webroot= getenv('WEB_ROOT') ?: $_SERVER['DOCUMENT_ROOT'].'/..';
-  $configd= ini_get('user_dir') ?: $webroot.'/etc';
+  $webroot= ($_= getenv('WEB_ROOT')) ? $_ :  $_SERVER['DOCUMENT_ROOT'].'/..';
+  $configd= ($_= ini_get('user_dir')) ? $_ : $webroot.'/etc';
 
   // Set error status to 500 by default - if a fatal error occurs,
   // this guarantees to at least send an error code.
