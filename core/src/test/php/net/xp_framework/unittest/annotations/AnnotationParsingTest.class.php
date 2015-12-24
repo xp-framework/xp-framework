@@ -18,18 +18,6 @@ class AnnotationParsingTest extends AbstractAnnotationParsingTest {
   protected static $hidden = 'hidden';
   private static $internal = 'internal';
 
-  /**
-   * Helper
-   *
-   * @param   string input
-   * @return  [:var]
-   */
-  protected function parse($input) {
-    return \lang\XPClass::parseAnnotations($input, $this->getClassName(), array(
-      'Namespaced' => 'net.xp_framework.unittest.annotations.fixture.Namespaced'
-    ));
-  }
-
   #[@test]
   public function no_value() {
     $this->assertEquals(

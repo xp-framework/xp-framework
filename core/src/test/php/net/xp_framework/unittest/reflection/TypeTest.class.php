@@ -245,7 +245,7 @@ class TypeTest extends TestCase {
    *
    * @deprecated
    */
-  #[@test, @values('mixed', '*')]
+  #[@test, @values(array('mixed', '*'))]
   public function varTypeVariant($name) {
     $this->assertEquals(Type::$VAR, Type::forName($name));
   }

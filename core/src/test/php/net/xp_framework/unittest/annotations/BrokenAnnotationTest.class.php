@@ -1,6 +1,7 @@
 <?php namespace net\xp_framework\unittest\annotations;
 
 use lang\XPClass;
+use lang\reflect\ClassParser;
 
 /**
  * Tests the XP Framework's annotations
@@ -17,7 +18,8 @@ class BrokenAnnotationTest extends \unittest\TestCase {
    * @return  [:var]
    */
   protected function parse($input) {
-    return XPClass::parseAnnotations($input, $this->getClassName());
+    $parser= new ClassParser();
+    return $parser->parseAnnotations($input, $this->getClassName());
   }
 
   #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated annotation/')]
