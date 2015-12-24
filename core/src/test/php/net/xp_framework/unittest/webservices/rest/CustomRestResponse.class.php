@@ -27,9 +27,10 @@ class CustomRestResponse extends RestResponse {
    * Handle payload
    * 
    * @param   lang.Type target
+   * @param   string $encoding
    * @return  var
    */
-  protected function handlePayloadOf($target) {
+  protected function handlePayloadOf($target, $encoding= xp::ENCODING) {
     if (204 === $this->response->statusCode()) {
       return null;  // "No Content"
     } else {

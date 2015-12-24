@@ -18,10 +18,11 @@
      * Deserialize
      *
      * @param   io.streams.InputStream in
+     * @param   string $encoding
      * @return  var
      * @throws  lang.FormatException
      */
-    public function deserialize($in) {
+    public function deserialize($in, $encoding= xp::ENCODING) {
       $st= new StreamTokenizer($in, '&');
       $map= array();
       while ($st->hasMoreTokens()) {

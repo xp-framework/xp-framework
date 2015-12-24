@@ -1,7 +1,32 @@
 XP Framework ChangeLog
 ========================================================================
 
-## ?.?.? / ????-??-??
+## ?.??.? / ????-??-??
+
+### Heads up!
+
+* Removed support for deprecated multi-value annotations.
+  (@thekid)
+* Merged refactoring from XP6: Extract class parsing to `ClassParser`
+  class inside `lang.reflect`
+  (@thekid)
+
+## 5.11.2 / 2015-11-07
+
+* Updated `composer.json` to "conflict" with XP6 packages (@kiesel)
+
+## 5.11.1 / 2015-11-07
+
+* Updated `composer.json` to "replace" new XP6 packages (@kiesel)
+* Merged PR #379: Add support for FPM SAPI (@kiesel)
+
+## 5.11.0 / 2015-05-20
+
+* Merged PR #374: Implement optional parameter encoding to RestResponse::data() 
+  (@thekid, @kiesel)
+* Merged PR #378: Fix namespaces with uses - (@kiesel, @thekid)
+
+## 5.10.2 / 2015-04-27
 
 * Implemented HTTP Digest Authentication, RFC 2617 by backporting @kiesel's
   pull request xp-framework/http#9 - @thekid

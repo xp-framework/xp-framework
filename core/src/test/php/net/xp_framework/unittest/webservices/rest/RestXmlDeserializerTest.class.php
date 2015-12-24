@@ -48,4 +48,12 @@ class RestXmlDeserializerTest extends RestDeserializerTest {
       $this->flatten($this->fixture->deserialize($this->input('<root><name>Timm</name><id>1549</id></root>')))
     );
   }
+
+  #[@test]
+  public function deserialize_unicode() {
+    $this->assertEquals(
+      array('en-dash' => '–'),
+      $this->flatten($this->fixture->deserialize($this->input('<root><en-dash>&#x2013;</en-dash></root>'), 'utf-8'))
+    );
+  }
 }

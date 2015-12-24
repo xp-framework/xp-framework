@@ -148,7 +148,15 @@
  * $Id$
  */
  
-  uses('rdbms.DataSet', 'util.HashmapIterator');&#10;</xsl:text>
+
+  uses(
+    'lang.XPClass',
+    'rdbms.DataSet',
+    'rdbms.Peer',
+    'rdbms.Criteria',
+    'rdbms.FieldType',
+    'util.HashmapIterator'
+  );&#10;</xsl:text>
     <xsl:apply-templates/>
   <xsl:text>?></xsl:text>
   </xsl:template>

@@ -488,11 +488,19 @@
   // }}}
 
   // {{{ proto void uses (string* args)
-  //     Uses one or more classes
+  //     Uses one or more classes and ensures namespaced classes are aliased
+  //     to their non-namespaced short name
   function uses() {
     $scope= NULL;
     foreach (func_get_args() as $str) {
       $class= xp::$loader->loadClass0($str);
+
+      if ($p= strrpos($class, '\\')) {
+        $short= substr($class, $p+ 1);
+        if (!class_exists($short, false) && !interface_exists($short, false)) {
+          class_alias($class, $short, false);
+        }
+      }
 
       // Tricky: We can arrive at this point without the class actually existing:
       // A : uses("B")
