@@ -20,7 +20,9 @@
       $ordinal  = 0;
   
     static function __static() {
-      if (__CLASS__ === ($class= get_called_class())) return;
+      $trace= debug_backtrace();
+      $class= xp::reflect($trace[2]['args'][0]);
+      if (__CLASS__ === $class) return;
 
       // Automatically initialize this enum's public static members
       $i= 0;
