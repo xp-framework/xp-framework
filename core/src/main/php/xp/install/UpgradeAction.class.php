@@ -68,11 +68,6 @@ class UpgradeAction extends Action {
    * @return int exit code
    */
   public function perform($args) {
-    if (empty($args)) {
-      Console::$err->writeLine('*** Missing argument #1: Module name');
-      return 2;
-    }
-
     sscanf($args[0], '%[^@]@%s', $name, $version);
     $module= Module::valueOf($name);
 
@@ -157,8 +152,6 @@ class UpgradeAction extends Action {
     $args= array($module->vendor.'/'.$module->name.'@'.$version);
     $r= $this->spawn(new RemoveAction())->perform($args);
     if (0 !== $r) return $r;
-
-    $args= array($module->vendor.'/'.$module->name.'@'.$target);
     $r= $this->spawn(new AddAction())->perform($args);
     if (0 !== $r) return $r;
     return 0;

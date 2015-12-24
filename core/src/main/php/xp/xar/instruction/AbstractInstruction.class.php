@@ -1,42 +1,58 @@
-<?php namespace xp\xar\instruction;
-
-/**
- * Base Instruction class
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
  */
-abstract class AbstractInstruction extends \lang\Object {
-  protected
-    $out        = null,
-    $err        = null,
-    $options    = 0,
-    $archive    = null,
-    $args       = array();
+
+  uses(
+    'xp.xar.Options',
+    'lang.archive.Archive',
+    'io.File',
+    'io.FileUtil',
+    'io.Folder'
+  );
   
   /**
-   * Constructor
+   * Base Instruction class
    *
-   * @param   int options
-   * @param   lang.archive.Archive archive
-   * @param   string[] args
+   * @purpose  Base Instruction
    */
-  public function __construct($out, $err, $options, $archive, $args) {
-    $this->out= $out;
-    $this->err= $err;
-    $this->options= $options;
-    $this->archive= $archive;
-    $this->args= $args;
+  abstract class AbstractInstruction extends Object {
+    protected
+      $out        = NULL,
+      $err        = NULL,
+      $options    = 0,
+      $archive    = NULL,
+      $args       = array();
+    
+    /**
+     * Constructor
+     *
+     * @param   int options
+     * @param   lang.archive.Archive archive
+     * @param   string[] args
+     */
+    public function __construct($out, $err, $options, $archive, $args) {
+      $this->out= $out;
+      $this->err= $err;
+      $this->options= $options;
+      $this->archive= $archive;
+      $this->args= $args;
+    }
+    
+    /**
+     * Retrieve file arguments from Instructionline
+     *
+     * @return  string[]
+     */
+    protected function getArguments() {
+      return $this->args;
+    }
+    
+    /**
+     * Perform
+     *
+     */
+    public abstract function perform();
   }
-  
-  /**
-   * Retrieve file arguments from Instructionline
-   *
-   * @return  string[]
-   */
-  protected function getArguments() {
-    return $this->args;
-  }
-  
-  /**
-   * Perform
-   */
-  public abstract function perform();
-}
+?>

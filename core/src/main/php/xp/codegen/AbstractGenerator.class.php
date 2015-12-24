@@ -1,30 +1,37 @@
-<?php namespace xp\codegen;
-
-/**
- * Generator
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
  */
-abstract class AbstractGenerator extends \lang\Object {
-  public 
-    $storage = null,
-    $output  = null;
- 
-  /**
-   * Returns storage
-   *
-   * @return  xp.codegen.AbstractStorage
-   */
-  #[@target]
-  public function storage() {
-    return $this->storage;
-  } 
 
   /**
-   * Returns output
+   * Generator
    *
-   * @return  xp.codegen.AbstractStorage
+   * @purpose  Abstract base class
    */
-  #[@target]
-  public function output() {
-    return $this->output;
-  } 
-}
+  abstract class AbstractGenerator extends Object {
+    public 
+      $storage = NULL,
+      $output  = NULL;
+   
+    /**
+     * Returns storage
+     *
+     * @return  xp.codegen.AbstractStorage
+     */
+    #[@target]
+    public function storage() {
+      return $this->storage;
+    } 
+
+    /**
+     * Returns output
+     *
+     * @return  xp.codegen.AbstractStorage
+     */
+    #[@target]
+    public function output() {
+      return $this->output;
+    } 
+  }
+?>

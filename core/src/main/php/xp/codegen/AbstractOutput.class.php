@@ -1,36 +1,42 @@
-<?php namespace xp\codegen;
-
-use util\Observer;
-use util\Observable;
-
-/**
- * Output for generation
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
  */
-abstract class AbstractOutput extends Observable {
-    
-  /**
-   * Store data
-   *
-   * @param   string name
-   * @param   string data
-   */
-  protected abstract function store($name, $data);
+
+  uses('util.Observer', 'util.Observable');
 
   /**
-   * Append a file and its data to the output
+   * Output for generation
    *
-   * @param   string name
-   * @param   string data
+   * @purpose  Abstract base class
    */
-  public function append($name, $data) {
-    $this->setChanged();
-    $this->notifyObservers($name);
-    $this->store($name, $data);
+  abstract class AbstractOutput extends Observable {
+      
+    /**
+     * Store data
+     *
+     * @param   string name
+     * @param   string data
+     */
+    protected abstract function store($name, $data);
+
+    /**
+     * Append a file and its data to the output
+     *
+     * @param   string name
+     * @param   string data
+     */
+    public function append($name, $data) {
+      $this->setChanged();
+      $this->notifyObservers($name);
+      $this->store($name, $data);
+    }
+    
+    /**
+     * Commit output
+     *
+     */
+    public abstract function commit();
   }
-  
-  /**
-   * Commit output
-   *
-   */
-  public abstract function commit();
-}
+?>

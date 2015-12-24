@@ -70,11 +70,6 @@ class RemoveAction extends Action {
    * @return int exit code
    */
   public function perform($args) {
-    if (empty($args)) {
-      Console::$err->writeLine('*** Missing argument #1: Module name');
-      return 2;
-    }
-
     sscanf($args[0], '%[^@]@%s', $name, $version);
     $module= Module::valueOf($name);
 
@@ -97,7 +92,7 @@ class RemoveAction extends Action {
 
       // Specific version given: Remove this version, if it's the last one, the
       // module reference, if not, select next possible one.
-      if (!($coll= $vendor->findCollection($module->name.'@'.$version))) {
+      if (!$coll= $vendor->findCollection($module->name.'@'.$version)) {
         Console::writeLine($module, ' not installed in version ', $version);
         return 1;
       }

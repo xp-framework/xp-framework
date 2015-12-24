@@ -11,6 +11,12 @@
   define('MODIFIER_PROTECTED',  512);
   define('MODIFIER_PRIVATE',   1024);
 
+  if (!function_exists('class_alias')) {
+    function class_alias($original, $alias, $autoload= TRUE) {
+
+    }
+  }
+
   // {{{ final class import
   final class import {
     function __construct($str) {
@@ -76,10 +82,12 @@
           $name= $class;
         } else if (NULL !== $package) {
           $name= strtr($class, '.', '·');
+          class_alias($name, strtr($class, '.', '\\'));
         } else if (($ns= strtr($class, '.', '\\')) && (class_exists($ns, FALSE) || interface_exists($ns, FALSE))) {
           $name= $ns;
         } else if (($cl= substr($class, $p+ 1)) && (class_exists($cl, FALSE) || interface_exists($cl, FALSE))) {
           $name= $cl;
+          class_alias($name, strtr($class, '.', '\\'));
         }
         xp::$cn[$name]= $class;
         method_exists($name, '__static') && xp::$cli[]= array($name, '__static');
@@ -493,6 +501,9 @@
 
       if ($p= strrpos($class, '\\')) {
         $short= substr($class, $p+ 1);
+        if (!class_exists($short, false) && !interface_exists($short, false)) {
+          class_alias($class, $short, false);
+        }
       }
 
       // Tricky: We can arrive at this point without the class actually existing:
