@@ -68,7 +68,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->asString(function($pass) { return '********'; });
+      return $this->asString(create_function('$pass', "return '********';"));
     }
 
     /**
@@ -446,7 +446,7 @@
      */
     public function getURL() {
       if (!isset($this->_info['url'])) {
-        $this->_info['url']= $this->asString(function($pass) { return rawurlencode($pass); });
+        $this->_info['url']= $this->asString('rawurlencode');
       }
       return $this->_info['url'];
     }
