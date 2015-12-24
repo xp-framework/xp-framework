@@ -178,10 +178,10 @@
         }
         try {
           $func= eval('return '.$code.';');
-        } catch (\ParseError $e) {
+        } catch (ParseError $e) {
           throw new IllegalStateException('In `'.$code.'`: '.$e->getMessage());
         }
-        if (!($func instanceof \Closure)) {
+        if (!($func instanceof Closure)) {
           if ($error= error_get_last()) {
             set_error_handler('__error', 0);
             trigger_error('clear_last_error');
@@ -286,7 +286,7 @@
             $state= 3;
           }
         }
-      } catch (\lang\XPException $e) {
+      } catch (XPException $e) {
         throw new ClassFormatException($e->getMessage().' in '.$place, $e);
       }
       throw new ClassFormatException('Parse error: Unterminated '.$states[$state].' in '.$place);
