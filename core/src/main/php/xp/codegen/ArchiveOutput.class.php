@@ -1,45 +1,55 @@
-<?php namespace xp\codegen;
-
-use io\File;
-use lang\archive\Archive;
-
-/**
- * Output for generation
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
  */
-class ArchiveOutput extends AbstractOutput {
-  protected
-    $archive = null;
-    
-  /**
-   * Constructor
-   *
-   * @param   string file
-   */
-  public function __construct($file) {
-    $this->archive= new Archive(new File($file));
-    $this->archive->open(ARCHIVE_CREATE);
-  }
+
+  uses(
+    'xp.codegen.AbstractOutput',
+    'io.File',
+    'lang.archive.Archive'
+  );
 
   /**
-   * Store data
+   * Output for generation
    *
-   * @param   string name
-   * @param   string data
+   * @purpose  Abstract base class
    */
-  protected function store($name, $data) {
-    $this->archive->addFileBytes(
-      $name,
-      dirname($name),
-      basename($name),
-      $data
-    );
+  class ArchiveOutput extends AbstractOutput {
+    protected
+      $archive = NULL;
+      
+    /**
+     * Constructor
+     *
+     * @param   string file
+     */
+    public function __construct($file) {
+      $this->archive= new Archive(new File($file));
+      $this->archive->open(ARCHIVE_CREATE);
+    }
+
+    /**
+     * Store data
+     *
+     * @param   string name
+     * @param   string data
+     */
+    protected function store($name, $data) {
+      $this->archive->addFileBytes(
+        $name,
+        dirname($name),
+        basename($name),
+        $data
+      );
+    }
+    
+    /**
+     * Commit output
+     *
+     */
+    public function commit() {
+      $this->archive->create();
+    }
   }
-  
-  /**
-   * Commit output
-   *
-   */
-  public function commit() {
-    $this->archive->create();
-  }
-}
+?>

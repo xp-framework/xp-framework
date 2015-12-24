@@ -19,18 +19,6 @@
     protected
       $ordinal  = 0;
   
-    static function __static() {
-      if (__CLASS__ === ($class= get_called_class())) return;
-
-      // Automatically initialize this enum's public static members
-      $i= 0;
-      $c= new ReflectionClass($class);
-      foreach ($c->getStaticProperties() as $name => $prop) {
-        if (NULL !== $prop) $i= $prop;
-        $c->setStaticPropertyValue($name, $c->newInstance($i++, $name));
-      }
-    }
-
     /**
      * Constructor
      *
@@ -77,20 +65,6 @@
       $r= array();
       foreach ($class->_reflect->getStaticProperties() as $prop) {
         $class->isInstance($prop) && $r[]= $prop;
-      }
-      return $r;
-    }
-
-    /**
-     * Returns all members for the called enum class
-     *
-     * @return  lang.Enum[]
-     */
-    public static function values() {
-      $r= array();
-      $c= new ReflectionClass(get_called_class());
-      foreach ($c->getStaticProperties() as $prop) {
-        $c->isInstance($prop) && $r[]= $prop;
       }
       return $r;
     }

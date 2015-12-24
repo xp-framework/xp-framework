@@ -1,32 +1,39 @@
-<?php namespace xp\runtime;
-
-use util\cmd\Console;
-
-/**
- * Displays XP version and runtime information
+<?php
+/* This class is part of the XP framework
  *
- * @purpose  Tool
+ * $Id$ 
  */
-class Version extends \lang\Object {
-  
+
+  $package= 'xp.runtime';
+ 
+  uses('util.cmd.Console');
+
   /**
-   * Main
+   * Displays XP version and runtime information
    *
-   * @param   string[] args
-   * @return  int
+   * @purpose  Tool
    */
-  public static function main(array $args) {
-    Console::writeLinef(
-      'XP %s { PHP %s & ZE %s } @ %s', 
-      \xp::version(),
-      phpversion(),
-      zend_version(),
-      php_uname()
-    );
-    Console::writeLine('Copyright (c) 2001-2013 the XP group');
-    foreach (\lang\ClassLoader::getLoaders() as $delegate) {
-      Console::writeLine($delegate->toString());
+  class xp·runtime·Version extends Object {
+    
+    /**
+     * Main
+     *
+     * @param   string[] args
+     * @return  int
+     */
+    public static function main(array $args) {
+      Console::writeLinef(
+        'XP %s { PHP %s & ZE %s } @ %s', 
+        xp::version(),
+        phpversion(),
+        zend_version(),
+        php_uname()
+      );
+      Console::writeLine('Copyright (c) 2001-2013 the XP group');
+      foreach (ClassLoader::getLoaders() as $delegate) {
+        Console::writeLine($delegate->toString());
+      }
+      return 1;
     }
-    return 1;
   }
-}
+?>

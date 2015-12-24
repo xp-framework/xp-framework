@@ -1,53 +1,62 @@
-<?php namespace xp\codegen;
-
-use io\Folder;
-use io\File;
-use io\FileUtil;
-
-/**
- * File system storage
+<?php
+/* This class is part of the XP framework
  *
- * @see   xp://xp.codegen.AbstractStorage
+ * $Id$ 
  */
-class FileSystemStorage extends AbstractStorage {
-  protected
-    $path   = null;
+
+  uses(
+    'xp.codegen.AbstractStorage',
+    'io.Folder',
+    'io.File',
+    'io.FileUtil'
+  );
 
   /**
-   * Constructor
+   * File system storage
    *
-   * @param   string path
+   * @see      xp://xp.codegen.AbstractStorage
+   * @purpose  Storage implementation
    */
-  public function __construct($path) {
-    $this->path= new Folder($path);
-  }
+  class FileSystemStorage extends AbstractStorage {
+    protected
+      $path   = NULL;
 
-  /**
-   * get URI
-   *
-   * @return  string
-   */
-  public function getUri() {
-    return 'file://'.urlencode($this->path->uri);
-  }
+    /**
+     * Constructor
+     *
+     * @param   string path
+     */
+    public function __construct($path) {
+      $this->path= new Folder($path);
+    }
 
-  /**
-   * Store data
-   *
-   * @param   string name
-   * @param   string data
-   */
-  protected function store($name, $data) {
-    FileUtil::setContents(new File($this->path, $name), $data);
-  }
+    /**
+     * get URI
+     *
+     * @return  string
+     */
+    public function getUri() {
+      return 'file://'.urlencode($this->path->uri);
+    }
 
-  /**
-   * Fetch data
-   *
-   * @param   string name
-   * @return  string data
-   */
-  protected function fetch($name) {
-    return FileUtil::getContents(new File($this->path, $name));
+    /**
+     * Store data
+     *
+     * @param   string name
+     * @param   string data
+     */
+    protected function store($name, $data) {
+      FileUtil::setContents(new File($this->path, $name), $data);
+    }
+
+    /**
+     * Fetch data
+     *
+     * @param   string name
+     * @return  string data
+     */
+    protected function fetch($name) {
+      return FileUtil::getContents(new File($this->path, $name));
+    }
   }
-}
+?>

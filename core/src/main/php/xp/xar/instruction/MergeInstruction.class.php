@@ -1,49 +1,54 @@
-<?php namespace xp\xar\instruction;
-
-use xp\xar\Options;
-use lang\archive\Archive;
-use io\File;
-
-/**
- * Merge Instruction
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$
  */
-class MergeInstruction extends AbstractInstruction {
+
+  uses('xp.xar.instruction.AbstractInstruction');
 
   /**
-   * Execute action
+   * Merge Instruction
    *
-   * @return  int
+   * @purpose  Merge
    */
-  public function perform() {
-    $this->archive->open(ARCHIVE_CREATE);
+  class MergeInstruction extends AbstractInstruction {
 
-    $args= $this->getArguments();
-    foreach ($args as $arg) {
-      $archive= new Archive(new File($arg));
-      $archive->open(ARCHIVE_READ);
+    /**
+     * Execute action
+     *
+     * @return  int
+     */
+    public function perform() {
+      $this->archive->open(ARCHIVE_CREATE);
 
-      while ($entry= $archive->getEntry()) {
+      $args= $this->getArguments();
+      foreach ($args as $arg) {
+        $archive= new Archive(new File($arg));
+        $archive->open(ARCHIVE_READ);
 
-        // Prevent overwriting earlier additions
-        if ($this->archive->contains($entry)) {
-          $this->err->writeLine('Warning: Duplicate entry "', $entry, '" from ', $archive->getURI(), ' - skipping.');
-          continue;
+        while ($entry= $archive->getEntry()) {
+
+          // Prevent overwriting earlier additions
+          if ($this->archive->contains($entry)) {
+            $this->err->writeLine('Warning: Duplicate entry "', $entry, '" from ', $archive->getURI(), ' - skipping.');
+            continue;
+          }
+
+          $data= $archive->extract($entry);
+
+          $this->options & Options::VERBOSE && $this->out->writeLinef('%10s %s', number_format(strlen($data), 0, FALSE, '.'), $entry);
+          $this->archive->addBytes($entry, $data);
         }
 
-        $data= $archive->extract($entry);
-
-        $this->options & Options::VERBOSE && $this->out->writeLinef('%10s %s', number_format(strlen($data), 0, false, '.'), $entry);
-        $this->archive->addBytes($entry, $data);
+        $archive->close();
       }
 
-      $archive->close();
-    }
-
-    // Create, if not in simulation mode
-    if (!($this->options & Options::SIMULATE)) {
-      $this->archive->create();
-    } else {
-      $this->archive->close();
+      // Create, if not in simulation mode
+      if (!($this->options & Options::SIMULATE)) {
+        $this->archive->create();
+      } else {
+        $this->archive->close();
+      }
     }
   }
-}
+?>

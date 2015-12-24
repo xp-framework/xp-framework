@@ -1,40 +1,50 @@
-<?php namespace xp\codegen;
-
-use io\File;
-use io\Folder;
-use io\FileUtil;
-
-/**
- * Output for generation
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
  */
-class FileSystemOutput extends AbstractOutput {
-  protected
-    $path = null;
-    
-  /**
-   * Constructor
-   *
-   * @param   string path
-   */
-  public function __construct($path) {
-    $this->path= new Folder($path);
-  }
+
+  uses(
+    'xp.codegen.AbstractOutput',
+    'io.File',
+    'io.Folder',
+    'io.FileUtil'
+  );
 
   /**
-   * Store data
+   * Output for generation
    *
-   * @param   string name
-   * @param   string data
+   * @purpose  Abstract base class
    */
-  protected function store($name, $data) {
-    FileUtil::setContents(new File($this->path, $name), $data);
+  class FileSystemOutput extends AbstractOutput {
+    protected
+      $path = NULL;
+      
+    /**
+     * Constructor
+     *
+     * @param   string path
+     */
+    public function __construct($path) {
+      $this->path= new Folder($path);
+    }
+
+    /**
+     * Store data
+     *
+     * @param   string name
+     * @param   string data
+     */
+    protected function store($name, $data) {
+      FileUtil::setContents(new File($this->path, $name), $data);
+    }
+    
+    /**
+     * Commit output
+     *
+     */
+    public function commit() {
+      // NOOP
+    }
   }
-  
-  /**
-   * Commit output
-   *
-   */
-  public function commit() {
-    // NOOP
-  }
-}
+?>

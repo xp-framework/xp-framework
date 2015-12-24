@@ -1,52 +1,61 @@
-<?php namespace xp\xar\instruction;
-
-/**
- * Show Instruction
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$
  */
-class ShowInstruction extends AbstractInstruction {
+
+  uses('xp.xar.instruction.AbstractInstruction');
 
   /**
-   * Filters entries
+   * Show Instruction
    *
-   * @param   string entry
-   * @param   string[] list
-   * @return  bool
+   * @purpose  Show
    */
-  protected function _filter($entry, $list) {
+  class ShowInstruction extends AbstractInstruction {
 
-    // No filters given, no filtering
-    if (0 == sizeof($list)) return true;
-    
-    // The files to output must begin with one of the given strings...
-    foreach ($list as $l) {
+    /**
+     * Filters entries
+     *
+     * @param   string entry
+     * @param   string[] list
+     * @return  bool
+     */
+    protected function _filter($entry, $list) {
 
-      // Either a directory is given
-      $directory= rtrim($l, '/').'/';
-      if (0 == strncmp($entry, $directory, strlen($directory))) return true;
+      // No filters given, no filtering
+      if (0 == sizeof($list)) return TRUE;
       
-      // Or a filename, but the it must match completely
-      if (0 == strcmp($entry, $l)) return true;
-    }
-    
-    return false;
-  }
+      // The files to output must begin with one of the given strings...
+      foreach ($list as $l) {
 
-  /**
-   * Execute action
-   *
-   * @return  int
-   */
-  public function perform() {
-    $this->archive->open(ARCHIVE_READ);
-    
-    $args= $this->getArguments();
-    while ($entry= $this->archive->getEntry()) {
-      if (!$this->_filter($entry, $args)) continue;
-    
-      $this->out->writeLine('== ', $entry, ' ==');
-      $this->out->writeLine($this->archive->extract($entry));
+        // Either a directory is given
+        $directory= rtrim($l, '/').'/';
+        if (0 == strncmp($entry, $directory, strlen($directory))) return TRUE;
+        
+        // Or a filename, but the it must match completely
+        if (0 == strcmp($entry, $l)) return TRUE;
+      }
+      
+      return FALSE;
     }
-    
-    $this->archive->close();
+
+    /**
+     * Execute action
+     *
+     * @return  int
+     */
+    public function perform() {
+      $this->archive->open(ARCHIVE_READ);
+      
+      $args= $this->getArguments();
+      while ($entry= $this->archive->getEntry()) {
+        if (!$this->_filter($entry, $args)) continue;
+      
+        $this->out->writeLine('== ', $entry, ' ==');
+        $this->out->writeLine($this->archive->extract($entry));
+      }
+      
+      $this->archive->close();
+    }
   }
-}
+?>

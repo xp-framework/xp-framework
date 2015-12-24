@@ -1,52 +1,61 @@
-<?php namespace xp\codegen;
-
-/**
- * Storage for generation
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
  */
-abstract class AbstractStorage extends \lang\Object {
-  
-  /**
-   * Get URI
-   *
-   * @return  string
-   */
-  public abstract function getUri();
+
+  uses('xp.codegen.StorageAddress');
 
   /**
-   * Store data
+   * Storage for generation
    *
-   * @param   string name
-   * @param   string data
+   * @purpose  Abstract base class
    */
-  protected abstract function store($name, $data);
+  abstract class AbstractStorage extends Object {
+    
+    /**
+     * get URI
+     *
+     * @return  string
+     */
+    public abstract function getUri();
 
-  /**
-   * Fetch data
-   *
-   * @param   string name
-   * @return  string data
-   */
-  protected abstract function fetch($name);
-  
-  /**
-   * Write data
-   *
-   * @param   string name
-   * @param   string data
-   * @return  xp.codegen.StorageAddress
-   */
-  public function write($name, $data) {
-    $this->store($name, $data);
-    return new StorageAddress($this, $name);
+    /**
+     * Store data
+     *
+     * @param   string name
+     * @param   string data
+     */
+    protected abstract function store($name, $data);
+
+    /**
+     * Fetch data
+     *
+     * @param   string name
+     * @return  string data
+     */
+    protected abstract function fetch($name);
+    
+    /**
+     * Write data
+     *
+     * @param   string name
+     * @param   string data
+     * @return  xp.codegen.StorageAddress
+     */
+    public function write($name, $data) {
+      $this->store($name, $data);
+      return new StorageAddress($this, $name);
+    }
+
+    /**
+     * Read data
+     *
+     * @param   string name
+     * @return  string data
+     */
+    public function read($name) {
+      return $this->fetch($name);
+    }
   }
-
-  /**
-   * Read data
-   *
-   * @param   string name
-   * @return  string data
-   */
-  public function read($name) {
-    return $this->fetch($name);
-  }
-}
+?>

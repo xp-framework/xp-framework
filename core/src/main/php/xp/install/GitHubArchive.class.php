@@ -63,7 +63,7 @@ class GitHubArchive extends \lang\Object implements Origin {
 
         default:
           Console::writeLine('Error');
-          throw new IllegalStateException('Unexpected response for '.$url.': '.$response->toString());
+          throw new IllegalStateException('Unexpected response for '.$url.': '.$response.toString());
       }
     } while (1);
 

@@ -1,9 +1,16 @@
-<?php namespace xp\xar;
-
-/**
- * XAR Options
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
  */
-abstract class Options extends \lang\Object {
-  const SIMULATE = 0x0001;
-  const VERBOSE  = 0x0002;
-}
+
+  /**
+   * XAR Options
+   *
+   * @purpose  Constants
+   */
+  abstract class Options extends Object {
+    const SIMULATE = 0x0001;
+    const VERBOSE  = 0x0002;
+  }
+?>

@@ -11,15 +11,19 @@
   define('MODIFIER_PROTECTED',  512);
   define('MODIFIER_PRIVATE',   1024);
 
+  if (!function_exists('class_alias')) {
+    function class_alias($original, $alias, $autoload= TRUE) {
+      return FALSE;
+    }
+  }
+
   // {{{ final class import
   final class import {
     function __construct($str) {
       $class= xp::$loader->loadClass0($str);
       $trace= debug_backtrace();
       $scope= $trace[2]['args'][0];
-      xp::$cli[]= function() use ($class, $scope) {
-        $class::__import(xp::reflect($scope));
-      };
+      xp::$cli[]= create_function('', strtr($class, '\\', '\\\\').'::__import(xp::reflect("'.$scope.'"));');
     }
   }
   // }}}
@@ -144,9 +148,9 @@
         }
         unset($protect[$ser]);
         return $r.$indent.']';
-      } else if ($arg instanceof \Closure) {
+      } else if ($arg instanceof Closure) {
         $sig= '';
-        $f= new \ReflectionFunction($arg);
+        $f= new ReflectionFunction($arg);
         foreach ($f->getParameters() as $p) {
           $sig.= ', $'.$p->name;
         }
@@ -270,7 +274,7 @@
         return substr($l, 0, -1);
       } else {
         $l= array_search($type, xp::$cn, TRUE);
-        return $l ?: substr($type, (FALSE === $p= strrpos($type, '.')) ? 0 : $p+ 1);
+        return $l ? $l : substr($type, (FALSE === $p= strrpos($type, '.')) ? 0 : $p+ 1);
       }
     }
     // }}}

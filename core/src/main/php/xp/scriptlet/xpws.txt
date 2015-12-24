@@ -13,7 +13,6 @@ Options is one of:
   * -r <path>    : Specify document root. Defaults to "./static"
   * -p <profile> : Set SERVER_PROFILE. Defaults to "dev"
   * -cp <path>   : Add class path entry.
-  * -m <mode>    : Server mode, "develop", "serve", "fork" or "prefork"
   * -i           : Inspect web configuration only, do no start the server
 
 Host and port default to "localhost:8080".

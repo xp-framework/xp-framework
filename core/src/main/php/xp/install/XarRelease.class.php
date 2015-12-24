@@ -80,10 +80,7 @@ class XarRelease extends \lang\Object implements Origin {
       $tran->transferAll();
       $tran->close();
 
-      $ext= substr($file['name'], strrpos($file['name'], '.'));
-      if ('.php' === $ext || '.xar' === $ext) {
-        $pth->write($file['name']."\n");
-      }
+      $pth->write($file['name']."\n");
     }
     $pth->close();
   }
