@@ -126,12 +126,10 @@
         $name= $class;
       } else if (NULL !== $package) {
         $name= strtr($class, '.', '·');
-        class_alias($name, strtr($class, '.', '\\'));
       } else if (($ns= strtr($class, '.', '\\')) && (class_exists($ns, FALSE) || interface_exists($ns, FALSE))) {
         $name= $ns;
       } else if (($cl= substr($class, $p+ 1)) && (class_exists($cl, FALSE) || interface_exists($cl, FALSE))) {
         $name= $cl;
-        class_alias($name, strtr($class, '.', '\\'));
       } else {
         unset(xp::$cl[$class]);
         raise('lang.ClassFormatException', 'Class "'.$class.'" not declared in loaded file');
