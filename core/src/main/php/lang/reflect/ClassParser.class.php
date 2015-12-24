@@ -12,6 +12,10 @@
    */
   class ClassParser extends Object {
 
+    static function __static() {
+      defined('T_TRAIT') || define('T_TRAIT', 359);
+    }
+
     /**
      * Resolves a type in a given context. Recognizes classes imported via
      * the `use` statement.
@@ -94,7 +98,7 @@
       } else if (T_DNUMBER === $tokens[$i][0]) {
         return (double)$tokens[$i][1];
       } else if ('[' === $tokens[$i] || T_ARRAY === $tokens[$i][0]) {
-        $value= [];
+        $value= array();
         $element= null;
         $key= 0;
         $end= '[' === $tokens[$i] ? ']' : ')';
@@ -118,7 +122,7 @@
             continue;
           } else {
             if ($element) throw new IllegalStateException('Parse error: Malformed array - missing comma');
-            $element= [$this->valueOf($tokens, $i, $context, $imports)];
+            $element= array($this->valueOf($tokens, $i, $context, $imports));
           }
         }
         return $value;
@@ -145,7 +149,7 @@
           if (T_STRING === $tokens[$i][0]) $type.= '.'.$tokens[$i][1];
         }
         $class= $this->resolve(substr($type, 1), $context, $imports);
-        for ($args= [], $arg= null, $s= sizeof($tokens); ; $i++) {
+        for ($args= array(), $arg= null, $s= sizeof($tokens); ; $i++) {
           if (')' === $tokens[$i]) {
             $arg && $args[]= $arg[0];
             break;
@@ -153,7 +157,7 @@
             $args[]= $arg[0];
             $arg= null;
           } else if (T_WHITESPACE !== $tokens[$i][0]) {
-            $arg= [$this->valueOf($tokens, $i, $context, $imports)];
+            $arg= array($this->valueOf($tokens, $i, $context, $imports));
           }
         }
         return $class->hasConstructor() ? $class->getConstructor()->newInstance($args) : $class->newInstance();
@@ -183,7 +187,7 @@
             trigger_error('clear_last_error');
             restore_error_handler();
           } else {
-            $error= ['message' => 'Syntax error'];
+            $error= array('message' => 'Syntax error');
           }
           throw new IllegalStateException('In `'.$code.'`: '.ucfirst($error['message']));
         }
@@ -206,15 +210,15 @@
      * @return  [:var]
      * @throws  lang.ClassFormatException
      */
-    public function parseAnnotations($bytes, $context, $imports= [], $line= -1) {
-      static $states= [
+    public function parseAnnotations($bytes, $context, $imports= array(), $line= -1) {
+      static $states= array(
         'annotation', 'annotation name', 'annotation value',
         'annotation map key', 'annotation map value',
         'multi-value'
-      ];
+      );
 
       $tokens= token_get_all('<?php '.trim($bytes, "[# \t\n\r"));
-      $annotations= [0 => [], 1 => []];
+      $annotations= array(0 => array(), 1 => array());
       $place= $context.(-1 === $line ? '' : ', line '.$line);
 
       // Parse tokens
@@ -262,7 +266,7 @@
               $state= 1;
             } else if ($i + 2 < $s && ('=' === $tokens[$i + 1] || '=' === $tokens[$i + 2])) {
               $key= $tokens[$i][1];
-              $value= [];
+              $value= array();
               $state= 3;
             } else {
               $value= $this->valueOf($tokens, $i, $context, $imports);
@@ -351,9 +355,9 @@
      * @return  [:var] details
      */
     public function parseDetails($bytes, $context= '') {
-      $details= [[], []];
-      $annotations= [0 => [], 1 => []];
-      $imports= [];
+      $details= array(array(), array());
+      $annotations= array(0 => array(), 1 => array());
+      $imports= array();
       $comment= null;
       $parsed= '';
       $tokens= token_get_all($bytes);
@@ -389,15 +393,15 @@
               $annotations= $this->parseAnnotations($parsed, $context, $imports, isset($tokens[$i][2]) ? $tokens[$i][2] : -1);
               $parsed= '';
             }
-            $details['class']= [
+            $details['class']= array(
               DETAIL_COMMENT      => trim(preg_replace('/\n\s+\* ?/', "\n", "\n".substr(
                 $comment, 
                 4,                              // "/**\n"
                 strpos($comment, '* @')- 2      // position of first details token
               ))),
               DETAIL_ANNOTATIONS  => $annotations[0]
-            ];
-            $annotations= [0 => [], 1 => []];
+            );
+            $annotations= array(0 => array(), 1 => array());
             $comment= null;
             break;
 
@@ -407,8 +411,8 @@
               $parsed= '';
             }
             $f= substr($tokens[$i][1], 1);
-            $details[0][$f]= [DETAIL_ANNOTATIONS => $annotations[0]];
-            $annotations= [0 => [], 1 => []];
+            $details[0][$f]= array(DETAIL_ANNOTATIONS => $annotations[0]);
+            $annotations= array(0 => array(), 1 => array());
             $matches= null;
             preg_match_all('/@([a-z]+)\s*([^\r\n]+)?/', $comment, $matches, PREG_SET_ORDER);
             $comment= null;
@@ -426,10 +430,10 @@
             }
             $i+= 2;
             $m= $tokens[$i][1];
-            $details[1][$m]= [
-              DETAIL_ARGUMENTS    => [],
+            $details[1][$m]= array(
+              DETAIL_ARGUMENTS    => array(),
               DETAIL_RETURNS      => null,
-              DETAIL_THROWS       => [],
+              DETAIL_THROWS       => array(),
               DETAIL_COMMENT      => trim(preg_replace('/\n\s+\* ?/', "\n", "\n".substr(
                 $comment, 
                 4,                              // "/**\n"
@@ -437,8 +441,8 @@
               ))),
               DETAIL_ANNOTATIONS  => $annotations[0],
               DETAIL_TARGET_ANNO  => $annotations[1]
-            ];
-            $annotations= [0 => [], 1 => []];
+            );
+            $annotations= array(0 => array(), 1 => array());
             $matches= null;
             preg_match_all('/@([a-z]+)\s*([^\r\n]+)?/', $comment, $matches, PREG_SET_ORDER);
             $comment= null;
