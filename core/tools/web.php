@@ -41,7 +41,7 @@
   ini_set('html_errors', 0);
 
   // Bootstrap 
-  if (!include(__DIR__.DIRECTORY_SEPARATOR.'lang.base.php')) {
+  if (!include(dirname(__FILE__).DIRECTORY_SEPARATOR.'lang.base.php')) {
     trigger_error('[bootstrap] Cannot determine boot class path', E_USER_ERROR);
     exit(0x3d);
   }
@@ -57,5 +57,6 @@
   }
   bootstrap(scanpath($paths, $webroot).(isset($scan[1]) ? $scan[1] : ''));
   
-  exit(\xp\scriptlet\Runner::main(array($webroot, $configd, $_SERVER['SERVER_PROFILE'], $_SERVER['SCRIPT_URL'])));
+  $class= XPClass::forName('xp.scriptlet.Runner');
+  exit(call_user_func(array($class, 'main'), $webroot, $configd, $_SERVER['SERVER_PROFILE'], $_SERVER['SCRIPT_URL']));
 ?>

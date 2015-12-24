@@ -17,9 +17,7 @@
       $class= xp::$loader->loadClass0($str);
       $trace= debug_backtrace();
       $scope= $trace[2]['args'][0];
-      xp::$cli[]= function() use ($class, $scope) {
-        $class::__import(xp::reflect($scope));
-      };
+      xp::$cli[]= create_function('', strtr($class, '\\', '\\\\').'::__import(xp::reflect("'.$scope.'"));');
     }
   }
   // }}}
@@ -78,12 +76,10 @@
           $name= $class;
         } else if (NULL !== $package) {
           $name= strtr($class, '.', '·');
-          class_alias($name, strtr($class, '.', '\\'));
         } else if (($ns= strtr($class, '.', '\\')) && (class_exists($ns, FALSE) || interface_exists($ns, FALSE))) {
           $name= $ns;
         } else if (($cl= substr($class, $p+ 1)) && (class_exists($cl, FALSE) || interface_exists($cl, FALSE))) {
           $name= $cl;
-          class_alias($name, strtr($class, '.', '\\'));
         }
         xp::$cn[$name]= $class;
         method_exists($name, '__static') && xp::$cli[]= array($name, '__static');
@@ -144,9 +140,9 @@
         }
         unset($protect[$ser]);
         return $r.$indent.']';
-      } else if ($arg instanceof \Closure) {
+      } else if ($arg instanceof Closure) {
         $sig= '';
-        $f= new \ReflectionFunction($arg);
+        $f= new ReflectionFunction($arg);
         foreach ($f->getParameters() as $p) {
           $sig.= ', $'.$p->name;
         }
@@ -270,7 +266,7 @@
         return substr($l, 0, -1);
       } else {
         $l= array_search($type, xp::$cn, TRUE);
-        return $l ?: substr($type, (FALSE === $p= strrpos($type, '.')) ? 0 : $p+ 1);
+        return $l ? $l : substr($type, (FALSE === $p= strrpos($type, '.')) ? 0 : $p+ 1);
       }
     }
     // }}}
@@ -497,9 +493,6 @@
 
       if ($p= strrpos($class, '\\')) {
         $short= substr($class, $p+ 1);
-        if (!class_exists($short, false) && !interface_exists($short, false)) {
-          class_alias($class, $short, false);
-        }
       }
 
       // Tricky: We can arrive at this point without the class actually existing:
