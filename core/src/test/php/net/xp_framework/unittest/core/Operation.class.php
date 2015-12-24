@@ -37,4 +37,13 @@ abstract class Operation extends \lang\Enum {
    * @return  float
    */
   public abstract function evaluate($x, $y);
+
+  /**
+   * Returns all members for the called enum class
+   *
+   * @return  self[]
+   */
+  public static function values() {
+    return self::membersOf(__CLASS__);
+  }
 }

@@ -40,4 +40,13 @@ class Coin extends \lang\Enum {
       case self::$dime: case self::$quarter: return 'silver';
     }
   }
+
+  /**
+   * Returns all members for the called enum class
+   *
+   * @return  self[]
+   */
+  public static function values() {
+    return self::membersOf(__CLASS__);
+  }
 }

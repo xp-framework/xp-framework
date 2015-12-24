@@ -143,6 +143,15 @@
     }
 
     /**
+     * Returns all members for the called enum class
+     *
+     * @return  lang.Enum[]
+     */
+    public static function values() {
+      return self::membersOf(__CLASS__);
+    }
+
+    /**
      * Parse command line
      *
      * @param   string cmd

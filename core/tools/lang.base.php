@@ -13,7 +13,7 @@
 
   if (!function_exists('class_alias')) {
     function class_alias($original, $alias, $autoload= TRUE) {
-
+      return FALSE;
     }
   }
 
