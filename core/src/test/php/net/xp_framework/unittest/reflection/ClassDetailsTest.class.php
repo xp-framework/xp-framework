@@ -1,7 +1,7 @@
 <?php namespace net\xp_framework\unittest\reflection;
 
 use unittest\TestCase;
-
+use lang\reflect\ClassParser;
 
 define('APIDOC_TAG',        0x0001);
 define('APIDOC_VALUE',      0x0002);
@@ -13,6 +13,16 @@ define('APIDOC_VALUE',      0x0002);
  * @purpose  Unit test
  */
 class ClassDetailsTest extends TestCase {
+  private $parser;
+
+  /**
+   * Sets up unittest
+   *
+   * @return  void
+   */
+  public function setUp() {
+    $this->parser= new ClassParser();
+  }
 
   /**
    * Helper method that parses an apidoc comment and returns the matches
@@ -22,7 +32,7 @@ class ClassDetailsTest extends TestCase {
    * @throws  unittest.AssertionFailedError
    */
   protected function parseComment($comment) {
-    $details= \lang\XPClass::parseDetails('
+    $details= $this->parser->parseDetails('
       <?php
         class Test extends Object {
           '.$comment.'
@@ -238,7 +248,7 @@ class ClassDetailsTest extends TestCase {
    */
   #[@test]
   public function withClosure() {
-    $details= \lang\XPClass::parseDetails('<?php
+    $details= $this->parser->parseDetails('<?php
       class WithClosure_1 extends Object {
 
         /**
@@ -261,7 +271,7 @@ class ClassDetailsTest extends TestCase {
    */
   #[@test]
   public function withClosures() {
-    $details= \lang\XPClass::parseDetails('<?php
+    $details= $this->parser->parseDetails('<?php
       class WithClosure_2 extends Object {
 
         /**
@@ -292,7 +302,7 @@ class ClassDetailsTest extends TestCase {
    * @return var details
    */
   protected function dummyDetails() {
-    return \lang\XPClass::parseDetails('<?php
+    return $this->parser->parseDetails('<?php
       class DummyDetails extends Object {
         protected $test = TRUE;
 
@@ -330,7 +340,7 @@ class ClassDetailsTest extends TestCase {
 
   #[@test]
   public function use_statements_evaluated() {
-    $actual= \lang\XPClass::parseDetails('<?php namespace test\\use;
+    $actual= $this->parser->parseDetails('<?php namespace test\\use;
       use lang\\Object;
 
       #[@value(new Object())]
@@ -342,7 +352,7 @@ class ClassDetailsTest extends TestCase {
 
   #[@test]
   public function closure_use_not_evaluated() {
-    \lang\XPClass::parseDetails('<?php 
+    $this->parser->parseDetails('<?php 
       class Test extends Object {
         public function run() {
           $closure= function($a) use($b) { };
@@ -353,7 +363,7 @@ class ClassDetailsTest extends TestCase {
 
   #[@test]
   public function short_array_syntax_in_arrays_of_arrays() {
-    $actual= \lang\XPClass::parseDetails('<?php
+    $actual= $this->parser->parseDetails('<?php
       #[@values([
       #  [1, 2],
       #  [3, 4]

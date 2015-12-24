@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.doclet.Doc', 'text.doclet.AnnotationDoc');
+  uses('text.doclet.Doc', 'text.doclet.AnnotationDoc', 'lang.reflect.ClassParser');
 
   /**
    * Represents annotated doc classes.
@@ -30,7 +30,8 @@
       
       $this->_parsed= array();
       if ($this->annotations) {
-        foreach (this(XPClass::parseAnnotations($this->annotations, $this->getClassName()), 0) as $name => $value) {
+        $parser= new ClassParser();
+        foreach (this($parser->parseAnnotations($this->annotations, $this->getClassName()), 0) as $name => $value) {
           $this->_parsed[$name]= new AnnotationDoc($name, $value);
         }
       }

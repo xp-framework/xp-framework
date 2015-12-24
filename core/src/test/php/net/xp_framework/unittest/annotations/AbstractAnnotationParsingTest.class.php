@@ -1,5 +1,7 @@
 <?php namespace net\xp_framework\unittest\annotations;
 
+use lang\reflect\ClassParser;
+
 /**
  * Base class for parent access tests
  */
@@ -16,7 +18,8 @@ abstract class AbstractAnnotationParsingTest extends \unittest\TestCase {
    * @return  [:var]
    */
   protected function parse($input) {
-    return \lang\XPClass::parseAnnotations($input, $this->getClassName(), array(
+    $parser= new ClassParser();
+    return $parser->parseAnnotations($input, $this->getClassName(), array(
       'Namespaced' => 'net.xp_framework.unittest.annotations.fixture.Namespaced'
     ));
   }
