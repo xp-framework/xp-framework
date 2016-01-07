@@ -70,7 +70,7 @@
     if (!$cl->providesResource('META-INF/manifest.ini')) {
       xp::error($cl->toString().' does not provide a manifest');
     }
-    $class= $cl->loadClass(parse_ini_string($cl->getResource('META-INF/manifest.ini'))['main-class']);
+    $class= $cl->loadClass(this(parse_ini_string($cl->getResource('META-INF/manifest.ini')), 'main-class'));
   } else {
     $class= XPClass::forName($argv[1]);
   }
