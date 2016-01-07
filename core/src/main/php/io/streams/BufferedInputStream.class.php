@@ -50,7 +50,7 @@
      *
      */
     public function available() {
-      return $l= strlen($this->buf) ? $l : $this->in->available();
+      return ($l= strlen($this->buf)) ? $l : $this->in->available();
     }
 
     /**
