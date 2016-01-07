@@ -5,35 +5,34 @@
  */
  
   uses(
+    'peer.SocketHandle',
+    'peer.SocketImpl',
     'peer.ConnectException',
     'peer.SocketTimeoutException',
     'peer.SocketEndpoint',
     'peer.SocketException',
     'peer.SocketInputStream',
-    'peer.SocketOutputStream'
+    'peer.SocketOutputStream',
+    'peer.Sockets'
   );
   
   /**
-   * Socket class
+   * The socket class
    *
-   * @test     xp://net.xp_framework.unittest.peer.sockets.SocketTest
-   * @see      php://network
-   * @purpose  Basic TCP/IP socket
+   * @test  xp://net.xp_framework.unittest.peer.sockets.SocketTest
+   * @test  xp://net.xp_framework.unittest.peer.sockets.BSDSocketTest
+   * @see   http://www.developerweb.net/sock-faq/ The UNIX Socket FAQ
+   * @see   php://network
    */
-  class Socket extends Object {
-    public
-      $_eof     = FALSE,
-      $host     = '',
-      $port     = 0;
-      
-    public
-      $_sock    = NULL,
-      $_prefix  = 'tcp://',
-      $_timeout = 60;
+  class Socket extends Object implements SocketHandle {
+    public $host= '';
+    public $port= 0;
 
-    private
-      $context  = NULL;
-    
+    protected $eof= FALSE;
+    protected $options= array();
+    protected $timeout= 60;
+    protected $sol= SOL_TCP;
+
     /**
      * Constructor
      *
@@ -41,15 +40,23 @@
      * as value for the parameter "host", you must enclose the IP in
      * square brackets.
      *
-     * @param   string host hostname or IP address
+     * @param   var host hostname or IP address, as string or peer.net.InetAddress
      * @param   int port
-     * @param   resource socket default NULL
+     * @param   var handle default NULL
+     * @param   lang.XPClass impl default NULL
      */
-    public function __construct($host, $port, $socket= NULL) {
-      $this->host= $host;
+    public function __construct($host, $port, $handle= NULL, XPClass $impl= NULL) {
+      if (NULL === $impl) $impl= SocketImpl::$STREAM;
+      $this->impl= $impl->newInstance(AF_INET, SOCK_STREAM, $this->sol);
+      if ($host instanceof InetAddress) {
+        $this->host= $host->asString();
+      } else {
+        $this->host= $host;
+      }
       $this->port= $port;
-      $this->_sock= $socket;
-      $this->context= stream_context_create();
+      if ($handle) {
+        $this->impl->attach($handle);
+      }
     }
 
     /**
@@ -68,13 +75,11 @@
      * @throws  peer.SocketException
      */
     public function localEndpoint() {
-      if (is_resource($this->_sock)) {
-        if (FALSE === ($addr= stream_socket_get_name($this->_sock, FALSE))) {
-          throw new SocketException('Cannot get socket name on '.$this->_sock);
-        }
-        return SocketEndpoint::valueOf($addr);
+      if ($this->impl->connected()) {
+        return SocketEndpoint::valueOf($this->impl->local());
+      } else {
+        return NULL;
       }
-      return NULL;    // Not connected
     }
 
     /**
@@ -85,7 +90,8 @@
      * @param   var value
      */
     protected function setSocketOption($wrapper, $option, $value) {
-      stream_context_set_option($this->context, $wrapper, $option, $value);
+      $this->options[$wrapper][$option]= $value;
+      $this->impl->option($wrapper, $option, $value);
     }
     
     /**
@@ -96,8 +102,10 @@
      * @param   var
      */
     protected function getSocketOption($wrapper, $option) {
-      $options= stream_context_get_options($this->context);
-      return @$options[$wrapper][$option];
+      return isset($this->options[$wrapper][$option])
+        ? $this->options[$wrapper][$option]
+        : NULL
+      ;
     }
 
     /**
@@ -105,6 +113,7 @@
      * any PHP error/warning is returned - but since there's no function like
      * flasterror() we must rely on this
      *
+     * @deprecated
      * @return  string error
      */  
     public function getLastError() {
@@ -117,17 +126,17 @@
      * @return  bool connected
      */
     public function isConnected() {
-      return is_resource($this->_sock);
+      return $this->impl->connected();
     }
 
     /**
      * Clone method. Ensure reconnect
-     *
      */
     public function __clone() {
-      if (!$this->isConnected()) return;
-      $this->close();
-      $this->connect();
+      if ($this->impl->connected()) {
+        $this->close();
+        $this->connect();
+      }
     }
     
     /**
@@ -139,29 +148,9 @@
      * @throws  peer.ConnectException
      */
     public function connect($timeout= 2.0) {
-      if ($this->isConnected()) return TRUE;
-      
-      if (!$this->_sock= stream_socket_client(
-        $this->_prefix.(string)$this->host.':'.$this->port,
-        $errno,
-        $errstr,
-        $timeout,
-        STREAM_CLIENT_CONNECT,
-        $this->context
-      )) {
-        $e= new ConnectException(sprintf(
-          'Failed connecting to %s:%s within %s seconds [%d: %s]',
-          $this->host,
-          $this->port,
-          $timeout,
-          $errno,
-          $errstr
-        ));
-        xp::gc(__FILE__);
-        throw $e;
+      if (!$this->impl->connected()) {
+        $this->impl->connect($this->host, $this->port, $timeout);
       }
-      
-      stream_set_timeout($this->_sock, $this->_timeout);
       return TRUE;
     }
 
@@ -171,35 +160,31 @@
      * @return  bool success
      */
     public function close() {
-      if (!is_resource($this->_sock)) return FALSE;
-
-      $res= fclose($this->_sock);
-      $this->_sock= NULL;
-      $this->_eof= FALSE;
-      return $res;
+      if ($this->impl && $this->impl->connected()) {
+        $this->impl->close();
+        $this->eof= FALSE;
+        return TRUE;
+      }
+      return FALSE;
     }
 
     /**
      * Set timeout
      *
-     * @param   var _timeout
+     * @param   double timeout
      */
     public function setTimeout($timeout) {
-      $this->_timeout= $timeout;
-      
-      // Apply changes to already opened connection
-      if (is_resource($this->_sock)) {
-        stream_set_timeout($this->_sock, $this->_timeout);
-      }
+      $this->impl->timeout($timeout);
+      $this->timeout= $timeout;
     }
 
     /**
      * Get timeout
      *
-     * @return  var
+     * @return  double
      */
     public function getTimeout() {
-      return $this->_timeout;
+      return $this->timeout;
     }
 
     /**
@@ -211,13 +196,7 @@
      * @see     php://socket_set_blocking
      */
     public function setBlocking($blockMode) {
-      if (FALSE === stream_set_blocking($this->_sock, $blockMode)) {
-        $e= new SocketException('Set blocking call failed: '.$this->getLastError());
-        xp::gc(__FILE__);
-        throw $e;
-      }
-      
-      return TRUE;
+      $this->impl->block($blockMode);
     }
     
     /**
@@ -228,74 +207,9 @@
      * @throws  peer.SocketException in case of failure
      */
     public function canRead($timeout= NULL) {
-      if (NULL === $timeout) {
-        $tv_sec= $tv_usec= NULL;
-      } else {
-        $tv_sec= intval(floor($timeout));
-        $tv_usec= intval(($timeout - floor($timeout)) * 1000000);
-      }
-      $r= array($this->_sock); $w= NULL; $e= NULL;
-      $n= stream_select($r, $w, $e, $tv_sec, $tv_usec);
-      $l= __LINE__ -1;
-      
-      // Implementation vagaries:
-      // * For Windows, when using the VC9 binatries, get rid of "Invalid CRT 
-      //   parameters detected" warning which is no error, see PHP bug #49948
-      // * On Un*x OS flavors, when select() raises a warning, this *is* an 
-      //   error (regardless of the return value)
-      if (isset(xp::$errors[__FILE__])) {
-        if (isset(xp::$errors[__FILE__][$l]['Invalid CRT parameters detected'])) {
-          xp::gc(__FILE__);
-        } else {
-          $n= FALSE;
-        }
-      }
-      
-      // OK, real error here now.
-      if (FALSE === $n || NULL === $n) {
-        $e= new SocketException('Select('.$this->_sock.', '.$tv_sec.', '.$tv_usec.')= failed: '.$this->getLastError());
-        xp::gc(__FILE__);
-        throw $e;
-      }
-      
-      return $n > 0 ? TRUE : !empty($r);
+      return $this->impl->select(new Sockets(array($this)), $timeout) > 0;
     }
 
-    /**
-     * Reading helper function
-     *
-     * @param   int maxLen
-     * @param   int type ignored
-     * @param   bool chop
-     * @return  string data
-     */
-    protected function _read($maxLen, $type, $chop= FALSE) {
-      $res= fgets($this->_sock, $maxLen);
-      if (FALSE === $res || NULL === $res) {
-
-        // fgets returns FALSE on eof, this is particularily dumb when 
-        // looping, so check for eof() and make it "no error"
-        if (feof($this->_sock)) {
-          $this->_eof= TRUE;
-          return NULL;
-        }
-        
-        $m= stream_get_meta_data($this->_sock);
-        if ($m['timed_out']) {
-          $e= new SocketTimeoutException('Read of '.$maxLen.' bytes failed', $this->_timeout);
-          xp::gc(__FILE__);
-          throw $e;
-        } else {
-          $e= new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
-          xp::gc(__FILE__);
-          throw $e;
-        }
-      } else {
-        return $chop ? chop($res) : $res;
-      }
-    }
-
-    
     /**
      * Read data from a socket
      *
@@ -304,7 +218,11 @@
      * @throws  peer.SocketException
      */
     public function read($maxLen= 4096) {
-      return $this->_read($maxLen, -1, FALSE);
+      if (NULL === ($bytes= $this->impl->gets($maxLen))) {
+        $this->eof= TRUE;
+        return NULL;
+      }
+      return $bytes;
     }
 
     /**
@@ -315,7 +233,11 @@
      * @throws  peer.SocketException
      */
     public function readLine($maxLen= 4096) {
-      return $this->_read($maxLen, -1, TRUE);
+      if (NULL === ($bytes= $this->impl->gets($maxLen))) {
+        $this->eof= TRUE;
+        return NULL;
+      }
+      return rtrim($bytes, "\r\n");
     }
 
     /**
@@ -326,22 +248,11 @@
      * @throws  peer.SocketException
      */
     public function readBinary($maxLen= 4096) {
-      $res= fread($this->_sock, $maxLen);
-      if (FALSE === $res || NULL === $res) {
-        $e= new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
-        xp::gc(__FILE__);
-        throw $e;
-      } else if ('' === $res) {
-        $m= stream_get_meta_data($this->_sock);
-        if ($m['timed_out']) {
-          $e= new SocketTimeoutException('Read of '.$maxLen.' bytes failed: '.$this->getLastError(), $this->_timeout);
-          xp::gc(__FILE__);
-          throw $e;
-        }
-        $this->_eof= TRUE;
+      if (NULL === ($bytes= $this->impl->read($maxLen))) {
+        $this->eof= TRUE;
+        return '';
       }
-      
-      return $res;
+      return $bytes;
     }
     
     /**
@@ -350,7 +261,7 @@
      * @return  bool
      */
     public function eof() {
-      return $this->_eof;
+      return $this->eof;
     }
     
     /**
@@ -361,13 +272,7 @@
      * @throws  peer.SocketException in case of an error
      */
     public function write($str) {
-      if (FALSE === ($bytesWritten= fputs($this->_sock, $str, $len= strlen($str)))) {
-        $e= new SocketException('Write of '.$len.' bytes to socket failed: '.$this->getLastError());
-        xp::gc(__FILE__);
-        throw $e;
-      }
-      
-      return $bytesWritten;
+      return $this->impl->write($str);
     }
 
     /**
@@ -376,7 +281,7 @@
      * @return  resource
      */
     public function getHandle() {
-      return $this->_sock;
+      return $this->impl->handle();
     }
 
     /**
@@ -396,13 +301,34 @@
     public function getOutputStream() {
       return new SocketOutputStream($this);
     }
-    
+
+    /**
+     * Select
+     *
+     * @param   peer.Sockets s
+     * @param   float timeout default NULL Timeout value in seconds (e.g. 0.5)
+     * @return  int
+     * @throws  peer.SocketException in case of failure
+     */
+    public function select(Sockets $s, $timeout= NULL) {
+      return $this->impl->select($s, $timeout);
+    }
+
     /**
      * Destructor
-     *
      */
     public function __destruct() {
       $this->close();
+    }
+
+    /**
+     * Returns whether a given value is equal to this socket
+     *
+     * @param  var cmp
+     * @return bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $this->impl->equals($cmp->impl);
     }
     
     /**
@@ -411,10 +337,11 @@
      * @return  string
      */
     public function toString() {
+      $handle= $this->impl->handle();
       return sprintf(
         '%s(%s -> %s%s:%d)',
         $this->getClassName(),
-        NULL === $this->_sock ? '(closed)' : xp::stringOf($this->_sock),
+        NULL === $handle ? '(closed)' : xp::stringOf($handle),
         $this->_prefix,
         $this->host,
         $this->port

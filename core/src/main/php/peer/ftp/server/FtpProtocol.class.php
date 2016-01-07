@@ -41,6 +41,8 @@
       $datasock         = array(),
       $interceptors     = array();
 
+    protected $mode= array();
+
     /**
      * Constructor
      *

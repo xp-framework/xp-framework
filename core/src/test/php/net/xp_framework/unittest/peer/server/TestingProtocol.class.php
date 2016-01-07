@@ -1,10 +1,7 @@
 <?php namespace net\xp_framework\unittest\peer\server;
-
-
  
 use util\cmd\Console;
 use peer\server\ServerProtocol;
-
 
 /**
  * TestingProtocol implements a simple line-based protocol with the 

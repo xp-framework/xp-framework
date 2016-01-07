@@ -2,14 +2,15 @@
 
 use net\xp_framework\unittest\StartServer;
 use peer\Socket;
+use peer\SocketImpl;
 
 /**
- * TestCase
+ * TestCase for stream-based socket implementation
  *
  * @see      xp://peer.Socket
  */
 #[@action(new StartServer('net.xp_framework.unittest.peer.sockets.TestingServer', 'connected', 'shutdown'))]
-class SocketTest extends AbstractSocketTest {
+class StreamSocketImplTest extends AbstractSocketTest {
   
   /**
    * Creates a new client socket
@@ -19,6 +20,6 @@ class SocketTest extends AbstractSocketTest {
    * @return  peer.Socket
    */
   protected function newSocket($addr, $port) {
-    return new Socket($addr, $port);
+    return new Socket($addr, $port, NULL, SocketImpl::$STREAM);
   }
 }

@@ -1,11 +1,10 @@
 <?php namespace net\xp_framework\unittest\peer\server;
 
-
-
 use util\cmd\Console;
+use lang\reflect\Package;
+use peer\ServerSocket;
 use peer\server\Server;
 use peer\server\ServerProtocol;
-
 
 /**
  * Socket server used by ServerTest. 
@@ -29,7 +28,9 @@ class TestingServer extends \lang\Object {
    * @param   string[] args
    */
   public static function main(array $args) {
-    $s= new Server('127.0.0.1', 0);
+    $impl= Package::forName('peer')->loadClass($args[1]);
+
+    $s= new Server(new ServerSocket('127.0.0.1', 0, AF_INET, SOCK_STREAM, SOL_TCP, $impl));
     try {
       $s->setProtocol(\lang\XPClass::forName($args[0])->newInstance());
       $s->init();

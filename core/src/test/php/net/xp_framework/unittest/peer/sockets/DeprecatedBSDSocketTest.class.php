@@ -8,14 +8,14 @@ use peer\BSDSocket;
 /**
  * TestCase
  *
- * @ext      sockets
- * @see      xp://peer.BSDSocket
+ * @ext   sockets
+ * @see   xp://peer.Socket
  */
 #[@action([
 #  new ExtensionAvailable('sockets'),
 #  new StartServer('net.xp_framework.unittest.peer.sockets.TestingServer', 'connected', 'shutdown')
 #])]
-class BSDSocketTest extends AbstractSocketTest {
+class DeprecatedBSDSocketTest extends AbstractSocketTest {
 
   /**
    * Creates a new client socket
