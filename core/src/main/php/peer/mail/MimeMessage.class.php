@@ -230,7 +230,7 @@
         $part->setName($this->_lookupattr(@$p[$i]->dparameters, 'NAME'));
         $part->setEncoding($encodings[$p[$i]->encoding]);
         $part->setContentType($types[$p[$i]->type].'/'.strtolower($p[$i]->subtype));
-        $part->setCharset($this->_lookupattr(@$p[$i]->parameters, 'CHARSET') ?: '');
+        $part->setCharset($charset= $this->_lookupattr(@$p[$i]->parameters, 'CHARSET') ? $charset : '');
         $part->setDisposition($p[$i]->ifdisposition ? MIME_DISPOSITION_ATTACHMENT : MIME_DISPOSITION_INLINE);
         if (FALSE !== ($f= $this->_lookupattr(@$p[$i]->dparameters, 'FILENAME'))) {
           $part->setFilename($f);

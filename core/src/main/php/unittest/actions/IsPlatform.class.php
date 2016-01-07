@@ -44,7 +44,7 @@
      * @return bool
      */
     public function verify($os= NULL) {
-      $os ?: $os= self::$os;
+      $os || $os= self::$os;
       if ('!' === $this->platform{0}) {
         return !preg_match('/^'.substr($this->platform, 1).'/i', $os);
       } else {

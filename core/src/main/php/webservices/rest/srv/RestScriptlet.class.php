@@ -136,7 +136,7 @@
       $accept= new Preference($request->getHeader('Accept', '*/*'));
       $this->cat && $this->cat->info(
         $request->getMethod(),
-        $type ?: '(null)',
+        $type ? $type : '(null)',
         $url->getURL(),
         $accept
       );

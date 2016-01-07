@@ -529,7 +529,7 @@
           $t= sprintf('UndefinedTag:0x%04X', $entry['tag']);
         }
 
-        $return[$t ?: $tags[$entry['tag']]]= $entry;
+        $return[$t ? $t : $tags[$entry['tag']]]= $entry;
       }
 
       return $return;

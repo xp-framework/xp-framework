@@ -150,7 +150,7 @@
       $this->handleStatus($this->response->statusCode());
  
       if (NULL === $type) {
-        $target= $this->type ?: Type::$VAR;  // BC
+        $target= $this->type ? $this->type : Type::$VAR;  // BC
       } else if ($type instanceof Type) {
         $target= $type;
       } else {

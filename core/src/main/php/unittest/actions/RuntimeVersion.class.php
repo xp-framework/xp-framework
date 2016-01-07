@@ -77,7 +77,7 @@
      * @return bool
      */
     public function verify($version= NULL) {
-      $version ?: $version= PHP_VERSION;
+      $version || $version= PHP_VERSION;
       foreach ($this->compare as $f) {
         if (!$f($version)) return FALSE;
       }
