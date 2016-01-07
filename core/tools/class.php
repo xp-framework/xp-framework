@@ -53,14 +53,24 @@
   set_exception_handler('__except');
   ob_start('__output');
 
-  if (strpos($argv[1], xp::CLASS_FILE_EXT)) {
+  $ext= substr($argv[1], -4, 4);
+  if ('.php' === $ext) {
     if (false === ($uri= realpath($argv[1]))) {
       xp::error('Cannot load '.$argv[1].' - does not exist');
     }
-    if (null === ($cl= \lang\ClassLoader::getDefault()->findUri($uri))) {
+    if (is(null, ($cl= \lang\ClassLoader::getDefault()->findUri($uri)))) {
       xp::error('Cannot load '.$argv[1].' - not in class path');
     }
     $class= $cl->loadUri($uri);
+  } else if ('.xar' === $ext) {
+    if (false === ($uri= realpath($argv[1]))) {
+      xp::error('Cannot load '.$argv[1].' - does not exist');
+    }
+    $cl= \lang\ClassLoader::registerPath($uri);
+    if (!$cl->providesResource('META-INF/manifest.ini')) {
+      xp::error($cl->toString().' does not provide a manifest');
+    }
+    $class= $cl->loadClass(parse_ini_string($cl->getResource('META-INF/manifest.ini'))['main-class']);
   } else {
     $class= XPClass::forName($argv[1]);
   }
