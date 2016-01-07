@@ -74,7 +74,7 @@
           break;
         
         case 'host.name': 
-          $prop[$name]= gethostname();
+          $prop[$name]= php_uname('n');
           break;
 
         case 'host.arch':
