@@ -53,9 +53,21 @@
   set_exception_handler('__except');
   ob_start('__output');
 
+  if (strpos($argv[1], xp::CLASS_FILE_EXT)) {
+    if (false === ($uri= realpath($argv[1]))) {
+      xp::error('Cannot load '.$argv[1].' - does not exist');
+    }
+    if (null === ($cl= \lang\ClassLoader::getDefault()->findUri($uri))) {
+      xp::error('Cannot load '.$argv[1].' - not in class path');
+    }
+    $class= $cl->loadUri($uri);
+  } else {
+    $class= XPClass::forName($argv[1]);
+  }
+
   array_shift($_SERVER['argv']);
   try {
-    exit(XPClass::forName($argv[1])->getMethod('main')->invoke(NULL, array(array_slice($argv, 2)))); 
+    exit($class->getMethod('main')->invoke(NULL, array(array_slice($argv, 2))));
   } catch (SystemExit $e) {
     if ($message= $e->getMessage()) echo $message, "\n";
     exit($e->getCode());
