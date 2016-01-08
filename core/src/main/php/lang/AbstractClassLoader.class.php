@@ -176,18 +176,43 @@
     }
 
     /**
+     * Compacts paths by replacing base directories by placeholders
+     *
+     * @param  string $path
+     * @param  [:string] $bases
+     * @return string
+     */
+    private function compactPath($path, $bases) {
+      foreach ($bases as $base => $replace) {
+        if (0 === strpos($path, $base)) {
+          $path= $replace.substr($path, strlen($base));
+        }
+      }
+      return $path;
+    }
+
+    /**
      * Creates a string representation
      *
      * @return  string
      */
     public function toString() {
-      $segments= explode(DIRECTORY_SEPARATOR, $this->path);
-      if (sizeof($segments) > 6) {
-        $path= '...'.DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, array_slice($segments, -6));
+      if ($home= getenv('HOME')) {    // Un*x or Cygwin
+        $separator= '/';
+        $bases= [getcwd() => '.', $home => '~', getenv('APPDATA') => '$APPDATA'];
+      } else if (0 === strncasecmp(PHP_OS, 'Win', 3)) {
+        $separator= '\\';
+        $bases= [getcwd() => '.', getenv('APPDATA') => '%APPDATA%'];
       } else {
-        $path= $this->path;
+        $separator= DIRECTORY_SEPARATOR;
+        $bases= [getcwd() => '.'];
       }
-      return str_replace('ClassLoader', 'CL', $this->getClass()->getSimpleName()).'<'.$path.'>';
+
+      $path= $this->compactPath(rtrim($this->path, DIRECTORY_SEPARATOR), $bases);
+      return
+        str_replace('ClassLoader', 'CL', $this->getClass()->getSimpleName()).
+        '<'.strtr($path, DIRECTORY_SEPARATOR, $separator).'>'
+      ;
     }
   }
 ?>
