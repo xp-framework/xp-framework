@@ -199,13 +199,13 @@
     public function toString() {
       if ($home= getenv('HOME')) {    // Un*x or Cygwin
         $separator= '/';
-        $bases= [getcwd() => '.', $home => '~', getenv('APPDATA') => '$APPDATA'];
+        $bases= array(getcwd() => '.', $home => '~', getenv('APPDATA') => '$APPDATA');
       } else if (0 === strncasecmp(PHP_OS, 'Win', 3)) {
         $separator= '\\';
-        $bases= [getcwd() => '.', getenv('APPDATA') => '%APPDATA%'];
+        $bases= array(getcwd() => '.', getenv('APPDATA') => '%APPDATA%');
       } else {
         $separator= DIRECTORY_SEPARATOR;
-        $bases= [getcwd() => '.'];
+        $bases= array(getcwd() => '.');
       }
 
       $path= $this->compactPath(rtrim($this->path, DIRECTORY_SEPARATOR), $bases);
