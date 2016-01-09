@@ -11,6 +11,12 @@ XP Framework ChangeLog
   class inside `lang.reflect`
   (@thekid)
 
+### Features
+
+* Changed class loaders to display paths in a copy&pasteable manner. This
+  is a backport from XP6, see xp-framework/core#114
+  (@thekid)
+
 ## 5.11.2 / 2015-11-07
 
 * Updated `composer.json` to "conflict" with XP6 packages (@kiesel)
