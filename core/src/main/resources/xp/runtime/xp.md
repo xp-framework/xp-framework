@@ -10,7 +10,7 @@
   ```
 * Evaluate code and write returned result
   ```sh
-  $ xp -w 'use util\Date; return Date::now()'
+  $ xp -w 'uses("util.Date"); return Date::now()'
   ```
 * Running classes from the class path:
   ```sh
