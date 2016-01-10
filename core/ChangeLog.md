@@ -11,6 +11,11 @@ XP Framework ChangeLog
   class inside `lang.reflect`
   (@thekid)
 
+### RFCs
+
+* Integraded support for new XP runners defined in RFC #303.
+  (@thekid)
+
 ### Features
 
 * Changed class loaders to display paths in a copy&pasteable manner. This
