@@ -3,6 +3,8 @@ XP Framework ChangeLog
 
 ## ?.??.? / ????-??-??
 
+## 5.12.0 / 2016-01-10
+
 ### Heads up!
 
 * Removed support for deprecated multi-value annotations.
