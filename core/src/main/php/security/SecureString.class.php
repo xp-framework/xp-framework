@@ -38,6 +38,7 @@
     private static $store   = array();
     private static $encrypt = NULL;
     private static $decrypt = NULL;
+    private static $engine  = NULL;
 
     static function __static() {
       if (Runtime::getInstance()->extensionAvailable('mcrypt')) {
@@ -62,14 +63,14 @@
           if (!Runtime::getInstance()->extensionAvailable('mcrypt')) {
             throw new IllegalStateException('Backing "mcrypt" required but extension not available.');
           }
-          $engine= mcrypt_module_open(MCRYPT_DES, '', 'ecb', '');
-          $engineiv= mcrypt_create_iv(mcrypt_enc_get_iv_size($engine), MCRYPT_RAND);
-          $key= substr(md5(uniqid()), 0, mcrypt_enc_get_key_size($engine));
-          mcrypt_generic_init($engine, $key, $engineiv);
+          self::$engine= mcrypt_module_open(MCRYPT_DES, '', 'ecb', '');
+          $engineiv= mcrypt_create_iv(mcrypt_enc_get_iv_size(self::$engine), MCRYPT_RAND);
+          $key= substr(md5(uniqid()), 0, mcrypt_enc_get_key_size(self::$engine));
+          mcrypt_generic_init(self::$engine, $key, $engineiv);
 
           return self::setBacking(
-            function($value) use($engine) { return mcrypt_generic($engine, $value); },
-            function($value) use($engine) { return rtrim(mdecrypt_generic($engine, $value), "\0"); }
+            create_function('$value, $engine', 'return mcrypt_generic($engine, $value);'),
+            create_function('$value, $engine', 'return rtrim(mdecrypt_generic($engine, $value), "\0");')
           );
         }
 
@@ -77,19 +78,21 @@
           if (!Runtime::getInstance()->extensionAvailable('openssl')) {
             throw new IllegalStateException('Backing "openssl" required but extension not available.');
           }
-          $key= md5(uniqid());
-          $iv= substr(md5(uniqid()), 0, openssl_cipher_iv_length('des'));
+          self::$engine= array(
+            'key' => md5(uniqid()),
+            'iv'  => substr(md5(uniqid()), 0, openssl_cipher_iv_length('des'))
+          );
 
           return self::setBacking(
-            function($value) use ($key, $iv) { return openssl_encrypt($value, 'DES', $key,  0, $iv); },
-            function($value) use ($key, $iv) { return openssl_decrypt($value, 'DES', $key,  0, $iv); }
+            create_function('$value, $engine', 'return openssl_encrypt($value, "DES", $engine["key"],  0, $engine["iv"]);'),
+            create_function('$value, $engine', 'return openssl_decrypt($value, "DES", $engine["key"],  0, $engine["iv"]);')
           );
         }
 
         case self::BACKING_PLAINTEXT: {
           return self::setBacking(
-            function($value) { return base64_encode($value); },
-            function($value) { return base64_decode($value); }
+            create_function('$value, $engine', 'return base64_encode($value);'),
+            create_function('$value, $engine', 'return base64_decode($value);')
           );
         }
 
@@ -136,7 +139,7 @@
     public function setCharacters(&$c) {
       try {
         $m= self::$encrypt;
-        self::$store[$this->hashCode()]= $m($c);
+        self::$store[$this->hashCode()]= $m($c, self::$engine);
       } catch (Exception $e) {
         // This intentionally catches *ALL* exceptions, in order not to fail
         // and produce a stacktrace (containing arguments on the stack that were)
@@ -160,7 +163,7 @@
         throw new SecurityException('An error occurred during storing the encrypted password.');
       }
       $m= self::$decrypt;
-      return $m(self::$store[$this->hashCode()]);
+      return $m(self::$store[$this->hashCode()], self::$engine);
     }
 
     /**
