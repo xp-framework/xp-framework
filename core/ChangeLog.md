@@ -3,12 +3,19 @@ XP Framework ChangeLog
 
 ## ?.??.? / ????-??-??
 
+## 5.12.0 / 2016-01-10
+
 ### Heads up!
 
 * Removed support for deprecated multi-value annotations.
   (@thekid)
 * Merged refactoring from XP6: Extract class parsing to `ClassParser`
   class inside `lang.reflect`
+  (@thekid)
+
+### RFCs
+
+* Integraded support for new XP runners defined in RFC #303.
   (@thekid)
 
 ### Features
