@@ -80,7 +80,7 @@
           }
           self::$engine= array(
             'key' => md5(uniqid()),
-            'iv'  => substr(md5(uniqid()), 0, openssl_cipher_iv_length('des'))
+            'iv'  => substr(md5(uniqid()), 0, 8) // openssl_cipher_iv_length('des')
           );
 
           return self::setBacking(
