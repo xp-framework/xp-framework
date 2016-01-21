@@ -77,7 +77,7 @@
     $type= 'local';
 
     if (null === $result['base']) {
-      if (is_file($f= $base.DIRECTORY_SEPARATOR.'tools'.DIRECTORY_SEPARATOR.'__xp.php')) {
+      if (is_file($f= $base.DIRECTORY_SEPARATOR.'tools'.DIRECTORY_SEPARATOR.'lang.base.php')) {
         $result['base']= $f;
         $type= 'core';
       }
@@ -164,8 +164,8 @@
     $paths= array_merge($bootstrap['overlay'], $bootstrap['core'], $bootstrap['local']);
     require $bootstrap['base'];
   } else {
-    trigger_error('[bootstrap] Cannot determine boot class path from '.get_include_path(), E_USER_ERROR);
-    exit(0x3d);
+    $paths= array_merge($bootstrap['overlay'], $bootstrap['core'], $bootstrap['local']);
+    require dirname(__FILE__).DIRECTORY_SEPARATOR.'lang.base.php';
   }
   
   exit(\xp\scriptlet\Runner::main(array($webroot, $configd, $_SERVER['SERVER_PROFILE'], $_SERVER['SCRIPT_URL'])));
