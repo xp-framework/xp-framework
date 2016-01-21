@@ -773,9 +773,9 @@
   if (isset($GLOBALS['paths'])) {
     xp::$classpath= $GLOBALS['paths'];
   } else if (0 === strpos(__FILE__, 'xar://')) {
-    xp::$classpath= [substr(__FILE__, 6, -14)];
+    xp::$classpath= array(substr(__FILE__, 6, -14));
   } else {
-    xp::$classpath= [__DIR__.DIRECTORY_SEPARATOR];
+    xp::$classpath= array(dirname(__FILE__).DIRECTORY_SEPARATOR);
   }
   set_include_path(rtrim(implode(PATH_SEPARATOR, xp::$classpath), PATH_SEPARATOR));
 
