@@ -40,22 +40,133 @@
   ini_set('error_append_string', '</xmp>');
   ini_set('html_errors', 0);
 
-  // Bootstrap 
-  if (!include(__DIR__.DIRECTORY_SEPARATOR.'lang.base.php')) {
-    trigger_error('[bootstrap] Cannot determine boot class path', E_USER_ERROR);
-    exit(0x3d);
+  function path($in, $bail= true) {
+    $qn= realpath($in);
+    if (false === $qn) {
+      if ($bail) {
+        trigger_error('[bootstrap] Classpath element ['.$in.'] not found', E_USER_ERROR);
+        exit(0x3d);
+      }
+      return null;
+    } else {
+      return is_dir($qn) ? $qn.DIRECTORY_SEPARATOR : $qn;
+    }
   }
 
-  // Set up class path
-  $paths= array();
-  $scan= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
-  foreach (explode(PATH_SEPARATOR, $scan[0]) as $path) {
-    $paths[]= ('~' === $path{0}
-      ? str_replace('~', $webroot, $path)
-      : $path
-    );
+  function pathfiles($path) {
+    $result= [];
+    if ($pr= @opendir($path)) {
+      while ($file= readdir($pr)) {
+        if (0 !== substr_compare($file, '.pth', -4)) continue;
+
+        foreach (file($path.DIRECTORY_SEPARATOR.$file) as $line) {
+          $line= trim($line);
+          if ('' === $line || '#' === $line{0}) {
+            continue;
+          } else {
+            $result[]= $line;
+          }
+        }
+      }
+      closedir($pr);
+    }
+    return $result;
   }
-  bootstrap(scanpath($paths, $webroot).(isset($scan[1]) ? $scan[1] : ''));
+
+  function scanpath(&$result, $paths, $base, $home) {
+    $type= 'local';
+
+    if (null === $result['base']) {
+      if (is_file($f= $base.DIRECTORY_SEPARATOR.'tools'.DIRECTORY_SEPARATOR.'__xp.php')) {
+        $result['base']= $f;
+        $type= 'core';
+      }
+    }
+
+    foreach ($paths as $path) {
+      if ('' === $path) continue;
+
+      // Handle ? and ! prefixes
+      $bail= true;
+      $overlay= null;
+      if ('!' === $path{0}) {
+        $overlay= 'overlay';
+        $path= '!' === $path ? '.' : substr($path, 1);
+      } else if ('?' === $path{0}) {
+        $bail= false;
+        $path= substr($path, 1);
+      }
+
+      // Expand file path
+      if ('~' === $path{0}) {
+        $expanded= $home.DIRECTORY_SEPARATOR.substr($path, 1);
+      } else if ('/' === $path{0} || '\\' === $path{0} || strlen($path) > 2 && (':' === $path{1} && '\\' === $path{2})) {
+        $expanded= $path;
+      } else {
+        $expanded= $base.DIRECTORY_SEPARATOR.$path;
+      }
+
+      // Resolve
+      if ($resolved= path($expanded, $bail)) {
+        if (0 === substr_compare($resolved, '.php', -4)) {
+          $result['files'][]= $resolved;
+        } else {
+          $result[$overlay ?: $type][]= $resolved;
+        }
+      }
+    }
+  }
+
+  function bootstrap($cwd, $home) {
+    $result= array(
+      'base'     => null,
+      'overlay'  => array(),
+      'core'     => array(),
+      'local'    => array(),
+      'files'    => array()
+    );
+    $parts= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
+
+    // Check local module first
+    scanpath($result, pathfiles($cwd), $cwd, $home);
+
+    // We rely classpath always includes "." at the beginning
+    if (isset($parts[1])) {
+      foreach (explode(PATH_SEPARATOR, substr($parts[1], 2)) as $path) {
+        scanpath($result, array($path), $cwd, $home);
+      }
+    }
+
+    // We rely modules always includes "." at the beginning
+    foreach (array_unique(explode(PATH_SEPARATOR, substr($parts[0], 2))) as $path) {
+      if ('' === $path) {
+        continue;
+      } else if ('~' === $path{0}) {
+        $path= $home.substr($path, 1);
+      }
+      scanpath($result, pathfiles($path), $path, $home);
+    }
+
+    // Always add current directory
+    $result['local'][]= path($cwd);
+    return $result;
+  }
+
+  $bootstrap= bootstrap($webroot, $webroot);
+  foreach ($bootstrap['files'] as $file) {
+    require $file;
+  }
+
+  if (class_exists('xp', false)) {
+    foreach ($bootstrap['overlay'] as $path) { \lang\ClassLoader::registerPath($path, true); }
+    foreach ($bootstrap['local'] as $path) { \lang\ClassLoader::registerPath($path); }
+  } else if (isset($bootstrap['base'])) {
+    $paths= array_merge($bootstrap['overlay'], $bootstrap['core'], $bootstrap['local']);
+    require $bootstrap['base'];
+  } else {
+    trigger_error('[bootstrap] Cannot determine boot class path from '.get_include_path(), E_USER_ERROR);
+    exit(0x3d);
+  }
   
   exit(\xp\scriptlet\Runner::main(array($webroot, $configd, $_SERVER['SERVER_PROFILE'], $_SERVER['SCRIPT_URL'])));
 ?>
