@@ -1,4 +1,4 @@
-$<?php
+<?php
 /* This file provides the core for the XP framework
  * 
  * $Id$
