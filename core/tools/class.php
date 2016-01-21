@@ -43,7 +43,8 @@
     $qn= realpath($in);
     if (false === $qn) {
       if ($bail) {
-        throw new \Exception('[bootstrap] Classpath element ['.$in.'] not found');
+        trigger_error('[bootstrap] Classpath element ['.$in.'] not found', E_USER_ERROR);
+        exit(0x3d);
       }
       return null;
     } else {
