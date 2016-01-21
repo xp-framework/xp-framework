@@ -25,7 +25,10 @@
   }    
   // }}}
 
-  // Verify SAPI
+  // Set CLI specific handling
+  $home= getenv('HOME');
+  $cwd= '.';
+
   if ('cgi' === PHP_SAPI || 'cgi-fcgi' === PHP_SAPI) {
     ini_set('html_errors', 0);
     define('STDIN', fopen('php://stdin', 'rb'));
@@ -36,19 +39,133 @@
     exit(0x3d);
   }
   
-  if (!include(__DIR__.DIRECTORY_SEPARATOR.'lang.base.php')) {
-    trigger_error('[bootstrap] Cannot determine boot class path', E_USER_ERROR);
+  function path($in, $bail= true) {
+    $qn= realpath($in);
+    if (false === $qn) {
+      if ($bail) {
+        throw new \Exception('[bootstrap] Classpath element ['.$in.'] not found');
+      }
+      return null;
+    } else {
+      return is_dir($qn) ? $qn.DIRECTORY_SEPARATOR : $qn;
+    }
+  }
+
+  function pathfiles($path) {
+    $result= [];
+    if ($pr= @opendir($path)) {
+      while ($file= readdir($pr)) {
+        if (0 !== substr_compare($file, '.pth', -4)) continue;
+
+        foreach (file($path.DIRECTORY_SEPARATOR.$file) as $line) {
+          $line= trim($line);
+          if ('' === $line || '#' === $line{0}) {
+            continue;
+          } else {
+            $result[]= $line;
+          }
+        }
+      }
+      closedir($pr);
+    }
+    return $result;
+  }
+
+  function scanpath(&$result, $paths, $base, $home) {
+    $type= 'local';
+
+    if (null === $result['base']) {
+      if (is_file($f= $base.DIRECTORY_SEPARATOR.'tools'.DIRECTORY_SEPARATOR.'__xp.php')) {
+        $result['base']= $f;
+        $type= 'core';
+      }
+    }
+
+    foreach ($paths as $path) {
+      if ('' === $path) continue;
+
+      // Handle ? and ! prefixes
+      $bail= true;
+      $overlay= null;
+      if ('!' === $path{0}) {
+        $overlay= 'overlay';
+        $path= '!' === $path ? '.' : substr($path, 1);
+      } else if ('?' === $path{0}) {
+        $bail= false;
+        $path= substr($path, 1);
+      }
+
+      // Expand file path
+      if ('~' === $path{0}) {
+        $expanded= $home.DIRECTORY_SEPARATOR.substr($path, 1);
+      } else if ('/' === $path{0} || '\\' === $path{0} || strlen($path) > 2 && (':' === $path{1} && '\\' === $path{2})) {
+        $expanded= $path;
+      } else {
+        $expanded= $base.DIRECTORY_SEPARATOR.$path;
+      }
+
+      // Resolve
+      if ($resolved= path($expanded, $bail)) {
+        if (0 === substr_compare($resolved, '.php', -4)) {
+          $result['files'][]= $resolved;
+        } else {
+          $result[$overlay ?: $type][]= $resolved;
+        }
+      }
+    }
+  }
+
+  function bootstrap($cwd, $home) {
+    $result= array(
+      'base'     => null,
+      'overlay'  => array(),
+      'core'     => array(),
+      'local'    => array(),
+      'files'    => array()
+    );
+    $parts= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
+
+    // Check local module first
+    scanpath($result, pathfiles($cwd), $cwd, $home);
+
+    // We rely classpath always includes "." at the beginning
+    if (isset($parts[1])) {
+      foreach (explode(PATH_SEPARATOR, substr($parts[1], 2)) as $path) {
+        scanpath($result, array($path), $cwd, $home);
+      }
+    }
+
+    // We rely modules always includes "." at the beginning
+    foreach (array_unique(explode(PATH_SEPARATOR, substr($parts[0], 2))) as $path) {
+      if ('' === $path) {
+        continue;
+      } else if ('~' === $path{0}) {
+        $path= $home.substr($path, 1);
+      }
+      scanpath($result, pathfiles($path), $path, $home);
+    }
+
+    // Always add current directory
+    $result['local'][]= path($cwd);
+    return $result;
+  }
+
+  $bootstrap= bootstrap($cwd, $home);
+  foreach ($bootstrap['files'] as $file) {
+    require $file;
+  }
+
+  if (class_exists('xp', false)) {
+    foreach ($bootstrap['overlay'] as $path) { \lang\ClassLoader::registerPath($path, true); }
+    foreach ($bootstrap['local'] as $path) { \lang\ClassLoader::registerPath($path); }
+  } else if (isset($bootstrap['base'])) {
+    $paths= array_merge($bootstrap['overlay'], $bootstrap['core'], $bootstrap['local']);
+    require $bootstrap['base'];
+  } else {
+    trigger_error('[bootstrap] Cannot determine boot class path from '.get_include_path(), E_USER_ERROR);
     exit(0x3d);
   }
 
-  $home= getenv('HOME');
-  list($use, $include)= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
-  bootstrap(
-    scanpath(explode(PATH_SEPARATOR, substr($use, 2).PATH_SEPARATOR.'.'), $home).
-    $include
-  );
-  uses('util.cmd.ParamString', 'util.cmd.Console');
-  
   ini_set('error_prepend_string', EPREPEND_IDENTIFIER);
   set_exception_handler('__except');
   ob_start('__output');
@@ -72,13 +189,13 @@
     }
     $class= $cl->loadClass(this(parse_ini_string($cl->getResource('META-INF/manifest.ini')), 'main-class'));
   } else {
-    $class= XPClass::forName($argv[1]);
+    $class= \lang\XPClass::forName($argv[1]);
   }
 
   array_shift($_SERVER['argv']);
   try {
     exit($class->getMethod('main')->invoke(NULL, array(array_slice($argv, 2))));
-  } catch (SystemExit $e) {
+  } catch (\lang\SystemExit $e) {
     if ($message= $e->getMessage()) echo $message, "\n";
     exit($e->getCode());
   }
