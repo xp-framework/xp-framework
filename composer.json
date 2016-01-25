@@ -47,6 +47,6 @@
   },
 
   "autoload" : {
-    "files" : ["core/src/main/php/__xp.php", "core/src/main/resources/autoload.php"]
+    "files" : ["core/tools/lang.base.php", "core/src/main/resources/autoload.php"]
   }
 }
