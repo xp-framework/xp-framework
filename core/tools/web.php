@@ -153,6 +153,7 @@
   }
 
   $bootstrap= bootstrap($webroot, $webroot);
+  $paths= $bootstrap['core'];
   foreach ($bootstrap['files'] as $file) {
     require $file;
   }
