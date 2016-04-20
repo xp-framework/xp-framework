@@ -23,6 +23,7 @@ class IntegrationTest extends TestCase {
    * Callback for when server is connected
    *
    * @param  string $bindAddress
+   * @return void
    */
   public static function connected($bindAddress) {
     self::$bindAddress= $bindAddress;
@@ -30,6 +31,8 @@ class IntegrationTest extends TestCase {
 
   /**
    * Callback for when server should be shut down
+   *
+   * @return void
    */
   public static function shutdown() {
     $c= new FtpConnection('ftp://test:test@'.self::$bindAddress);
@@ -38,9 +41,7 @@ class IntegrationTest extends TestCase {
     $c->close();
   }
 
-  /**
-   * Sets up test case
-   */
+  /** @return void */
   public function setUp() {
     $this->conn= new FtpConnection('ftp://test:test@'.self::$bindAddress.'?passive=1&timeout=1');
   }
@@ -82,10 +83,6 @@ class IntegrationTest extends TestCase {
     }
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function sendCwd() {
     $this->conn->connect();
@@ -93,10 +90,6 @@ class IntegrationTest extends TestCase {
     $this->assertEquals('250 "/htdocs" is new working directory', $r[0]);
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function listingWithoutParams() {
     $this->conn->connect();
@@ -106,10 +99,6 @@ class IntegrationTest extends TestCase {
     $this->assertEquals(true, (bool)strpos($list, 'index.html'), $list);
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function cwdBackToRoot() {
     $this->sendCwd();
@@ -117,10 +106,6 @@ class IntegrationTest extends TestCase {
     $this->assertEquals('250 "/" is new working directory', $r[0]);
   }
 
-  /**
-   * Test
-   *
-   */
   #[@test]
   public function cwdRelative() {
     $this->conn->connect();
@@ -134,11 +119,6 @@ class IntegrationTest extends TestCase {
     $this->assertEquals('250 "/outer/inner" is new working directory', $r[0]);
   }
 
-  /**
-   * Test retrieving the ".trash" directory which is empty.(except for
-   * the ".svn" directory, if test runs within svn checkout).
-   *
-   */
   #[@test]
   public function dotTrashDir() {
     $this->conn->connect();
@@ -153,10 +133,6 @@ class IntegrationTest extends TestCase {
     }
   }
 
-  /**
-   * Test retrieving the "htdocs" directory which is not empty.
-   *
-   */
   #[@test]
   public function htdocsDir() {
     $this->conn->connect();
@@ -169,30 +145,28 @@ class IntegrationTest extends TestCase {
     }
   }
 
-  /**
-   * Test checking for a non-existant directory
-   *
-   */
+  #[@test]
+  public function emptyDir() {
+    $this->conn->connect();
+    with ($r= $this->conn->rootDir()); {
+      $dir= $r->newDir('.new');
+      $this->assertClass($dir, 'peer.ftp.FtpDir');
+      $this->assertEquals(0, $dir->entries()->size());
+    }
+  }
+
   #[@test]
   public function nonExistantDir() {
     $this->conn->connect();
     $this->assertFalse($this->conn->rootDir()->hasDir(':DOES_NOT_EXIST'));
   }
 
-  /**
-   * Test retrieving a non-existant directory raises an exception.
-   *
-   */
   #[@test, @expect('io.FileNotFoundException')]
   public function getNonExistantDir() {
     $this->conn->connect();
     $this->conn->rootDir()->getDir(':DOES_NOT_EXIST');
   }
 
-  /**
-   * Test retrieving the "htdocs/index.html" file
-   *
-   */
   #[@test]
   public function indexHtml() {
     $this->conn->connect();
@@ -204,10 +178,6 @@ class IntegrationTest extends TestCase {
     }
   }
 
-  /**
-   * Test retrieving the "htdocs/index.html" file
-   *
-   */
   #[@test]
   public function whitespacesHtml() {
     $this->conn->connect();
@@ -219,50 +189,30 @@ class IntegrationTest extends TestCase {
     }
   }
 
-  /**
-   * Test checking for a non-existant file
-   *
-   */
   #[@test]
   public function nonExistantFile() {
     $this->conn->connect();
     $this->assertFalse($this->conn->rootDir()->getDir('htdocs')->hasFile(':DOES_NOT_EXIST'));
   }
 
-  /**
-   * Test retrieving a non-existant file raises an exception
-   *
-   */
   #[@test, @expect('io.FileNotFoundException')]
   public function getNonExistantFile() {
     $this->conn->connect();
     $this->conn->rootDir()->getDir('htdocs')->getFile(':DOES_NOT_EXIST');
   }
 
-  /**
-   * Test retrieving a directory with getFile() raises an exception
-   *
-   */
   #[@test, @expect('lang.IllegalStateException')]
   public function directoryViaGetFile() {
     $this->conn->connect();
     $this->conn->rootDir()->getFile('htdocs');
   }
 
-  /**
-   * Test retrieving a file with getDir() raises an exception
-   *
-   */
   #[@test, @expect('lang.IllegalStateException')]
   public function fileViaGetDir() {
     $this->conn->connect();
     $this->conn->rootDir()->getDir('htdocs')->getDir('index.html');
   }
 
-  /**
-   * Test uploading
-   *
-   */
   #[@test]
   public function uploadFile() {
     $this->conn->connect();
@@ -285,10 +235,6 @@ class IntegrationTest extends TestCase {
     }
   }
 
-  /**
-   * Test renaming a file
-   *
-   */
   #[@test]
   public function renameFile() {
     $this->conn->connect();
@@ -314,10 +260,6 @@ class IntegrationTest extends TestCase {
     }
   }
 
-  /**
-   * Test moving a file
-   *
-   */
   #[@test]
   public function moveFile() {
     $this->conn->connect();
@@ -345,10 +287,6 @@ class IntegrationTest extends TestCase {
     }
   }
 
-  /**
-   * Test downloading
-   *
-   */
   #[@test]
   public function downloadFile() {
     $this->conn->connect();
@@ -363,10 +301,6 @@ class IntegrationTest extends TestCase {
     $this->assertEquals("<html/>\n", $m->getBytes());
   }
 
-  /**
-   * Test FtpFile::getInputStream()
-   *
-   */
   #[@test]
   public function getInputStream() {
     $this->conn->connect();
@@ -381,10 +315,6 @@ class IntegrationTest extends TestCase {
     $this->assertEquals("<html/>\n", Streams::readAll($s));
   }
 
-  /**
-   * Test FtpFile::getInputStream()
-   *
-   */
   #[@test]
   public function getInputStreams() {
     $this->conn->connect();
@@ -400,10 +330,6 @@ class IntegrationTest extends TestCase {
     }
   }
 
-  /**
-   * Test FtpFile::getOutputStream()
-   *
-   */
   #[@test]
   public function getOutputStream() {
     $this->conn->connect();

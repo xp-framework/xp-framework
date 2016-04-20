@@ -3,6 +3,11 @@ XP Framework ChangeLog
 
 ## ?.??.? / ????-??-??
 
+## 5.12.1 / 2016-04-20
+
+* Merged PR #386: Fix problem with listing empty directories
+  (@thekid)
+
 ## 5.12.0 / 2016-01-10
 
 ### Heads up!
