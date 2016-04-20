@@ -41,7 +41,7 @@
      * @throws  io.IOException in case of an I/O error
      */
     public function entries() {
-      if (NULL === ($list= $this->connection->listingOf($this->name))) {
+      if (NULL === ($list= $this->connection->listingOf($this->name, '-al'))) {
         throw new IOException('Cannot list "'.$this->name.'"');
       }
       

@@ -146,6 +146,16 @@ class IntegrationTest extends TestCase {
   }
 
   #[@test]
+  public function emptyDir() {
+    $this->conn->connect();
+    with ($r= $this->conn->rootDir()); {
+      $dir= $r->newDir('.new');
+      $this->assertClass($dir, 'peer.ftp.FtpDir');
+      $this->assertEquals(0, $dir->entries()->size());
+    }
+  }
+
+  #[@test]
   public function nonExistantDir() {
     $this->conn->connect();
     $this->assertFalse($this->conn->rootDir()->hasDir(':DOES_NOT_EXIST'));

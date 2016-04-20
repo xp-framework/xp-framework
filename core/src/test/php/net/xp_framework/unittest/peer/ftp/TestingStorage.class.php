@@ -1,7 +1,7 @@
 <?php namespace net\xp_framework\unittest\peer\ftp;
 
 use peer\ftp\server\storage\Storage;
-
+use peer\ftp\server\storage\StorageEntry;
 
 /**
  * Memory storage used
@@ -28,7 +28,7 @@ class TestingStorage extends \lang\Object implements Storage {
    *
    * @param   peer.ftp.server.storage.StorageEntry $e
    */
-  public function add(\peer\ftp\server\storage\StorageEntry $e) {
+  public function add(StorageEntry $e) {
     $this->entries[$e->getFileName()]= $e;
   }
 
