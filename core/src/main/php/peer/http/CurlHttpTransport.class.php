@@ -26,8 +26,10 @@
       $this->handle= curl_init();
       curl_setopt($this->handle, CURLOPT_HEADER, 1);
       curl_setopt($this->handle, CURLOPT_RETURNTRANSFER, 1); 
-      curl_setopt($this->handle, CURLOPT_SSL_VERIFYHOST, 0);
-      curl_setopt($this->handle, CURLOPT_SSL_VERIFYPEER, 0);
+
+      // Set SSL specific options:
+      curl_setopt($this->handle, CURLOPT_SSL_VERIFYHOST, 2);
+      curl_setopt($this->handle, CURLOPT_SSL_VERIFYPEER, 1);
       if (1 === sscanf($arg, 'v%d', $version)) {
         curl_setopt($this->handle, CURLOPT_SSLVERSION, $version);
       }

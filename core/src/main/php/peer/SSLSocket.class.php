@@ -30,6 +30,9 @@
     public function __construct($host, $port, $socket= NULL, $version= NULL) {
       parent::__construct($host, $port, $socket);
       $this->_prefix= 'ssl'.($version ? 'v'.$version : '').'://';
+      $this->setVerifyPeer(TRUE);
+      $this->setAllowSelfSigned(FALSE);
+      // TBD: Where to find CA files?
     }
   }
 ?>
