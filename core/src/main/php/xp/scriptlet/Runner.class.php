@@ -231,15 +231,9 @@ class Runner extends \lang\Object {
     // Call scriptlet's finalizer
     $instance && $instance->finalize();
 
-    // Debugging
-    if (($flags & WebDebug::XML) && isset($response->document)) {
-      flush();
-      echo '<xmp>', $response->document->getDeclaration()."\n".$response->document->getSource(0), '</xmp>';
-    }
-    
-    if (($flags & WebDebug::ERRORS)) {
-      flush();
-      echo '<xmp>', $e ? $e->toString() : '', \xp::stringOf(\xp::$errors), '</xmp>';
+    // Call scriptlet's trace method
+    if ($flags & WebDebug::XML || $flags & WebDebug::ERRORS) {
+      $instance->trace($flags, $response, \xp::$errors);
     }
   }
 

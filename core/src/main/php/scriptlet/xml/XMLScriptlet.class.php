@@ -239,5 +239,31 @@
     public function doPost($request, $response) {
       return $this->processRequest($request, $response);
     }
+
+
+    /**
+     * At the end of request, perform a "trace" of the processing; this
+     * method will be called for debugging purposes, invoked only on non-
+     * production systems.
+     *
+     * No business logic to be taking place here!
+     *
+     * @param  int flags
+     * @param  scriptlet.HttpScriptletResponse response
+     * @param  var* errors
+     */
+    public function trace($flags, $response, $errors) {
+
+      // Debugging
+      if (($flags & self::XML) && isset($response->document)) {
+        flush();
+        echo '<xmp>',
+          $response->document->getDeclaration()."\n".
+          $response->document->getSource(0),
+        '</xmp>';
+      }
+
+      parent::trace($flags, $response, $errors);
+    }
   }
 ?>
