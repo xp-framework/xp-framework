@@ -8,12 +8,12 @@
     'io.IOException',
     'io.File',
     'util.PropertyAccess',
+    'util.PropertiesStreamReader',
+    'util.PropertiesStreamWriter',
     'io.streams.InputStream',
     'io.streams.MemoryInputStream',
     'io.streams.MemoryOutputStream',
     'io.streams.FileInputStream',
-    'io.streams.TextReader',
-    'text.TextTokenizer',
     'util.Hashmap'
   );
   
@@ -61,61 +61,7 @@
      * @throws  lang.FormatException
      */
     public function load(InputStream $in, $charset= NULL) {
-      $s= new TextTokenizer(new TextReader($in, $charset), "\r\n");
-      $this->_data= array();
-      $section= NULL;
-      while ($s->hasMoreTokens()) {
-        $t= $s->nextToken();
-        $trimmedToken=trim($t);
-        if ('' === $trimmedToken) continue;                // Empty lines
-        $c= $trimmedToken{0};
-        if (';' === $c || '#' === $c) {                            // One line comments
-          continue;                    
-        } else if ('[' === $c) {
-          if (FALSE === ($p= strrpos($trimmedToken, ']'))) {
-            throw new FormatException('Unclosed section "'.$trimmedToken.'"');
-          }
-          $section= substr($trimmedToken, 1, $p- 1);
-          $this->_data[$section]= array();
-        } else if (FALSE !== ($p= strpos($t, '='))) {
-          $key= trim(substr($t, 0, $p));
-          $value= ltrim(substr($t, $p+ 1));
-          if (strlen($value) && ('"' === ($q= $value{0}))) {       // Quoted strings
-            if (FALSE === ($p= strrpos($value, $q, 1))) {
-              $value= substr($value, 1)."\n".$s->nextToken($q);
-            } else {
-              $value= substr($value, 1, $p- 1);
-            }
-          } else {        // unquoted string
-            if (FALSE !== ($p= strpos($value, ';'))) {        // Comments at end of line
-              $value= substr($value, 0, $p);
-            }
-            $value= rtrim($value);
-          }
-          
-
-          // Arrays and maps: key[], key[0], key[assoc]
-          if (']' === substr($key, -1)) {
-            if (FALSE === ($p= strpos($key, '['))) {
-              throw new FormatException('Invalid key "'.$key.'"');
-            }
-            $offset= substr($key, $p+ 1, -1);
-            $key= substr($key, 0, $p);
-            if (!isset($this->_data[$section][$key])) {
-              $this->_data[$section][$key]= array();
-            }
-            if ('' === $offset) {
-              $this->_data[$section][$key][]= $value;
-            } else {
-              $this->_data[$section][$key][$offset]= $value;
-            }
-          } else {
-            $this->_data[$section][$key]= $value;
-          }
-        } else if ('' !== trim($t)) {
-          throw new FormatException('Invalid line "'.$t.'"');
-        }
-      }
+      $this->_data= create(new PropertiesStreamReader($charset))->read($in);
     }
 
     /**
@@ -124,32 +70,8 @@
      * @param   io.streams.OutputStream out
      * @throws  io.IOException
      */
-    public function store(OutputStream $out) {
-      foreach (array_keys($this->_data) as $section) {
-        $out->write(sprintf("[%s]\n", $section));
-        
-        foreach ($this->_data[$section] as $key => $val) {
-          if (';' == $key{0}) {
-            $out->write(sprintf("\n; %s\n", $val)); 
-          } else {
-            if ($val instanceof Hashmap) {
-              $str= '';
-              foreach ($val->keys() as $k) {
-                $str.= '|'.$k.':'.$val->get($k);
-              }
-              $val= (string)substr($str, 1);
-            } 
-            if (is_array($val)) $val= implode('|', $val);
-            if (is_string($val)) $val= '"'.$val.'"';
-            $out->write(sprintf(
-              "%s=%s\n",
-              $key,
-              strval($val)
-            ));
-          }
-        }
-        $out->write("\n");
-      }
+    public function store(OutputStream $out, $charset= NULL) {
+      create(new PropertiesStreamWriter())->write($this, $out);
     }
     
     /**
@@ -201,7 +123,7 @@
       }
       $this->_data= array();
     }
-    
+
     /**
      * Returns whether the property file exists
      *
