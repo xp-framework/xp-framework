@@ -303,18 +303,7 @@
       }
       return $n;
     }
-        
-    /**
-     * Returns whether there is data that can be read
-     *
-     * @param   float timeout default NULL Timeout value in seconds (e.g. 0.5)
-     * @return  bool there is data that can be read
-     * @throws  peer.SocketException in case of failure
-     */
-    public function canRead($timeout= NULL) {
-      return $this->_select(array($this->_sock), NULL, NULL, $timeout) > 0;
-    }
-    
+
     /**
      * Returns whether eof has been reached
      *
@@ -323,7 +312,7 @@
     public function eof() {
       return $this->_eof;
     }
-    
+
     /**
      * Reading helper
      *
@@ -418,6 +407,45 @@
       }
       
       return $bytesWritten;
+    }
+
+    /**
+     * Select
+     *
+     * @param   peer.Sockets s
+     * @param   float timeout default NULL Timeout value in seconds (e.g. 0.5)
+     * @return  int
+     * @throws  peer.SocketException in case of failure
+     */
+    public static function select(Sockets $s, $timeout= NULL) {
+      if (NULL === $timeout) {
+        $tv_sec= $tv_usec= NULL;
+      } else {
+        $tv_sec= (int)floor($timeout);
+        $tv_usec= (int)(($timeout- $tv_sec) * 1000000);
+      }
+
+      do {
+        $socketSelectInterrupted = FALSE;
+        if (FALSE === ($n= socket_select($s->handles[0], $s->handles[1], $s->handles[2], $tv_sec, $tv_usec))) {
+          $l= __LINE__ - 1;
+
+          // If socket_select has been interrupted by a signal, it will return FALSE,
+          // but no actual error occurred - so check for "real" errors before throwing
+          // an exception. If no error has occurred, skip over to the socket_select again.
+          if (0 !== ($error= socket_last_error()) || xp::errorAt(__FILE__, $l)) {
+            socket_clear_error();
+            $e= new SocketException(sprintf('Select failed - #%d: %s', $error, socket_strerror($error)));
+            xp::gc(__FILE__);
+            throw $e;
+          } else {
+            $socketSelectInterrupted = TRUE;
+          }
+        }
+
+      // if socket_select was interrupted by signal, retry socket_select
+      } while ($socketSelectInterrupted);
+      return $n;
     }
   }
 ?>

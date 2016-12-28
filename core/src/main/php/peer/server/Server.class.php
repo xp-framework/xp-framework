@@ -44,11 +44,15 @@
     /**
      * Constructor
      *
-     * @param   string addr
+     * @param   var arg either a ServerSocket instance or an address
      * @param   int port
      */
-    public function __construct($addr, $port) {
-      $this->socket= new ServerSocket($addr, $port);
+    public function __construct($arg, $port= NULL) {
+      if ($arg instanceof ServerSocket) {
+        $this->socket= $arg;
+      } else {
+        $this->socket= new ServerSocket($arg, $port);
+      }
     }
     
     /**
@@ -128,7 +132,6 @@
 
       $null= NULL;
       $handles= $lastAction= array();
-      $accepting= $this->socket->getHandle();
       $this->protocol->initialize();
 
       // Loop
@@ -140,7 +143,7 @@
         // Build array of sockets that we want to check for data. If one of them
         // has disconnected in the meantime, notify the listeners (socket will be
         // already invalid at that time) and remove it from the clients list.
-        $read= array($this->socket->getHandle());
+        $read= array($this->socket);
         $currentTime= time();
         foreach ($handles as $h => $handle) {
           if (!$handle->isConnected()) {
@@ -153,7 +156,7 @@
             unset($handles[$h]);
             unset($lastAction[$h]);
           } else {
-            $read[]= $handle->getHandle();
+            $read[]= $handle;
           }
         }
 
@@ -161,29 +164,15 @@
         // find some, loop over the returned sockets. In case the select() call
         // fails, break out of the loop and terminate the server - this really 
         // should not happen!
-        do {
-          $socketSelectInterrupted = FALSE;
-          if (FALSE === socket_select($read, $null, $null, $timeout)) {
-          
-            // If socket_select has been interrupted by a signal, it will return FALSE,
-            // but no actual error occurred - so check for "real" errors before throwing
-            // an exception. If no error has occurred, skip over to the socket_select again.
-            if (0 !== socket_last_error($this->socket->_sock)) {
-              throw new SocketException('Call to select() failed');
-            } else {
-              $socketSelectInterrupted = TRUE;
-            }
-          }
-        // if socket_select was interrupted by signal, retry socket_select
-        } while ($socketSelectInterrupted);
-
-        foreach ($read as $i => $handle) {
+        $test= new Sockets($read, NULL, NULL);
+        $this->socket->select($test, $timeout);
+        foreach ($test->read() as $socket) {
 
           // If there is data on the server socket, this means we have a new client.
           // In case the accept() call fails, break out of the loop and terminate
           // the server - this really should not happen!
-          if ($handle === $accepting) {
-            if (!($m= $this->socket->accept())) {
+          if ($socket->equals($this->socket)) {
+            if (!($m= $socket->accept())) {
               throw new SocketException('Call to accept() failed');
             }
 
@@ -207,13 +196,13 @@
           // Otherwise, a client is sending data. Let the protocol decide what do
           // do with it. In case of an I/O error, close the client socket and remove 
           // the client from the list.
-          $index= (int)$handle;
+          $index= (int)$socket->getHandle();
           $lastAction[$index]= $currentTime;
           try {
-            $this->protocol->handleData($handles[$index]);
+            $this->protocol->handleData($socket);
           } catch (IOException $e) {
-            $this->protocol->handleError($handles[$index], $e);
-            $handles[$index]->close();
+            $this->protocol->handleError($socket, $e);
+            $socket->close();
             unset($handles[$index]);
             unset($lastAction[$index]);
             continue;
@@ -221,9 +210,9 @@
           
           // Check if we got an EOF from the client - in this file the connection
           // was gracefully closed.
-          if (!$handles[$index]->isConnected() || $handles[$index]->eof()) {
-            $this->protocol->handleDisconnect($handles[$index]);
-            $handles[$index]->close();
+          if (!$socket->isConnected() || $socket->eof()) {
+            $this->protocol->handleDisconnect($socket);
+            $socket->close();
             unset($handles[$index]);
             unset($lastAction[$index]);
           }

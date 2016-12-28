@@ -5,12 +5,14 @@
  */
  
   uses(
+    'peer.SocketHandle',
     'peer.ConnectException',
     'peer.SocketTimeoutException',
     'peer.SocketEndpoint',
     'peer.SocketException',
     'peer.SocketInputStream',
-    'peer.SocketOutputStream'
+    'peer.SocketOutputStream',
+    'peer.Sockets'
   );
   
   /**
@@ -20,7 +22,7 @@
    * @see      php://network
    * @purpose  Basic TCP/IP socket
    */
-  class Socket extends Object {
+  class Socket extends Object implements SocketHandle {
     public
       $_eof     = FALSE,
       $host     = '',
@@ -228,37 +230,7 @@
      * @throws  peer.SocketException in case of failure
      */
     public function canRead($timeout= NULL) {
-      if (NULL === $timeout) {
-        $tv_sec= $tv_usec= NULL;
-      } else {
-        $tv_sec= intval(floor($timeout));
-        $tv_usec= intval(($timeout - floor($timeout)) * 1000000);
-      }
-      $r= array($this->_sock); $w= NULL; $e= NULL;
-      $n= stream_select($r, $w, $e, $tv_sec, $tv_usec);
-      $l= __LINE__ -1;
-      
-      // Implementation vagaries:
-      // * For Windows, when using the VC9 binatries, get rid of "Invalid CRT 
-      //   parameters detected" warning which is no error, see PHP bug #49948
-      // * On Un*x OS flavors, when select() raises a warning, this *is* an 
-      //   error (regardless of the return value)
-      if (isset(xp::$errors[__FILE__])) {
-        if (isset(xp::$errors[__FILE__][$l]['Invalid CRT parameters detected'])) {
-          xp::gc(__FILE__);
-        } else {
-          $n= FALSE;
-        }
-      }
-      
-      // OK, real error here now.
-      if (FALSE === $n || NULL === $n) {
-        $e= new SocketException('Select('.$this->_sock.', '.$tv_sec.', '.$tv_usec.')= failed: '.$this->getLastError());
-        xp::gc(__FILE__);
-        throw $e;
-      }
-      
-      return $n > 0 ? TRUE : !empty($r);
+      return $this->select(new Sockets(array($this)), $timeout) > 0;
     }
 
     /**
@@ -396,7 +368,48 @@
     public function getOutputStream() {
       return new SocketOutputStream($this);
     }
-    
+
+    /**
+     * Select
+     *
+     * @param   peer.Sockets s
+     * @param   float timeout default NULL Timeout value in seconds (e.g. 0.5)
+     * @return  int
+     * @throws  peer.SocketException in case of failure
+     */
+    public static function select(Sockets $s, $timeout= NULL) {
+      if (NULL === $timeout) {
+        $tv_sec= $tv_usec= NULL;
+      } else {
+        $tv_sec= intval(floor($timeout));
+        $tv_usec= intval(($timeout - floor($timeout)) * 1000000);
+      }
+      $n= stream_select($s->handles[0], $s->handles[1], $s->handles[2], $tv_sec, $tv_usec);
+      $l= __LINE__ -1;
+
+      // Implementation vagaries:
+      // * For Windows, when using the VC9 binatries, get rid of "Invalid CRT 
+      //   parameters detected" warning which is no error, see PHP bug #49948
+      // * On Un*x OS flavors, when select() raises a warning, this *is* an 
+      //   error (regardless of the return value)
+      if (isset(xp::$errors[__FILE__])) {
+        if (isset(xp::$errors[__FILE__][$l]['Invalid CRT parameters detected'])) {
+          xp::gc(__FILE__);
+        } else {
+          $n= FALSE;
+        }
+      }
+
+      // OK, real error here now.
+      if (FALSE === $n || NULL === $n) {
+        $e= new SocketException('Select('.$s->toString().', '.$tv_sec.', '.$tv_usec.')= failed');
+        xp::gc(__FILE__);
+        throw $e;
+      }
+
+      return $n > 0 ? $n : sizeof($s->handles[0]) + sizeof($s->handles[1]) + sizeof($s->handles[2]);
+    }
+
     /**
      * Destructor
      *

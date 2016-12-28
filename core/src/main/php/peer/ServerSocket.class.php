@@ -4,18 +4,16 @@
  * $Id$
  */
 
-  uses('peer.BSDSocket');
+  uses('peer.SocketHandle', 'peer.Sockets');
 
   /**
-   * BSDSocket server implementation
+   * Server socket interface
    *
    * <code>
    *   $s= new ServerSocket('127.0.0.1', 80);
    *   try {
-   *     $s->create();
    *     $s->bind();
-   *     $s->listen();
-   *   } catch(SocketException $e) {
+   *   } catch (SocketException $e) {
    *     $e->printStackTrace();
    *     $s->close();
    *     exit();
@@ -28,17 +26,32 @@
    *   }
    *   $s->close();
    * </code>
-   *
-   * @purpose  Provide an interface to the BSD sockets                    
-   * @see      xp://peer.BSDSocket
-   * @ext      sockets                                                    
    */
-  class ServerSocket extends BSDSocket {
-    public
-      $domain   = 0,
-      $type     = 0,
-      $protocol = 0;
-      
+  class ServerSocket extends Object implements SocketHandle {
+    public $host     = '';
+    public $protocol = 0;
+
+    protected static $impl = null;
+
+    static function __static() {
+      if (extension_loaded('sockets')) {
+        self::$impl= XPClass::forName('peer.server.BSDServerSocketImpl');
+      } else {
+        define('AF_UNIX', 1);
+        define('AF_INET', 2);
+
+        define('SOCK_STREAM', 1);
+        define('SOCK_DGRAM', 2);
+        define('SOCK_RAW', 3);
+        define('SOCK_RDM', 4);
+        define('SOCK_SEQPACKET', 5);
+
+        define('SOL_TCP', 6);
+        define('SOL_UDP', 17);
+        self::$impl= XPClass::forName('peer.server.StreamServerSocketImpl');
+      }
+    }
+
     /**
      * Constructor
      *
@@ -47,67 +60,17 @@
      * @param   int domain default AF_INET (one of AF_INET or AF_UNIX)
      * @param   int type default SOCK_STREAM (one of SOCK_STREAM | SOCK_DGRAM | SOCK_RAW | SOCK_SEQPACKET | SOCK_RDM)
      * @param   int protocol default SOL_TCP (one of SOL_TCP or SOL_UDP)
+     * @param   lang.XPClass impl default NULL
      */
-    public function __construct($host, $port, $domain= AF_INET, $type= SOCK_STREAM, $protocol= SOL_TCP) {
-      $this->domain= $domain;
-      $this->type= $type;
-      $this->protocol= $protocol;
-      parent::__construct($host, $port);
+    public function __construct($host, $port, $domain= AF_INET, $type= SOCK_STREAM, $protocol= SOL_TCP, XPClass $impl= NULL) {
+      $this->host= $host;
+      $this->port= $port;
+      if (NULL === $impl) $impl= self::$impl;
+      $this->impl= $impl->newInstance($domain, $type, $protocol);
     }
-    
+
     /**
-     * Connect. Overwritten method from BSDSocket that will always throw
-     * an exception because connect() doesn't make sense here!
-     *
-     * @param   float timeout default 2.0
-     * @return  bool success
-     * @throws  lang.IllegalAccessException
-     */
-    public function connect($timeout= 2.0) {
-      throw new IllegalAccessException('Connect cannot be used on a ServerSocket');
-    }
-    
-    /**
-     * Create
-     *
-     * @return  bool success
-     * @throws  peer.SocketException in case of an error
-     */
-    public function create() {
-      if (!is_resource($this->_sock= socket_create($this->domain, $this->type, $this->protocol))) {
-        throw new SocketException(sprintf(
-          'Creating socket failed: %s',
-          $this->getLastError()
-        ));
-      }
-      
-      return TRUE;
-    }
-    
-    /**
-     * Bind
-     *
-     * @return  bool success
-     * @throws  peer.SocketException in case of an error
-     */
-    public function bind($reuse= FALSE) {
-      if (
-        (FALSE === socket_setopt($this->_sock, SOL_SOCKET, SO_REUSEADDR, $reuse)) ||
-        (FALSE === socket_bind($this->_sock, $this->host, $this->port))
-      ) {
-        throw new SocketException(sprintf(
-          'Binding socket to '.$this->host.':'.$this->port.' failed: %s',
-          $this->getLastError()
-        ));
-      }
-      
-      // Update socket host and port
-      socket_getsockname($this->_sock, $this->host, $this->port);
-      return TRUE;
-    }      
-    
-    /**
-     * Listen on this socket
+     * Bind and listen on this socket
      *
      * <quote>
      * A maximum of backlog incoming connections will be queued for processing. 
@@ -117,21 +80,21 @@
      * succeed. 
      * </quote>
      *
+     * @param   bool reuse default FALSE
      * @param   int backlog default 10
      * @return  bool success
      * @throws  peer.SocketException in case of an error
      */
-    public function listen($backlog= 10) {
-      if (FALSE === socket_listen($this->_sock, $backlog)) {
-        throw new SocketException(sprintf(
-          'Listening on socket failed: %s',
-          $this->getLastError()
-        ));
-      }
-      
+    public function bind($reuse= FALSE, $backlog= 10) {
+      $this->impl->bind($this->host, $this->port, $backlog, $reuse);
+
+      // Update socket host and port (given a ":0" port as parameter,
+      // the member variable will now contain the actual port we bound).
+      $this->host= $this->impl->host();
+      $this->port= $this->impl->port();
       return TRUE;
     }
-    
+
     /**
      * Accept connection
      *
@@ -145,27 +108,73 @@
      *
      * Note: If this socket has been made non-blocking, FALSE will be returned.
      *
-     * @return  var a peer.BSDSocket object or FALSE
+     * @return  var a peer.Socket object or FALSE
      * @throws  peer.SocketException in case of an error
      */
     public function accept() {
-      if (0 > ($msgsock= socket_accept($this->_sock))) {
-        throw new SocketException(sprintf(
-          'Accept failed: %s',
-          $this->getLastError()
-        ));
-      }
-      if (!is_resource($msgsock)) return FALSE;
-      
-      // Get peer
-      if (FALSE === socket_getpeername($msgsock, $host, $port)) {
-        throw new SocketException(sprintf(
-          'Cannot get peer: %s',
-          $this->getLastError()
-        ));      
-      }
-      
-      return new BSDSocket($host, $port, $msgsock);
+      return $this->impl->accept();
+    }
+
+    /**
+     * Returns whether this socket is connected
+     *
+     * @return  bool
+     */
+    public function isConnected() {
+      return $this->impl->isConnected();
+    }
+
+    /**
+     * Returns the underlying socket handle
+     *
+     * @return  var
+     */
+    public function getHandle() {
+      return $this->impl->handle();
+    }
+
+    /**
+     * Closes this socket
+     *
+     * @return  void
+     */
+    public function close() {
+      $this->impl->close();
+    }
+
+    /**
+     * Select
+     *
+     * @param   peer.Sockets s
+     * @param   float timeout default NULL Timeout value in seconds (e.g. 0.5)
+     * @return  int
+     * @throws  peer.SocketException in case of failure
+     */
+    public function select(Sockets $s, $timeout= NULL) {
+      return $this->impl->select($s, $timeout);
+    }
+
+    /**
+     * Create
+     *
+     * @deprecated Does not need to be called any longer
+     * @return  bool success
+     * @throws  peer.SocketException in case of an error
+     */
+    public function create() {
+      return TRUE;
+    }
+
+    /**
+     * Listen on this socket
+     *
+     * @deprecated Does not need to be called any longer
+     * @param   int backlog default 10
+     * @return  bool success
+     * @throws  peer.SocketException in case of an error
+     */
+    public function listen($backlog= 10) {
+      return TRUE;
     }
   }
 ?>

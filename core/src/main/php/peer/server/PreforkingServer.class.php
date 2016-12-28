@@ -98,32 +98,7 @@
       
       $requests= 0;
       while (!$this->terminate && $requests < $this->maxrequests) {
-        $read= array($this->socket->getHandle());
-        $null= NULL;
-        $timeout= NULL;
-
-        // Check to see if there are sockets with data on it. In case we can
-        // find some, loop over the returned sockets. In case the select() call
-        // fails, break out of the loop and terminate the server - this really
-        // should not happen!
-        do {
-          $socketSelectInterrupted = FALSE;
-          if (FALSE === socket_select($read, $null, $null, $timeout)) {
-
-            // If socket_select has been interrupted by a signal, it will return FALSE,
-            // but no actual error occurred - so check for "real" errors before throwing
-            // an exception. If no error has occurred, skip over to the socket_select again.
-            if (0 !== socket_last_error($this->socket->_sock)) {
-              throw new SocketException('Call to select() failed');
-            } else {
-              $socketSelectInterrupted = TRUE;
-              if ($this->terminate || $this->restart) return;
-            }
-          }
-        // if socket_select was interrupted by signal, retry socket_select
-        } while ($socketSelectInterrupted);
-
-        $m= $this->socket->accept();
+        $this->socket->canRead(NULL) && $m= $this->socket->accept();
 
         // Sanity check
         if (!($m instanceof Socket)) {
